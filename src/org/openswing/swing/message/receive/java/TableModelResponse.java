@@ -1,0 +1,86 @@
+package org.openswing.swing.message.receive.java;
+
+import java.io.Serializable;
+import java.util.Vector;
+
+
+/**
+ * <p>Title: OpenSwing Framework</p>
+ * <p>Description: Message received by the server side: it contains a TableModel (data + column identifiers).</p>
+ * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+ *
+ * <p> This file is part of OpenSwing Framework.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the (LGPL) Lesser General Public
+ * License as published by the Free Software Foundation;
+ *
+ *                GNU LESSER GENERAL PUBLIC LICENSE
+ *                 Version 2.1, February 1999
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *       The author may be contacted at:
+ *           maurocarniel@tin.it</p>
+ *
+ * @author Mauro Carniel
+ * @version 1.0
+ */
+public class TableModelResponse extends Response {
+
+  /** column identifiers */
+  private Vector columnNames = null;
+
+  /** list of rows */
+  private Vector rows = null;
+
+
+  /**
+   * @return <code>true</code> if an error occours, <code>false</code> otherwise
+   */
+  public final boolean isError() {
+    return false;
+  }
+
+
+  /**
+   * @return error message
+   */
+  public final String getErrorMessage() {
+    return null;
+  }
+
+
+  /**
+   * @return column identifiers
+   */
+  public final Vector getColumnNames() {
+    return columnNames;
+  }
+
+
+  /**
+   * @return list of rows
+   */
+  public final Vector getRows() {
+    return rows;
+  }
+
+
+  /**
+   * Costructor.
+   * @param rows list of rows
+   * @param columnNames column identifiers
+   */
+  public TableModelResponse(Vector rows,Vector columnNames) {
+    this.columnNames = columnNames;
+    this.rows = rows;
+  }
+
+}

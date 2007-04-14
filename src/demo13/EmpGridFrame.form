@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.0" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="2"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,44,0,0,3,107"/>
+  </AuxValues>
+
+  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+  <SubComponents>
+    <Container class="org.openswing.swing.client.GridControl" name="grid">
+      <Properties>
+        <Property name="deleteButton" type="org.openswing.swing.client.DeleteButton" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="deleteButton1"/>
+        </Property>
+        <Property name="exportButton" type="org.openswing.swing.client.ExportButton" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="exportButton1"/>
+        </Property>
+        <Property name="functionId" type="java.lang.String" value="getEmployees"/>
+        <Property name="maxSortedColumns" type="int" value="2"/>
+        <Property name="navBar" type="org.openswing.swing.client.NavigatorBar" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="navigatorBar1"/>
+        </Property>
+        <Property name="reloadButton" type="org.openswing.swing.client.ReloadButton" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="reloadButton1"/>
+        </Property>
+        <Property name="valueObjectClassName" type="java.lang.String" value="demo12.GridEmpVO"/>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="Center"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+        <Property name="alignment" type="int" value="0"/>
+        <Property name="horizontalGap" type="int" value="0"/>
+        <Property name="verticalGap" type="int" value="0"/>
+      </Layout>
+      <SubComponents>
+        <Component class="org.openswing.swing.table.columns.client.TextColumn" name="textColumn1">
+          <Properties>
+            <Property name="columnName" type="java.lang.String" value="empCode"/>
+          </Properties>
+        </Component>
+        <Component class="org.openswing.swing.table.columns.client.TextColumn" name="textColumn2">
+          <Properties>
+            <Property name="columnName" type="java.lang.String" value="firstName"/>
+          </Properties>
+        </Component>
+        <Component class="org.openswing.swing.table.columns.client.TextColumn" name="textColumn3">
+          <Properties>
+            <Property name="columnName" type="java.lang.String" value="lastName"/>
+          </Properties>
+        </Component>
+        <Component class="org.openswing.swing.table.columns.client.TextColumn" name="textColumn4">
+          <Properties>
+            <Property name="columnName" type="java.lang.String" value="deptCode"/>
+          </Properties>
+        </Component>
+        <Component class="org.openswing.swing.table.columns.client.TextColumn" name="textColumn5">
+          <Properties>
+            <Property name="columnName" type="java.lang.String" value="deptDescription"/>
+            <Property name="preferredWidth" type="int" value="250"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="buttonsPanel">
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="North"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+        <Property name="alignment" type="int" value="0"/>
+      </Layout>
+      <SubComponents>
+        <Component class="org.openswing.swing.client.InsertButton" name="insertButton1">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="insertButton1ActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="org.openswing.swing.client.ReloadButton" name="reloadButton1">
+        </Component>
+        <Component class="org.openswing.swing.client.DeleteButton" name="deleteButton1">
+        </Component>
+        <Component class="org.openswing.swing.client.ExportButton" name="exportButton1">
+        </Component>
+        <Component class="org.openswing.swing.client.NavigatorBar" name="navigatorBar1">
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

@@ -1,0 +1,147 @@
+package org.openswing.swing.table.columns.client;
+
+
+/**
+ * <p>Title: OpenSwing Framework</p>
+ * <p>Description: Column of type text:
+ * it contains a text input field.</p>
+ * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+ *
+ * <p> This file is part of OpenSwing Framework.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the (LGPL) Lesser General Public
+ * License as published by the Free Software Foundation;
+ *
+ *                GNU LESSER GENERAL PUBLIC LICENSE
+ *                 Version 2.1, February 1999
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *       The author may be contacted at:
+ *           maurocarniel@tin.it</p>
+ *
+ * @author Mauro Carniel
+ * @version 1.0
+ */
+public class TextColumn extends Column {
+
+  /** maximum number of characters */
+  private int maxCharacters = 255;
+
+  /** flag used to translate the text on uppercase */
+  private boolean upperCase = false;
+
+  /** flag used to trim the text */
+  private boolean trimText = false;
+
+  /** flag used to right padding the text (related to maxCharacters property) */
+  private boolean rpadding = false;
+
+  /** flag used to view "*" symbols instead of the real text in read-only mode; useful for password fields */
+  private boolean encryptText;
+
+
+  public TextColumn() { }
+
+
+  /**
+   * @return column type
+   */
+  public int getColumnType() {
+    return TYPE_TEXT;
+  }
+
+
+  /**
+   * Set maximum number of characters.
+   * @param maxCharacters maximum number of characters
+   */
+  public void setMaxCharacters(int maxCharacters) {
+    this.maxCharacters = maxCharacters;
+  }
+
+
+  /**
+   * @return maximum number of characters
+   */
+  public int getMaxCharacters() {
+    return maxCharacters;
+  }
+
+
+  /**
+   * @return <code>true></code> to right padding the text (related to maxCharacters property)
+   */
+  public boolean isRpadding() {
+    return rpadding;
+  }
+
+
+  /**
+   * @return <code>true></code> to trim the text
+   */
+  public boolean isTrimText() {
+    return trimText;
+  }
+
+
+  /**
+   * @return <code>true></code> to translate the text on uppercase
+   */
+  public boolean isUpperCase() {
+    return upperCase;
+  }
+
+
+  /**
+   * Set <code>true></code> to right padding the text (related to maxCharacters property).
+   * @param rpadding <code>true></code> to right padding the text (related to maxCharacters property)
+   */
+  public void setRpadding(boolean rpadding) {
+    this.rpadding = rpadding;
+  }
+
+
+  /**
+   * Set <code>true></code> to trim the text.
+   * @param trimText <code>true></code> to trim the text
+   */
+  public void setTrimText(boolean trimText) {
+    this.trimText = trimText;
+  }
+
+
+  /**
+   * Set <code>true></code> to translate the text on uppercase.
+   * @param upperCase <code>true></code> to translate the text on uppercase
+   */
+  public void setUpperCase(boolean upperCase) {
+    this.upperCase = upperCase;
+  }
+
+
+  /**
+   * @return flag used to view "*" symbols instead of the real text in read-only mode; useful for password fields
+   */
+  public boolean isEncryptText() {
+    return encryptText;
+  }
+
+
+  /**
+   * Set the flag used to view "*" symbols instead of the real text in read-only mode; useful for password fields.
+   * @param encryptText flag used to view "*" symbols instead of the real text in read-only mode
+   */
+  public void setEncryptText(boolean encryptText) {
+    this.encryptText = encryptText;
+  }
+
+
+}

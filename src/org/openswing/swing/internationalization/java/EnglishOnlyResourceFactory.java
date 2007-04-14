@@ -1,0 +1,231 @@
+package org.openswing.swing.internationalization.java;
+
+import java.util.*;
+import java.io.*;
+
+/**
+ * <p>Title: OpenSwing Framework</p>
+ * <p>Description: Class for retrieve the collection of all internationalization properties:
+ * translations, data/numeric/currency formats.
+ * No translation is performed, date/numeric/currency formats are based on english formats.</p>
+ * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+ *
+ * <p> This file is part of OpenSwing Framework.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the (LGPL) Lesser General Public
+ * License as published by the Free Software Foundation;
+ *
+ *                GNU LESSER GENERAL PUBLIC LICENSE
+ *                 Version 2.1, February 1999
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *       The author may be contacted at:
+ *           maurocarniel@tin.it</p>
+ *
+ * @author Mauro Carniel
+ * @version 1.0
+ */
+public class EnglishOnlyResourceFactory extends ResourcesFactory {
+
+  /** internationalization settings */
+  private Resources resources = null;
+
+
+  /**
+   * Constructor.
+   * @param currencySymbol currency symbol
+   * @param additionalDictionary additional descriptions
+   * @param showResourceNotFoundWarning warn when no resource key not found
+   */
+  public EnglishOnlyResourceFactory(String currencySymbol,Properties additionalDictionary,boolean showResourceNotFoundWarning) {
+    Properties dictionary = new Properties();
+
+    // grid...
+    dictionary.setProperty("Remove Filter","Remove Filter");
+    dictionary.setProperty("This column is not sorteable","This column is not sorteable");
+    dictionary.setProperty("Sorting not allowed","Sorting not allowed");
+    dictionary.setProperty("Maximum number of sorted columns","Maximum number of sorted columns");
+    dictionary.setProperty("Sorting not applicable","Sorting not applicable");
+    dictionary.setProperty("Selected Row","Selected Row");
+    dictionary.setProperty("Selected Rows","Selected Rows");
+    dictionary.setProperty("Cancel changes and reload data?","Cancel changes and reload data?");
+    dictionary.setProperty("Attention","Attention");
+    dictionary.setProperty("Loading data...","Loading data...");
+    dictionary.setProperty("Error while loading data","Error while loading data");
+    dictionary.setProperty("Loading Data Error","Loading Data Error");
+    dictionary.setProperty("Delete Rows?","Delete Rows?");
+    dictionary.setProperty("Delete Confirmation","Delete Confirmation");
+    dictionary.setProperty("Error while deleting rows.","Error while deleting rows.");
+    dictionary.setProperty("Deleting Error","Deleting Error");
+    dictionary.setProperty("Error while deleting rows.","Error while deleting rows.");
+    dictionary.setProperty("Error while saving","Error while saving");
+    dictionary.setProperty("Saving Error","Saving Error");
+    dictionary.setProperty("A mandatory column is empty.","A mandatory column is empty.");
+    dictionary.setProperty("Value not valid","Value not valid");
+
+    // export...
+    dictionary.setProperty("grid export","Grid Export");
+    dictionary.setProperty("export","Export");
+    dictionary.setProperty("exportmnemonic","X");
+    dictionary.setProperty("column","Column");
+    dictionary.setProperty("sel.","Sel.");
+    dictionary.setProperty("you must select at least one column","You must select at least one column");
+    dictionary.setProperty("columns to export","Columns to export");
+
+
+    // quick filter...
+    dictionary.setProperty("To value","To value");
+    dictionary.setProperty("Filter by","Filter by");
+    dictionary.setProperty("From value","From value");
+
+    // lookup...
+    dictionary.setProperty("Code is not correct.","Code is not correct.");
+    dictionary.setProperty("Code Validation","Code Validation");
+    dictionary.setProperty("Code Selection","Code Selection");
+
+    // form...
+    dictionary.setProperty("Confirm deliting data?","Confirm deliting data?");
+    dictionary.setProperty("Error while saving: incorrect data.","Error while saving: incorrect data.");
+    dictionary.setProperty("Error on deleting:","Error on deleting:");
+    dictionary.setProperty("Error on Loading","Error on Loading");
+    dictionary.setProperty("Error while loading data:","Error while loading data:");
+    dictionary.setProperty("Error on setting value to the input control having the attribute name","Error on setting value to the input control having the attribute name");
+
+    // toolbar buttons...
+    dictionary.setProperty("Delete record (CTRL+D)","Delete record (CTRL+D)");
+    dictionary.setProperty("Edit record (CTRL+E)","Edit record (CTRL+E)");
+    dictionary.setProperty("New record (CTRL+I)","New record (CTRL+I)");
+    dictionary.setProperty("Reload record/Cancel current operation (CTRL+Z)","Reload record/Cancel current operation (CTRL+Z)");
+    dictionary.setProperty("Save record (CTRL+S)","Save record (CTRL+S)");
+    dictionary.setProperty("Copy record (CTRL+C)","Copy record (CTRL+C)");
+    dictionary.setProperty("Export record (CTRL+X)","Export record (CTRL+X)");
+    dictionary.setProperty("Load the first block of records","Load the first block of records");
+    dictionary.setProperty("Load the previous block of records","Load the previous block of records");
+    dictionary.setProperty("Load the next block of records","Load the next block of records");
+    dictionary.setProperty("Load the last block of records","Load the last block of records");
+
+
+    // binding messages...
+    dictionary.setProperty("value must be of type ","Value must be of type ");
+    dictionary.setProperty("decimal number","decimal number");
+    dictionary.setProperty("value is ","Value is ");
+    dictionary.setProperty("optional","optional");
+    dictionary.setProperty("minimum value is ","Minimum value is ");
+    dictionary.setProperty("required","required");
+    dictionary.setProperty("contains a value not valid","contains a value not valid");
+    dictionary.setProperty("text","text");
+    dictionary.setProperty("Date","date");
+    dictionary.setProperty("Value is required","Value is required");
+    dictionary.setProperty("maximum value is ","Maximum value is ");
+    dictionary.setProperty("yes/no","yes/no");
+    dictionary.setProperty("long number","long number");
+    dictionary.setProperty("integer number","integer number");
+    dictionary.setProperty("Cannot assign component value","Cannot assign component value");
+
+    // ClientUtils...
+    dictionary.setProperty("Server Comunication Error","Server Comunication Error");
+    dictionary.setProperty("Server Error","Server Error");
+
+    // MDI Frame...
+    dictionary.setProperty("file","File");
+    dictionary.setProperty("exit","Exit");
+    dictionary.setProperty("filemnemonic","F");
+    dictionary.setProperty("exitmnemonic","E");
+    dictionary.setProperty("change user","Change User");
+    dictionary.setProperty("changeusermnemonic","U");
+    dictionary.setProperty("changelanguagemnemonic","L");
+    dictionary.setProperty("help","Help");
+    dictionary.setProperty("about","About");
+    dictionary.setProperty("helpmnemonic","H");
+    dictionary.setProperty("aboutmnemonic","A");
+    dictionary.setProperty("are you sure to quit application?","Are you sure to quit application?");
+    dictionary.setProperty("quit application","Quit Application");
+    dictionary.setProperty("about","About");
+    dictionary.setProperty("forcegcmnemonic","F");
+    dictionary.setProperty("Force GC","Force GC");
+    dictionary.setProperty("Info","Info");
+    dictionary.setProperty("About","About");
+    dictionary.setProperty("Java Heap","Java Heap");
+    dictionary.setProperty("used","used");
+    dictionary.setProperty("allocated","allocated");
+    dictionary.setProperty("change language","Change Language");
+    dictionary.setProperty("changemnemonic","L");
+    dictionary.setProperty("cancelmnemonic","C");
+    dictionary.setProperty("cancel","Cancel");
+    dictionary.setProperty("Functions","Functions");
+    dictionary.setProperty("Error while executing function","Error while executing function");
+    dictionary.setProperty("Error","Error");
+    dictionary.setProperty("infoPanel","Info");
+    dictionary.setProperty("imageButton","About");
+    dictionary.setProperty("Window","Window");
+    dictionary.setProperty("windowmnemonic","W");
+    dictionary.setProperty("Close All","Close All");
+    dictionary.setProperty("closeallmnemonic","A");
+    dictionary.setProperty("Press ENTER to find function","Press ENTER to find function");
+    dictionary.setProperty("Find Function","Find Function");
+    dictionary.setProperty("Operation in progress...","Operation in progress...");
+    dictionary.setProperty("close window","Close Window");
+    dictionary.setProperty("reduce to icon","Reduce to icon");
+
+    // server...
+    dictionary.setProperty("Client request not supported","Client request not supported");
+    dictionary.setProperty("User disconnected","User disconnected");
+    dictionary.setProperty("Updating not performed: the record was previously updated.","Updating not performed: the record was previously updated.");
+
+
+
+    dictionary.putAll(additionalDictionary);
+
+    resources = new Resources(
+      dictionary,
+      currencySymbol,
+      '.',
+      ',',
+      Resources.YMD,
+      true,
+      '/',
+      "HH:mm",
+      "EN",
+      showResourceNotFoundWarning
+    );
+  }
+
+
+  /**
+   * @return internationalization settings, according with the current language
+   */
+  public final Resources getResources() {
+    return resources;
+  }
+
+
+  /**
+   * Load dictionary, according to the specified language id.
+   * @param langId language id identifier
+   */
+  public final void setLanguage(String langId) throws UnsupportedOperationException {
+    if (!resources.getLanguageId().equals(langId))
+      throw new UnsupportedOperationException("Language identifier not supported.");
+  }
+
+
+  /**
+   * @param langId language id identifier
+   * @return internationalization settings, according with the language specified
+   */
+  public final Resources getResources(String langId) throws UnsupportedOperationException {
+    if (!resources.getLanguageId().equals(langId))
+    throw new UnsupportedOperationException("Language identifier not supported.");
+    return resources;
+  }
+
+
+}

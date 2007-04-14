@@ -1,0 +1,108 @@
+package org.openswing.swing.tree.client;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
+/**
+ * <p>Title: OpenSwing Framework</p>
+ * <p>Description: Based class used to listen drag 'n drop events fired by the tree.</p>
+ * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+ *
+ * <p> This file is part of OpenSwing Framework.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the (LGPL) Lesser General Public
+ * License as published by the Free Software Foundation;
+ *
+ *                GNU LESSER GENERAL PUBLIC LICENSE
+ *                 Version 2.1, February 1999
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *       The author may be contacted at:
+ *           maurocarniel@tin.it</p>
+ *
+ * @author Mauro Carniel
+ * @version 1.0
+ */
+public class TreeDragNDropListener {
+
+
+  /**
+   * Method called on beginning a drag event.
+   * @return <code>true</code>, dragging can continue, <code>false</code> drag is not allowed; default value: <code>true</code>
+   */
+  public boolean dragEnabled() {
+    return true;
+  }
+
+
+  /**
+   * Method called on firing a drop event onto the tree.
+   * @return <code>true</code>, drop is allowed, <code>false</code> drop is not allowed; default value: <code>true</code>
+   */
+  public boolean dropEnabled(DefaultMutableTreeNode node,String treeId) {
+    return true;
+  }
+
+
+  /**
+   * This message goes to DragSourceListener, informing it that the dragging has entered the DropSite.
+   */
+  public void dragEnter() {}
+
+
+  /**
+   * This message goes to DragSourceListener, informing it that the dragging has exited the DropSite.
+   */
+  public void dragExit() {}
+
+
+  /**
+   * This message goes to DragSourceListener, informing it that the dragging is currently ocurring over the DropSite.
+   */
+  public void dragOver() {}
+
+
+  /**
+   * This method is invoked when the user changes the dropAction.
+   */
+  public void dropActionChanged() {}
+
+
+  /**
+   * This message goes to DragSourceListener, informing it that the dragging has ended.
+   */
+  public void dragDropEnd() {}
+
+
+
+  /************************************************************
+   * DROP MANAGEMENT
+   ************************************************************/
+
+  /**
+   * This method is invoked when you are dragging over the DropSite.
+   */
+  public void dropEnter() {}
+
+
+  /**
+   * This method is invoked when you are exit the DropSite without dropping.
+   */
+  public void dropExit () {}
+
+
+  /**
+   * This method is invoked when a drag operation is going on.
+   */
+  public void dropOver () {}
+
+
+
+}
