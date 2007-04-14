@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?> 
+     <!-- JNLP File for Manager Application --> 
+<jnlp spec="1.0+" codebase = "http://localhost/root"> 
+
+    <application-desc main-class="demo10.ClientApplication"/>
+
+    <information> 
+      <title>Demo10</title> 
+      <vendor>by Mauro Carniel</vendor>
+	  <description>MDI Frame web app</description>
+    </information> 
+
+  <security> 
+      <all-permissions/> 
+  </security> 
+    
+    <resources>
+<j2se version="1.4"/> 
+<jar href="demo10.jar" />
+<jar href="clientos.jar" />
+<jar href="jcalendar.jar" />
+<jar href="jnlp.jar" />    
+<jar href="hsqldb.jar" />       
+   
+   </resources>
+
+</jnlp>
