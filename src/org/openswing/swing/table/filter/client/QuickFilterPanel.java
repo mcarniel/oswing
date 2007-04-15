@@ -82,7 +82,30 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
       this.filterListener=filterListener;
       this.filterType=filterType;
       filterIcon = new ImageIcon(ClientUtils.getImage("filter.gif"));
-      rangeButton= new JToggleButton(new ImageIcon(ClientUtils.getImage("chiuso.gif")),false);
+      rangeButton= new JToggleButton(new ImageIcon(ClientUtils.getImage("chiuso.gif")),false) {
+
+        /**
+         * Method available in java 1.5
+         */
+        protected void processMouseEvent(MouseEvent e) {
+          if (e.getID()==e.MOUSE_CLICKED) {
+            if (QuickFilterPanel.this.filterType==FILTER_TYPE_VALUE)
+              QuickFilterPanel.this.filterType=FILTER_TYPE_RANGE;
+             else
+              QuickFilterPanel.this.filterType=FILTER_TYPE_VALUE;
+
+            updateComponents(); // update filter panel...
+
+            if (parentPopup!=null) {
+              parentPopup.setVisible(false);
+              parentPopup.setVisible(true);
+              parentPopup.setSelected(value1);
+            }
+            value1.requestFocus();
+          }
+        }
+
+      };
       rangeButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           if (QuickFilterPanel.this.filterType==FILTER_TYPE_VALUE)
@@ -101,7 +124,18 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
 
         }
       });
-      filterButton=new JButton(filterIcon);
+      filterButton=new JButton(filterIcon) {
+
+        /**
+         * Method available in java 1.5
+         */
+        protected void processMouseEvent(MouseEvent e) {
+          if (e.getID()==e.MOUSE_CLICKED)
+            filter();
+        }
+
+      };
+
       filterButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           filter();

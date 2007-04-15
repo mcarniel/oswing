@@ -1,0 +1,66 @@
+
+
+Release Notes 1.0.5
+-------------------
+
+Final release 1.0.5 available
+Fixed problems when closing all windows from window menu.
+Fixed problem on copying onto a Form object with v.o. having isXXX getter.
+Fixed problem with lookup grid frame that did not scroll after the first block of data.
+Added getQuickFilterValues method to GridControl.
+Added setFilterableColumn method to LookupController.
+Extended mechanism used to invoke a function in tree menu/menubar: now the ClientFacade method can has one of the following signature:
+- methodName()
+- methodName(String functionId)
+
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.0.4
+-------------------
+
+Final release 1.0.4 available
+This distribution has been tested on NetBeans 4.1 and JDeveloper 10.1.2 too. It has been added the demo13 application, created as a project inside NetBeans.
+It has been provided a beaninfo.jar library that can be included in the IDE to add OpenSwing components to the palette (for IDEs like JBuilder, NetBeans, JDeveloper).
+This distribution introduces a change in grid value object attributes recognition: now there are retrieved attributes having isXXX method too 
+and also attributes that have getter method and not setter method.
+Export dialog now shows the column headers and no more attribute names.
+Corrected problem when saving and deleting rows from grid: after that operation refresh did't operate correctly.
+Corrected problem when copying rows from grid: no new rows were recognized.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions (just updated).
+
+
+Release Notes 1.0.3
+-------------------
+
+Final release 1.0.3 available
+A new example is provided: a tree frame demo which shows how activate drag 'n drop onto trees.
+Tree panel section has been added to HTML documentation.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+Release Notes 1.0.2
+-------------------
+
+Final release 1.0.2 available
+A new example is provided. 
+A new Tree+Grid panel is available, similar to TreeTable component described in http://java.sun.com/products/jfc/tsc/articles/treetable1/
+but based on a TreeTableModel that contains value objects, so more easy to use.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+Release Notes 1.0.1
+-------------------
+
+Final release 1.0.1 available
+This distribution includes .bat/.sh files to start demos included with OpenSwing distribution.
+Examples are better described. A tutorial section has been included.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+Release Notes 1.0.0
+-------------------
+
+Final release 1.0 available
+The distribution includes jar file libraries, source files, javadoc, licence and readme.txt installation instructions.

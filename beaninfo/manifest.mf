@@ -1,0 +1,111 @@
+Manifest-Version: 1.0
+Created-By: 1.4.2_06 (Sun Microsystems Inc.)
+
+Name: org/openswing/swing/client/CheckBoxControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/CodLookupControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/ComboBoxControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/CopyButton.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/CurrencyControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/DateControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/DeleteButton.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/EditButton.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/ExportButton.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/GenericButton.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/GridControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/InsertButton.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/LabelControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/NavigatorBar.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/NumericControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/RadioButtonControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/ReloadButton.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/SaveButton.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/TextAreaControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/TextControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/form/client/Form.class
+Java-Bean: True
+
+Name: org/openswing/swing/gantt/client/GanttControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/ButtonColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/CheckBoxColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/CodLookupColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/ComboColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/CurrencyColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/DateColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/DateTimeColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/DecimalColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/IntegerColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/PercentageColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/TextColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/TimeColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/tree/client/TreePanel.class
+Java-Bean: True
+
+Name: org/openswing/swing/tree/client/TreeGridPanel.class
+Java-Bean: True
+

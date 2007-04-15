@@ -76,7 +76,11 @@ public class ApplicationEventQueue {
     Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
 
       protected void dispatchEvent(AWTEvent e) {
-        super.dispatchEvent(e);
+        try {
+          super.dispatchEvent(e);
+        }
+        catch (Exception ex) {
+        }
         if (e instanceof KeyEvent &&
             e.getID()==KeyEvent.KEY_PRESSED)
           for(int i=0;i<keyListeners.size();i++)
