@@ -1442,7 +1442,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       else {
         // export data grid directly in the client (Windows o.s. ONLY)...
         byte[] doc = new ExportToExcel().getDocument(opt);
-        String fileName = System.getProperty("java.io.tmpdir")+"doc"+System.currentTimeMillis()+".xls".replace('\\','/');
+        String fileName = System.getProperty("java.io.tmpdir").replace('\\','/');
+        if (!fileName.endsWith("/"))
+          fileName += "/";
+        fileName += "doc"+System.currentTimeMillis()+".xls";
         FileOutputStream out = new FileOutputStream(fileName);
         out.write(doc);
         out.close();
