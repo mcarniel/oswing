@@ -32,6 +32,9 @@ import java.io.FileOutputStream;
 import java.io.File;
 import org.openswing.swing.table.editors.client.DomainCellEditor;
 import java.lang.reflect.*;
+import org.openswing.swing.export.java.ExportToCSV;
+import org.openswing.swing.export.java.ExportToXML;
+import org.openswing.swing.export.java.ExportToHTML;
 
 
 /**
@@ -1387,7 +1390,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @param exportColumns columns to export
    * @param exportAttrColumns attribute names related to the columns to export
    */
-  public final void export(ArrayList exportColumns,ArrayList exportAttrColumns) {
+  public final void export(ArrayList exportColumns,ArrayList exportAttrColumns,String exportType) {
     // create export options...
     Hashtable columnsWidth  = new Hashtable(colProps.length);
     Hashtable columnsType  = new Hashtable(colProps.length);
@@ -1410,7 +1413,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         columnsType,
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE),
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_TIME),
-        ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE_TIME)
+        ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE_TIME),
+        exportType
     );
 
     try {
@@ -1440,12 +1444,37 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
       }
       else {
-        // export data grid directly in the client (Windows o.s. ONLY)...
-        byte[] doc = new ExportToExcel().getDocument(opt);
         String fileName = System.getProperty("java.io.tmpdir").replace('\\','/');
         if (!fileName.endsWith("/"))
           fileName += "/";
-        fileName += "doc"+System.currentTimeMillis()+".xls";
+
+        // export data grid directly in the client (Windows o.s. ONLY)...
+        byte[] doc = null;
+
+        if (opt.getExportType().equals(opt.XLS_FORMAT)) {
+          // generate the Excel document...
+          doc = new ExportToExcel().getDocument(opt);
+          fileName += "doc"+System.currentTimeMillis()+".xls";
+        }
+        else if (opt.getExportType().equals(opt.CSV_FORMAT1) || opt.getExportType().equals(opt.CSV_FORMAT2) ) {
+          // generate the CSV document...
+          doc = new ExportToCSV().getDocument(opt);
+          // generate and return the document identifier...
+          fileName += "doc"+System.currentTimeMillis()+".csv";
+        }
+        else if (opt.getExportType().equals(opt.XML_FORMAT)) {
+          // generate the XML document...
+          doc = new ExportToXML().getDocument(opt);
+          // generate and return the document identifier...
+          fileName += "doc"+System.currentTimeMillis()+".xml";
+        }
+        else if (opt.getExportType().equals(opt.HTML_FORMAT)) {
+          // generate the HTML document...
+          doc = new ExportToHTML().getDocument(opt);
+          // generate and return the document identifier...
+          fileName += "doc"+System.currentTimeMillis()+".html";
+        }
+
         FileOutputStream out = new FileOutputStream(fileName);
         out.write(doc);
         out.close();

@@ -268,6 +268,9 @@ public class Controller extends HttpServlet {
             else if (docId.endsWith(".html")) {
               response.setContentType("text/html");
             }
+            else if (docId.endsWith(".xml")) {
+              response.setContentType("text/xml");
+            }
 
             OutputStream out = response.getOutputStream();
             out.write( (byte[]) doc);

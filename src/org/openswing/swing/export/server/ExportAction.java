@@ -10,6 +10,9 @@ import org.openswing.swing.table.java.GridDataLocator;
 import java.util.*;
 import org.openswing.swing.message.send.java.GridParams;
 import org.openswing.swing.logger.server.Logger;
+import org.openswing.swing.export.java.ExportToCSV;
+import org.openswing.swing.export.java.ExportToXML;
+import org.openswing.swing.export.java.ExportToHTML;
 
 
 /**
@@ -95,10 +98,33 @@ public class ExportAction implements Action {
     };
     opt.setGridDataLocator(newDataLocator);
 
-    // generate the Excel document...
     byte[] doc = null;
+    String docId = null;
     try {
-      doc = new ExportToExcel().getDocument(opt);
+      if (opt.getExportType().equals(opt.XLS_FORMAT)) {
+        // generate the Excel document...
+        doc = new ExportToExcel().getDocument(opt);
+        // generate and return the document identifier...
+        docId = "doc"+System.currentTimeMillis()+".xls";
+      }
+      else if (opt.getExportType().equals(opt.CSV_FORMAT1) || opt.getExportType().equals(opt.CSV_FORMAT2) ) {
+        // generate the CSV document...
+        doc = new ExportToCSV().getDocument(opt);
+        // generate and return the document identifier...
+        docId = "doc"+System.currentTimeMillis()+".csv";
+      }
+      else if (opt.getExportType().equals(opt.XML_FORMAT)) {
+        // generate the XML document...
+        doc = new ExportToXML().getDocument(opt);
+        // generate and return the document identifier...
+        docId = "doc"+System.currentTimeMillis()+".xml";
+      }
+      else if (opt.getExportType().equals(opt.HTML_FORMAT)) {
+        // generate the HTML document...
+        doc = new ExportToHTML().getDocument(opt);
+        // generate and return the document identifier...
+        docId = "doc"+System.currentTimeMillis()+".html";
+      }
     }
     catch (Throwable ex) {
       Logger.error(
@@ -111,8 +137,6 @@ public class ExportAction implements Action {
       new ErrorResponse(ex.getMessage());
     }
 
-    // generate and return the document identifier...
-    String docId = "doc"+System.currentTimeMillis()+".xls";
 
     context.setAttribute(docId,doc);
 

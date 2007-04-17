@@ -191,6 +191,10 @@ public class ExportToExcel {
               c.setCellValue(((Boolean)value).booleanValue());
               c.setCellStyle(csBool);
             }
+            else if (value.getClass().equals(boolean.class)) {
+              c.setCellValue(((Boolean)value).booleanValue());
+              c.setCellStyle(csBool);
+            }
             else if (value instanceof Date ||
                      value instanceof java.util.Date ||
                      value instanceof java.sql.Timestamp) {

@@ -31,7 +31,7 @@
   <object key="sel." value="Sel." />
   <object key="you must select at least one column" value="You must select at least one column" />
   <object key="columns to export" value="Columns to export" />
-
+  <object key="export type" value="Export format" />
 
 <!-- quick filter -->
   <object key="To value" value="To value" />
@@ -172,5 +172,5 @@
   <showCenturyInDateFormat>true</showCenturyInDateFormat>
   <dateFormatSeparator>/</dateFormatSeparator>
   <timeFormat>h:mm aaa</timeFormat>
- 
-</objects> 
+
+</objects>

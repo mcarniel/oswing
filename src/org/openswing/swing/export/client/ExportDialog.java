@@ -12,6 +12,9 @@ import java.util.HashSet;
 import java.util.ArrayList;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.client.*;
+import org.openswing.swing.domains.java.Domain;
+import org.openswing.swing.export.java.ExportOptions;
 
 
 /**
@@ -59,6 +62,18 @@ public class ExportDialog extends JDialog {
 
   /** grid to export */
   private Grids grids = null;
+  JPanel exportTypePanel = new JPanel();
+  FlowLayout flowLayout2 = new FlowLayout();
+  LabelControl labelExportType = new LabelControl();
+
+  /** export format combo-box*/
+  JComboBox controlExportType = new JComboBox(new Object[]{
+    ExportOptions.XLS_FORMAT,
+    ExportOptions.CSV_FORMAT1,
+    ExportOptions.CSV_FORMAT2,
+    ExportOptions.XML_FORMAT,
+    ExportOptions.HTML_FORMAT
+  });
 
   /**
    * Constructor called by Grid.
@@ -71,6 +86,7 @@ public class ExportDialog extends JDialog {
     this.frame = frame;
     this.grids = grids;
     try {
+      controlExportType.setSelectedIndex(0);
       jbInit();
       setSize(260,300);
       init(grids,colsVisible);
@@ -154,6 +170,9 @@ public class ExportDialog extends JDialog {
     cancelButton.addActionListener(new ExportDialog_cancelButton_actionAdapter(this));
     colsLabel.setText(ClientSettings.getInstance().getResources().getResource("columns to export"));
     this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+    exportTypePanel.setLayout(flowLayout2);
+    labelExportType.setLabel("export type");
+    flowLayout2.setAlignment(FlowLayout.LEFT);
     getContentPane().add(buttonsPanel,  BorderLayout.SOUTH);
     this.getContentPane().add(mainPanel,  BorderLayout.CENTER);
     buttonsPanel.add(exportButton, null);
@@ -162,7 +181,10 @@ public class ExportDialog extends JDialog {
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(scrollPane,  new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 5, 5, 5), 0, 0));
+    this.getContentPane().add(exportTypePanel, BorderLayout.NORTH);
     scrollPane.getViewport().add(cols, null);
+    exportTypePanel.add(labelExportType, null);
+    exportTypePanel.add(controlExportType, null);
   }
 
 
@@ -188,7 +210,7 @@ public class ExportDialog extends JDialog {
     new Thread() {
       public void run() {
         exportButton.setEnabled(false);
-        grids.export(exportColumns,exportAttrColumns);
+        grids.export(exportColumns,exportAttrColumns,(String)controlExportType.getSelectedItem());
         setVisible(false);
       }
     }.start();

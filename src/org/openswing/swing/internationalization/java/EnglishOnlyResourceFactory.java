@@ -79,7 +79,7 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("sel.","Sel.");
     dictionary.setProperty("you must select at least one column","You must select at least one column");
     dictionary.setProperty("columns to export","Columns to export");
-
+    dictionary.setProperty("export type","Export format");
 
     // quick filter...
     dictionary.setProperty("To value","To value");

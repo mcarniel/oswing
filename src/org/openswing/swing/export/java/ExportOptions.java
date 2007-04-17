@@ -83,6 +83,8 @@ public class ExportOptions implements Serializable {
   /** date+time format */
   private String dateTimeFormat = null;
 
+  /** export format */
+  private String exportType = null;
 
   public static final int TYPE_TEXT = 0;
   public static final int TYPE_DATE = 1;
@@ -95,6 +97,12 @@ public class ExportOptions implements Serializable {
   public static final int TYPE_LOOKUP = 8;
   public static final int TYPE_PERC = 9;
   public static final int TYPE_CURRENCY = 10;
+
+  public static final String XLS_FORMAT = "XLS";
+  public static final String CSV_FORMAT1 = "CSV (,)";
+  public static final String CSV_FORMAT2 = "CSV (;)";
+  public static final String XML_FORMAT = "XML";
+  public static final String HTML_FORMAT = "HTML";
 
 
   /**
@@ -113,6 +121,7 @@ public class ExportOptions implements Serializable {
    * @param dateFormat date format
    * @param timeFormat time format
    * @param dateTimeFormat date+time format
+   * @param exportType export format
    */
   public ExportOptions(
       ArrayList exportColumns,
@@ -128,7 +137,8 @@ public class ExportOptions implements Serializable {
       Hashtable columnsType,
       String dateFormat,
       String timeFormat,
-      String dateTimeFormat
+      String dateTimeFormat,
+      String exportType
    ) {
     this.exportColumns = exportColumns;
     this.exportAttrColumns = exportAttrColumns;
@@ -144,6 +154,7 @@ public class ExportOptions implements Serializable {
     this.dateFormat = dateFormat;
     this.timeFormat = timeFormat;
     this.dateTimeFormat = dateTimeFormat;
+    this.exportType = exportType;
   }
 
 
@@ -279,6 +290,14 @@ public class ExportOptions implements Serializable {
    */
   public final String getDateTimeFormat() {
     return dateTimeFormat;
+  }
+
+
+  /**
+   * @return export format
+   */
+  public final String getExportType() {
+    return exportType;
   }
 
 

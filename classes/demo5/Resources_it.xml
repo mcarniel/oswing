@@ -30,7 +30,7 @@
   <object key="sel." value="Sel." />
   <object key="you must select at least one column" value="E' necessario selezionare almeno una colonna" />
   <object key="columns to export" value="Colonne da esportare" />
-
+  <object key="export type" value="Formato di export" />
 
 <!-- quick filter -->
   <object key="To value" value="Al val." />
@@ -172,5 +172,5 @@
   <dateFormatSeparator>/</dateFormatSeparator>
   <timeFormat>HH:mm</timeFormat>
 
- 
-</objects> 
+
+</objects>
