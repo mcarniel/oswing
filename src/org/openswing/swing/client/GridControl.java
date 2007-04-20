@@ -284,6 +284,9 @@ public class GridControl extends JPanel {
 
       if (mode==Consts.READONLY && autoLoadData)
         table.reload();
+
+      table.getGrid().requestFocus();
+
     }
     catch (Exception ex) {
       ex.printStackTrace();
