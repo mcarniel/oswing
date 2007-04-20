@@ -150,6 +150,12 @@
   <object key="Client request not supported" value="La richiesta del client non &#232; supportata" />
   <object key="User disconnected" value="Utente disconnnesso" />
 
+
+  <object key="back" value="Indietro" />
+  <object key="next" value="Avanti" />
+  <object key="finish" value="Fine" />
+  
+  
   <currencySymbol>E</currencySymbol>
   <decimalSymbol>,</decimalSymbol>
   <groupingSymbol>.</groupingSymbol>

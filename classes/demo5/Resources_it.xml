@@ -131,6 +131,11 @@
   <object key="Updating not performed: the record was previously updated." value="Aggiornamento non possibile: il record &#232; stato precedentemente modificato." />
 
 
+<!-- wizard -->
+
+  <object key="back" value="Indietro" />
+  <object key="next" value="Avanti" />
+  <object key="finish" value="Fine" />
 
 <!-- application translations -->
       <object key="this text will be translated" value="Questo testo &#232; stato tradotto" />

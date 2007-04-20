@@ -133,6 +133,13 @@
   <object key="" value="" />
   <object key="Updating not performed: the record was previously updated." value="Updating not performed: the record was previously updated." />
 
+
+<!-- wizard -->
+
+  <object key="back" value="Back" />
+  <object key="next" value="Next" />
+  <object key="finish" value="Finish" />
+  
 <!-- application translations -->
 
       <object key="this text will be translated" value="This text will be translated" />

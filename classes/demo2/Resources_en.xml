@@ -131,6 +131,11 @@
   <object key="User disconnected" value="User disconnected" />
   <object key="" value="" />
 
+<!-- wizard -->
+
+  <object key="back" value="Back" />
+  <object key="next" value="Next" />
+  <object key="finish" value="Finish" />
 
 <!-- application trnaslations -->
 

@@ -6,6 +6,9 @@ Release Notes 1.0.6
 Final release 1.0.6 available
 Fixed problem on opening an export document from a grid control, with no Windows O.S.
 Fixed problem with date calendar in grid: now date can be always changed.
+Add a new subpackage: org.openswing.swing.wizard.client: it contains a new graphics control, a wizard panel
+that can be used to assemble a set of panes to create a wizard feature.
+Added demo14 sample that shows how to usethe new wizard panel.
 Improved export algorithm from grid, by adding three new export formats: CSV (with ";" and "," separators), XML and HTML.
 Improved grid showing: now key events onto grid buttons are listened also when grid is showed.
 Added MouseListener to ApplicationEventQueue utility class.

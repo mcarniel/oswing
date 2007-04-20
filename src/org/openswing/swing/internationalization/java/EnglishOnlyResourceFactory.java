@@ -180,7 +180,10 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("User disconnected","User disconnected");
     dictionary.setProperty("Updating not performed: the record was previously updated.","Updating not performed: the record was previously updated.");
 
-
+    // wizard...
+    dictionary.setProperty("back","Back");
+    dictionary.setProperty("next","Next");
+    dictionary.setProperty("finish","Finish");
 
     dictionary.putAll(additionalDictionary);
 
