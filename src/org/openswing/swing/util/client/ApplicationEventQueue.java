@@ -6,10 +6,13 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: System event queue, used to intercept key events for the MDIFrame or Form object.</p>
+ * <p>Description: System event queue, used to intercept key events or mouse events for the MDIFrame or Form object
+ * or any other JComponent.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -40,6 +43,9 @@ public class ApplicationEventQueue {
   /** list of key listeners */
   private ArrayList keyListeners = new ArrayList();
 
+  /** list of mouse listeners */
+  private ArrayList mouseListeners = new ArrayList();
+
   /** single istance */
   private static ApplicationEventQueue applicationEventQueue = null;
 
@@ -63,6 +69,24 @@ public class ApplicationEventQueue {
 
 
   /**
+   * Add a mouse listener.
+   * @param listener MouseListener
+   */
+  public final void addMouseListener(MouseListener listener) {
+    mouseListeners.add(listener);
+  }
+
+
+  /**
+   * Add a mouse listener.
+   * @param listener MouseListener
+   */
+  public final void removeMouseListener(MouseListener listener) {
+    mouseListeners.remove(listener);
+  }
+
+
+  /**
    * @return single instance of ApplicationEventQueue
    */
   public static final ApplicationEventQueue getInstance() {
@@ -81,6 +105,16 @@ public class ApplicationEventQueue {
         }
         catch (Exception ex) {
         }
+        if (e instanceof MouseEvent && e.getID()==MouseEvent.MOUSE_PRESSED)
+          for(int i=0;i<mouseListeners.size();i++)
+            ((MouseListener)mouseListeners.get(i)).mousePressed((MouseEvent)e);
+        else if (e instanceof MouseEvent && e.getID()==MouseEvent.MOUSE_RELEASED)
+          for(int i=0;i<mouseListeners.size();i++)
+            ((MouseListener)mouseListeners.get(i)).mouseReleased((MouseEvent)e);
+        else if (e instanceof MouseEvent && e.getID()==MouseEvent.MOUSE_CLICKED)
+          for(int i=0;i<mouseListeners.size();i++)
+            ((MouseListener)mouseListeners.get(i)).mouseClicked((MouseEvent)e);
+
         if (e instanceof KeyEvent &&
             e.getID()==KeyEvent.KEY_PRESSED)
           for(int i=0;i<keyListeners.size();i++)

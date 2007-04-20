@@ -20,6 +20,7 @@ import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import org.openswing.swing.message.receive.java.ValueObject;
 import org.openswing.swing.logger.client.Logger;
+import java.lang.reflect.*;
 
 
 /**
@@ -85,9 +86,6 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   /** flag used to set popup menu visibility */
   private boolean menuIsVisible = false;
 
-  /** flag used to indicate popup just opened */
-  private boolean firstTime = false;
-
   /** possibile values: Consts.TYPE_DATE, Consts.TYPE_TIME, Consts.TYPE_DATE_TIME */
   private int dateType;
 
@@ -102,6 +100,9 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 
   /** date changed listeners */
   private ArrayList dateListeners = new ArrayList();
+
+  /** flag used in property listener to avoid date setting when pre-set the initial value */
+  private boolean skipDateSetting = false;
 
 
   public DateControl() {
@@ -171,7 +172,6 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
               c = c.getParent();
             if (c.equals(menu)) {
               menuIsVisible = false;
-              firstTime = false;
               menu.setVisible(false);
             }
           }
@@ -184,36 +184,30 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
       menu.getContentPane().setLayout(new BorderLayout());
       menu.getContentPane().add(calendar,BorderLayout.CENTER);
       calendar.setLocale(new Locale(ClientSettings.getInstance().getResources().getLanguageId()));
+
       calendar.getDayChooser().addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          if (menuIsVisible && firstTime) {
+          if (skipDateSetting) {
+            return;
+          }
+
+          if (menuIsVisible) {
             menuIsVisible = false;
-            firstTime = false;
             setDate(calendar.getCalendar().getTime());
+            calendar.transferFocus();
             menu.setVisible(false);
           }
-          else if (!firstTime)
-            firstTime = true;
+
         }
       });
 
-//      JPanel popup = new JPanel();
-//      popup.setLayout(new GridLayout(1, 0));
-//      popup.add(calendar);
-//      menu.add(popup);
 
       buttonChooser.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
 
-          Date d = getDate();
-          if (d != null) {
-            Calendar c = Calendar.getInstance();
-            c.setTime(d);
-          }
-
           if (menuIsVisible) {
-            menu.setVisible(false);
             menuIsVisible = false;
+            menu.setVisible(false);
           }
           else {
             Container c = DateControl.this;
@@ -225,14 +219,17 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
               y += (int)c.getLocation().getY();
             }
 
-            menuIsVisible = true;
-//            firstTime = false;
-            firstTime = true;
+            if (currentDate != null) {
+              calendar.setCalendar(currentDate);
+            }
+
             menu.setLocation(
               x,
               y+buttonChooser.getY() + buttonChooser.getHeight()
             );
+
             menu.setVisible(true);
+            menuIsVisible = true;
           }
 
           monthSelected = false;
@@ -380,7 +377,9 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
         this.currentDate.set(Calendar.MILLISECOND,0);
       }
 
+      skipDateSetting = true;
       this.calendar.setCalendar(currentDate);
+      skipDateSetting = false;
     }
     this.date.setText(buildText());
 
