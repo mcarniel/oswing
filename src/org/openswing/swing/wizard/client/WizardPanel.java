@@ -19,8 +19,10 @@ import java.beans.Beans;
  * <p>Description: Panel that contains two areas:
  * - a list of panels showed alternatively and
  * - a buttons panel, that typically contains a back, next and cancel buttons.
+ * A panel may optionally have at the left an image.
+ *
  * As default setting, three buttons are showed in the panel: "Back", "Next" and "Cancel".
- * Another button named "Finish" is automatically showed when the wizard shows the last panel.
+ * The "Cancel" button is automatically renamed to "Finish" when the wizard shows the last panel.
  *
  * A programmer must add a list of WizardInnerPanel objects though the addPanel() method and
  * could define navigation logic through the method setNavigationLogic(). If this method is not called
@@ -69,7 +71,6 @@ public class WizardPanel extends JPanel implements ActionListener {
   JButton backButton = new JButton();
   JButton nextButton = new JButton();
   JButton cancelButton = new JButton();
-  JButton finishButton = new JButton();
   FlowLayout flowLayout1 = new FlowLayout();
 
   /** list of action listeners linked to the buttons */
@@ -84,6 +85,24 @@ public class WizardPanel extends JPanel implements ActionListener {
   /** WizardInnerPanel panel currently showed */
   private WizardInnerPanel currentVisiblePanel = null;
 
+  /** image panel, showed at the left of an inner panel */
+  private ImagePanel imagePanel = new ImagePanel();
+
+  /** (optional) image name to show in all inner panels; this setting is overrided by the getImageName() method defined for each inner panel */
+  private String imageName = null;
+
+  /** image name for "Back" button */
+  private String backImageName = "prev.gif";
+
+  /** image name for "Next" button */
+  private String nextImageName = "next.gif";
+
+  /** image name for "Cancel" button */
+  private String cancelImageName = "cancel.gif";
+
+  /** image name for "Finish" button */
+  private String finishImageName = "exec.gif";
+
 
   public WizardPanel() {
     try {
@@ -93,24 +112,31 @@ public class WizardPanel extends JPanel implements ActionListener {
       e.printStackTrace();
     }
   }
+
+
   private void jbInit() throws Exception {
     this.setLayout(borderLayout1);
     mainPanel.setLayout(cardLayout1);
     buttonsPanel.setBorder(BorderFactory.createEtchedBorder());
     buttonsPanel.setLayout(flowLayout1);
     mainPanel.setBorder(BorderFactory.createEtchedBorder());
+    backButton.setPreferredSize(new Dimension(120,30));
+    backButton.setMinimumSize(new Dimension(120,30));
     backButton.setEnabled(false);
     backButton.setEnabled(false);
     backButton.setText(ClientSettings.getInstance().getResources().getResource("back"));
     backButton.addActionListener(this);
+    nextButton.setPreferredSize(new Dimension(120,30));
+    nextButton.setMinimumSize(new Dimension(120,30));
     nextButton.setEnabled(false);
     nextButton.setText(ClientSettings.getInstance().getResources().getResource("next"));
     nextButton.addActionListener(this);
+    cancelButton.setPreferredSize(new Dimension(120,30));
+    cancelButton.setMinimumSize(new Dimension(120,30));
     cancelButton.setText(ClientSettings.getInstance().getResources().getResource("cancel"));
     cancelButton.addActionListener(this);
-    finishButton.setText(ClientSettings.getInstance().getResources().getResource("finish"));
-    finishButton.addActionListener(this);
     flowLayout1.setAlignment(FlowLayout.RIGHT);
+    this.add(imagePanel,  BorderLayout.WEST);
     this.add(mainPanel,  BorderLayout.CENTER);
     this.add(buttonsPanel,  BorderLayout.SOUTH);
     buttonsPanel.add(backButton, null);
@@ -131,6 +157,14 @@ public class WizardPanel extends JPanel implements ActionListener {
         cardLayout1.show(mainPanel,currentVisiblePanel.getPanelId());
         if (panels.size()>1)
           nextButton.setEnabled(true);
+
+        imagePanel.setImage( imageName );
+        if (currentVisiblePanel.getImageName()!=null)
+          imagePanel.setImage( currentVisiblePanel.getImageName() );
+
+        backButton.setIcon(new ImageIcon(ClientUtils.getImage(backImageName)));
+        nextButton.setIcon(new ImageIcon(ClientUtils.getImage(nextImageName)));
+        cancelButton.setIcon(new ImageIcon(ClientUtils.getImage(cancelImageName)));
 
         currentVisiblePanel.init();
       }
@@ -190,7 +224,7 @@ public class WizardPanel extends JPanel implements ActionListener {
   /**
    * Listen for additional buttons clicks.
    */
-  public void actionPerformed(ActionEvent actionEvent) {
+  public final void actionPerformed(ActionEvent actionEvent) {
     for(int i=0;i<listeners.size();i++)
       ((ActionListener)listeners.get(i)).actionPerformed(actionEvent);
 
@@ -200,14 +234,24 @@ public class WizardPanel extends JPanel implements ActionListener {
       if (panelId!=null) {
         currentVisiblePanel = getPanel( panelId );
         cardLayout1.show(mainPanel,panelId);
-        if (currentVisiblePanel.equals(wizardController.getFirstPanelId(this)))
+        if (panelId.equals(wizardController.getFirstPanelId(this))) {
           backButton.setEnabled(false);
-        else
+          nextButton.setEnabled(true);
+        }
+        else {
           backButton.setEnabled(true);
+          nextButton.setEnabled(true);
+        }
 
-        buttonsPanel.remove(finishButton);
+        cancelButton.setText(ClientSettings.getInstance().getResources().getResource("cancel"));
+        cancelButton.setIcon(new ImageIcon(ClientUtils.getImage(cancelImageName)));
+
         buttonsPanel.revalidate();
         buttonsPanel.repaint();
+
+        imagePanel.setImage( imageName );
+        if (currentVisiblePanel.getImageName()!=null)
+          imagePanel.setImage( currentVisiblePanel.getImageName() );
 
         currentVisiblePanel.init();
       }
@@ -217,14 +261,21 @@ public class WizardPanel extends JPanel implements ActionListener {
       if (panelId!=null) {
         currentVisiblePanel = getPanel( panelId );
         cardLayout1.show(mainPanel,panelId);
-        if (currentVisiblePanel.equals(wizardController.getLastPanelId(this))) {
+        if (panelId.equals(wizardController.getLastPanelId(this))) {
           nextButton.setEnabled(false);
+          backButton.setEnabled(true);
 
-          buttonsPanel.add(finishButton,null);
+          cancelButton.setText(ClientSettings.getInstance().getResources().getResource("finish"));
+          cancelButton.setIcon(new ImageIcon(ClientUtils.getImage(finishImageName)));
           buttonsPanel.revalidate();
           buttonsPanel.repaint();
-        } else
+        } else {
           nextButton.setEnabled(true);
+          backButton.setEnabled(true);
+        }
+        imagePanel.setImage( imageName );
+        if (currentVisiblePanel.getImageName()!=null)
+          imagePanel.setImage( currentVisiblePanel.getImageName() );
 
         currentVisiblePanel.init();
       }
@@ -276,6 +327,14 @@ public class WizardPanel extends JPanel implements ActionListener {
 
 
   /**
+   * @return panes nagitation controller
+   */
+  public final WizardController getNavigationLogic() {
+    return wizardController;
+  }
+
+
+  /**
    * @return list of WizardInnerPanel currently registered.
    */
   public WizardInnerPanel[] getPanels() {
@@ -304,12 +363,133 @@ public class WizardPanel extends JPanel implements ActionListener {
 
 
   /**
-   * @return "Finish" button
+   * This method allows to define an image that will be showed at the left of each inner panel
+   * This setting is overrided by the getImageName() method defined for each inner panel.
+   * @param imageName image name; null if no image is required
    */
-  public final JButton getFinishButton() {
-    return finishButton;
+  public final void setImageName(String imageName) {
+    this.imageName = imageName;
   }
 
+
+  /**
+   * @return image name
+   */
+  public final String getImageName() {
+    return imageName;
+  }
+
+
+  /**
+   * @return image name for "Cancel" button
+   */
+  public final String getCancelImageName() {
+    return cancelImageName;
+  }
+
+
+  /**
+   * Set image name for "Cancel" button.
+   * @param cancelImageName image name for "Cancel" button
+   */
+  public final void setCancelImageName(String cancelImageName) {
+    this.cancelImageName = cancelImageName;
+  }
+
+
+  /**
+   * @return image name for "Back" button
+   */
+  public final String getBackImageName() {
+    return backImageName;
+  }
+
+
+  /**
+   * Set image name for "Back" button.
+   * @param backImageName image name for "Back" button
+   */
+  public final void setBackImageName(String backImageName) {
+    this.backImageName = backImageName;
+  }
+
+
+  /**
+   * @return image name for "Finish" button
+   */
+  public final String getFinishImageName() {
+    return finishImageName;
+  }
+
+
+  /**
+   * Set image name for "Finish" button.
+   * @param finishImageName image name for "Finish" button
+   */
+  public final void setFinishImageName(String finishImageName) {
+    this.finishImageName = finishImageName;
+  }
+
+
+  /**
+   * @return image name for "Next" button
+   */
+  public final String getNextImageName() {
+    return nextImageName;
+  }
+
+
+  /**
+   * Set image name for "Next" button.
+   * @param nextImageName image name for "Next" button
+   */
+  public final void setNextImageName(String nextImageName) {
+    this.nextImageName = nextImageName;
+  }
+
+
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used to show an image.</p>
+   */
+  class ImagePanel extends JPanel {
+
+    /** image to show */
+    private Image image = null;
+
+
+    /**
+     * Set image.
+     * @param imageName image name (it must be stored in "images" subfolder)
+     */
+    public void setImage(String imageName) {
+      if (imageName==null) {
+        image = null;
+        setSize(0,0);
+        setPreferredSize(new Dimension(0,0));
+        setMinimumSize(new Dimension(0,0));
+        return;
+      }
+      image = ClientUtils.getImage(imageName);
+      if (image==null)
+        return;
+      setSize(image.getWidth(this),image.getHeight(this));
+      setPreferredSize(new Dimension(image.getWidth(this),image.getHeight(this)));
+      setMinimumSize(new Dimension(image.getWidth(this),image.getHeight(this)));
+      repaint();
+    }
+
+
+    public void paint(Graphics g) {
+      super.paint(g);
+      if (image!=null)
+        g.drawImage(image,0,0,image.getWidth(this),image.getHeight(this),this);
+    }
+
+
+  }
 
 
 

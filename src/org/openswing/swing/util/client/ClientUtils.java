@@ -110,14 +110,27 @@ public class ClientUtils extends JApplet {
   /**
    * Place the dialog window in the middle of parentFrame.
    * @param parentFrame parent frame containing the dialog
-   * @param d dialog window
-   * @return coordinate relative alla finestra centrata
+   * @param d dialog window to center
    */
   public static void centerDialog(JFrame parentFrame,JDialog d) {
     Dimension dim = parentFrame.getSize();
     d.setLocation(new Point(
         parentFrame.getLocation().x+(dim.width-d.getWidth())/2,
         parentFrame.getLocation().y+(dim.height-d.getHeight())/2)
+    );
+  }
+
+
+  /**
+   * Place the window in the middle of the desktop.
+   * @param frame frame to center
+   */
+  public static void centerFrame(JFrame frame) {
+    Dimension dim = frame.getSize();
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    frame.setLocation(
+      (int)screen.getWidth()/2-frame.getWidth()/2,
+      (int)screen.getHeight()/2-frame.getHeight()/2
     );
   }
 

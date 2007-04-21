@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
  * according to navigation logic defined in WizardController class.
  *
  * A programmer must define the getPanelId() method, used in WizardController to define which panel to show.
+ * A programmer could define the getImageName() method, used in WizardPanel to show an image at the left of this panel.
  * </p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
@@ -65,6 +66,15 @@ public class WizardInnerPanel extends JPanel {
    */
   public String getPanelId() {
     return "";
+  }
+
+
+  /**
+   * This method could be overrided.
+   * @return image name; null if no image is required
+   */
+  public String getImageName() {
+    return null;
   }
 
 

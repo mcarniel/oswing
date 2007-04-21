@@ -43,10 +43,10 @@ public class ZIPWizardController extends WizardController {
    * @return panel identifier of the last panel
    */
   public String getLastPanelId(WizardPanel wizard) {
-    if (wizard.getPanels().length>0)
-      return wizard.getPanels()[wizard.getPanels().length-1].getPanelId();
+    if ( !((FirstPanel)wizard.getPanel("FIRST")).getRadioButtonZip().isSelected() )
+      return "SECOND";
     else
-      return null;
+      return "THIRD";
   }
 
 
@@ -56,11 +56,12 @@ public class ZIPWizardController extends WizardController {
    * @return panel identifier of the panel to show
    */
   public String getBackPanelId(WizardPanel wizard) {
-    if (wizard.getPanels().length>0)
-      for(int i=1;i<wizard.getPanels().length;i++)
-        if (wizard.getPanels()[i].equals(wizard.getCurrentVisiblePanel()))
-          return wizard.getPanels()[i-1].getPanelId();
-    return null;
+    if (wizard.getCurrentVisiblePanel().getPanelId().equals("SECOND"))
+      return "FIRST";
+    else if (wizard.getCurrentVisiblePanel().getPanelId().equals("THIRD"))
+      return "FIRST";
+    else
+      return null;
   }
 
 
@@ -70,11 +71,14 @@ public class ZIPWizardController extends WizardController {
    * @return panel identifier of the panel to show
    */
   public String getNextPanelId(WizardPanel wizard) {
-    if (wizard.getPanels().length>0)
-      for(int i=0;i<wizard.getPanels().length-1;i++)
-        if (wizard.getPanels()[i].equals(wizard.getCurrentVisiblePanel()))
-          return wizard.getPanels()[i+1].getPanelId();
-    return null;
+    if (wizard.getCurrentVisiblePanel().getPanelId().equals("FIRST")) {
+      if ( !((FirstPanel)wizard.getPanel("FIRST")).getRadioButtonZip().isSelected() )
+        return "SECOND";
+      else
+        return "THIRD";
+    }
+    else
+      return null;
   }
 
 
