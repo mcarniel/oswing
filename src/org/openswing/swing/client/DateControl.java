@@ -190,6 +190,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
           if (skipDateSetting) {
             return;
           }
+          if (Beans.isDesignTime())
+            return;
 
           if (menuIsVisible) {
             menuIsVisible = false;

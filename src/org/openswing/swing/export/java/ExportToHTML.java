@@ -115,7 +115,7 @@ public class ExportToHTML {
 
         for(int i=0;i<opt.getExportColumns().size();i++) {
           value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-          if (value!=null) {
+          if (value!=null && !"".equals(value)) {
             if (value instanceof Date ||
                      value instanceof java.util.Date ||
                      value instanceof java.sql.Timestamp) {
