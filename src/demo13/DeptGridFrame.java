@@ -110,14 +110,14 @@ public class DeptGridFrame extends org.openswing.swing.mdi.client.InternalFrame 
         gridControl1.getColumnContainer().add(textColumn3);
 
         textColumn1.setColumnFilterable(true);
-        textColumn1.setColumnName("description");
+        textColumn1.setColumnName();
         textColumn1.setColumnSortable(true);
         textColumn1.setEditableOnEdit(true);
         textColumn1.setEditableOnInsert(true);
         textColumn1.setPreferredWidth(200);
         gridControl1.getColumnContainer().add(textColumn1);
 
-        textColumn2.setColumnName("address");
+        textColumn2.setColumnName();
         textColumn2.setColumnRequired(false);
         textColumn2.setEditableOnEdit(true);
         textColumn2.setEditableOnInsert(true);

@@ -91,7 +91,7 @@ public class TaskGridFrame extends org.openswing.swing.mdi.client.InternalFrame 
         gridControl1.getColumnContainer().add(textColumn1);
 
         textColumn2.setColumnFilterable(true);
-        textColumn2.setColumnName("description");
+        textColumn2.setColumnName();
         textColumn2.setColumnSortable(true);
         textColumn2.setEditableOnEdit(true);
         textColumn2.setEditableOnInsert(true);
