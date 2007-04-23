@@ -11,6 +11,7 @@ import org.openswing.swing.internationalization.java.Language;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.openswing.swing.mdi.java.ApplicationFunction;
+import org.openswing.swing.client.SplashScreen;
 
 
 /**
@@ -45,7 +46,7 @@ public class ClientApplication implements MDIController,LoginController {
    * Method called after MDI creation.
    */
   public void afterMDIcreation(MDIFrame frame) {
-
+    new SplashScreen(frame,"about.jpg",getMDIFrameTitle(),5);
   }
 
 
