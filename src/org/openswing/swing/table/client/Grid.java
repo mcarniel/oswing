@@ -135,6 +135,9 @@ public class Grid extends JTable
   private DropTarget dropTarget = null;
   private DropTarget dropTarget2 = null;
 
+  /** flag used to define if row height can change for each row, according to image height included in a cell of grid; default value: <code>true</code> */
+  private boolean rowHeightFixed = true;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -1587,7 +1590,20 @@ public class Grid extends JTable
   }
 
 
+  /**
+   * @param rowHeightFixed define if row height can change for each row, according to image height included in a cell of grid; default value: <code>true</code>
+   */
+  public final void setRowHeightFixed(boolean rowHeightFixed) {
+    this.rowHeightFixed = rowHeightFixed;
+  }
 
+
+  /**
+   * @return define if row height can change for each row, according to image height included in a cell of grid; default value: <code>true</code>
+   */
+  public final boolean isRowHeightFixed() {
+    return rowHeightFixed;
+  }
 
 
 

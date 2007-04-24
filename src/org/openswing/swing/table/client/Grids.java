@@ -35,6 +35,8 @@ import java.lang.reflect.*;
 import org.openswing.swing.export.java.ExportToCSV;
 import org.openswing.swing.export.java.ExportToXML;
 import org.openswing.swing.export.java.ExportToHTML;
+import org.openswing.swing.table.renderers.client.ImageTableCellRenderer;
+import org.openswing.swing.table.editors.client.ImageCellEditor;
 
 
 /**
@@ -1803,6 +1805,17 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         else if (getMode()==Consts.EDIT)
           response = gridController.updateRecords(model.getChangedRowNumbers(), model.getOldVOsChanged(), model.getChangedRows());
         if (!response.isError()) {
+          try {
+            // patch inserted to disable image cell editor...
+            int row = grid.getEditingRow();
+            int col = grid.getEditingColumn();
+            if (colProps[col].getColumnType()==Column.TYPE_IMAGE && row>=0 && col>=0) {
+              grid.setVisibleColumn(col,false);
+              grid.setVisibleColumn(col,true);
+            }
+          }
+          catch (Exception ex1) {
+          }
           if (getMode()==Consts.INSERT) {
             for(int i=0;i<currentNumberOfNewRows;i++)
               model.updateObjectAt((ValueObject)((VOListResponse)response).getRows().get(i),i);

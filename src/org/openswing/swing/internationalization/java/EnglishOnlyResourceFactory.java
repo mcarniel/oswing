@@ -185,6 +185,9 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("next","Next");
     dictionary.setProperty("finish","Finish");
 
+    // image panel...
+    dictionary.setProperty("image selection","Image selection");
+
     dictionary.putAll(additionalDictionary);
 
     resources = new Resources(

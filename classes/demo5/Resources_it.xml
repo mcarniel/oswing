@@ -137,6 +137,10 @@
   <object key="next" value="Avanti" />
   <object key="finish" value="Fine" />
 
+<!-- image panel -->
+
+  <object key="image selection" value="Importa immagine" />
+
 <!-- application translations -->
       <object key="this text will be translated" value="Questo testo &#232; stato tradotto" />
       <object key="date" value="Data" />

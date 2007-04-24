@@ -124,7 +124,7 @@
   <object key="close window" value="Chiudi finestra" />
   <object key="reduce to icon" value="Riduci ad icona" />
 
-<!-- application trnaslations -->
+<!-- application translations -->
       <object key="this text will be translated" value="Questo testo &#232; stato tradotto" />
       <object key="date" value="Data" />
       <object key="combobox" value="Casella di riepilogo" />
@@ -150,12 +150,17 @@
   <object key="Client request not supported" value="La richiesta del client non &#232; supportata" />
   <object key="User disconnected" value="Utente disconnnesso" />
 
+<!-- wizard -->
 
   <object key="back" value="Indietro" />
   <object key="next" value="Avanti" />
   <object key="finish" value="Fine" />
-  
-  
+
+<!-- image panel -->
+
+  <object key="image selection" value="Importa immagine" />
+
+
   <currencySymbol>E</currencySymbol>
   <decimalSymbol>,</decimalSymbol>
   <groupingSymbol>.</groupingSymbol>

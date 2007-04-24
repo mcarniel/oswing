@@ -139,7 +139,11 @@
   <object key="back" value="Back" />
   <object key="next" value="Next" />
   <object key="finish" value="Finish" />
-  
+
+<!-- image panel -->
+
+  <object key="image selection" value="Image selection" />
+
 <!-- application translations -->
 
       <object key="this text will be translated" value="This text will be translated" />

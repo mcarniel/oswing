@@ -451,13 +451,14 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
      * Dispatch focus to the input field.
      */
     public final void requestFocus() {
-      value1.requestFocus();
-      new Thread() {
+      if (!value1.hasFocus())
+        value1.requestFocus();
+      SwingUtilities.invokeLater(new Runnable() {
         public void run() {
-          yield();
-          value1.requestFocus();
+          if (!value1.hasFocus())
+            value1.requestFocus();
         }
-      }.start();
+      });
     }
 
 

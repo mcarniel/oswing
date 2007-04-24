@@ -33,6 +33,8 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _reloadButton = new PropertyDescriptor("reloadButton", beanClass, "getReloadButton", "setReloadButton");
       PropertyDescriptor _reorderingAllowed = new PropertyDescriptor("reorderingAllowed", beanClass, "isReorderingAllowed", "setReorderingAllowed");
       PropertyDescriptor _resizingAllowed = new PropertyDescriptor("resizingAllowed", beanClass, "isResizingAllowed", "setResizingAllowed");
+      PropertyDescriptor _rowHeight = new PropertyDescriptor("rowHeight", beanClass, "getRowHeight", "setRowHeight");
+      PropertyDescriptor _rowHeightFixed = new PropertyDescriptor("rowHeightFixed", beanClass, "getRowHeightFixed", "setRowHeightFixed");
       PropertyDescriptor _saveButton = new PropertyDescriptor("saveButton", beanClass, "getSaveButton", "setSaveButton");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
       PropertyDescriptor _valueObjectClassName = new PropertyDescriptor("valueObjectClassName", beanClass, "getValueObjectClassName", "setValueObjectClassName");
@@ -55,6 +57,8 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _reloadButton,
         _reorderingAllowed,
         _resizingAllowed,
+        _rowHeight,
+        _rowHeightFixed,
         _saveButton,
         _selectionMode,
         _valueObjectClassName,

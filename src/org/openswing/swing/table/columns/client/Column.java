@@ -122,7 +122,7 @@ public class Column extends JPanel {
   public static final int TYPE_PERC = 9;
   public static final int TYPE_CURRENCY = 10;
   public static final int TYPE_BUTTON = 11;
-
+  public static final int TYPE_IMAGE = 12;
 
 
   public Column() {

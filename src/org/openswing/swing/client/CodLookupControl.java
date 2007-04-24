@@ -12,6 +12,7 @@ import java.util.Iterator;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.UIManager;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -91,6 +92,10 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
     public void paint(Graphics g) {
       super.paint(g);
       int width = g.getFontMetrics().stringWidth("...");
+      if (isEnabled())
+        g.setColor(UIManager.getColor("Button.foreground"));
+      else
+        g.setColor(UIManager.getColor("Button.disabledForeground"));
       g.drawString("...", (this.getWidth()-width+1)/2, this.getHeight()/2+4);
     }
   };

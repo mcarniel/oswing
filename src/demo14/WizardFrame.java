@@ -70,12 +70,12 @@ public class WizardFrame extends JFrame {
       // file to decompress...
       File zipFile = new File(p.controlFileName.getText());
       if (!zipFile.isFile() || !zipFile.exists() || !zipFile.getName().endsWith(".zip")) {
-        JOptionPane.showMessageDialog(this,"You must specify a zip file","Attention",JOptionPane.WARNING_MESSAGE);
+        OptionPane.showMessageDialog(this,"You must specify a zip file","Attention",JOptionPane.WARNING_MESSAGE);
         return;
       }
       File destDir = new File(p.controlDestPath.getText());
       if (!destDir.isDirectory() || !destDir.exists()) {
-        JOptionPane.showMessageDialog(this,"You must specify an existing folder","Attention",JOptionPane.WARNING_MESSAGE);
+        OptionPane.showMessageDialog(this,"You must specify an existing folder","Attention",JOptionPane.WARNING_MESSAGE);
         return;
       }
       try {
@@ -101,7 +101,7 @@ public class WizardFrame extends JFrame {
         System.exit(0);
       }
       catch (Exception ex) {
-        JOptionPane.showMessageDialog(this,ex.getMessage(),"Attention",JOptionPane.ERROR_MESSAGE);
+        OptionPane.showMessageDialog(this,ex.getMessage(),"Attention",JOptionPane.ERROR_MESSAGE);
       }
     }
 
@@ -110,12 +110,12 @@ public class WizardFrame extends JFrame {
       // folder to compress...
       File folder = new File(p.controlFolder.getText());
       if (!folder.isDirectory() || !folder.exists()) {
-        JOptionPane.showMessageDialog(this,"You must specify an existing folder","Attention",JOptionPane.WARNING_MESSAGE);
+        OptionPane.showMessageDialog(this,"You must specify an existing folder","Attention",JOptionPane.WARNING_MESSAGE);
         return;
       }
       File destFile = new File(p.controlZip.getText());
       if (destFile.isDirectory() || !destFile.getName().endsWith(".zip")) {
-        JOptionPane.showMessageDialog(this,"You must specify a zip file","Attention",JOptionPane.WARNING_MESSAGE);
+        OptionPane.showMessageDialog(this,"You must specify a zip file","Attention",JOptionPane.WARNING_MESSAGE);
         return;
       }
       try {
@@ -146,7 +146,7 @@ public class WizardFrame extends JFrame {
 //        System.exit(0);
       }
       catch (Exception ex) {
-        JOptionPane.showMessageDialog(this,ex.getMessage(),"Attention",JOptionPane.ERROR_MESSAGE);
+        OptionPane.showMessageDialog(this,ex.getMessage(),"Attention",JOptionPane.ERROR_MESSAGE);
       }
 
     }

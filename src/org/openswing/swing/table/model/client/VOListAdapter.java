@@ -112,7 +112,8 @@ public class VOListAdapter {
              methods[i].getReturnType().equals(Integer.class) ||
              methods[i].getReturnType().equals(Character.class) ||
              methods[i].getReturnType().equals(Boolean.class) ||
-             methods[i].getReturnType().equals(boolean.class)
+             methods[i].getReturnType().equals(boolean.class) ||
+             methods[i].getReturnType().equals(byte[].class)
             )) {
           attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
 //          try {
@@ -344,6 +345,11 @@ public class VOListAdapter {
           tableContainer
         );
       }
+      else if ( colProperties[colIndex].getColumnType()==Column.TYPE_IMAGE) {
+        return new ImageTableCellRenderer(
+          tableContainer
+        );
+      }
       else {
           Logger.error(this.getClass().getName(),"getCellRenderer","The column type for column index "+colIndex+" is not supported.",null);
         return null;
@@ -479,6 +485,13 @@ public class VOListAdapter {
           ((ButtonColumn)colProperties[colIndex]).getText(),
           ((ButtonColumn)colProperties[colIndex]).isShowAttributeValue(),
           ((ButtonColumn)colProperties[colIndex]).getActionListeners()
+        );
+      }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_IMAGE) {
+        return new ImageCellEditor(
+          ((ImageColumn)colProperties[colIndex]).isShowButton(),
+          ((ImageColumn)colProperties[colIndex]).getFileFilter(),
+          ((ImageColumn)colProperties[colIndex]).getListeners()
         );
       }
       else {

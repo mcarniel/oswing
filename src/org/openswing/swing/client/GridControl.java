@@ -151,6 +151,12 @@ public class GridControl extends JPanel {
   /** list of columns added to grid */
   private ArrayList components = new ArrayList();
 
+  /** row height of the grid control; default value: ClientSettings.CELL_HEIGHT */
+  private int rowHeight = ClientSettings.CELL_HEIGHT;
+
+  /** flag used to define if row height can change for each row, according to image height included in a cell of grid; default value: <code>true</code> */
+  private boolean rowHeightFixed = true;
+
 
   /**
    * Costructor.
@@ -287,6 +293,16 @@ public class GridControl extends JPanel {
 
       table.getGrid().requestFocus();
 
+      if (rowHeightFixed) {
+        table.getGrid().setRowHeight(rowHeight);
+        if (table.getLockedGrid()!=null)
+          table.getLockedGrid().setRowHeight(rowHeight);
+      }
+      else {
+        table.getGrid().setRowHeightFixed(false);
+        if (table.getLockedGrid()!=null)
+          table.getLockedGrid().setRowHeightFixed(false);
+      }
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -946,6 +962,39 @@ public class GridControl extends JPanel {
 
   public LayoutManager getLayout() {
     return flowLayout1;
+  }
+
+
+  /**
+   * @return row height of the grid control
+   */
+  public final int getRowHeight() {
+    return rowHeight;
+  }
+
+
+  /**
+   * Set the row height of the grid control.
+   * @param rowHeight row height of the grid control
+   */
+  public final void setRowHeight(int rowHeight) {
+    this.rowHeight = rowHeight;
+  }
+
+
+  /**
+   * @return define if row height can change for each row, according to image height included in a cell of grid; default value: <code>true</code>
+   */
+  public final boolean isRowHeightFixed() {
+    return rowHeightFixed;
+  }
+
+
+  /**
+   * @param rowHeightFixed define if row height can change for each row, according to image height included in a cell of grid; default value: <code>true</code>
+   */
+  public final void setRowHeightFixed(boolean rowHeightFixed) {
+    this.rowHeightFixed = rowHeightFixed;
   }
 
 

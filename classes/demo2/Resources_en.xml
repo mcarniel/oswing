@@ -137,7 +137,11 @@
   <object key="next" value="Next" />
   <object key="finish" value="Finish" />
 
-<!-- application trnaslations -->
+<!-- image panel -->
+
+  <object key="image selection" value="Image selection" />
+
+<!-- application translations -->
 
       <object key="this text will be translated" value="This text will be translated" />
       <object key="date" value="Date" />

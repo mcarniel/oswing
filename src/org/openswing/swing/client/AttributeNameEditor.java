@@ -153,7 +153,10 @@ public class AttributeNameEditor extends PropertyEditorSupport {
              (columnType.equals(DateControl.class))) {
       return true;
     }
-
+    else if (attrType.equals(byte[].class)  &&
+             (columnType.equals(ImageControl.class))) {
+      return true;
+    }
     else if (attrType.equals(String.class) && columnType.equals(TextControl.class)) {
       return true;
     }
@@ -178,6 +181,10 @@ public class AttributeNameEditor extends PropertyEditorSupport {
          attrType.equals(Long.class)) &&
         (columnType.equals(PercentageColumn.class) ||
          columnType.equals(IntegerColumn.class))) {
+      return true;
+    }
+    else if (attrType.equals(byte[].class) &&
+             columnType.equals(ImageColumn.class)) {
       return true;
     }
     else if ((attrType.equals(Double.class) ||
