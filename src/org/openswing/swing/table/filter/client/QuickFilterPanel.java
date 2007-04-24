@@ -101,7 +101,8 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
               parentPopup.setVisible(true);
               parentPopup.setSelected(value1);
             }
-            value1.requestFocus();
+            if (!value1.hasFocus())
+              value1.requestFocus();
           }
         }
 
@@ -120,7 +121,8 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
             parentPopup.setVisible(true);
             parentPopup.setSelected(value1);
           }
-          value1.requestFocus();
+          if (!value1.hasFocus())
+            value1.requestFocus();
 
         }
       });
@@ -384,7 +386,8 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
 
       layoutComponents();
       updateComponents();
-      value1.requestFocus();
+      if (!value1.hasFocus())
+        value1.requestFocus();
     }
 
     /**
