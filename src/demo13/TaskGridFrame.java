@@ -68,7 +68,7 @@ public class TaskGridFrame extends org.openswing.swing.mdi.client.InternalFrame 
         exportButton1 = new org.openswing.swing.client.ExportButton();
         deleteButton1 = new org.openswing.swing.client.DeleteButton();
 
-        gridControl1.getColumnContainer().setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        gridControl1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         gridControl1.setCopyButton(copyButton1);
         gridControl1.setDeleteButton(deleteButton1);
@@ -85,18 +85,18 @@ public class TaskGridFrame extends org.openswing.swing.mdi.client.InternalFrame 
         textColumn1.setColumnSortable(true);
         textColumn1.setEditableOnInsert(true);
         textColumn1.setMaxCharacters(20);
-        textColumn1.setSortVersus(org.openswing.swing.util.java.Consts.ASC_SORTED);
+        textColumn1.setSortVersus("ASC");
         textColumn1.setTrimText(true);
         textColumn1.setUpperCase(true);
-        gridControl1.getColumnContainer().add(textColumn1);
+        gridControl1.add(textColumn1);
 
         textColumn2.setColumnFilterable(true);
-        textColumn2.setColumnName();
+        textColumn2.setColumnName("description");
         textColumn2.setColumnSortable(true);
         textColumn2.setEditableOnEdit(true);
         textColumn2.setEditableOnInsert(true);
         textColumn2.setPreferredWidth(250);
-        gridControl1.getColumnContainer().add(textColumn2);
+        gridControl1.add(textColumn2);
 
         getContentPane().add(gridControl1, java.awt.BorderLayout.CENTER);
 
