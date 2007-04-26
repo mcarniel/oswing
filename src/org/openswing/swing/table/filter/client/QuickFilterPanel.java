@@ -454,12 +454,21 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
      * Dispatch focus to the input field.
      */
     public final void requestFocus() {
-      if (!value1.hasFocus())
-        value1.requestFocus();
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
-          if (!value1.hasFocus())
+          if (!value1.hasFocus()) {
+
+            // patch introduced to allow focus setting on the input control when popup menu is a child of a JFrame (no MDI frame)...
+            java.awt.Component window = value1;
+            while (!(window instanceof Window)) {
+                window = window.getParent();
+            }
+            if (window == null || !((Window)window).isFocusableWindow()) {
+                ((Window)window).setFocusableWindowState(true);
+            }
+
             value1.requestFocus();
+          }
         }
       });
     }

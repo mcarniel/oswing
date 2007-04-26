@@ -80,8 +80,13 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   /** calendar button */
   private JButton buttonChooser;
 
-  /** dialog window which contains the calendar */
-  private JDialog menu = new JDialog(ClientUtils.getParentFrame(this));
+  /** dialog window which contains the calendar (for Windows OS) */
+  private Container menu = null;
+
+  private JDialog menuW = new JDialog(ClientUtils.getParentFrame(this));
+
+  /** popup window which contains the calendar (for no Windows OS) */
+  private JPopupMenu menuNW = new JPopupMenu();
 
   /** flag used to set popup menu visibility */
   private boolean menuIsVisible = false;
@@ -136,6 +141,18 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
     try {
       setOpaque(false);
 
+      // patch inserted for Linux OS where the calendar dialog is not correctly showed to front...
+      if (System.getProperty("os.name").startsWith("Windows")) {
+        menu = menuW;
+        ((JDialog)menu).setUndecorated(true);
+        ((JDialog)menu).getContentPane().setLayout(new BorderLayout());
+        ((JDialog)menu).getContentPane().add(calendar,BorderLayout.CENTER);
+      }
+      else {
+        menu = menuNW;
+        menu.add(calendar);
+      }
+
       Icon icon = new ImageIcon(ClientUtils.getImage(ClientSettings.CALENDAR));
       buttonChooser = new JButton(icon);
 //      add("East",buttonChooser);
@@ -178,11 +195,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
         }
       });
 
-      menu.setUndecorated(true);
       calendar.setBorder(BorderFactory.createLineBorder(Color.black));
       menu.setSize(calendar.getPreferredSize().width+30,calendar.getPreferredSize().height+20);
-      menu.getContentPane().setLayout(new BorderLayout());
-      menu.getContentPane().add(calendar,BorderLayout.CENTER);
       calendar.setLocale(new Locale(ClientSettings.getInstance().getResources().getLanguageId()));
 
       calendar.getDayChooser().addPropertyChangeListener(new PropertyChangeListener() {

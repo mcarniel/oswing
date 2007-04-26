@@ -1030,10 +1030,10 @@ public class Grid extends JTable
   /**
    * Method called when user right clicks with the mouse on the grid: it will view the popup menu.
    */
-  private void showPopupMenu(int x,int y) {
+  private void showPopupMenu(final int x,final int y) {
     try {
-      Point tablexy=this.getLocationOnScreen();
-      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      final Point tablexy=this.getLocationOnScreen();
+      final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
       grids.getPopup().removeAll();
 
@@ -1047,13 +1047,22 @@ public class Grid extends JTable
         grids.getRemovefilterItem().removeAll();
         grids.getRemovefilterItem().addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            final int modelColIndex = getSelectedColumn()==-1 ? -1 :getColumnModel().getColumn(getSelectedColumn()).getModelIndex();
+            int modelColIndex = getSelectedColumn()==-1 ? -1 :getColumnModel().getColumn(getSelectedColumn()).getModelIndex();
+            if (modelColIndex==-1) {
+              int xOverflow = x+(int)tablexy.getX()+grids.getPopup().getWidth()-(int)screenSize.getWidth();
+              int yOverflow = y+(int)tablexy.getY()+grids.getPopup().getHeight()-(int)screenSize.getHeight();
+              int popupX = xOverflow>0?x-xOverflow-20:x;
+              int popupY = yOverflow>0?y-yOverflow-20:y;
+              modelColIndex = columnAtPoint(new Point(popupX,popupY));
+            }
+
             if (modelColIndex!=-1) {
               removeQuickFilter(modelAdapter.getFieldName(modelColIndex));
             }
           }
         });
         grids.getPopup().add(grids.getRemovefilterItem());
+
         grids.getPopup().add(new JSeparator());
       }
 
