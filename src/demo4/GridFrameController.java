@@ -8,6 +8,9 @@ import org.openswing.swing.message.send.java.FilterWhereClause;
 import org.openswing.swing.table.java.GridDataLocator;
 import org.openswing.swing.table.client.Grid;
 import org.openswing.swing.client.GridControl;
+import org.openswing.swing.server.QueryUtil;
+import org.openswing.swing.server.UserSessionParameters;
+import org.openswing.swing.message.send.java.GridParams;
 
 
 /**
@@ -70,58 +73,88 @@ public class GridFrameController extends GridController implements GridDataLocat
       ArrayList currentSortedVersusColumns,
       Class valueObjectType,
       Map otherGridParams) {
-    PreparedStatement stmt = null;
+//    PreparedStatement stmt = null;
     try {
-      String sql = "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE";
-      Vector vals = new Vector();
-      if (filteredColumns.size()>0) {
-        FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("stringValue");
-        sql += " and DEMO4.TEXT "+ filter[0].getOperator()+"?";
-        vals.add(filter[0].getValue());
-        if (filter[1]!=null) {
-          sql += " and DEMO4.TEXT "+ filter[1].getOperator()+"?";
-          vals.add(filter[1].getValue());
-        }
-      }
-      if (currentSortedColumns.size()>0) {
-        sql += " ORDER BY DEMO4.TEXT "+currentSortedVersusColumns.get(0);
-      }
+      ArrayList vals = new ArrayList();
+      Map attribute2dbField = new HashMap();
+      attribute2dbField.put("stringValue","DEMO4.TEXT");
+      attribute2dbField.put("numericValue","DEMO4.DECNUM");
+      attribute2dbField.put("currencyValue","DEMO4.CURRNUM");
+      attribute2dbField.put("dateValue","DEMO4.THEDATE");
+      attribute2dbField.put("comboValue","DEMO4.COMBO");
+      attribute2dbField.put("checkValue","DEMO4.CHECK_BOX");
+      attribute2dbField.put("radioButtonValue","DEMO4.RADIO");
+      attribute2dbField.put("lookupValue","DEMO4.CODE");
+      attribute2dbField.put("descrLookupValue","DEMO4_LOOKUP.DESCRCODE");
+      GridParams gridParams = new GridParams(action,startIndex,filteredColumns,currentSortedColumns,currentSortedVersusColumns,otherGridParams);
 
-      stmt = conn.prepareStatement(sql);
-      for(int i=0;i<vals.size();i++)
-        stmt.setObject(i+1,vals.get(i));
-
-      ResultSet rset = stmt.executeQuery();
-
-
-      ArrayList list = new ArrayList();
-      TestVO vo = null;
-      while (rset.next()) {
-        vo = new TestVO();
-        vo.setCheckValue(rset.getObject(6)==null || !rset.getObject(6).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
-        vo.setComboValue(rset.getString(5));
-        vo.setCurrencyValue(rset.getBigDecimal(3));
-        vo.setDateValue(rset.getDate(4));
-        vo.setNumericValue(rset.getBigDecimal(2));
-        vo.setRadioButtonValue(rset.getObject(7)==null || !rset.getObject(7).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
-        vo.setStringValue(rset.getString(1));
-        vo.setLookupValue(rset.getString(8));
-        vo.setDescrLookupValue(rset.getString(9));
-        list.add(vo);
-      }
-      return new VOListResponse(list,false,list.size());
+      return QueryUtil.getQuery(
+        conn,
+        new UserSessionParameters(),
+        "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE",
+        vals,
+        attribute2dbField,
+        TestVO.class,
+        "Y",
+        "N",
+        null,
+        gridParams,
+        true
+      );
+//      String sql = "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE";
+//      Vector vals = new Vector();
+//      if (filteredColumns.size()>0) {
+//        FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("stringValue");
+//        sql += " and DEMO4.TEXT "+ filter[0].getOperator()+"?";
+//        vals.add(filter[0].getValue());
+//        if (filter[1]!=null) {
+//          sql += " and DEMO4.TEXT "+ filter[1].getOperator()+"?";
+//          vals.add(filter[1].getValue());
+//        }
+//      }
+//      if (currentSortedColumns.size()>0) {
+//        sql += " ORDER BY DEMO4.TEXT "+currentSortedVersusColumns.get(0);
+//      }
+//
+//      stmt = conn.prepareStatement(sql);
+//      for(int i=0;i<vals.size();i++)
+//        stmt.setObject(i+1,vals.get(i));
+//
+//      ResultSet rset = stmt.executeQuery();
+//
+//
+//      ArrayList list = new ArrayList();
+//      TestVO vo = null;
+//      while (rset.next()) {
+//        vo = new TestVO();
+//        vo.setCheckValue(rset.getObject(6)==null || !rset.getObject(6).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
+//        vo.setComboValue(rset.getString(5));
+//        vo.setCurrencyValue(rset.getBigDecimal(3));
+//        vo.setDateValue(rset.getDate(4));
+//        vo.setNumericValue(rset.getBigDecimal(2));
+//        vo.setRadioButtonValue(rset.getObject(7)==null || !rset.getObject(7).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
+//        vo.setStringValue(rset.getString(1));
+//        vo.setLookupValue(rset.getString(8));
+//        vo.setDescrLookupValue(rset.getString(9));
+//        list.add(vo);
+//      }
+//      return new VOListResponse(list,false,list.size());
+//    }
+//    catch (SQLException ex) {
+//      ex.printStackTrace();
+//      return new ErrorResponse(ex.getMessage());
     }
-    catch (SQLException ex) {
+    catch (Exception ex) {
       ex.printStackTrace();
       return new ErrorResponse(ex.getMessage());
     }
-    finally {
-      try {
-        stmt.close();
-      }
-      catch (SQLException ex1) {
-      }
-    }
+//    finally {
+//      try {
+//        stmt.close();
+//      }
+//      catch (SQLException ex1) {
+//      }
+//    }
 
   }
 

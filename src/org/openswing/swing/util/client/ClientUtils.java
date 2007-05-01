@@ -279,6 +279,65 @@ public class ClientUtils extends JApplet {
 
 
   /**
+   * Show a document in a specified viewer.
+   * @param url local URI
+   */
+  public static void displayURL(String url) {
+    try {
+      if (url.toLowerCase().startsWith("file://"))
+        url = url.substring(7);
+      Object desktop = Class.forName("java.awt.Desktop").getMethod("getDesktop", new Class[0]).invoke(null, new Object[0]);
+      desktop.getClass().getMethod("open",new Class[]{java.io.File.class}).invoke(desktop,new Object[]{new java.io.File(url)});
+    }
+    catch (Throwable ex1) {
+      if (!url.toLowerCase().startsWith("file://"))
+        url = "file://"+url;
+      boolean windows = false;
+      String os = System.getProperty("os.name");
+      if ( os != null && os.startsWith("Windows"))
+        windows = true;
+
+      String cmd = null;
+      try {
+        if (windows) {
+          // cmd = 'rundll32 url.dll,FileProtocolHandler http://...'
+          cmd = "rundll32 url.dll,FileProtocolHandler " + url;
+          Process p = Runtime.getRuntime().exec(cmd);
+        }
+        else {
+          // Under Unix, Netscape has to be running for the "-remote"
+          // command to work.  So, we try sending the command and
+          // check for an exit value.  If the exit command is 0,
+          // it worked, otherwise we need to start the browser.
+          // cmd = 'netscape -remote openURL(http://www.javaworld.com)'
+          cmd = "netscape -remote openURL(" + url + ")";
+          Process p = Runtime.getRuntime().exec(cmd);
+          try  {
+            // wait for exit code -- if it's 0, command worked,
+            // otherwise we need to start the browser up.
+            int exitCode = p.waitFor();
+            if (exitCode != 0) {
+              // Command failed, start up the browser
+              // cmd = 'netscape http://www.javaworld.com'
+              cmd = "netscape "  + url;
+              p = Runtime.getRuntime().exec(cmd);
+            }
+          }
+          catch(InterruptedException ex) {
+            Logger.error("org.openswing.swing.util.client.ClientUtils", "displayURL", "Error while showing local document (cmd='"+cmd+"':\n"+ex.getMessage(), ex);
+          }
+        }
+      }
+      catch(Exception ex) {
+        // couldn't exec viewer
+        Logger.error("org.openswing.swing.util.client.ClientUtils", "displayURL", "Error while local document (cmd='"+cmd+"':\n"+ex.getMessage(), ex);
+      }
+    }
+  }
+
+
+
+  /**
    * @param comp component linked to a Form object
    * @return Form object that manages the current component; null if no Form is linked to the component
    */

@@ -72,7 +72,10 @@ public class ExportDialog extends JDialog {
     ExportOptions.CSV_FORMAT1,
     ExportOptions.CSV_FORMAT2,
     ExportOptions.XML_FORMAT,
-    ExportOptions.HTML_FORMAT
+    ExportOptions.XML_FORMAT_FAT,
+    ExportOptions.HTML_FORMAT,
+    ExportOptions.PDF_FORMAT,
+    ExportOptions.RTF_FORMAT
   });
 
   /**

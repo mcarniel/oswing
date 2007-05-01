@@ -48,15 +48,15 @@ public class GridFrameController extends GridController implements GridDataLocat
       Map otherGridParams) {
     PreparedStatement stmt = null;
     try {
-      String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
+      String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK_BOX,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
-        FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("stringValue");
-        sql += " and DEMO3.TEXT "+ filter[0].getOperator()+"?";
-        vals.add(filter[0].getValue());
+        FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("dateValue");
+        sql += " and DEMO3.THEDATE "+ filter[0].getOperator()+"?";
+        vals.add(new java.sql.Date(((java.util.Date)filter[0].getValue()).getTime()));
         if (filter[1]!=null) {
-          sql += " and DEMO3.TEXT "+ filter[1].getOperator()+"?";
-          vals.add(filter[1].getValue());
+          sql += " and DEMO3.THEDATE "+ filter[1].getOperator()+"?";
+          vals.add(new java.sql.Date(((java.util.Date)filter[1].getValue()).getTime()));
         }
       }
       if (currentSortedColumns.size()>0) {
@@ -112,7 +112,7 @@ public class GridFrameController extends GridController implements GridDataLocat
 
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK,RADIO,CODE) values(?,?,?,?,?,?,?,?)");
+      stmt = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE) values(?,?,?,?,?,?,?,?)");
       TestVO vo = (TestVO)newValueObjects.get(0);
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setString(5,vo.getComboValue());
@@ -151,7 +151,7 @@ public class GridFrameController extends GridController implements GridDataLocat
   public Response updateRecords(int[] rowNumbers,ArrayList oldPersistentObjects,ArrayList persistentObjects) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("update DEMO3 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK=?,RADIO=?,CODE=? where TEXT=?");
+      stmt = conn.prepareStatement("update DEMO3 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=? where TEXT=?");
       TestVO vo = null;
       for(int i=0;i<persistentObjects.size();i++) {
         vo = (TestVO)persistentObjects.get(i);

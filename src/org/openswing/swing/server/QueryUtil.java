@@ -61,6 +61,40 @@ public class QueryUtil {
       ArrayList currentSortedVersusColumns,
       Map attributesMapping
   ) {
+    return getSql(
+      userSessionPars,
+      baseSQL,
+      new ArrayList(),
+      values,
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      attributesMapping
+    );
+  }
+
+
+  /**
+   * This constructor can be useful when combining OpenSwing with Hibernate, to retrieve attribute names too.
+   * @param baseSQL SQL to change by adding filter and order clauses
+   * @param attrNames attribute names related to filter values
+   * @param values binding values related to baseSQL
+   * @param filteredColumns columns to add in the WHERE clause
+   * @param currentSortedColumns columns to add in the ORDER clause
+   * @param currentSortedVersusColumns ordering versus
+   * @param attributesMapping collection of pairs attributeName, corresponding database column (table.column)
+   * @return baseSQL + filtering and ordering conditions
+   */
+  public static String getSql(
+      UserSessionParameters userSessionPars,
+      String baseSQL,
+      ArrayList attrNames,
+      ArrayList values,
+      Map filteredColumns,
+      ArrayList currentSortedColumns,
+      ArrayList currentSortedVersusColumns,
+      Map attributesMapping
+  ) {
     try {
       if (filteredColumns.size() > 0) {
         if (baseSQL.toLowerCase().indexOf("where") == -1) {
@@ -80,12 +114,14 @@ public class QueryUtil {
               filterClauses[0].getOperator() +
               "? AND ";
           values.add(filterClauses[0].getValue());
+          attrNames.add(filterClauses[0].getAttributeName());
           if (filterClauses[1] != null) {
             baseSQL +=
                 attributesMapping.get(attributeName) +
                 filterClauses[1].getOperator() +
                 "? AND ";
             values.add(filterClauses[1].getValue());
+            attrNames.add(filterClauses[1].getAttributeName());
           }
         }
         baseSQL = baseSQL.substring(0, baseSQL.length() - 4);
@@ -96,7 +132,9 @@ public class QueryUtil {
           baseSQL += " ORDER BY ";
         }
         for (int i = 0; i < currentSortedColumns.size(); i++) {
-          baseSQL += attributesMapping.get(currentSortedColumns.get(i)) + " " +
+          baseSQL +=
+              (attributesMapping.get(currentSortedColumns.get(i))==null?currentSortedColumns.get(i):attributesMapping.get(currentSortedColumns.get(i))) +
+              " " +
               currentSortedVersusColumns.get(i) + ", ";
         }
         baseSQL = baseSQL.substring(0, baseSQL.length() - 2);

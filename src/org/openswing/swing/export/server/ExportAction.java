@@ -13,6 +13,9 @@ import org.openswing.swing.logger.server.Logger;
 import org.openswing.swing.export.java.ExportToCSV;
 import org.openswing.swing.export.java.ExportToXML;
 import org.openswing.swing.export.java.ExportToHTML;
+import org.openswing.swing.export.java.ExportToPDF;
+import org.openswing.swing.export.java.ExportToXMLFat;
+import org.openswing.swing.export.java.ExportToRTF;
 
 
 /**
@@ -119,11 +122,29 @@ public class ExportAction implements Action {
         // generate and return the document identifier...
         docId = "doc"+System.currentTimeMillis()+".xml";
       }
+      else if (opt.getExportType().equals(opt.XML_FORMAT_FAT)) {
+        // generate the XML document...
+        doc = new ExportToXMLFat().getDocument(opt);
+        // generate and return the document identifier...
+        docId = "doc"+System.currentTimeMillis()+".xml";
+      }
       else if (opt.getExportType().equals(opt.HTML_FORMAT)) {
         // generate the HTML document...
         doc = new ExportToHTML().getDocument(opt);
         // generate and return the document identifier...
         docId = "doc"+System.currentTimeMillis()+".html";
+      }
+      else if (opt.getExportType().equals(opt.PDF_FORMAT)) {
+        // generate the PDF document...
+        doc = new ExportToPDF().getDocument(opt);
+        // generate and return the document identifier...
+        docId = "doc"+System.currentTimeMillis()+".pdf";
+      }
+      else if (opt.getExportType().equals(opt.RTF_FORMAT)) {
+        // generate the RTF document...
+        doc = new ExportToRTF().getDocument(opt);
+        // generate and return the document identifier...
+        docId = "doc"+System.currentTimeMillis()+".rtf";
       }
     }
     catch (Throwable ex) {

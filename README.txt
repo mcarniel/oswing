@@ -8,6 +8,7 @@ The following files must be available to use OpenSwing framework:
 - serveros.jar 
 - jcalendar.jar
 - poi-2.0-RC2-20040102.jar
+- itext-1.4.8.jar
 - jnlp.jar
 - jnlp-servlet.jar
 - log4j-1.2.7.jar
@@ -16,12 +17,16 @@ The following files must be available to use OpenSwing framework:
 - srcserveros.jar
 
 Note: hsqldb.jar is only used in demos included with the OpenSwing distribution, so that it is not part of OpenSwing framework.
-
+Note: to run the "demo17" sample you have to include in the classpath hibernate libraries too (see runDemo17.bat/sh). "demo17" sample app has been tested with Hibernate 3.2.3
 
 
 2. Directory Structure
 ----------------------
-src		source file of OpwnSwing project.
+src		source files of OpenSwing framework.
+
+srchibernate    source files of OpenSwing framework specifically related to Hibernate embedding; to compile these classes you have to include in classpath Hibernate jars too (NOT provided in OpenSwing distribution)
+
+srcdemo		source files of demos included in the distribution; "demo17" subfolder requires Hibernate jars too (NOT provided in OpenSwing distribution)
 
 build		jar files 
 
@@ -41,6 +46,7 @@ OpenSwing is based on these files:
 - serveros.jar - contains server-side OpenSwing components 
 - jcalendar.jar - an open source library (LGPL) for viewing a calendar, written by Kai Toedter
 - poi-2.0-RC2-20040102.jar - an open source library used to generate Excel (XLS) files
+- itext-1.4.8.jar - an open source library used to generate PDF or RTF files
 - jnlp.jar - JNLP API
 - jnlp-servlet.jar - JNLP Servlet
 - log4j-1.2.7.jar - LOG4J component

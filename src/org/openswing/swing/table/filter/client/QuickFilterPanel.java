@@ -492,7 +492,12 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         case Column.TYPE_DATE_TIME :
         case Column.TYPE_TIME :
         {
-          result=((DateControl)value).getDate();
+          if (((DateControl)value).getDate()==null)
+            result = null;
+          else if (colProperties.getColumnType()==Column.TYPE_DATE)
+            result=new java.sql.Date(((DateControl)value).getDate().getTime());
+          else
+            result=new java.sql.Timestamp(((DateControl)value).getDate().getTime());
         }
         ;break;
         case Column.TYPE_INT:
@@ -534,11 +539,20 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
       if (result instanceof Date) {
         Calendar c=GregorianCalendar.getInstance();
         c.setTime((Date)result);
-        c.set(c.HOUR,23);
-        c.set(c.MINUTE,59);
-        c.set(c.SECOND,59);
-        c.set(c.MILLISECOND,999);
-        result=new java.sql.Timestamp(c.getTime().getTime());
+//        c.set(c.HOUR,23);
+//        c.set(c.MINUTE,59);
+//        c.set(c.SECOND,59);
+//        c.set(c.MILLISECOND,999);
+        c.set(c.DAY_OF_MONTH,c.get(c.DAY_OF_MONTH)+1);
+        c.set(c.HOUR,0);
+        c.set(c.MINUTE,0);
+        c.set(c.SECOND,0);
+        c.set(c.MILLISECOND,0);
+
+        if (colProperties.getColumnType()==Column.TYPE_DATE)
+          result=new java.sql.Date(c.getTime().getTime());
+        else
+          result=new java.sql.Timestamp(c.getTime().getTime());
       }
       return result;
     }

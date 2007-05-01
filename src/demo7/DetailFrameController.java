@@ -57,7 +57,7 @@ public class DetailFrameController extends FormController {
     Statement stmt = null;
     try {
       stmt = conn.createStatement();
-      ResultSet rset = stmt.executeQuery("select DEMO7.TEXT,DEMO7.DECNUM,DEMO7.CURRNUM,DEMO7.THEDATE,DEMO7.COMBO,DEMO7.CHECK,DEMO7.RADIO,DEMO7.CODE,DEMO7_LOOKUP.DESCRCODE,DEMO7.TA from DEMO7,DEMO7_LOOKUP where TEXT='"+pk+"' and DEMO7.CODE=DEMO7_LOOKUP.CODE");
+      ResultSet rset = stmt.executeQuery("select DEMO7.TEXT,DEMO7.DECNUM,DEMO7.CURRNUM,DEMO7.THEDATE,DEMO7.COMBO,DEMO7.CHECK_BOX,DEMO7.RADIO,DEMO7.CODE,DEMO7_LOOKUP.DESCRCODE,DEMO7.TA from DEMO7,DEMO7_LOOKUP where TEXT='"+pk+"' and DEMO7.CODE=DEMO7_LOOKUP.CODE");
       if (rset.next()) {
         TestVO vo = new TestVO();
         vo.setCheckValue(rset.getObject(6)==null || !rset.getObject(6).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
@@ -100,7 +100,7 @@ public class DetailFrameController extends FormController {
   public Response insertRecord(ValueObject newPersistentObject) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("insert into DEMO7(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK,RADIO,CODE,TA) values(?,?,?,?,?,?,?,?,?)");
+      stmt = conn.prepareStatement("insert into DEMO7(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,TA) values(?,?,?,?,?,?,?,?,?)");
       TestVO vo = (TestVO)newPersistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setString(5,vo.getComboValue());
@@ -140,7 +140,7 @@ public class DetailFrameController extends FormController {
   public Response updateRecord(ValueObject oldPersistentObject,ValueObject persistentObject) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("update DEMO7 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK=?,RADIO=?,CODE=?,TA=? where TEXT=?");
+      stmt = conn.prepareStatement("update DEMO7 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,TA=? where TEXT=?");
       TestVO vo = (TestVO)persistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setString(5,vo.getComboValue());

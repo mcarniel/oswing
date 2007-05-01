@@ -101,8 +101,11 @@ public class ExportOptions implements Serializable {
   public static final String XLS_FORMAT = "XLS";
   public static final String CSV_FORMAT1 = "CSV (,)";
   public static final String CSV_FORMAT2 = "CSV (;)";
-  public static final String XML_FORMAT = "XML";
+  public static final String XML_FORMAT = "XML (small format)";
+  public static final String XML_FORMAT_FAT = "XML (large format)";
   public static final String HTML_FORMAT = "HTML";
+  public static final String PDF_FORMAT = "PDF";
+  public static final String RTF_FORMAT = "RTF";
 
 
   /**

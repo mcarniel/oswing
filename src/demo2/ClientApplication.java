@@ -273,7 +273,7 @@ public class ClientApplication implements MDIController,LoginController {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO2(TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK CHAR(1),RADIO CHAR(1),CODE VARCHAR,TA VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO2(TEXT VARCHAR(20),DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,TA VARCHAR,PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 

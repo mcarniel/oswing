@@ -44,7 +44,7 @@ public class DetailLoadAction implements Action {
       conn = ConnectionManager.getConnection(context);
       stmt = conn.createStatement();
       String pk = (String)inputPar;
-      ResultSet rset = stmt.executeQuery("select DEMO5.TEXT,DEMO5.DECNUM,DEMO5.CURRNUM,DEMO5.THEDATE,DEMO5.COMBO,DEMO5.CHECK,DEMO5.RADIO,DEMO5.CODE,DEMO5_LOOKUP.DESCRCODE,DEMO5.TA from DEMO5,DEMO5_LOOKUP where TEXT='"+pk+"' and DEMO5.CODE=DEMO5_LOOKUP.CODE");
+      ResultSet rset = stmt.executeQuery("select DEMO5.TEXT,DEMO5.DECNUM,DEMO5.CURRNUM,DEMO5.THEDATE,DEMO5.COMBO,DEMO5.CHECK_BOX,DEMO5.RADIO,DEMO5.CODE,DEMO5_LOOKUP.DESCRCODE,DEMO5.TA from DEMO5,DEMO5_LOOKUP where TEXT='"+pk+"' and DEMO5.CODE=DEMO5_LOOKUP.CODE");
       if (rset.next()) {
         TestVO vo = new TestVO();
         vo.setCheckValue(rset.getObject(6)==null || !rset.getObject(6).equals("Y") ? Boolean.FALSE:Boolean.TRUE);

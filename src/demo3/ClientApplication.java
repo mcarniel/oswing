@@ -85,7 +85,7 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK CHAR(1),RADIO CHAR(1),CODE VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 

@@ -49,7 +49,7 @@ public class DetailUpdateAction implements Action {
       map.put("currencyValue","CURRNUM");
       map.put("dateValue","THEDATE");
       map.put("comboValue","COMBO");
-      map.put("checkValue","CHECK");
+      map.put("checkValue","CHECK_BOX");
       map.put("radioButtonValue","RADIO");
       map.put("lookupValue","CODE");
       map.put("taValue","TA");

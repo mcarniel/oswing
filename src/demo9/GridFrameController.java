@@ -50,7 +50,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       Map otherGridParams) {
     PreparedStatement stmt = null;
     try {
-      String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
+      String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK_BOX,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
         FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("stringValue");
@@ -114,7 +114,7 @@ public class GridFrameController extends GridController implements GridDataLocat
 /*
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK,RADIO,CODE) values(?,?,?,?,?,?,?,?)");
+      stmt = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE) values(?,?,?,?,?,?,?,?)");
       TestVO vo = null;
       for(int i=0;i<newValueObjects.size();i++) {
         vo = (TestVO)newValueObjects.get(i);
@@ -151,7 +151,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       map.put("currencyValue","CURRNUM");
       map.put("dateValue","THEDATE");
       map.put("comboValue","COMBO");
-      map.put("checkValue","CHECK");
+      map.put("checkValue","CHECK_BOX");
       map.put("radioButtonValue","RADIO");
       map.put("lookupValue","CODE");
       return QueryUtil.insertTable(
@@ -191,7 +191,7 @@ public class GridFrameController extends GridController implements GridDataLocat
   public Response updateRecords(int[] rowNumbers,ArrayList oldPersistentObjects,ArrayList persistentObjects) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("update DEMO3 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK=?,RADIO=?,CODE=? where TEXT=?");
+      stmt = conn.prepareStatement("update DEMO3 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=? where TEXT=?");
       TestVO vo = null;
       for(int i=0;i<persistentObjects.size();i++) {
         vo = (TestVO)persistentObjects.get(i);

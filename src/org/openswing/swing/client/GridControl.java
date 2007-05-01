@@ -157,6 +157,9 @@ public class GridControl extends JPanel {
   /** flag used to define if row height can change for each row, according to image height included in a cell of grid; default value: <code>true</code> */
   private boolean rowHeightFixed = true;
 
+  /** flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded); default value: <code>true</code> */
+  private boolean orderWithLoadData = true;
+
 
   /**
    * Costructor.
@@ -303,6 +306,11 @@ public class GridControl extends JPanel {
         if (table.getLockedGrid()!=null)
           table.getLockedGrid().setRowHeightFixed(false);
       }
+
+      table.getGrid().setOrderWithLoadData(orderWithLoadData);
+      if (table.getLockedGrid()!=null)
+        table.getLockedGrid().setOrderWithLoadData(orderWithLoadData);
+
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -995,6 +1003,24 @@ public class GridControl extends JPanel {
    */
   public final void setRowHeightFixed(boolean rowHeightFixed) {
     this.rowHeightFixed = rowHeightFixed;
+  }
+
+
+  /**
+   * @return flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded)
+   */
+  public final boolean isOrderWithLoadData() {
+    return orderWithLoadData;
+  }
+
+
+  /**
+   * Used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or
+   * the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded).
+   * @param orderWithLoadData flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded)
+   */
+  public final void setOrderWithLoadData(boolean orderWithLoadData) {
+    this.orderWithLoadData = orderWithLoadData;
   }
 
 

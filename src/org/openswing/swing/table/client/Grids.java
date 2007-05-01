@@ -37,6 +37,9 @@ import org.openswing.swing.export.java.ExportToXML;
 import org.openswing.swing.export.java.ExportToHTML;
 import org.openswing.swing.table.renderers.client.ImageTableCellRenderer;
 import org.openswing.swing.table.editors.client.ImageCellEditor;
+import org.openswing.swing.export.java.ExportToPDF;
+import org.openswing.swing.export.java.ExportToXMLFat;
+import org.openswing.swing.export.java.ExportToRTF;
 
 
 /**
@@ -1470,24 +1473,37 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           // generate and return the document identifier...
           fileName += "doc"+System.currentTimeMillis()+".xml";
         }
+        else if (opt.getExportType().equals(opt.XML_FORMAT_FAT)) {
+          // generate the XML document...
+          doc = new ExportToXMLFat().getDocument(opt);
+          // generate and return the document identifier...
+          fileName += "doc"+System.currentTimeMillis()+".xml";
+        }
         else if (opt.getExportType().equals(opt.HTML_FORMAT)) {
           // generate the HTML document...
           doc = new ExportToHTML().getDocument(opt);
           // generate and return the document identifier...
           fileName += "doc"+System.currentTimeMillis()+".html";
         }
+        else if (opt.getExportType().equals(opt.PDF_FORMAT)) {
+          // generate the PDF document...
+          doc = new ExportToPDF().getDocument(opt);
+          // generate and return the document identifier...
+          fileName += "doc"+System.currentTimeMillis()+".pdf";
+        }
+        else if (opt.getExportType().equals(opt.RTF_FORMAT)) {
+          // generate the RTF document...
+          doc = new ExportToRTF().getDocument(opt);
+          // generate and return the document identifier...
+          fileName += "doc"+System.currentTimeMillis()+".rtf";
+        }
 
         FileOutputStream out = new FileOutputStream(fileName);
         out.write(doc);
         out.close();
 
-        try {
-          Object desktop = Class.forName("java.awt.Desktop").getMethod("getDesktop", new Class[0]).invoke(null, new Object[0]);
-          desktop.getClass().getMethod("open",new Class[]{java.io.File.class}).invoke(desktop,new Object[]{new java.io.File(fileName)});
-        }
-        catch (Throwable ex1) {
-          displayURL("file://"+fileName);
-        }
+        ClientUtils.displayURL("file://"+fileName);
+//        new File(fileName).delete();
 
 //        String dir = new File(System.getProperty("user.home")).getAbsolutePath();
 //        String cmd =
@@ -1503,55 +1519,6 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       Logger.error(this.getClass().getName(), "export", "Error while exporting data:\n"+ex.getMessage(), ex);
     }
   }
-
-
-  /**
-   * Show an URI in the browser.
-   * @param url
-   */
-  private void displayURL(String url) {
-    boolean windows = false;
-    String os = System.getProperty("os.name");
-    if ( os != null && os.startsWith("Windows"))
-      windows = true;
-
-    String cmd = null;
-    try {
-      if (windows) {
-        // cmd = 'rundll32 url.dll,FileProtocolHandler http://...'
-        cmd = "rundll32 url.dll,FileProtocolHandler " + url;
-        Process p = Runtime.getRuntime().exec(cmd);
-      }
-      else {
-        // Under Unix, Netscape has to be running for the "-remote"
-        // command to work.  So, we try sending the command and
-        // check for an exit value.  If the exit command is 0,
-        // it worked, otherwise we need to start the browser.
-        // cmd = 'netscape -remote openURL(http://www.javaworld.com)'
-        cmd = "netscape -remote openURL(" + url + ")";
-        Process p = Runtime.getRuntime().exec(cmd);
-        try  {
-          // wait for exit code -- if it's 0, command worked,
-          // otherwise we need to start the browser up.
-          int exitCode = p.waitFor();
-          if (exitCode != 0) {
-            // Command failed, start up the browser
-            // cmd = 'netscape http://www.javaworld.com'
-            cmd = "netscape "  + url;
-            p = Runtime.getRuntime().exec(cmd);
-          }
-        }
-        catch(InterruptedException ex) {
-          Logger.error(this.getClass().getName(), "export", "Error while exporting data (cmd='"+cmd+"':\n"+ex.getMessage(), ex);
-        }
-      }
-    }
-    catch(Exception ex) {
-      // couldn't exec browser
-      Logger.error(this.getClass().getName(), "export", "Error while exporting data (cmd='"+cmd+"':\n"+ex.getMessage(), ex);
-    }
-  }
-
 
 
   /**

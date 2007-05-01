@@ -46,7 +46,7 @@ public class GridLoadAction implements Action {
 
       GridParams pars = (GridParams)inputPar;
 
-      String sql = "select DEMO5.TEXT,DEMO5.DECNUM,DEMO5.CURRNUM,DEMO5.THEDATE,DEMO5.COMBO,DEMO5.CHECK,DEMO5.RADIO,DEMO5.CODE,DEMO5_LOOKUP.DESCRCODE from DEMO5,DEMO5_LOOKUP where DEMO5.CODE=DEMO5_LOOKUP.CODE";
+      String sql = "select DEMO5.TEXT,DEMO5.DECNUM,DEMO5.CURRNUM,DEMO5.THEDATE,DEMO5.COMBO,DEMO5.CHECK_BOX,DEMO5.RADIO,DEMO5.CODE,DEMO5_LOOKUP.DESCRCODE from DEMO5,DEMO5_LOOKUP where DEMO5.CODE=DEMO5_LOOKUP.CODE";
       ArrayList vals = new ArrayList();
 
       HashMap map = new HashMap();
@@ -55,7 +55,7 @@ public class GridLoadAction implements Action {
       map.put("currencyValue","DEMO5.CURRNUM");
       map.put("dateValue","DEMO5.THEDATE");
       map.put("comboValue","DEMO5.COMBO");
-      map.put("checkValue","DEMO5.CHECK");
+      map.put("checkValue","DEMO5.CHECK_BOX");
       map.put("radioButtonValue","DEMO5.RADIO");
       map.put("lookupValue","DEMO5.CODE");
       map.put("descrLookupValue","DEMO5_LOOKUP.DESCRCODE");

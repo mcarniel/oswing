@@ -4,13 +4,27 @@ Release Notes 1.0.7
 -------------------
 
 Final release 1.0.7 available
-Added a new Dialog component: OptionDialog; it is a wrapper of JOptionPane component: it automatically translates title, description and buttons,
-according to current internationalization settings.
-Added an image panel and an image control. This new control can be linked to a Form object as any other input controls. It is based on byte[] data.
-Added an image column for the grid control. It is based on byte[] data.
-Added demo15 showing how to use the new image control for Form panel.
-Added demo16 showing how to use an image column for grid. Added rowHeight property to grid control (useful to change default row height on grid having images).
-Added a splash screen component.
+
+Changes to grid:
+- improved export algorithm from grid, by adding two new export formats: PDF and RTF
+- fixed problem on setting focus to quick filter, when used inside a JFrame (with no MDI environments)
+- added an image column for the grid control; it is based on byte[] data type.
+- added rowHeight property to grid control (useful to change default row height on grid having images).
+- added rowHeightFixed property to grid control (useful to automatically arrange row height for each row, on grid having images having different heights).
+- changed filter criteria when filtering date columns: now the date interval in in the format: dateField >= date1 and dateField < date2+1
+- added the "orderWithLoadData" property to grid control to allow column sorting of the whole just loaded result set, without reloading data from database.
+
+Added a new dialog window component: OptionPane; it is a wrapper of JOptionPane component: 
+it automatically translates title, description and buttons, according to current internationalization settings.
+Added an image panel and an image control. Image control can be linked to a Form object as any other input control. It is based on byte[] data type.
+Added a splash screen component. The "Demo" sample shows how to attach a splash screen to a JFrame.
+Added displayURL method to ClientUtils to show a local document with the default viewer (Acrobat, Excel, Browser, Note Pad, Word, etc.)
+
+Demos:
+- added demo15 showing how to use the new image control for Form panel
+- added demo16 showing how to use an image column for grid
+- changed demo4 GridFrameController class, to show how to use QueryUtil class in a 2 tier client-server application and how operates "orderWithLoadData" property
+- added demo17 showing how to combine OpenSwing with Hibernate. Sample app has been tested with Hibernate 3.2.3 (not included in OpenSwing distribution).
 
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 

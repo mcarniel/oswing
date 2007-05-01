@@ -61,7 +61,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       Map otherGridParams) {
     PreparedStatement stmt = null;
     try {
-      String sql = "select DEMO2.TEXT,DEMO2.DECNUM,DEMO2.CURRNUM,DEMO2.THEDATE,DEMO2.COMBO,DEMO2.CHECK,DEMO2.RADIO,DEMO2.CODE,DEMO2_LOOKUP.DESCRCODE from DEMO2,DEMO2_LOOKUP where DEMO2.CODE=DEMO2_LOOKUP.CODE";
+      String sql = "select DEMO2.TEXT,DEMO2.DECNUM,DEMO2.CURRNUM,DEMO2.THEDATE,DEMO2.COMBO,DEMO2.CHECK_BOX,DEMO2.RADIO,DEMO2.CODE,DEMO2_LOOKUP.DESCRCODE from DEMO2,DEMO2_LOOKUP where DEMO2.CODE=DEMO2_LOOKUP.CODE";
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
         FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("stringValue");
@@ -73,7 +73,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         }
       }
       if (currentSortedColumns.size()>0) {
-        sql += " ORDER BY DEMO3.TEXT "+currentSortedVersusColumns.get(0);
+        sql += " ORDER BY DEMO2.TEXT "+currentSortedVersusColumns.get(0);
       }
 
       stmt = conn.prepareStatement(sql);

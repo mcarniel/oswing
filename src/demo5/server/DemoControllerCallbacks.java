@@ -37,7 +37,7 @@ public class DemoControllerCallbacks extends ControllerCallbacks {
     try {
       conn = ConnectionManager.getConnection(context);
       try {
-        stmt = conn.prepareStatement("create table DEMO5(TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK CHAR(1),RADIO CHAR(1),CODE VARCHAR,TA VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO5(TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,TA VARCHAR,PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 

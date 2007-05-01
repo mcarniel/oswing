@@ -29,6 +29,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _functionId = new PropertyDescriptor("functionId", beanClass, "getFunctionId", "setFunctionId");
       PropertyDescriptor _maxNumberOfRowsOnInsert = new PropertyDescriptor("maxNumberOfRowsOnInsert", beanClass, "getMaxNumberOfRowsOnInsert", "setMaxNumberOfRowsOnInsert");
       PropertyDescriptor _maxSortedColumns = new PropertyDescriptor("maxSortedColumns", beanClass, "getMaxSortedColumns", "setMaxSortedColumns");
+      PropertyDescriptor _orderWithLoadData = new PropertyDescriptor("orderWithLoadData", beanClass, "isOrderWithLoadData", "setOrderWithLoadData");
       PropertyDescriptor _preferredSize = new PropertyDescriptor("preferredSize", beanClass, "getPreferredSize", "setPreferredSize");
       PropertyDescriptor _reloadButton = new PropertyDescriptor("reloadButton", beanClass, "getReloadButton", "setReloadButton");
       PropertyDescriptor _reorderingAllowed = new PropertyDescriptor("reorderingAllowed", beanClass, "isReorderingAllowed", "setReorderingAllowed");
@@ -53,6 +54,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _insertButton,
         _mode,
         _navBar,
+        _orderWithLoadData,
         _preferredSize,
         _reloadButton,
         _reorderingAllowed,

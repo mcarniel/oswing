@@ -138,6 +138,9 @@ public class Grid extends JTable
   /** flag used to define if row height can change for each row, according to image height included in a cell of grid; default value: <code>true</code> */
   private boolean rowHeightFixed = true;
 
+  /** flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded); default value: <code>true</code> */
+  private boolean orderWithLoadData = true;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -850,8 +853,24 @@ public class Grid extends JTable
       else if (currentSortVersus.equals(Consts.DESC_SORTED))
         currentSortVersus = Consts.NO_SORTED;
 
-      // determine if it's possible to sort by the specified column...
+      // determine if it's possible to sort by the specified column:
       if (colProp.getSortVersus().equals(Consts.NO_SORTED) &&
+          !currentSortVersus.equals(Consts.NO_SORTED) &&
+          currentColSorted==maxSortedColumns &&
+          maxSortedColumns==1) {
+        // only one column per time is allowed to be sorted and
+        // user has clicked on another one column:
+        // the previous sorted column will be set NO_SORTED...
+        for(int i=0;i<colProps.length;i++)
+          if (colProps[i].isColumnSortable() &&
+              !colProps[i].getSortVersus().equals(Consts.NO_SORTED)) {
+            colProps[i].setSortVersus(Consts.NO_SORTED);
+            colProps[i].setSortingOrder(0);
+            break;
+          }
+        maxSortingOrder = 0;
+      }
+      else if (colProp.getSortVersus().equals(Consts.NO_SORTED) &&
           !currentSortVersus.equals(Consts.NO_SORTED) &&
           currentColSorted>=maxSortedColumns) {
         // view warning message...
@@ -863,15 +882,80 @@ public class Grid extends JTable
         );
         return;
       }
+
       colProp.setSortVersus(currentSortVersus);
-      colProp.setSortingOrder(maxSortingOrder+1);
+      colProp.setSortingOrder(
+        maxSortingOrder+1>=colProps.length?
+        colProps.length-1:
+        maxSortingOrder+1
+      );
       getTableHeader().repaint();
       setOrderList();
-      grids.reload();
+
+      if (orderWithLoadData || grids.getLastIndex()-grids.getVOListTableModel().getRowCount() >0 || grids.isMoreRows())
+        grids.reload();
+      else
+        internalSorting();
     }
     catch (Exception ex) {
       Logger.error(this.getClass().getName(),"refreshIconsAndSort","Error while loading data on sorting",ex);
     }
+  }
+
+
+  /**
+   * Sort the list of value objects already loaded, according to current column sorting settings.
+   */
+  private void internalSorting() {
+    Vector list = getVOListTableModel().getDataVector();
+    Collections.sort(list,new Comparator() {
+
+      public int compare(Object o1, Object o2) {
+        int colIndex,sign;
+        Object val1,val2;
+        for(int i=0;i<grids.getCurrentSortedColumns().size();i++) {
+          colIndex = modelAdapter.getFieldIndex(grids.getCurrentSortedColumns().get(i).toString());
+          val1 = modelAdapter.getField((ValueObject)o1,colIndex);
+          val2 = modelAdapter.getField((ValueObject)o2,colIndex);
+          sign = grids.getCurrentSortedVersusColumns().get(i).equals(Consts.ASC_SORTED)?+1:-1;
+          if (val1==null && val2==null)
+            continue;
+          else if (val1==null && val2!=null)
+            return -1*sign;
+          else if (val1==null && val2!=null)
+            return +1*sign;
+          else {
+            if (val1 instanceof java.util.Date) {
+              if (((java.util.Date)val1).getTime()<((java.util.Date)val2).getTime())
+                return -1*sign;
+              else if (((java.util.Date)val1).getTime()>((java.util.Date)val2).getTime())
+                return +1*sign;
+            }
+            else if (val1 instanceof Number) {
+              if (((Number)val1).doubleValue()<((Number)val2).doubleValue())
+                return -1*sign;
+              else if (((Number)val1).doubleValue()>((Number)val2).doubleValue())
+                return +1*sign;
+            }
+            else {
+              if (val1.toString().compareTo(val2.toString())<0)
+                return -1*sign;
+              else if (val1.toString().compareTo(val2.toString())>0)
+                return +1*sign;
+            }
+          }
+        }
+        return 0;
+      }
+
+      public boolean equals(Object obj) {
+        return obj.equals(this);
+      }
+
+    });
+    this.repaint();
+    if (grids.getLockedGrid()!=null)
+      grids.getLockedGrid().repaint();
   }
 
 
@@ -1414,7 +1498,7 @@ public class Grid extends JTable
           colProps.getColumnName(),
           values = new FilterWhereClause[] {
             new FilterWhereClause(colProps.getColumnName(),">=",value1),
-            new FilterWhereClause(colProps.getColumnName(),"<=",value2)
+            new FilterWhereClause(colProps.getColumnName(),value2 instanceof java.util.Date?"<":"<=",value2)
           }
       );
     else {
@@ -1615,6 +1699,14 @@ public class Grid extends JTable
   }
 
 
+  /**
+   * Used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or
+   * the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded).
+   * @param orderWithLoadData flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded)
+   */
+  public final void setOrderWithLoadData(boolean orderWithLoadData) {
+    this.orderWithLoadData = orderWithLoadData;
+  }
 
 
 

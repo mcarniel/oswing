@@ -59,7 +59,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       Map otherGridParams) {
     PreparedStatement stmt = null;
     try {
-      String sql = "select DEMO6.TEXT,DEMO6.DECNUM,DEMO6.CURRNUM,DEMO6.THEDATE,DEMO6.COMBO,DEMO6.CHECK,DEMO6.RADIO,DEMO6.CODE,DEMO6_LOOKUP.DESCRCODE from DEMO6,DEMO6_LOOKUP where DEMO6.CODE=DEMO6_LOOKUP.CODE";
+      String sql = "select DEMO6.TEXT,DEMO6.DECNUM,DEMO6.CURRNUM,DEMO6.THEDATE,DEMO6.COMBO,DEMO6.CHECK_BOX,DEMO6.RADIO,DEMO6.CODE,DEMO6_LOOKUP.DESCRCODE from DEMO6,DEMO6_LOOKUP where DEMO6.CODE=DEMO6_LOOKUP.CODE";
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
         FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("stringValue");

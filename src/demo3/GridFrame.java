@@ -76,7 +76,6 @@ public class GridFrame extends JFrame {
     grid.setReloadButton(reloadButton);
     grid.setSaveButton(saveButton);
     grid.setValueObjectClassName("demo3.TestVO");
-    colText.setColumnFilterable(true);
     colText.setColumnName("stringValue");
     colText.setColumnSortable(true);
     colText.setEditableOnInsert(true);
@@ -96,6 +95,7 @@ public class GridFrame extends JFrame {
     colCurrency.setEditableOnEdit(true);
     colCurrency.setEditableOnInsert(true);
     colDate.setColumnDuplicable(true);
+    colDate.setColumnFilterable(true);
     colDate.setColumnName("dateValue");
     colDate.setColumnRequired(false);
     colDate.setEditableOnEdit(true);
