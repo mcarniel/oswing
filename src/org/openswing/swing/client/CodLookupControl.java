@@ -386,7 +386,19 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
           Object newValue = null;
           while (list.hasNext()) {
             attrName = (String) list.next();
-            newValue = parentVO==null?null:getPropertyDescriptor(parentVO.getClass(),attrName).getReadMethod().invoke(parentVO,new Object[0]);
+
+            if (parentVO!=null) {
+              String aux = attrName;
+              Object obj = parentVO;
+              while(aux.indexOf(".")!=-1) {
+                obj = getPropertyDescriptor(obj.getClass(),aux.substring(0,aux.indexOf("."))).getReadMethod().invoke(obj,new Object[0]);
+                aux = aux.substring(aux.indexOf(".")+1);
+              }
+              newValue = getPropertyDescriptor(obj.getClass(),aux).getReadMethod().invoke(obj,new Object[0]);
+            }
+            else
+              newValue = null;
+
             ValueChangeEvent e = new ValueChangeEvent(this, attrName, null, newValue);
             ValueChangeListener[] listeners = getValueChangeListeners();
             for (int i = 0; i < listeners.length; i++)

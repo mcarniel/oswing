@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+    <bean id="handlerMapping"
+          class="org.openswing.springframework.web.servlet.handler.OpenSwingHandlerMapping">
+<!--
+        <property name="interceptors">
+            <list>
+                <ref bean="sessionCheckInterceptor"/>
+            </list>
+        </property>
+-->
+    </bean>
+<!--   
+    <bean id="sessionCheckInterceptor"
+          class="org.openswing.springframework.web.servlet.handler.SessionCheckInterceptor">
+        <property name="loginMethodName" value="login"/>
+    </bean>
+-->        
+<!-- ========================= DEFINITION OF LOGIN CONTROLLER ========================= -->    
+    <bean id="login" class="demo18.server.LoginController">
+        <property name="username" value="admin"/>
+        <property name="password" value="guest"/>
+    </bean>
+
+<!-- ========================= VIEW DEFINITIONS ========================= -->
+
+    <bean id="swingViewResolver" class="org.openswing.springframework.web.servlet.view.OpenSwingViewResolver">
+    </bean>
+
+<!-- ========================= DEFINITIONS OF PUBLIC CONTROLLERS ========================= -->
+	
+    <bean id="loadTasks" class="demo18.server.LoadTasksController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+
+    <bean id="insertTasks" class="demo18.server.InsertTasksController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="updateTasks" class="demo18.server.UpdateTasksController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="deleteTasks" class="demo18.server.DeleteTasksController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="validateTask" class="demo18.server.ValidateTaskController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="loadDepts" class="demo18.server.LoadDeptsController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="insertDepts" class="demo18.server.InsertDeptsController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="updateDepts" class="demo18.server.UpdateDeptsController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="deleteDepts" class="demo18.server.DeleteDeptsController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="validateDept" class="demo18.server.ValidateDeptController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="loadEmps" class="demo18.server.LoadEmpsController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="loadEmp" class="demo18.server.LoadEmpController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="insertEmp" class="demo18.server.InsertEmpController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+        
+    <bean id="updateEmp" class="demo18.server.UpdateEmpController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    <bean id="deleteEmps" class="demo18.server.DeleteEmpsController">
+            <property name="facade" ref="mainFacade"/>
+    </bean>
+    
+    
+</beans>

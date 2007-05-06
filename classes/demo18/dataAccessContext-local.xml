@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<!--
+  Application context definition for Demo18's data access layer.
+  Accessed by business layer objects defined in "applicationContext.xml"
+  (see web.xml's "contextConfigLocation").
+  
+  This version of the data access layer works on a combined database,
+  using a local DataSource with DataSourceTransactionManager. It does not
+  need any JTA support in the container: It will run as-is in plain Tomcat.
+  -->
+<beans>
+
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+
+	<!-- Local Apache Commons DBCP DataSource that refers to a combined database -->
+	<!-- The placeholders are resolved from jdbc.properties through  -->
+	<!-- the PropertyPlaceholderConfigurer in applicationContext.xml -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>
+
+	<!-- Transaction manager for a single JDBC DataSource -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<!-- ========================= DAO DEFINITIONS ========================= -->
+
+	<bean id="taskDao" class="demo18.server.TaskDao">
+		<property name="dataSource" ref="dataSource"/>		
+	</bean>
+
+	<bean id="deptDao" class="demo18.server.DeptDao">
+		<property name="dataSource" ref="dataSource"/>		
+	</bean>
+
+	<bean id="empDao" class="demo18.server.EmpDao">
+		<property name="dataSource" ref="dataSource"/>		
+	</bean>
+
+
+</beans>

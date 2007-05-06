@@ -1,7 +1,12 @@
 "Trunk" contains the following folders:
 - "src", source files of OpenSwing framework; to compile these classes you have to include in classpath the jar files located in "lib"
 - "srchibernate", source files of OpenSwing framework specifically related to Hibernate embedding; to compile these classes you have to include in classpath Hibernate jars too (NOT provided in OpenSwing distribution)
-- "srcdemo", source files of demos included in the distribution; "demo17" subfolder requires Hibernate jars too (NOT provided in OpenSwing distribution)
+- "srcspring", source files of OpenSwing framework specifically related to Spring embedding; to compile these classes you have to include in classpath Spring jars too (NOT provided in OpenSwing distribution)
+- "srcibatis", source files of OpenSwing framework specifically related to iBatis embedding; to compile these classes you have to include in classpath iBatis jars too (NOT provided in OpenSwing distribution)
+- "srcdemo", source files of demos included in the distribution; 
+  "demo17" subfolder requires Hibernate jars too (NOT provided in OpenSwing distribution); 
+  "demo18" subfolder requires Spring jars too (NOT provided in OpenSwing distribution);
+  "demo19" subfolder requires iBatis jars too (NOT provided in OpenSwing distribution)
 - "classes", contains xml, sh, bat files used to launch demos
 - "lib", contains jar files needed to compile OpenSwing sources and to execute any OpenSwing based application
 - "beaninfo", contains manifest.mf file needed to generate a jar file to include in an IDE to define the OpenSwing components palette

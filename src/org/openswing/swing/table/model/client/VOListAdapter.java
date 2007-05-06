@@ -89,15 +89,25 @@ public class VOListAdapter {
    * @param grid grid
    */
   public VOListAdapter(Class valueObjectType,GridController tableContainer,Column[] colProperties,Grids grids) {
-    try {
-      this.tableContainer = tableContainer;
-      this.colProperties = colProperties;
-      this.grids = grids;
-      this.valueObjectType = valueObjectType;
+    this.tableContainer = tableContainer;
+    this.colProperties = colProperties;
+    this.grids = grids;
+    this.valueObjectType = valueObjectType;
+    analyzeClassFields("",new Method[0],valueObjectType);
+  }
 
+
+  /**
+   * Analyze class fields and fill in "voSetterMethods","voGetterMethods","indexes",reverseIndexes" attributes.
+   * @param prefix e.g. "attrx.attry."
+   * @param parentMethods getter methods of parent v.o.
+   * @param classType class to analyze
+   */
+    private void analyzeClassFields(String prefix,Method[] parentMethods,Class classType) {
+    try {
       // retrieve all getter and setter methods defined in the specified value object...
       String attributeName = null;
-      Method[] methods = valueObjectType.getMethods();
+      Method[] methods = classType.getMethods();
       for(int i=0;i<methods.length;i++) {
         attributeName = methods[i].getName();
         if (attributeName.startsWith("get") && methods[i].getParameterTypes().length==0 &&
@@ -117,26 +127,49 @@ public class VOListAdapter {
             )) {
           attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
 //          try {
-//            if (valueObjectType.getMethod("set"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[]{methods[i].getReturnType()})!=null)
-              voGetterMethods.put(attributeName,methods[i]);
+//            if (classType.getMethod("set"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[]{methods[i].getReturnType()})!=null)
+          Method[] newparentMethods = new Method[parentMethods.length+1];
+          System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
+          newparentMethods[parentMethods.length] = methods[i];
+          voGetterMethods.put(prefix+attributeName,newparentMethods);
 //          } catch (NoSuchMethodException ex) {
 //          }
+        }
+        else if (attributeName.startsWith("get") && methods[i].getParameterTypes().length==0) {
+          if (ValueObject.class.isAssignableFrom( methods[i].getReturnType() )) {
+            attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
+            Method[] newparentMethods = new Method[parentMethods.length+1];
+            System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
+            newparentMethods[parentMethods.length] = methods[i];
+            analyzeClassFields(prefix+attributeName+".",newparentMethods,methods[i].getReturnType());
+          }
         }
         else if (attributeName.startsWith("is") &&
                  methods[i].getParameterTypes().length==0 &&
                  (methods[i].getReturnType().equals(Boolean.class) || methods[i].getReturnType().equals(boolean.class))) {
           attributeName = attributeName.substring(2,3).toLowerCase()+(attributeName.length()>3?attributeName.substring(3):"");
-          voGetterMethods.put(attributeName,methods[i]);
+          Method[] newparentMethods = new Method[parentMethods.length+1];
+          System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
+          newparentMethods[parentMethods.length] = methods[i];
+          voGetterMethods.put(prefix+attributeName,newparentMethods);
         }
         if (attributeName.startsWith("set") && methods[i].getParameterTypes().length==1) {
           attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
           try {
-            if (valueObjectType.getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0])!=null)
-              voSetterMethods.put(attributeName,methods[i]);
+            if (classType.getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0])!=null) {
+              Method[] newparentMethods = new Method[parentMethods.length+1];
+              System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
+              newparentMethods[parentMethods.length] = methods[i];
+              voSetterMethods.put(prefix+attributeName,newparentMethods);
+            }
           } catch (NoSuchMethodException ex) {
             try {
-              if (valueObjectType.getMethod("is"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0])!=null)
-                voSetterMethods.put(attributeName,methods[i]);
+              if (classType.getMethod("is"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0])!=null) {
+                Method[] newparentMethods = new Method[parentMethods.length+1];
+                System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
+                newparentMethods[parentMethods.length] = methods[i];
+                voSetterMethods.put(prefix+attributeName,newparentMethods);
+              }
             } catch (NoSuchMethodException exx) {
             }
           }
@@ -194,10 +227,14 @@ public class VOListAdapter {
    */
   public final Object getField(ValueObject obj, int colIndex) {
     try {
-      Method m = (Method)voGetterMethods.get(getFieldName(colIndex));
+      Method[] m = (Method[])voGetterMethods.get(getFieldName(colIndex));
       if (m==null)
         Logger.error(this.getClass().getName(),"getField","No getter method for index "+colIndex+" and attribute name '"+getFieldName(colIndex)+"'.",null);
-      return m.invoke(obj,new Object[0]);
+
+      for(int i=0;i<m.length-1;i++)
+        obj = (ValueObject)m[i].invoke(obj,new Object[0]);
+
+      return m[m.length-1].invoke(obj,new Object[0]);
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -213,16 +250,17 @@ public class VOListAdapter {
    */
   public final void setField(ValueObject obj, int colIndex, Object value) {
     try {
-      Method getter = ((Method)voGetterMethods.get(getFieldName(colIndex)));
-      Method setter = ((Method)voSetterMethods.get(getFieldName(colIndex)));
+      Method[] getter = ((Method[])voGetterMethods.get(getFieldName(colIndex)));
+      Method[] setter = ((Method[])voSetterMethods.get(getFieldName(colIndex)));
       if (getter==null)
         Logger.error(this.getClass().getName(),"setField","No getter method for index "+colIndex+" and attribute name '"+getFieldName(colIndex)+"'.",null);
       if (setter==null)
         Logger.error(this.getClass().getName(),"setField","No setter method for index "+colIndex+" and attribute name '"+getFieldName(colIndex)+"'.",null);
 
+
       if (value!=null && (value instanceof Number || !value.equals("") && value instanceof String)) {
-        if (!getter.getReturnType().equals(value.getClass())) {
-            Class attrType = getter.getReturnType();
+        if (!getter[getter.length-1].getReturnType().equals(value.getClass())) {
+            Class attrType = getter[getter.length-1].getReturnType();
             if (attrType.equals(Integer.class))
               value = new Integer(Double.valueOf(value.toString()).intValue());
             else if (attrType.equals(Double.class))
@@ -236,18 +274,21 @@ public class VOListAdapter {
         }
       }
       else if (value!=null && value.equals("")) {
-        if (!getter.getReturnType().equals(value.getClass()))
+        if (!getter[getter.length-1].getReturnType().equals(value.getClass()))
           value = null;
       }
       // test date compatibility...
       if (value!=null && value.getClass().equals(java.util.Date.class)) {
-        if (setter.getParameterTypes()[0].equals(java.sql.Date.class))
+        if (setter[setter.length-1].getParameterTypes()[0].equals(java.sql.Date.class))
           value = new java.sql.Date(((java.util.Date)value).getTime());
-        else if (setter.getParameterTypes()[0].equals(java.sql.Timestamp.class))
+        else if (setter[setter.length-1].getParameterTypes()[0].equals(java.sql.Timestamp.class))
           value = new java.sql.Timestamp(((java.util.Date)value).getTime());
       }
 
-      setter.invoke(obj,new Object[]{value});
+      for(int i=0;i<setter.length-1;i++)
+        obj = (ValueObject)setter[i].invoke(obj,new Object[0]);
+
+      setter[setter.length-1].invoke(obj,new Object[]{value});
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -553,10 +594,10 @@ public class VOListAdapter {
    */
   public final Class getFieldClass(int colIndex) {
     try {
-      Method m = (Method)voGetterMethods.get(getFieldName(colIndex));
+      Method[] m = (Method[])voGetterMethods.get(getFieldName(colIndex));
       if (m==null)
         Logger.error(this.getClass().getName(),"getField","No getter method for index "+colIndex+" and attribute name '"+getFieldName(colIndex)+"'.",null);
-      return m.getReturnType();
+      return m[m.length-1].getReturnType();
     }
     catch (Exception ex) {
       ex.printStackTrace();

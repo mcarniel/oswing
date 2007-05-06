@@ -1,4 +1,20 @@
 
+Release Notes 1.0.8
+-------------------
+
+Final release 1.0.8 available
+
+Added a layer to embed Spring Framework as a server-side layer for OpenSwing applications.
+Added demo18 showing how to combine OpenSwing with Spring. Sample app has been tested with Spring 2.0.4 (not included in OpenSwing distribution). See "readme.txt" file in "classes/demo18" subfolder for more instructions.
+Added a layer to embed iBatis Data Mapper as a server-side layer for OpenSwing applications.
+Added demo19 showing how to combine OpenSwing with iBatis. Sample app has been tested with iBatis 2.3 (not included in OpenSwing distribution). 
+Demo19 also shows how to bind a composition of attributes to a column or a control, related to nested value objects.
+Improved attribute definition in grid columns and graphics controls: now it is possible to bind a column or a control to a composition of attributes, related to nested value objects.
+Fixed problem with text control and text column when "uppercase" property is set to "true": some not visible characters were erroneously added to the input field.
+
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
 
 Release Notes 1.0.7
 -------------------

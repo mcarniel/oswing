@@ -7,6 +7,8 @@ import org.openswing.swing.message.receive.java.ValueObject;
 import org.openswing.swing.logger.client.Logger;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Enumeration;
 
 
 /**
@@ -51,8 +53,11 @@ public class VOModel {
   /** value changed listeners */
   private ArrayList valueChangeListeners = new ArrayList();
 
-  /** list of attribute names */
-  private ArrayList attributeNames = new ArrayList();
+  /** collection of <attribute name,Method[] getters+setter> */
+  private Hashtable voSetterMethods = new Hashtable();
+
+  /** collection of <attribute name,Method[] getters> */
+  private Hashtable voGetterMethods = new Hashtable();
 
 
   /**
@@ -62,24 +67,53 @@ public class VOModel {
    */
   public VOModel(Class valueObjectClass) throws Exception {
     this.valueObjectClass = valueObjectClass;
-    info = Introspector.getBeanInfo(valueObjectClass);
-
     // retrieve attribute properties...
-    PropertyDescriptor[] props = info.getPropertyDescriptors();
-    for (int i = 0; i < props.length; i++) {
-      attributeNames.add(props[i].getName());
-//      addField(new MetaData(props[i].getName(),
-//                              props[i].getPropertyType(),
-//                              props[i].getDisplayName()));
-    }
+    analyzeClassFields("",new Method[0],valueObjectClass);
+    setValueObject( (ValueObject) valueObjectClass.newInstance());
+  }
 
+
+  /**
+   * Analyze class fields and fill in "voSetterMethods","voGetterMethods","indexes",reverseIndexes" attributes.
+   * @param prefix e.g. "attrx.attry."
+   * @param parentMethods getter methods of parent v.o.
+   * @param classType class to analyze
+   */
+  private void analyzeClassFields(String prefix,Method[] parentMethods,Class classType) {
     try {
-      setValueObject( (ValueObject)valueObjectClass.newInstance() );
+      info = Introspector.getBeanInfo(classType);
+      // retrieve attribute properties...
+      PropertyDescriptor[] props = info.getPropertyDescriptors();
+      for (int i = 0; i < props.length; i++) {
+
+        if (props[i].getReadMethod()!=null &&
+            props[i].getReadMethod().getParameterTypes().length==0 &&
+            ValueObject.class.isAssignableFrom( props[i].getReadMethod().getReturnType() )
+        ) {
+          Method[] newparentMethods = new Method[parentMethods.length+1];
+          System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
+          newparentMethods[parentMethods.length] = props[i].getReadMethod();
+          analyzeClassFields(prefix+props[i].getName()+".",newparentMethods,props[i].getReadMethod().getReturnType());
+        }
+        else {
+          Method[] newparentMethods = new Method[parentMethods.length+1];
+          System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
+          newparentMethods[parentMethods.length] = props[i].getReadMethod();
+          voGetterMethods.put(prefix+props[i].getName(),newparentMethods);
+
+          Method[] newparentMethods2 = new Method[parentMethods.length+1];
+          System.arraycopy(parentMethods,0,newparentMethods2,0,parentMethods.length);
+          newparentMethods2[parentMethods.length] = props[i].getWriteMethod();
+          voSetterMethods.put(prefix+props[i].getName(),newparentMethods2);
+        }
+      }
+
     }
     catch (Throwable ex) {
-      Logger.error(this.getClass().getName(),"VOModel","Error on storing the value object",ex);
+      Logger.error(this.getClass().getName(),"analyzeClassFields","Error on analyzing the object",ex);
     }
   }
+
 
 
   /**
@@ -105,26 +139,39 @@ public class VOModel {
         valueObject!=null && !valueObject.equals(oldValueObject)) {
         // fire value changed events...
         PropertyDescriptor prop = null;
-        Method readMethod = null;
+        Method[] readMethods = null;
         Object oldValue = null;
         Object newValue = null;
-        for (int i = 0; i < attributeNames.size(); i++) {
-          prop = getPropertyDescriptor(attributeNames.get(i).toString());
-          readMethod = prop.getReadMethod();
-          if (readMethod != null) {
+        String attrName = null;
+        Enumeration en = voGetterMethods.keys();
+        Object obj = null;
+        while(en.hasMoreElements()) {
+          attrName = en.nextElement().toString();
+          readMethods = (Method[])voGetterMethods.get(attrName);
+          if (readMethods != null) {
             try {
-              oldValue = oldValueObject!=null?readMethod.invoke(oldValueObject, new Object[0]):null;
-              newValue = valueObject!=null?readMethod.invoke(valueObject, new Object[0]):null;
+              obj = oldValueObject;
+              if (obj!=null)
+                for(int i=0;i<readMethods.length-1;i++)
+                  obj = readMethods[i].invoke(obj,new Object[0]);
+              oldValue = obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
+
+              obj = valueObject;
+              if (obj!=null)
+                for(int i=0;i<readMethods.length-1;i++)
+                  obj = readMethods[i].invoke(obj,new Object[0]);
+              newValue = obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
             }
             catch (Exception ex) {
-              Logger.error(this.getClass().getName(),"setValueObject","Error while setting the value object attribute '"+attributeNames.get(i)+"'",ex);
+              Logger.error(this.getClass().getName(),"setValueObject","Error while setting the value object attribute '"+attrName+"'",ex);
               continue;
             }
           }
           if (newValue==null && oldValue!=null ||
               newValue!=null && oldValue==null ||
               newValue!=null && oldValue==null && !newValue.equals(oldValue))
-            fireValueChanged(attributeNames.get(i).toString(),oldValue,newValue);
+            fireValueChanged(attrName,oldValue,newValue);
+
         }
       }
   }
@@ -147,13 +194,16 @@ public class VOModel {
         return null;
       }
       try {
-        PropertyDescriptor prop = getPropertyDescriptor(attributeName);
-        Method readMethod = prop.getReadMethod();
-        if (readMethod != null) {
-              return readMethod.invoke(getValueObject(), new Object[0]);
-            }
+        Method[] readMethods = (Method[])voGetterMethods.get(attributeName);
+        if (readMethods != null) {
+          Object obj = getValueObject();
+          if (obj!=null)
+            for(int i=0;i<readMethods.length-1;i++)
+              obj = readMethods[i].invoke(obj,new Object[0]);
+          return obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
         }
-      catch (Exception ex) {
+      }
+      catch (Throwable ex) {
         Logger.error(this.getClass().getName(),"getValue","Error while reading the value object attribute '"+attributeName+"'",ex);
       }
       return null;
@@ -170,22 +220,27 @@ public class VOModel {
           return;
       }
       try {
-        PropertyDescriptor prop = getPropertyDescriptor(attributeName);
-        Method writeMethod = prop.getWriteMethod();
-        if (writeMethod != null) {
+        Method[] writeMethods = (Method[])voSetterMethods.get(attributeName);
+        if (writeMethods != null) {
           Object oldValue = getValue(attributeName);
           if (value!=null) {
-            if (writeMethod.getParameterTypes()[0].equals(java.sql.Date.class) &&
+            if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(java.sql.Date.class) &&
               value.getClass().equals(java.util.Date.class))
               value = new java.sql.Date(((java.util.Date)value).getTime());
-            else if (writeMethod.getParameterTypes()[0].equals(java.sql.Timestamp.class) &&
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(java.sql.Timestamp.class) &&
               value.getClass().equals(java.util.Date.class))
               value = new java.sql.Timestamp(((java.util.Date)value).getTime());
-            else if (writeMethod.getParameterTypes()[0].equals(java.sql.Timestamp.class) &&
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(java.sql.Timestamp.class) &&
               value.getClass().equals(java.sql.Date.class))
               value = new java.sql.Timestamp(((java.sql.Date)value).getTime());
           }
-          writeMethod.invoke(getValueObject(), new Object[] {value});
+
+          Object obj = getValueObject();
+          if (obj!=null)
+            for(int i=0;i<writeMethods.length-1;i++)
+              obj = writeMethods[i].invoke(obj,new Object[0]);
+          writeMethods[writeMethods.length-1].invoke(obj, new Object[]{value});
+
           if (value==null && oldValue!=null ||
               value!=null && oldValue==null ||
               value!=null && oldValue==null && !value.equals(oldValue))
@@ -195,24 +250,6 @@ public class VOModel {
       catch (Exception ex) {
         Logger.error(this.getClass().getName(),"setValue","Error while writing the value object attribute '"+attributeName+"'",ex);
       }
-  }
-
-
-  /**
-   * Method called inside getValue/setValue methods.
-   * @param attributeName attribute name of the value object
-   * @return property descriptor
-   */
-  private PropertyDescriptor getPropertyDescriptor(String attributeName) {
-    PropertyDescriptor pd = null;
-    PropertyDescriptor[] desc = info.getPropertyDescriptors();
-    for (int i = 0; i < desc.length; i++) {
-      if (attributeName.equals(desc[i].getName())) {
-          pd = desc[i];
-          break;
-      }
-    }
-    return pd;
   }
 
 

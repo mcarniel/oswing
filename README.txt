@@ -17,7 +17,15 @@ The following files must be available to use OpenSwing framework:
 - srcserveros.jar
 
 Note: hsqldb.jar is only used in demos included with the OpenSwing distribution, so that it is not part of OpenSwing framework.
-Note: to run the "demo17" sample you have to include in the classpath hibernate libraries too (see runDemo17.bat/sh). "demo17" sample app has been tested with Hibernate 3.2.3
+
+Note: to run the "demo17" sample you have to include in the classpath Hibernate libraries too (see runDemo17.bat/sh). "demo17" sample app has been tested with Hibernate 3.2.3
+
+Note: to run the "demo18" sample you have to include in the classpath Spring framework libraries too. "demo18" sample app has been tested with release 2.0.4 of Spring, using Tomcat 5.5 and JDK 1.6.
+You have to include in web container classpath at least the following Spring files: 
+aspectjrt.jar, aspectjweaver.jar, cglib-nodep-2.1_3.jar, commons-dbcp.jar, commons-pool.jar, spring-aspects.jar, spring.jar
+
+Note: to run the "demo19" sample you have to include in the classpath iBatis libraries too (see runDemo19.bat/sh). "demo19" sample app has been tested with iBatis 2.3
+
 
 
 2. Directory Structure
@@ -26,7 +34,14 @@ src		source files of OpenSwing framework.
 
 srchibernate    source files of OpenSwing framework specifically related to Hibernate embedding; to compile these classes you have to include in classpath Hibernate jars too (NOT provided in OpenSwing distribution)
 
-srcdemo		source files of demos included in the distribution; "demo17" subfolder requires Hibernate jars too (NOT provided in OpenSwing distribution)
+srcspring       source files of OpenSwing framework specifically related to Spring framework embedding; to compile these classes you have to include in web container classpath the Spring jars too (NOT provided in OpenSwing distribution)
+
+srchibernate    source files of OpenSwing framework specifically related to iBatis embedding; to compile these classes you have to include in classpath iBatis jars too (NOT provided in OpenSwing distribution)
+
+srcdemo		source files of demos included in the distribution; 
+                "demo17" subfolder requires Hibernate jars too (NOT provided in OpenSwing distribution)
+                "demo18" subfolder requires Spring jars too (NOT provided in OpenSwing distribution)
+                "demo19" subfolder requires iBatis jars too (NOT provided in OpenSwing distribution)
 
 build		jar files 
 

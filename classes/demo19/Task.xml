@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Task">
+  <!-- Result maps describe the mapping between the columns returned
+       from a query, and the class properties.  A result map isn't
+       necessary if the columns (or aliases) match to the properties 
+       exactly. -->
+  <resultMap id="TaskResult" class="demo19.TaskVO">
+    <result property="taskCode" column="TASK_CODE"/>  
+    <result property="description" column="DESCRIPTION"/>
+    <result property="status" column="STATUS"/>
+  </resultMap>
+  
+  <!-- Select with no parameters using the result map for Task class. -->
+  <select id="getTasks" resultMap="TaskResult">
+    select T.TASK_CODE,T.DESCRIPTION,T.STATUS
+    from TASKS T
+    where T.STATUS='E'
+    <dynamic prepend=" order by ">
+      <iterate property="sortedColumns" conjunction=",">
+        <isEqual property="sortedColumns[].attributeName" compareValue="taskCode"> TASK_CODE  </isEqual> 
+        $sortedColumns[].versus$
+      </iterate>
+    </dynamic>
+  </select>
+
+  <select id="validateTask" parameterClass="java.lang.String" resultMap="TaskResult">
+    select T.TASK_CODE,T.DESCRIPTION,T.STATUS
+    from TASKS T
+    where T.STATUS='E' and T.TASK_CODE = #taskCode#
+  </select> 
+  
+</sqlMap>
