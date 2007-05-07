@@ -10,6 +10,9 @@ import org.openswing.swing.message.receive.java.ValueObject;
 import org.openswing.swing.form.client.Form;
 import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.message.receive.java.ValueObjectImpl;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 
 
 /**
@@ -88,30 +91,31 @@ public class AttributeNameEditor extends PropertyEditorSupport {
       if (o instanceof ValueObject) {
         try {
           ArrayList attrList = new ArrayList();
-          Method[] methods = designVOClass.getMethods();
-          String attrName = null;
-          for(int i=0;i<methods.length;i++) {
-            if (methods[i].getName().startsWith("get")) {
-              attrName = methods[i].getName().substring(3);
-              if (attrName.length()==1)
-                attrName = attrName.toLowerCase();
-              else
-                attrName = attrName.substring(0,1).toLowerCase()+attrName.substring(1);
-              if (columnType==null ||
-                  isCompatible(methods[i].getReturnType()))
-                attrList.add(attrName);
-            }
-            else if (methods[i].getName().startsWith("is")) {
-              attrName = methods[i].getName().substring(2);
-              if (attrName.length()==1)
-                attrName = attrName.toLowerCase();
-              else
-                attrName = attrName.substring(0,1).toLowerCase()+attrName.substring(1);
-              if (columnType==null ||
-                  isCompatible(methods[i].getReturnType()))
-                attrList.add(attrName);
-            }
-          }
+          analyzeClassFields("",attrList,designVOClass);
+//          Method[] methods = designVOClass.getMethods();
+//          String attrName = null;
+//          for(int i=0;i<methods.length;i++) {
+//            if (methods[i].getName().startsWith("get")) {
+//              attrName = methods[i].getName().substring(3);
+//              if (attrName.length()==1)
+//                attrName = attrName.toLowerCase();
+//              else
+//                attrName = attrName.substring(0,1).toLowerCase()+attrName.substring(1);
+//              if (columnType==null ||
+//                  isCompatible(methods[i].getReturnType()))
+//                attrList.add(attrName);
+//            }
+//            else if (methods[i].getName().startsWith("is")) {
+//              attrName = methods[i].getName().substring(2);
+//              if (attrName.length()==1)
+//                attrName = attrName.toLowerCase();
+//              else
+//                attrName = attrName.substring(0,1).toLowerCase()+attrName.substring(1);
+//              if (columnType==null ||
+//                  isCompatible(methods[i].getReturnType()))
+//                attrList.add(attrName);
+//            }
+//          }
           attributeNames = (String[])attrList.toArray(new String[attrList.size()]);
         }
         catch (Exception ex) {
@@ -132,92 +136,123 @@ public class AttributeNameEditor extends PropertyEditorSupport {
   }
 
 
+  private void analyzeClassFields(String prefix,ArrayList attributes,Class classType) {
+    try {
+      BeanInfo  info = Introspector.getBeanInfo(classType);
+      // retrieve attribute properties...
+      PropertyDescriptor[] props = info.getPropertyDescriptors();
+      for (int i = 0; i < props.length; i++) {
+
+        if (props[i].getReadMethod()!=null &&
+            props[i].getReadMethod().getParameterTypes().length==0 &&
+            ValueObject.class.isAssignableFrom( props[i].getReadMethod().getReturnType() )
+        ) {
+          analyzeClassFields(prefix+props[i].getName()+".",attributes,props[i].getReadMethod().getReturnType());
+        }
+        else {
+          if (props[i].getReadMethod().getReturnType()!=null &&
+              isCompatible(props[i].getReadMethod().getReturnType()))
+            attributes.add(prefix+props[i].getName());
+        }
+      }
+
+    }
+    catch (Throwable ex) {
+    }
+  }
+
+
   /**
    * @param attrType tipo dell'attributo
    * @return "true" se i due tipi sono compatibili, "false" altrimenti
    */
   private boolean isCompatible(Class attrType) {
-    // input controls...
-    if ((attrType.equals(Integer.class) ||
-         attrType.equals(Long.class) ||
-         attrType.equals(Double.class) ||
-         attrType.equals(BigDecimal.class) ||
-         attrType.equals(Float.class)) &&
-        (columnType.equals(NumericControl.class) ||
-         columnType.equals(CurrencyControl.class) )) {
-      return true;
-    }
-    else if ((attrType.equals(java.util.Date.class) ||
-              attrType.equals(java.sql.Date.class) ||
-              attrType.equals(Timestamp.class))  &&
-             (columnType.equals(DateControl.class))) {
-      return true;
-    }
-    else if (attrType.equals(byte[].class)  &&
-             (columnType.equals(ImageControl.class))) {
-      return true;
-    }
-    else if (attrType.equals(String.class) && columnType.equals(TextControl.class)) {
-      return true;
-    }
-    else if (attrType.equals(String.class) && columnType.equals(TextAreaControl.class)) {
-      return true;
-    }
-    else if (columnType.equals(CheckBoxControl.class) && (attrType.equals(Boolean.class) || attrType.equals(boolean.class))) {
-      return true;
-    }
-    else if (columnType.equals(RadioButtonControl.class) && (attrType.equals(Boolean.class) || attrType.equals(boolean.class))) {
-      return true;
-    }
-    else if (columnType.equals(ComboBoxControl.class) || ComboBoxControl.class.isAssignableFrom(columnType)) {
-      return true;
-    }
-    else if (columnType.equals(CodLookupControl.class)) {
-      return true;
-    }
+    try {
+      // input controls...
+      if ((attrType.equals(Integer.class) ||
+           attrType.equals(Long.class) ||
+           attrType.equals(Double.class) ||
+           attrType.equals(BigDecimal.class) ||
+           attrType.equals(Float.class)) &&
+          (columnType.equals(NumericControl.class) ||
+           columnType.equals(CurrencyControl.class) )) {
+        return true;
+      }
+      else if ((attrType.equals(java.util.Date.class) ||
+                attrType.equals(java.sql.Date.class) ||
+                attrType.equals(Timestamp.class))  &&
+               (columnType.equals(DateControl.class))) {
+        return true;
+      }
+      else if (attrType.equals(byte[].class)  &&
+               (columnType.equals(ImageControl.class))) {
+        return true;
+      }
+      else if (attrType.equals(String.class) && columnType.equals(TextControl.class)) {
+        return true;
+      }
+      else if (attrType.equals(String.class) && columnType.equals(TextAreaControl.class)) {
+        return true;
+      }
+      else if (columnType.equals(CheckBoxControl.class) && (attrType.equals(Boolean.class) || attrType.equals(boolean.class))) {
+        return true;
+      }
+      else if (columnType.equals(RadioButtonControl.class) && (attrType.equals(Boolean.class) || attrType.equals(boolean.class))) {
+        return true;
+      }
+      else if (columnType.equals(ComboBoxControl.class) || ComboBoxControl.class.isAssignableFrom(columnType)) {
+        return true;
+      }
+      else if (columnType.equals(CodLookupControl.class)) {
+        return true;
+      }
 
-    // grid columns...
-    if ((attrType.equals(Integer.class) ||
-         attrType.equals(Long.class)) &&
-        (columnType.equals(PercentageColumn.class) ||
-         columnType.equals(IntegerColumn.class))) {
-      return true;
-    }
-    else if (attrType.equals(byte[].class) &&
-             columnType.equals(ImageColumn.class)) {
-      return true;
-    }
-    else if ((attrType.equals(Double.class) ||
-              attrType.equals(BigDecimal.class) ||
-              attrType.equals(Float.class)) &&
-             (columnType.equals(DecimalColumn.class) ||
-              columnType.equals(IntegerColumn.class) ||
-              columnType.equals(CurrencyColumn.class) ||
-              columnType.equals(PercentageColumn.class))) {
-      return true;
-    }
-    else if ((attrType.equals(java.util.Date.class) ||
-              attrType.equals(java.sql.Date.class) ||
-              attrType.equals(Timestamp.class)) &&
-             (columnType.equals(DateColumn.class) ||
-              columnType.equals(DateTimeColumn.class) ||
-              columnType.equals(TimeColumn.class))) {
-      return true;
-    }
-    else if (attrType.equals(String.class) && columnType.equals(TextColumn.class)) {
-      return true;
-    }
-    else if (columnType.equals(CheckBoxColumn.class)) {
-      return true;
-    }
-    else if (columnType.equals(ComboColumn.class)) {
-      return true;
-    }
-    else if (columnType.equals(CodLookupColumn.class)) {
-      return true;
-    }
+      // grid columns...
+      if ((attrType.equals(Integer.class) ||
+           attrType.equals(Long.class)) &&
+          (columnType.equals(PercentageColumn.class) ||
+           columnType.equals(IntegerColumn.class))) {
+        return true;
+      }
+      else if (attrType.equals(byte[].class) &&
+               columnType.equals(ImageColumn.class)) {
+        return true;
+      }
+      else if ((attrType.equals(Double.class) ||
+                attrType.equals(BigDecimal.class) ||
+                attrType.equals(Float.class)) &&
+               (columnType.equals(DecimalColumn.class) ||
+                columnType.equals(IntegerColumn.class) ||
+                columnType.equals(CurrencyColumn.class) ||
+                columnType.equals(PercentageColumn.class))) {
+        return true;
+      }
+      else if ((attrType.equals(java.util.Date.class) ||
+                attrType.equals(java.sql.Date.class) ||
+                attrType.equals(Timestamp.class)) &&
+               (columnType.equals(DateColumn.class) ||
+                columnType.equals(DateTimeColumn.class) ||
+                columnType.equals(TimeColumn.class))) {
+        return true;
+      }
+      else if (attrType.equals(String.class) && columnType.equals(TextColumn.class)) {
+        return true;
+      }
+      else if (columnType.equals(CheckBoxColumn.class)) {
+        return true;
+      }
+      else if (columnType.equals(ComboColumn.class)) {
+        return true;
+      }
+      else if (columnType.equals(CodLookupColumn.class)) {
+        return true;
+      }
 
-    return false;
+      return false;
+    }
+    catch (Throwable ex) {
+      return false;
+    }
   }
 
 
