@@ -68,6 +68,8 @@ public class VOModel {
   public VOModel(Class valueObjectClass) throws Exception {
     this.valueObjectClass = valueObjectClass;
     // retrieve attribute properties...
+    if (Beans.isDesignTime())
+      return;
     analyzeClassFields("",new Method[0],valueObjectClass);
     setValueObject( (ValueObject) valueObjectClass.newInstance());
   }
