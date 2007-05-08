@@ -235,6 +235,18 @@ public class VOModel {
             else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(java.sql.Timestamp.class) &&
               value.getClass().equals(java.sql.Date.class))
               value = new java.sql.Timestamp(((java.sql.Date)value).getTime());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Integer.class) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Integer(((java.math.BigDecimal)value).intValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Long.class) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Long(((java.math.BigDecimal)value).longValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Double.class) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Double(((java.math.BigDecimal)value).doubleValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Float.class) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Float(((java.math.BigDecimal)value).floatValue());
           }
 
           Object obj = getValueObject();
