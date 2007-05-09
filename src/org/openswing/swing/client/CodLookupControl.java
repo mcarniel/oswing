@@ -355,6 +355,22 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
   }
 
 
+  /**
+   * Check if Form has been setted.
+   */
+  public final void addNotify() {
+    super.addNotify();
+
+    // set Form object in the lookup container...
+    if (validationController!=null && validationController.getForm()==null) {
+      Form form = ClientUtils.getLinkedForm(this);
+      if (form != null)
+        validationController.setForm(form);
+    }
+
+  }
+
+
   private final void addLookupListener(LookupController controller) {
     // lookup controller listener...
     controller.addLookupListener(new LookupListener() {

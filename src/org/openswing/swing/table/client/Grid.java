@@ -992,8 +992,8 @@ public class Grid extends JTable
     int modelColIndex = this.getSelectedColumn()==-1 ? -1 : this.getColumnModel().getColumn(this.getSelectedColumn()).getModelIndex();
 
     if (modelColIndex!=-1 &&
-        colProps[modelColIndex].isColumnFilterable() &&
-        colProps[modelColIndex].getColumnType()!=Column.TYPE_CHECK) {
+        colProps[modelColIndex].isColumnFilterable()) {// &&
+//        colProps[modelColIndex].getColumnType()!=Column.TYPE_CHECK) {
       int filterType=grids.getFilterPanel().FILTER_TYPE_VALUE;
       switch (colProps[modelColIndex].getColumnType()) {
         case Column.TYPE_DATE :

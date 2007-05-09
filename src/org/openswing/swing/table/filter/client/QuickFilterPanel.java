@@ -16,6 +16,7 @@ import java.awt.event.*;
 import java.sql.Types;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.internationalization.java.*;
+import org.openswing.swing.client.CheckBoxControl;
 
 
 /**
@@ -222,6 +223,23 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
           result.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
               if (e.getKeyCode()==e.VK_ENTER)
+                valueKeyPressed(e);
+            }
+          } );
+        }
+        ;break;
+
+        case Column.TYPE_CHECK :
+        {
+          result=new CheckBoxControl();
+          if (initValue!=null) {
+            ((CheckBoxControl)result).setValue(initValue);
+          } else {
+            ((CheckBoxControl)result).setValue(Boolean.TRUE);
+          }
+          result.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+              if (e.getKeyCode()==e.VK_ENTER || e.getKeyCode()==e.VK_SPACE)
                 valueKeyPressed(e);
             }
           } );
@@ -498,6 +516,11 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
             result=new java.sql.Date(((DateControl)value).getDate().getTime());
           else
             result=new java.sql.Timestamp(((DateControl)value).getDate().getTime());
+        }
+        ;break;
+        case Column.TYPE_CHECK:
+        {
+          result = (Boolean) ((CheckBoxControl)value).getValue();
         }
         ;break;
         case Column.TYPE_INT:
