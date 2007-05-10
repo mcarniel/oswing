@@ -16,6 +16,8 @@ import org.openswing.swing.internationalization.java.XMLResourcesFactory;
 import java.sql.*;
 import org.openswing.swing.domains.java.Domain;
 import org.openswing.swing.internationalization.java.*;
+import org.openswing.swing.miscellaneous.client.TipInternalFrame;
+import org.openswing.swing.miscellaneous.client.TipPanelContent;
 
 
 /**
@@ -68,6 +70,32 @@ public class ClientApplication implements MDIController,LoginController {
     props.setProperty("task","Task");
     props.setProperty("department","Department");
 
+    // tips...
+    props.setProperty("shortcuts in grid and form controls","Shortcuts in grid and form controls");
+    props.setProperty("quick filter and other features in grid control","Quick filter and other features in grid control");
+    props.setProperty(
+        "press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
+        "press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
+        "press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
+        "press ctrl+d to switch to delete records in a grid or in a form panel.\n",
+        "Press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
+        "Press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
+        "Press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
+        "Press ctrl+d to switch to delete records in a grid or in a form panel.\n"
+    );
+    props.setProperty(
+        "<html><body>you may right click with the mouse button inside a grid to show\n"+
+        "a popup menu that allows to:\n"+
+        "<ul><li>filter data of the current selected column</li>\n"+
+        "<li>show/hide columns</li></ul></body></html>",
+        "<html><body>You may right click with the mouse button inside a grid to show\n"+
+        "a popup menu that allows to:\n"+
+        "<ul><li>filter data of the current selected column</li>\n"+
+        "<li>show/hide columns</li></ul></body></html>"
+    );
+
+
+
     ClientSettings clientSettings = new ClientSettings(
         new EnglishOnlyResourceFactory("$",props,true),
         domains
@@ -79,6 +107,9 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
 
     MDIFrame mdi = new MDIFrame(this);
+
+    // show tip of the day internal frame...
+    showTipFrame();
   }
 
 
@@ -87,6 +118,49 @@ public class ClientApplication implements MDIController,LoginController {
    */
   public void afterMDIcreation(MDIFrame frame) {
     MDIFrame.addStatusComponent(new Clock());
+
+  }
+
+
+  /**
+   * Show 'tip of the day' internal frame.
+   */
+  private void showTipFrame() {
+    final TipInternalFrame tipFrame1 = new TipInternalFrame(new TipPanelContent() {
+
+      /**
+       * @return list of titles, for each tip
+       */
+      public String[] getTitles() {
+        return new String[] {
+            "shortcuts in grid and form controls",
+
+            "quick filter and other features in grid control"
+        };
+      }
+
+
+      /**
+       * @return list of tips
+       */
+      public String[] getTips() {
+        return new String[] {
+            "press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
+            "press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
+            "press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
+            "press ctrl+d to switch to delete records in a grid or in a form panel.\n",
+
+            "<html><body>you may right click with the mouse button inside a grid to show\n"+
+            "a popup menu that allows to:\n"+
+            "<ul><li>filter data of the current selected column</li>\n"+
+            "<li>show/hide columns</li></ul></body></html>"
+        };
+      }
+
+    });
+
+    tipFrame1.setShowCheck(false);
+    MDIFrame.add(tipFrame1);
 
   }
 

@@ -188,6 +188,13 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     // image panel...
     dictionary.setProperty("image selection","Image selection");
 
+    // tip of the day panel...
+    dictionary.setProperty("show 'tip of the day' after launching","Show 'tip of the day' after launching");
+    dictionary.setProperty("previous tip","Previous tip");
+    dictionary.setProperty("next tip","Next tip");
+    dictionary.setProperty("close","Close");
+    dictionary.setProperty("tip of the day","Tip of the day");
+
     dictionary.putAll(additionalDictionary);
 
     resources = new Resources(

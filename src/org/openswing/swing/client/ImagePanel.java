@@ -77,6 +77,14 @@ public class ImagePanel extends JPanel {
 
 
   /**
+   * @return image width
+   */
+  public final int getImageWidth() {
+    return imagePanel.getWidth();
+  }
+
+
+  /**
    * Set the image from a byte[].
    * @param image image to set
    */

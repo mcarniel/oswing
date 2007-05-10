@@ -141,6 +141,13 @@
 
   <object key="image selection" value="Importa immagine" />
 
+<!-- tip panel -->
+  <object key="show 'tip of the day' after launching" value="Visualizza il 'tip of the day' ad ogni avvio" />
+  <object key="previous tip" value="Tip precedente" />
+  <object key="next tip" value="Tip successivo" />
+  <object key="close" value="Chiudi" />    
+  <object key="tip of the day" value="Tip of the day" />    
+  
 <!-- application translations -->
       <object key="this text will be translated" value="Questo testo &#232; stato tradotto" />
       <object key="date" value="Data" />

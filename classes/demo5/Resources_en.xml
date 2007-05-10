@@ -144,6 +144,13 @@
 
   <object key="image selection" value="Image selection" />
 
+<!-- tip panel -->
+  <object key="show 'tip of the day' after launching" value="Show 'tip of the day' after launching" />
+  <object key="previous tip" value="Previous tip" />
+  <object key="next tip" value="Next tip" />
+  <object key="close" value="Close" />    
+  <object key="tip of the day" value="Tip of the day" /> 
+  
 <!-- application translations -->
 
       <object key="this text will be translated" value="This text will be translated" />
