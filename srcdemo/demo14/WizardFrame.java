@@ -13,6 +13,8 @@ import org.openswing.swing.util.client.ClientUtils;
 import java.io.*;
 import java.util.zip.*;
 import java.util.ArrayList;
+import org.openswing.swing.miscellaneous.client.ProgressDialog;
+import org.openswing.swing.miscellaneous.client.ProgressEvent;
 
 
 /**
@@ -29,6 +31,8 @@ public class WizardFrame extends JFrame {
   private WizardPanel wizardPanel = new WizardPanel();
 
   private DefaultMutableTreeNode dragNode = null;
+
+  private boolean interrupted = false;
 
 
   public WizardFrame() {
@@ -78,6 +82,7 @@ public class WizardFrame extends JFrame {
         OptionPane.showMessageDialog(this,"You must specify an existing folder","Attention",JOptionPane.WARNING_MESSAGE);
         return;
       }
+
       try {
         ZipInputStream zip = new ZipInputStream(new FileInputStream(zipFile));
         ZipEntry entry = null;
@@ -118,37 +123,108 @@ public class WizardFrame extends JFrame {
         OptionPane.showMessageDialog(this,"You must specify a zip file","Attention",JOptionPane.WARNING_MESSAGE);
         return;
       }
-      try {
-        ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(destFile));
-        ZipEntry entry = null;
-        File name = null;
-        byte[] bb = new byte[10000];
-        int len = 0;
-        FileInputStream in = null;
 
-        // find out files and sub-folders...
-        ArrayList files = new ArrayList();
-        addFiles(files,folder);
-
-        for(int i=0;i<files.size();i++) {
-          name = (File)files.get(i);
-          entry = new ZipEntry(name.getPath());
-          zip.putNextEntry(entry);
-          if (name.isFile()) {
-            in = new FileInputStream(name);
-            while((len = in.read(bb))>0)
-              zip.write(bb,0,len);
-            in.close();
-          }
-          zip.closeEntry();
+      // find out files and sub-folders...
+      final ArrayList files = new ArrayList();
+      addFiles(files,folder);
+      final ProgressDialog d = new ProgressDialog(
+           WizardFrame.this,
+           "Zip/Unzip Files Wizard",
+           "Fetching files...",
+           "Searching for files in file system to add to zip file",
+           new String[] {"File name","File size"},
+           0,
+           100,
+           false,
+           true
+      );
+      d.setImageName("file.gif");
+      d.addCancelButtonListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          interrupted = true;
         }
-        zip.close();
-//        System.exit(0);
-      }
-      catch (Exception ex) {
-        OptionPane.showMessageDialog(this,ex.getMessage(),"Attention",JOptionPane.ERROR_MESSAGE);
-      }
+      });
 
+      try {
+        final ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(destFile));
+
+        d.setMaximumValue(files.size());
+/*
+        // uncomment this to add colored bands...
+        for(int i=0;i<files.size();i++)
+          d.addColoredBand(i,i+1,new Color(155+(int)(100d*(double)i/(double)files.size()),155+(int)(100d*(double)i/(double)files.size()),155+(int)(100d*(double)i/(double)files.size())));
+*/
+/*
+         // uncomment this to enable color changing according to colored bands, using only one color...
+        d.setShowAllBands(false);
+*/
+
+        d.setVisible(true);
+        interrupted = false;
+
+        new Thread() {
+          public void run() {
+            compressFiles(files,zip,d);
+          }
+        }.start();
+
+      }
+      catch (Exception ex2) {
+        try {
+          d.setVisible(false);
+          d.dispose();
+        }
+        catch (Exception ex1) {
+        }
+      }
+    }
+  }
+
+
+  private void compressFiles(ArrayList files,ZipOutputStream zip,ProgressDialog d) {
+    try {
+      ZipEntry entry = null;
+      File name = null;
+      byte[] bb = new byte[10000];
+      int len = 0;
+      FileInputStream in = null;
+
+      for(int i=0;i<files.size();i++) {
+        if (interrupted) {
+//          d.setVisible(false);
+//          d.dispose();
+          return;
+        }
+        name = (File)files.get(i);
+        entry = new ZipEntry(name.getPath());
+        zip.putNextEntry(entry);
+        if (name.isFile()) {
+          in = new FileInputStream(name);
+          while((len = in.read(bb))>0)
+            zip.write(bb,0,len);
+          in.close();
+        }
+        zip.closeEntry();
+
+        d.processProgressEvent(new ProgressEvent(
+            i+1,
+            "Adding files to zip destination file...",
+            "Add all searched files to\n the specified destination zip file",
+            new String[] {name.getAbsolutePath(),String.valueOf(name.length())+" bytes"}
+        ));
+
+    try {
+      Thread.sleep(500);
+    }
+    catch (InterruptedException ex1) {
+    }
+
+      }
+      zip.close();
+//        System.exit(0);
+    }
+    catch (Exception ex) {
+      OptionPane.showMessageDialog(this,ex.getMessage(),"Attention",JOptionPane.ERROR_MESSAGE);
     }
   }
 

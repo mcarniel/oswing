@@ -25,7 +25,7 @@ public class ClientApplication {
     Properties props = new Properties();
 
     ClientSettings clientSettings = new ClientSettings(
-        new EnglishOnlyResourceFactory("£",props,true),
+        new EnglishOnlyResourceFactory("£",props,false),
         domains
     );
 
