@@ -198,6 +198,10 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     // progress panel...
     dictionary.setProperty("progress","Progress");
 
+    // licence agreement...
+    dictionary.setProperty("i accept the terms in the licence agreement","I accept the terms in the licence agreement");
+    dictionary.setProperty("ok","Ok");
+    dictionary.setProperty("i do not accept the terms in the licence agreement","I do not accept the terms in the licence agreement");
 
     dictionary.putAll(additionalDictionary);
 
