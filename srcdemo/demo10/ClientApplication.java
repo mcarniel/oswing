@@ -18,6 +18,7 @@ import org.openswing.swing.domains.java.Domain;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.miscellaneous.client.TipInternalFrame;
 import org.openswing.swing.miscellaneous.client.TipPanelContent;
+import java.math.BigDecimal;
 
 
 /**
@@ -49,6 +50,19 @@ public class ClientApplication implements MDIController,LoginController {
       sexDomain.getDomainId(),
       sexDomain
     );
+    Domain day = new Domain("DAYS");
+    day.addDomainPair(new BigDecimal(Calendar.SUNDAY),"sunday");
+    day.addDomainPair(new BigDecimal(Calendar.MONDAY),"monday");
+    day.addDomainPair(new BigDecimal(Calendar.TUESDAY),"tuesday");
+    day.addDomainPair(new BigDecimal(Calendar.WEDNESDAY),"wednesday");
+    day.addDomainPair(new BigDecimal(Calendar.THURSDAY),"thursday");
+    day.addDomainPair(new BigDecimal(Calendar.FRIDAY),"friday");
+    day.addDomainPair(new BigDecimal(Calendar.SATURDAY),"saturday");
+    domains.put(
+      day.getDomainId(),
+      day
+    );
+
 
     Properties props = new Properties();
     props.setProperty("deptCode","Dept Code");
@@ -69,6 +83,20 @@ public class ClientApplication implements MDIController,LoginController {
     props.setProperty("empCode","Employee Code");
     props.setProperty("task","Task");
     props.setProperty("department","Department");
+
+    props.setProperty("day","Day Of Week");
+    props.setProperty("startMorningHour","Start Hour Morning");
+    props.setProperty("endMorningHour","End Hour Morning");
+    props.setProperty("startAfternoonHour","Start Hour Aftern.");
+    props.setProperty("endAfternoonHour","End Hour Aftern.");
+
+    props.setProperty("sunday","Sunday");
+    props.setProperty("monday","Monday");
+    props.setProperty("tuesday","Tuesday");
+    props.setProperty("wednesday","Wednesday");
+    props.setProperty("thursday","Thursday");
+    props.setProperty("friday","Friday");
+    props.setProperty("saturday","Saturday");
 
     // tips...
     props.setProperty("shortcuts in grid and form controls","Shortcuts in grid and form controls");
@@ -344,6 +372,10 @@ public class ClientApplication implements MDIController,LoginController {
 
         stmt = conn.prepareStatement("create table DEPT(DEPT_CODE VARCHAR,DESCRIPTION VARCHAR,ADDRESS VARCHAR,STATUS CHAR(1),PRIMARY KEY(DEPT_CODE))");
         stmt.execute();
+        stmt.close();
+
+        stmt = conn.prepareStatement("create table WORKING_DAYS(DAY NUMERIC,EMP_CODE VARCHAR,START_MORNING_HOUR DATETIME,END_MORNING_HOUR DATETIME,START_AFTERNOON_HOUR DATETIME,END_AFTERNOON_HOUR DATETIME,PRIMARY KEY(DAY,EMP_CODE))");
+        stmt.execute();
 
         stmt.close();
         stmt = conn.prepareStatement("insert into TASKS values('DEV','Developer','E')");
@@ -367,24 +399,76 @@ public class ClientApplication implements MDIController,LoginController {
         stmt = conn.prepareStatement("insert into DEPT values('SF','Software Factory','14 Rome St.  - London','E')");
         stmt.execute();
 
-        for(int i=0;i<10;i++) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(cal.YEAR,0);
+        cal.set(cal.MONTH,0);
+        cal.set(cal.DAY_OF_MONTH,0);
+        cal.set(cal.HOUR_OF_DAY,8);
+        cal.set(cal.MINUTE,0);
+        cal.set(cal.SECOND,0);
+        java.sql.Timestamp t1 = new java.sql.Timestamp(cal.getTime().getTime());
+        cal.set(cal.HOUR_OF_DAY,12);
+        java.sql.Timestamp t2 = new java.sql.Timestamp(cal.getTime().getTime());
+        cal.set(cal.HOUR_OF_DAY,13);
+        java.sql.Timestamp t3 = new java.sql.Timestamp(cal.getTime().getTime());
+        cal.set(cal.HOUR_OF_DAY,17);
+        java.sql.Timestamp t4 = new java.sql.Timestamp(cal.getTime().getTime());
+
+        for(int i=0;i<100;i++) {
           stmt.close();
           stmt = conn.prepareStatement("insert into EMP values('E"+(i+1)+"','Name"+(i+1)+"','Surname"+(i+1)+"',"+(1000+i*100)+",?,'M','SF','DEP',null)");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
-        }
-
-        for(int i=11;i<20;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into EMP values('E"+(i+1)+"','Name"+(i+1)+"','Surname"+(i+1)+"',"+(1000+i*100)+",?,'M','P','DEP',null)");
-          stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
+
+          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i+1)+"',?,?,?,?)");
+          stmt.setInt(1,cal.SUNDAY);
+          stmt.setNull(2,Types.DATE);
+          stmt.setNull(2,Types.DATE);
+          stmt.setNull(3,Types.DATE);
+          stmt.setNull(4,Types.DATE);
           stmt.execute();
-        }
-
-        for(int i=21;i<30;i++) {
-          stmt.close();
-          stmt = conn.prepareStatement("insert into EMP values('E"+(i+1)+"','Name"+(i+1)+"','Surname"+(i+1)+"',"+(1000+i*100)+",?,'M','S','DEP',null)");
-          stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
+          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i+1)+"',?,?,?,?)");
+          stmt.setInt(1,cal.MONDAY);
+          stmt.setObject(2,t1);
+          stmt.setObject(3,t2);
+          stmt.setObject(4,t3);
+          stmt.setObject(5,t4);
+          stmt.execute();
+          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i+1)+"',?,?,?,?)");
+          stmt.setInt(1,cal.TUESDAY);
+          stmt.setObject(2,t1);
+          stmt.setObject(3,t2);
+          stmt.setObject(4,t3);
+          stmt.setObject(5,t4);
+          stmt.execute();
+          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i+1)+"',?,?,?,?)");
+          stmt.setInt(1,cal.WEDNESDAY);
+          stmt.setObject(2,t1);
+          stmt.setObject(3,t2);
+          stmt.setObject(4,t3);
+          stmt.setObject(5,t4);
+          stmt.execute();
+          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i+1)+"',?,?,?,?)");
+          stmt.setInt(1,cal.THURSDAY);
+          stmt.setObject(2,t1);
+          stmt.setObject(3,t2);
+          stmt.setObject(4,t3);
+          stmt.setObject(5,t4);
+          stmt.execute();
+          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i+1)+"',?,?,?,?)");
+          stmt.setInt(1,cal.FRIDAY);
+          stmt.setObject(2,t1);
+          stmt.setObject(3,t2);
+          stmt.setObject(4,t3);
+          stmt.setObject(5,t4);
+          stmt.execute();
+          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i+1)+"',?,?,?,?)");
+          stmt.setInt(1,cal.SATURDAY);
+          stmt.setNull(2,Types.DATE);
+          stmt.setNull(2,Types.DATE);
+          stmt.setNull(3,Types.DATE);
+          stmt.setNull(4,Types.DATE);
           stmt.execute();
         }
 

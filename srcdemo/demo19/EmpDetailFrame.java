@@ -1,4 +1,4 @@
-package demo10;
+package demo19;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,14 +10,16 @@ import org.openswing.swing.form.model.client.VOModel;
 import org.openswing.swing.form.client.Form;
 import org.openswing.swing.form.client.FormController;
 import org.openswing.swing.util.java.Consts;
-import java.sql.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.lookup.client.LookupController;
 import org.openswing.swing.lookup.client.LookupDataLocator;
 import org.openswing.swing.internationalization.java.Resources;
 import org.openswing.swing.mdi.client.InternalFrame;
 import javax.swing.border.*;
-import org.openswing.swing.table.columns.client.*;
+import org.openswing.swing.lookup.client.LookupServerDataLocator;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import org.openswing.swing.util.server.IBatisParamsWrapper;
+import org.openswing.swing.util.server.IBatisUtils;
 
 
 /**
@@ -47,9 +49,6 @@ public class EmpDetailFrame extends InternalFrame {
   SaveButton saveButton = new SaveButton();
   DeleteButton deleteButton = new DeleteButton();
 
-  CodLookupControl controlLookup = new CodLookupControl();
-  TextControl controlDeptDescr = new TextControl();
-  private Connection conn = null;
   CopyButton copyButton = new CopyButton();
   TextAreaControl controlNote = new TextAreaControl();
   TitledBorder titledBorder1;
@@ -61,40 +60,111 @@ public class EmpDetailFrame extends InternalFrame {
   LabelControl labelSex = new LabelControl();
   LabelControl labelSalary = new LabelControl();
   LabelControl labelTask = new LabelControl();
-  LabelControl labelDeptCode = new LabelControl();
   CodLookupControl controlCodTask = new CodLookupControl();
   TextControl controlTaskDescr = new TextControl();
-  JPanel whPanel = new JPanel();
-  TitledBorder titledBorder3;
-  TitledBorder titledBorder4;
-  BorderLayout borderLayout1 = new BorderLayout();
-  JPanel buttons2Panel = new JPanel();
-  FlowLayout flowLayout2 = new FlowLayout();
-  EditButton editButton1 = new EditButton();
-  SaveButton saveButton1 = new SaveButton();
-  ReloadButton reloadButton1 = new ReloadButton();
-  GridControl grid = new GridControl();
-  ComboColumn colDay = new ComboColumn();
-  TimeColumn colStartMorningHour = new TimeColumn();
-  TimeColumn colEndMorningHour = new TimeColumn();
-  TimeColumn colStartAfternoonHour = new TimeColumn();
-  TimeColumn colEndAfternoonHour = new TimeColumn();
+
+  private SqlMapClient sqlMap = null;
+
+  LookupController taskController = new LookupController();
+  LookupDataLocator taskDataLocator = new LookupDataLocator() {
+
+    /**
+     * Method called by lookup controller when validating code.
+     * @param code code to validate
+     * @return code validation response: VOListResponse if code validation has success, ErrorResponse otherwise
+     */
+    public Response validateCode(String code) {
+      try {
+        java.util.List tasks = sqlMap.queryForList("validateTask",code);
+        ArrayList list = new ArrayList();
+        list.addAll(tasks);
+        return new VOListResponse(list,false,list.size());
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+        return new ErrorResponse(ex.getMessage());
+      }
+    }
 
 
-  public EmpDetailFrame(Connection conn,FormController dataController) {
+    /**
+     * Method called by lookup controller when user clicks on lookup button.
+     * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+     * @param startIndex current index row on grid to use to start fetching data
+     * @param filteredColumns filtered columns
+     * @param currentSortedColumns sorted columns
+     * @param currentSortedVersusColumns ordering versus of sorted columns
+     * @param valueObjectType type of value object associated to the lookup grid
+     * @return list of value objects to fill in the lookup grid: VOListResponse if data fetching has success, ErrorResponse otherwise
+     */
+    public Response loadData(
+        int action,
+        int startIndex,
+        Map filteredColumns,
+        ArrayList currentSortedColumns,
+        ArrayList currentSortedVersusColumns,
+        Class valueObjectType
+    ) {
+      try {
+        // load a block of data...
+        IBatisParamsWrapper gridParams = new IBatisParamsWrapper(
+            filteredColumns,
+            currentSortedColumns,
+            currentSortedVersusColumns
+        );
+        return IBatisUtils.getBlockFromQuery(
+            action,
+            startIndex,
+            ClientSettings.BLOCK_SIZE,
+            sqlMap,
+            "getTasks",
+            gridParams
+        );
+
+//        java.util.List tasks = sqlMap.queryForList("getTasks");
+//        ArrayList list = new ArrayList();
+//        list.addAll(tasks);
+//        return new VOListResponse(list,false,list.size());
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+        return new ErrorResponse(ex.getMessage());
+      }
+    }
+
+
+    /**
+     * Method called by the TreePanel to fill the tree.
+     * @return a VOReponse containing a DefaultTreeModel object
+     */
+    public Response getTreeModel(JTree tree) {
+      return new ErrorResponse("Non supported!");
+    }
+
+  };
+
+
+  public EmpDetailFrame(FormController dataController,SqlMapClient sqlMap) {
+    this.sqlMap = sqlMap;
     try {
-      this.conn = conn;
       jbInit();
-
       mainPanel.setFormController(dataController);
 
-      WorkingDaysController gridController = new WorkingDaysController(conn);
-      grid.setGridDataLocator(gridController);
-      grid.setController(gridController);
+      // task lookup...
+      controlCodTask.setLookupController(taskController);
+      taskController.setLookupDataLocator(taskDataLocator);
+      taskController.setFrameTitle("tasks");
+      taskController.setLookupValueObjectClassName("demo19.TaskVO");
+      taskController.addLookup2ParentLink("taskCode", "taskVO.taskCode");
+      taskController.addLookup2ParentLink("description","taskVO.description");
+      taskController.setAllColumnVisible(false);
+      taskController.setVisibleColumn("taskCode", true);
+      taskController.setVisibleColumn("description", true);
+      taskController.setForm(mainPanel);
+      taskController.setSortableColumn("taskCode",true);
+      taskController.setSortedColumn("taskCode","ASC");
 
-      setSize(590,600);
-      setMinimumSize(new Dimension(590,600));
-
+      setSize(590,440);
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -104,12 +174,9 @@ public class EmpDetailFrame extends InternalFrame {
 
 
   private void jbInit() throws Exception {
-
     titledBorder1 = new TitledBorder("");
     titledBorder2 = new TitledBorder("");
-    titledBorder3 = new TitledBorder("");
-    titledBorder4 = new TitledBorder("");
-    mainPanel.setVOClassName("demo10.EmpVO");
+    mainPanel.setVOClassName("demo19.EmpVO");
     mainPanel.setLayout(gridBagLayout1);
     labelDate.setText("hire date");
     labelEmpCode.setText("empCode");
@@ -139,15 +206,6 @@ public class EmpDetailFrame extends InternalFrame {
     mainPanel.setDeleteButton(deleteButton);
     mainPanel.setSaveButton(saveButton);
     saveButton.setEnabled(false);
-    controlLookup.setAttributeName("");
-    controlLookup.setCanCopy(true);
-    controlLookup.setMaxCharacters(5);
-    controlLookup.setRequired(true);
-    controlLookup.setAttributeName("deptCode");
-    controlDeptDescr.setAttributeName("deptDescription");
-    controlDeptDescr.setCanCopy(true);
-    controlDeptDescr.setEnabledOnInsert(false);
-    controlDeptDescr.setEnabledOnEdit(false);
     controlDate.setCanCopy(true);
     controlDate.setRequired(false);
     controlDate.setAttributeName("hireDate");
@@ -167,47 +225,13 @@ public class EmpDetailFrame extends InternalFrame {
     labelSex.setText("sex");
     labelSalary.setText("salary");
     labelTask.setText("task");
-    labelDeptCode.setText("department");
     controlCodTask.setMaxCharacters(5);
     controlCodTask.setRequired(true);
-    controlCodTask.setAttributeName("taskCode");
-    controlTaskDescr.setAttributeName("taskDescription");
+    controlCodTask.setAttributeName("taskVO.taskCode");
+    controlTaskDescr.setAttributeName("taskVO.description");
     controlTaskDescr.setEnabledOnInsert(false);
     controlTaskDescr.setEnabledOnEdit(false);
-    whPanel.setBorder(titledBorder2);
-    whPanel.setPreferredSize(new Dimension(132, 250));
-    whPanel.setLayout(borderLayout1);
-    titledBorder2.setTitleColor(Color.blue);
-    titledBorder2.setTitle("Working hours");
-    buttons2Panel.setLayout(flowLayout2);
-    flowLayout2.setAlignment(FlowLayout.LEFT);
-    editButton1.setText("editButton1");
-    saveButton1.setText("saveButton1");
-    reloadButton1.setText("reloadButton1");
-    grid.setEditButton(editButton1);
-    grid.setReloadButton(reloadButton1);
-    grid.setSaveButton(saveButton1);
-    grid.setValueObjectClassName("demo10.WorkingDayVO");
-    grid.setAutoLoadData(false);
-    grid.setVisibleStatusPanel(false);
-    colDay.setDomainId("DAYS");
-    colDay.setColumnName("day");
-    colDay.setColumnSortable(false);
-    colDay.setSortVersus(org.openswing.swing.util.java.Consts.ASC_SORTED);
-    colDay.setSortingOrder(1);
-    colStartMorningHour.setColumnName("startMorningHour");
-    colStartMorningHour.setColumnRequired(false);
-    colStartMorningHour.setEditableOnEdit(true);
-    colEndMorningHour.setColumnName("endMorningHour");
-    colEndMorningHour.setColumnRequired(false);
-    colEndMorningHour.setEditableOnEdit(true);
-    colStartAfternoonHour.setColumnName("startAfternoonHour");
-    colStartAfternoonHour.setColumnRequired(false);
-    colStartAfternoonHour.setEditableOnEdit(true);
-    colEndAfternoonHour.setColumnName("endAfternoonHour");
-    colEndAfternoonHour.setColumnRequired(false);
-    colEndAfternoonHour.setEditableOnEdit(true);
-    this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
+    this.getContentPane().add(buttonsPanel,  BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(copyButton, null);
     buttonsPanel.add(editButton, null);
@@ -217,8 +241,6 @@ public class EmpDetailFrame extends InternalFrame {
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);
     mainPanel.add(controlCurrency,              new GridBagConstraints(1, 2, 5, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlDeptDescr,                 new GridBagConstraints(2, 4, 3, 2, 1.0, 0.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 5), 0, 0));
     mainPanel.add(controlNote,              new GridBagConstraints(0, 7, 6, 1, 1.0, 1.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(labelEmpCode,           new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
@@ -243,40 +265,18 @@ public class EmpDetailFrame extends InternalFrame {
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(controlSex,     new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlLookup,      new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
     mainPanel.add(labelTask,       new GridBagConstraints(0, 5, 1, 2, 0.0, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelDeptCode,      new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(controlCodTask,      new GridBagConstraints(1, 5, 1, 2, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
     mainPanel.add(controlTaskDescr,     new GridBagConstraints(2, 6, 3, 1, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    this.getContentPane().add(whPanel, BorderLayout.SOUTH);
-    whPanel.add(buttons2Panel, BorderLayout.NORTH);
-    buttons2Panel.add(editButton1, null);
-    buttons2Panel.add(reloadButton1, null);
-    buttons2Panel.add(saveButton1, null);
-    whPanel.add(grid,  BorderLayout.CENTER);
-    grid.getColumnContainer().add(colDay, null);
-    grid.getColumnContainer().add(colStartMorningHour, null);
-    grid.getColumnContainer().add(colEndMorningHour, null);
-    grid.getColumnContainer().add(colStartAfternoonHour, null);
-    grid.getColumnContainer().add(colEndAfternoonHour, null);
 
     controlempCode.setAttributeName("empCode");
     controlempCode.setRequired(true);
 //    controlDate.setDateType(Consts.TYPE_DATE_TIME);
 //    controlDate.setTimeFormat(Resources.H_MM_AAA);
 
-
-
-    LookupController lookupController = new DeptLookupController(conn);
-    controlLookup.setLookupController(lookupController);
-
-    LookupController lookupController2 = new TaskLookupController(conn);
-    controlCodTask.setLookupController(lookupController2);
 
   }
 
@@ -303,24 +303,6 @@ public class EmpDetailFrame extends InternalFrame {
 
   public CurrencyControl getControlCurrency() {
     return controlCurrency;
-  }
-
-
-  public GridControl getGrid() {
-    return grid;
-  }
-
-
-  public void setEnableGridButtons(boolean enabled) {
-    if (enabled) {
-      editButton1.setEnabled(enabled);
-      reloadButton1.setEnabled(enabled);
-    }
-    else {
-      editButton1.setEnabled(enabled);
-      saveButton1.setEnabled(enabled);
-      reloadButton1.setEnabled(enabled);
-    }
   }
 
 

@@ -20,10 +20,13 @@ import org.openswing.swing.wizard.client.WizardController;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ZIPWizardController extends WizardController {
+public class ZIPWizardController extends WizardController implements ItemListener {
+
+  private WizardPanel wizardPanel = null;
 
 
-  public ZIPWizardController() {
+  public ZIPWizardController(WizardPanel wizardPanel) {
+    this.wizardPanel = wizardPanel;
   }
 
 
@@ -33,7 +36,7 @@ public class ZIPWizardController extends WizardController {
    * @return panel identifier of the panel to show
    */
   public String getFirstPanelId(WizardPanel wizard) {
-    return "FIRST";
+    return "INTRO";
   }
 
 
@@ -56,7 +59,9 @@ public class ZIPWizardController extends WizardController {
    * @return panel identifier of the panel to show
    */
   public String getBackPanelId(WizardPanel wizard) {
-    if (wizard.getCurrentVisiblePanel().getPanelId().equals("SECOND"))
+    if (wizard.getCurrentVisiblePanel().getPanelId().equals("FIRST"))
+      return "INTRO";
+    else if (wizard.getCurrentVisiblePanel().getPanelId().equals("SECOND"))
       return "FIRST";
     else if (wizard.getCurrentVisiblePanel().getPanelId().equals("THIRD"))
       return "FIRST";
@@ -71,7 +76,9 @@ public class ZIPWizardController extends WizardController {
    * @return panel identifier of the panel to show
    */
   public String getNextPanelId(WizardPanel wizard) {
-    if (wizard.getCurrentVisiblePanel().getPanelId().equals("FIRST")) {
+    if (wizard.getCurrentVisiblePanel().getPanelId().equals("INTRO"))
+      return "FIRST";
+    else if (wizard.getCurrentVisiblePanel().getPanelId().equals("FIRST")) {
       if ( !((FirstPanel)wizard.getPanel("FIRST")).getRadioButtonZip().isSelected() )
         return "SECOND";
       else
@@ -79,6 +86,11 @@ public class ZIPWizardController extends WizardController {
     }
     else
       return null;
+  }
+
+
+  public void itemStateChanged(ItemEvent e) {
+    wizardPanel.getNextButton().setEnabled( ((JRadioButton)e.getItem()).isSelected() );
   }
 
 

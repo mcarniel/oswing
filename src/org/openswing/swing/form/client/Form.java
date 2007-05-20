@@ -176,6 +176,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @param form currently focused form; may be null (if no form is currently focused)
    */
   public static void setCurrentFocusedForm(Form form) {
+    if (Beans.isDesignTime())
+      return;
     if (form!=null && !form.isShowing())
       return;
     if (currentFocusedForm!=null && !currentFocusedForm.equals(form))
@@ -194,6 +196,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @param form currently focused form; may be null (if no form is currently focused)
    */
   public void disableFocusedForm() {
+    if (Beans.isDesignTime())
+      return;
     this.setBorder(BorderFactory.createCompoundBorder(
       currentFocusedForm.getNotFocusedBorder(),
       BorderFactory.createLineBorder(this.getBackground(),1)
@@ -211,7 +215,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     catch (Exception ex) {
       ex.printStackTrace();
     }
-    if (firstTime && !Beans.isDesignTime()) {
+    if (!Beans.isDesignTime() && firstTime) {
       firstTime = false;
       linkInputControls(Form.this.getComponents(),true);
 

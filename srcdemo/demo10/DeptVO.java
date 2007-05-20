@@ -18,6 +18,7 @@ public class DeptVO extends ValueObjectImpl {
   private String deptCode;
   private String description;
   private String address;
+  private String status;
 
   public DeptVO() {
   }
@@ -40,6 +41,12 @@ public class DeptVO extends ValueObjectImpl {
   }
   public void setAddress(String address) {
     this.address = address;
+  }
+  public String getStatus() {
+    return status;
+  }
+  public void setStatus(String status) {
+    this.status = status;
   }
 
 

@@ -49,13 +49,13 @@ public class ProgressBar extends JPanel {
   /** current value to set */
   private double currentValue = 0;
 
-  /** current used color */
+  /** current used color; default value: ClientSettings.GRID_SELECTION_BACKGROUND */
   private Color currentColor = ClientSettings.GRID_SELECTION_BACKGROUND;
 
   /** list of bands included in [minValue,maxValue] interval, having a specific color */
   private ArrayList coloredBands = new ArrayList();
 
-  /** flag used to determine how color the progress bar: <code>true</code> to paint the bar with many colors, each band with its color, <code>false</code> to paint the bar with ony one color: the color related to the last matched band */
+  /** flag used to determine how to color the progress bar: <code>true</code> to paint the bar with many colors, each band with its color, <code>false</code> to paint the bar with ony one color: the color related to the last matched band */
   private boolean showAllBands = true;
 
 
@@ -215,7 +215,7 @@ public class ProgressBar extends JPanel {
 
 
   /**
-   * @return flag used to determine how color the progress bar: <code>true</code> to paint the bar with many colors, each band with its color, <code>false</code> to paint the bar with ony one color: the color related to the last matched band
+   * @return flag used to determine how to color the progress bar: <code>true</code> to paint the bar with many colors, each band with its color, <code>false</code> to paint the bar with ony one color: the color related to the last matched band
    */
   public final boolean isShowAllBands() {
     return showAllBands;
@@ -223,8 +223,8 @@ public class ProgressBar extends JPanel {
 
 
   /**
-   * Determine how color the progress bar: <code>true</code> to paint the bar with many colors, each band with its color, <code>false</code> to paint the bar with ony one color: the color related to the last matched band.
-   * @param showAllBands flag used to determine how color the progress bar: <code>true</code> to paint the bar with many colors, each band with its color, <code>false</code> to paint the bar with ony one color: the color related to the last matched band
+   * Determine how to color the progress bar: <code>true</code> to paint the bar with many colors, each band with its color, <code>false</code> to paint the bar with ony one color: the color related to the last matched band.
+   * @param showAllBands flag used to determine how to color the progress bar: <code>true</code> to paint the bar with many colors, each band with its color, <code>false</code> to paint the bar with ony one color: the color related to the last matched band
    */
   public final void setShowAllBands(boolean showAllBands) {
     this.showAllBands = showAllBands;

@@ -8,6 +8,8 @@ import org.openswing.swing.message.send.java.FilterWhereClause;
 import org.openswing.swing.table.java.GridDataLocator;
 import org.openswing.swing.mdi.client.MDIFrame;
 import java.awt.Color;
+import org.openswing.swing.server.QueryUtil;
+import org.openswing.swing.message.send.java.GridParams;
 
 
 /**
@@ -60,6 +62,44 @@ public class EmpGridFrameController extends GridController implements GridDataLo
       ArrayList currentSortedVersusColumns,
       Class valueObjectType,
       Map otherGridParams) {
+    try {
+      String sql = "select EMP.EMP_CODE,EMP.FIRST_NAME,EMP.LAST_NAME,EMP.DEPT_CODE,DEPT.DESCRIPTION from EMP,DEPT where EMP.DEPT_CODE=DEPT.DEPT_CODE";
+
+      // mapping between attributes and database fields...
+      Map attribute2dbField = new HashMap();
+      attribute2dbField.put("empCode","EMP.EMP_CODE");
+      attribute2dbField.put("firstName","EMP.FIRST_NAME");
+      attribute2dbField.put("lastName","EMP.LAST_NAME");
+      attribute2dbField.put("deptCode","EMP.DEPT_CODE");
+      attribute2dbField.put("deptDescription","DEPT.DESCRIPTION");
+
+      return QueryUtil.getQuery(
+        conn,
+        sql,
+        new ArrayList(), // list of values linked to "?" parameters in sql
+        attribute2dbField,
+        GridEmpVO.class, // v.o. to dinamically create for each row...
+        "Y",
+        "N",
+        new GridParams(
+          action,
+          startIndex,
+          filteredColumns,
+          currentSortedColumns,
+          currentSortedVersusColumns,
+          new HashMap() // other params...
+        ),
+        50, // pagination size...
+        true // log query...
+      );
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+      return new ErrorResponse(ex.getMessage());
+    }
+
+/*
+    // an alternative way: you can define your own business logic to retrieve data and adding filtering/sorting conditions at hand...
     PreparedStatement stmt = null;
     try {
       String sql = "select EMP.EMP_CODE,EMP.FIRST_NAME, EMP.LAST_NAME,EMP.DEPT_CODE,DEPT.DESCRIPTION from EMP,DEPT where EMP.DEPT_CODE=DEPT.DEPT_CODE";
@@ -108,7 +148,7 @@ public class EmpGridFrameController extends GridController implements GridDataLo
       catch (SQLException ex1) {
       }
     }
-
+*/
   }
 
 

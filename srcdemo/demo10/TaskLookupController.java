@@ -8,6 +8,8 @@ import java.util.*;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.openswing.swing.server.QueryUtil;
+import org.openswing.swing.message.send.java.GridParams;
 
 
 /**
@@ -34,6 +36,37 @@ public class TaskLookupController extends LookupController {
        * @return code validation response: VOListResponse if code validation has success, ErrorResponse otherwise
        */
       public Response validateCode(String code) {
+        try {
+          String sql = "select TASKS.TASK_CODE,TASKS.DESCRIPTION,TASKS.STATUS from TASKS where STATUS='E' and TASK_CODE=?";
+
+          // mapping between attributes and database fields...
+          Map attribute2dbField = new HashMap();
+          attribute2dbField.put("taskCode","TASKS.TASK_CODE");
+          attribute2dbField.put("description","TASKS.DESCRIPTION");
+          attribute2dbField.put("status","TASKS.STATUS");
+
+          ArrayList vars = new ArrayList();
+          vars.add(code);
+
+          return QueryUtil.getQuery(
+            TaskLookupController.this.conn,
+            sql,
+            vars, // list of values linked to "?" parameters in sql
+            attribute2dbField,
+            TaskVO.class, // v.o. to dinamically create for each row...
+            "Y",
+            "N",
+            new GridParams(),
+            true // log query...
+          );
+        }
+        catch (Exception ex) {
+          ex.printStackTrace();
+          return new ErrorResponse(ex.getMessage());
+        }
+
+/*
+        // an alternative way: you can define your own business logic to retrieve data and adding filtering/sorting conditions at hand...
         Statement stmt = null;
         try {
           stmt = TaskLookupController.this.conn.createStatement();
@@ -62,16 +95,17 @@ public class TaskLookupController extends LookupController {
           catch (SQLException ex1) {
           }
         }
+*/
       }
 
       /**
        * Method called by lookup controller when user clicks on lookup button.
        * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
-           * @param startIndex current index row on grid to use to start fetching data
+       * @param startIndex current index row on grid to use to start fetching data
        * @param filteredColumns filtered columns
        * @param currentSortedColumns sorted columns
        * @param currentSortedVersusColumns ordering versus of sorted columns
-           * @param valueObjectType type of value object associated to the lookup grid
+       * @param valueObjectType type of value object associated to the lookup grid
        * @return list of value objects to fill in the lookup grid: VOListResponse if data fetching has success, ErrorResponse otherwise
        */
       public Response loadData(
@@ -82,6 +116,42 @@ public class TaskLookupController extends LookupController {
           ArrayList currentSortedVersusColumns,
           Class valueObjectType
           ) {
+        try {
+          String sql = "select TASKS.TASK_CODE,TASKS.DESCRIPTION,TASKS.STATUS from TASKS where STATUS='E' ";
+
+          // mapping between attributes and database fields...
+          Map attribute2dbField = new HashMap();
+          attribute2dbField.put("taskCode","TASKS.TASK_CODE");
+          attribute2dbField.put("description","TASKS.DESCRIPTION");
+          attribute2dbField.put("status","TASKS.STATUS");
+
+          return QueryUtil.getQuery(
+            TaskLookupController.this.conn,
+            sql,
+            new ArrayList(), // list of values linked to "?" parameters in sql
+            attribute2dbField,
+            TaskVO.class, // v.o. to dinamically create for each row...
+            "Y",
+            "N",
+            new GridParams(
+              action,
+              startIndex,
+              filteredColumns,
+              currentSortedColumns,
+              currentSortedVersusColumns,
+              new HashMap() // other params...
+            ),
+            50, // pagination size...
+            true // log query...
+          );
+        }
+        catch (Exception ex) {
+          ex.printStackTrace();
+          return new ErrorResponse(ex.getMessage());
+        }
+
+/*
+        // an alternative way: you can define your own business logic to retrieve data and adding filtering/sorting conditions at hand...
         Statement stmt = null;
         try {
           stmt = TaskLookupController.this.conn.createStatement();
@@ -107,6 +177,7 @@ public class TaskLookupController extends LookupController {
           catch (SQLException ex1) {
           }
         }
+*/
       }
 
 

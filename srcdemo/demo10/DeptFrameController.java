@@ -6,6 +6,8 @@ import org.openswing.swing.message.receive.java.*;
 import java.sql.*;
 import org.openswing.swing.message.send.java.FilterWhereClause;
 import org.openswing.swing.table.java.GridDataLocator;
+import org.openswing.swing.server.QueryUtil;
+import org.openswing.swing.message.send.java.GridParams;
 
 
 /**
@@ -28,6 +30,16 @@ public class DeptFrameController extends GridController implements GridDataLocat
 
 
   /**
+   * Callback method invoked when the user has clicked on the insert button
+   * @param valueObject empty value object just created: the user can manage it to fill some attribute values
+   */
+  public void createValueObject(ValueObject valueObject) throws Exception {
+    DeptVO vo = (DeptVO)valueObject;
+    vo.setStatus("E");
+  }
+
+
+  /**
    * Callback method invoked to load data on the grid.
    * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
    * @param startPos start position of data fetching in result set
@@ -46,9 +58,47 @@ public class DeptFrameController extends GridController implements GridDataLocat
       ArrayList currentSortedVersusColumns,
       Class valueObjectType,
       Map otherGridParams) {
+    try {
+      String sql = "select DEPT.DEPT_CODE,DEPT.DESCRIPTION,DEPT.ADDRESS,DEPT.STATUS from DEPT where DEPT.STATUS='E'";
+
+      // mapping between attributes and database fields...
+      Map attribute2dbField = new HashMap();
+      attribute2dbField.put("deptCode","DEPT.DEPT_CODE");
+      attribute2dbField.put("description","DEPT.DESCRIPTION");
+      attribute2dbField.put("address","DEPT.ADDRESS");
+      attribute2dbField.put("status","DEPT.STATUS");
+
+      return QueryUtil.getQuery(
+        conn,
+        sql,
+        new ArrayList(), // list of values linked to "?" parameters in sql
+        attribute2dbField,
+        DeptVO.class, // v.o. to dinamically create for each row...
+        "Y",
+        "N",
+        new GridParams(
+          action,
+          startIndex,
+          filteredColumns,
+          currentSortedColumns,
+          currentSortedVersusColumns,
+          new HashMap() // other params...
+        ),
+        50, // pagination size...
+        true // log query...
+      );
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+      return new ErrorResponse(ex.getMessage());
+    }
+
+/*
+    // an alternative way: you can define your own business logic to retrieve data and adding filtering/sorting conditions at hand...
     PreparedStatement stmt = null;
     try {
       String sql = "select DEPT.DEPT_CODE,DEPT.DESCRIPTION,DEPT.ADDRESS from DEPT where DEPT.STATUS='E'";
+
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
         FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("deptCode");
@@ -81,7 +131,7 @@ public class DeptFrameController extends GridController implements GridDataLocat
       }
       return new VOListResponse(list,false,list.size());
     }
-    catch (SQLException ex) {
+    catch (Exception ex) {
       ex.printStackTrace();
       return new ErrorResponse(ex.getMessage());
     }
@@ -92,7 +142,7 @@ public class DeptFrameController extends GridController implements GridDataLocat
       catch (SQLException ex1) {
       }
     }
-
+*/
   }
 
 
@@ -103,7 +153,22 @@ public class DeptFrameController extends GridController implements GridDataLocat
    * @return an ErrorResponse value object in case of errors, VOListResponse if the operation is successfully completed
    */
   public Response insertRecords(int[] rowNumbers, ArrayList newValueObjects) throws Exception {
+    // mapping between attributes and database fields...
+    Map attribute2dbField = new HashMap();
+    attribute2dbField.put("deptCode","DEPT_CODE");
+    attribute2dbField.put("description","DESCRIPTION");
+    attribute2dbField.put("address","ADDRESS");
+    attribute2dbField.put("status","STATUS");
 
+    Response res = QueryUtil.insertTable(conn,newValueObjects,"DEPT",attribute2dbField,"Y","N",true);
+    if (res.isError())
+      conn.rollback();
+    else
+      conn.commit();
+    return res;
+
+/*
+    // an alternative way: you can define your own business logic to store data at hand...
     PreparedStatement stmt = null;
     try {
       stmt = conn.prepareStatement("insert into DEPT(DEPT_CODE,DESCRIPTION,ADDRESS,STATUS) values(?,?,?,?)");
@@ -130,7 +195,7 @@ public class DeptFrameController extends GridController implements GridDataLocat
       catch (SQLException ex1) {
       }
     }
-
+*/
   }
 
 
@@ -142,6 +207,33 @@ public class DeptFrameController extends GridController implements GridDataLocat
    * @return an ErrorResponse value object in case of errors, VOListResponse if the operation is successfully completed
    */
   public Response updateRecords(int[] rowNumbers,ArrayList oldPersistentObjects,ArrayList persistentObjects) throws Exception {
+    // mapping between attributes and database fields...
+    Map attribute2dbField = new HashMap();
+    attribute2dbField.put("deptCode","DEPT_CODE");
+    attribute2dbField.put("description","DESCRIPTION");
+    attribute2dbField.put("address","ADDRESS");
+    attribute2dbField.put("status","STATUS");
+
+    HashSet pk = new HashSet();
+    pk.add("deptCode");
+
+    Response res = null;
+    DeptVO oldVO = null;
+    DeptVO newVO = null;
+    for(int i=0;i<persistentObjects.size();i++) {
+      oldVO = (DeptVO)oldPersistentObjects.get(i);
+      newVO = (DeptVO)persistentObjects.get(i);
+      res = QueryUtil.updateTable(conn,pk,oldVO,newVO,"DEPT",attribute2dbField,"Y","N",true);
+      if (res.isError()) {
+        conn.rollback();
+        return res;
+      }
+    }
+    conn.commit();
+    return new VOListResponse(persistentObjects,false,persistentObjects.size());
+
+/*
+    // an alternative way: you can define your own business logic to store data at hand...
     PreparedStatement stmt = null;
     try {
       stmt = conn.prepareStatement("update DEPT set DEPT_CODE=?,DESCRIPTION=?,ADDRESS=? where DEPT_CODE=?");
@@ -168,7 +260,7 @@ public class DeptFrameController extends GridController implements GridDataLocat
       catch (SQLException ex1) {
       }
     }
-
+*/
   }
 
 

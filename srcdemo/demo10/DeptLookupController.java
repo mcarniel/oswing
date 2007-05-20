@@ -8,6 +8,8 @@ import java.util.*;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.openswing.swing.server.QueryUtil;
+import org.openswing.swing.message.send.java.GridParams;
 
 
 /**
@@ -34,6 +36,35 @@ public class DeptLookupController extends LookupController {
        * @return code validation response: VOListResponse if code validation has success, ErrorResponse otherwise
        */
       public Response validateCode(String code) {
+        try {
+          String sql = "select DEPT.DEPT_CODE,DEPT.DESCRIPTION,DEPT.ADDRESS,DEPT.STATUS from DEPT where STATUS='E' and DEPT_CODE='" +code + "'";
+
+          // mapping between attributes and database fields...
+          Map attribute2dbField = new HashMap();
+          attribute2dbField.put("deptCode","DEPT.DEPT_CODE");
+          attribute2dbField.put("description","DEPT.DESCRIPTION");
+          attribute2dbField.put("address","DEPT.ADDRESS");
+          attribute2dbField.put("status","DEPT.STATUS");
+
+          return QueryUtil.getQuery(
+            DeptLookupController.this.conn,
+            sql,
+            new ArrayList(), // list of values linked to "?" parameters in sql
+            attribute2dbField,
+            DeptVO.class, // v.o. to dinamically create for each row...
+            "Y",
+            "N",
+            new GridParams(),
+            true // log query...
+          );
+        }
+        catch (Exception ex) {
+          ex.printStackTrace();
+          return new ErrorResponse(ex.getMessage());
+        }
+
+    /*
+        // an alternative way: you can define your own business logic to retrieve data and adding filtering/sorting conditions at hand...
         Statement stmt = null;
         try {
           stmt = DeptLookupController.this.conn.createStatement();
@@ -63,6 +94,7 @@ public class DeptLookupController extends LookupController {
           catch (SQLException ex1) {
           }
         }
+*/
       }
 
       /**
@@ -83,6 +115,43 @@ public class DeptLookupController extends LookupController {
           ArrayList currentSortedVersusColumns,
           Class valueObjectType
           ) {
+        try {
+          String sql = "select DEPT.DEPT_CODE,DEPT.DESCRIPTION,DEPT.ADDRESS,DEPT.STATUS from DEPT where STATUS='E' ";
+
+          // mapping between attributes and database fields...
+          Map attribute2dbField = new HashMap();
+          attribute2dbField.put("deptCode","DEPT.DEPT_CODE");
+          attribute2dbField.put("description","DEPT.DESCRIPTION");
+          attribute2dbField.put("address","DEPT.ADDRESS");
+          attribute2dbField.put("status","DEPT.STATUS");
+
+          return QueryUtil.getQuery(
+            DeptLookupController.this.conn,
+            sql,
+            new ArrayList(), // list of values linked to "?" parameters in sql
+            attribute2dbField,
+            DeptVO.class, // v.o. to dinamically create for each row...
+            "Y",
+            "N",
+            new GridParams(
+              action,
+              startIndex,
+              filteredColumns,
+              currentSortedColumns,
+              currentSortedVersusColumns,
+              new HashMap() // other params...
+            ),
+            50, // pagination size...
+            true // log query...
+          );
+        }
+        catch (Exception ex) {
+          ex.printStackTrace();
+          return new ErrorResponse(ex.getMessage());
+        }
+
+    /*
+        // an alternative way: you can define your own business logic to retrieve data and adding filtering/sorting conditions at hand...
         Statement stmt = null;
         try {
           stmt = DeptLookupController.this.conn.createStatement();
@@ -109,6 +178,7 @@ public class DeptLookupController extends LookupController {
           catch (SQLException ex1) {
           }
         }
+*/
       }
 
 
@@ -128,6 +198,7 @@ public class DeptLookupController extends LookupController {
     this.addLookup2ParentLink("description", "deptDescription");
     this.setAllColumnVisible(true);
     this.setVisibleColumn("address",false);
+    this.setVisibleColumn("status",false);
     this.setPreferredWidthColumn("description", 200);
   }
 

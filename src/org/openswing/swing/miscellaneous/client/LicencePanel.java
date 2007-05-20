@@ -45,7 +45,7 @@ public class LicencePanel extends JPanel {
   GridBagLayout gridBagLayout1 = new GridBagLayout();
   JLabel labelTitle = new JLabel();
   JLabel labelSubTitle = new JLabel();
-  ImagePanel imagePanel = new ImagePanel();
+  ImagePanel imagePanel = null;
   GridBagLayout gridBagLayout2 = new GridBagLayout();
   JScrollPane scrollPane = new JScrollPane();
   JEditorPane controlLicence = new JEditorPane();
@@ -69,8 +69,8 @@ public class LicencePanel extends JPanel {
   GridBagLayout gridBagLayout3 = new GridBagLayout();
   JPanel voidPanel = new JPanel();
 
-  /** tip image */
-  private String imageName = "tip.gif";
+  /** image name */
+  private String imageName = null;
 
 
   public LicencePanel() {
@@ -99,6 +99,11 @@ public class LicencePanel extends JPanel {
    */
   public final void setImageName(String imageName) {
     this.imageName = imageName;
+    if (imagePanel==null) {
+      imagePanel = new ImagePanel();
+      topPanel.add(imagePanel,  new GridBagConstraints(1, 0, 1, 2, 0.0, 0.0
+              ,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    }
     imagePanel.setImageName(imageName);
     imagePanel.setScrollBarsPolicy(ImagePanel.SCROLLBAR_NEVER);
     imagePanel.setMinimumSize(new Dimension(imagePanel.getImageWidth(),imagePanel.getImageHeight()));
@@ -152,7 +157,7 @@ public class LicencePanel extends JPanel {
   private void jbInit() throws Exception {
     this.setLayout(borderLayout1);
     topPanel.setLayout(gridBagLayout1);
-    labelSubTitle.setFont(new java.awt.Font(labelSubTitle.getFont().getName(),Font.BOLD,labelSubTitle.getFont().getSize()+1));
+    labelTitle.setFont(new java.awt.Font(labelSubTitle.getFont().getName(),Font.BOLD,labelSubTitle.getFont().getSize()+1));
     topPanel.setBackground(Color.white);
     mainPanel.setLayout(gridBagLayout2);
     controlLicence.setEditable(false);
@@ -171,8 +176,6 @@ public class LicencePanel extends JPanel {
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     topPanel.add(labelSubTitle,    new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 25, 5, 5), 0, 0));
-    topPanel.add(imagePanel,  new GridBagConstraints(1, 0, 1, 2, 0.0, 0.0
-            ,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(scrollPane,     new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(20, 20, 0, 20), 0, 0));
     scrollPane.getViewport().add(controlLicence, null);
@@ -195,23 +198,17 @@ public class LicencePanel extends JPanel {
   }
 
 
-  void buttonCancel_actionPerformed(ActionEvent e) {
-
-  }
-
-
-  void buttonOk_actionPerformed(ActionEvent e) {
-
-  }
-
-
   void radioButtonOk_itemStateChanged(ItemEvent e) {
     buttonOk.setEnabled(radioButtonOk.isSelected());
   }
 
 
-  void buttonBack_actionPerformed(ActionEvent e) {
-
+  /**
+   * Add an ItemListener to the "ok" radio button.
+   * @param listener ItemListener added to the "ok" radio button
+   */
+  public final void addOkRadioButtonItemListener(ItemListener listener) {
+    radioButtonOk.addItemListener(listener);
   }
 
 
@@ -237,7 +234,7 @@ public class LicencePanel extends JPanel {
    * Add an ActionListener to the "back" button.
    * @param listener ActionListener to add
    */
-  public final void addBakActionListener(ActionListener listener) {
+  public final void addBackActionListener(ActionListener listener) {
     buttonBack.addActionListener(listener);
   }
 
@@ -310,6 +307,9 @@ public class LicencePanel extends JPanel {
     buttonsPanel.revalidate();
     this.showBackButton = showBackButton;
 
+  }
+  public String getImageName() {
+    return imageName;
   }
 
 

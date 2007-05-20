@@ -169,6 +169,48 @@ public class QueryUtil {
    */
   public static Response getQuery(
       Connection conn,
+      String baseSQL,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      GridParams gridParams,
+      boolean logQuery
+  ) throws Exception {
+    return getQuery(
+      conn,
+      new UserSessionParameters(),
+      baseSQL,
+      values,
+      attribute2dbField,
+      valueObjectClass,
+      booleanTrueValue,
+      booleanFalseValue,
+      null,
+      gridParams,
+      -1,
+      0,
+      logQuery
+    );
+  }
+
+
+  /**
+   * This method read the WHOLE result set.
+   * @param baseSQL SQL to change by adding filter and order clauses
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param context servlet context; this may be null
+   * @param gridParams grid parameters (filtering/ordering settings, starting row to read, read versus)
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return a list of value objects (in VOListResponse object) or an error response
+   */
+  public static Response getQuery(
+      Connection conn,
       UserSessionParameters userSessionPars,
       String baseSQL,
       ArrayList values,
@@ -193,6 +235,49 @@ public class QueryUtil {
       gridParams,
       -1,
       0,
+      logQuery
+    );
+  }
+
+
+  /**
+   * This method read a block of record from the result set.
+   * @param baseSQL SQL to change by adding filter and order clauses
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param gridParams grid parameters (filtering/ordering settings, starting row to read, read versus)
+   * @param blockSize number of rows to read
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return a list of value objects  (in VOListResponse object) or an error response
+   */
+  public static Response getQuery(
+      Connection conn,
+      String baseSQL,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      GridParams gridParams,
+      int blockSize,
+      boolean logQuery
+  ) throws Exception {
+    return getQuery(
+      conn,
+      new UserSessionParameters(),
+      baseSQL,
+      values,
+      attribute2dbField,
+      valueObjectClass,
+      booleanTrueValue,
+      booleanFalseValue,
+      null,
+      gridParams,
+      blockSize,
+      1,
       logQuery
     );
   }
@@ -240,6 +325,44 @@ public class QueryUtil {
       blockSize,
       1,
       logQuery
+    );
+  }
+
+
+  /**
+   * @param baseSQL SQL to change by adding filter and order clauses
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return one value object (in VOResponse object) or an error response
+   */
+  public static Response getQuery(
+      Connection conn,
+      String baseSQL,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      boolean logQuery
+  ) throws Exception {
+    return getQuery(
+        conn,
+        new UserSessionParameters(),
+        baseSQL,
+        values,
+        attribute2dbField,
+        valueObjectClass,
+        booleanTrueValue,
+        booleanFalseValue,
+        null,
+        new GridParams(),
+        -1,
+        2,
+        logQuery
     );
   }
 
@@ -557,6 +680,38 @@ public class QueryUtil {
  }
 
 
+ /**
+  * This method execute an insert on a table, by means of the value object and a subset of its fields: all field related to that table.
+  * @param vo value object to use on insert
+  * @param tableName table name to use on insert
+  * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields related to the specified table
+  * @param booleanTrueValue value to interpret as true
+  * @param booleanFalseValue value to interpret as false
+  * @param logSQL <code>true</code> to log the SQL, <code>false</code> to no log the SQL
+  * @return the insert response
+  */
+ public static Response insertTable(
+     Connection conn,
+     ValueObject vo,
+     String tableName,
+     Map attribute2dbField,
+     String booleanTrueValue,
+     String booleanFalseValue,
+     boolean logSQL
+ ) throws Exception {
+    return insertTable(
+      conn,
+      new UserSessionParameters(),
+      vo,
+      tableName,
+      attribute2dbField,
+      booleanTrueValue,
+      booleanFalseValue,
+      null,
+      logSQL
+  );
+ }
+
    /**
     * This method esecute an insert on a table, by means of the value object and a subset of its fields: all field related to that table.
     * @param vo value object to use on insert
@@ -687,6 +842,39 @@ public class QueryUtil {
        catch (SQLException ex1) {
        }
      }
+  }
+
+
+  /**
+   * This method esecute many insert on a table, by means of a list of value objects and a subset of its fields: all field related to that table.
+   * @param vos list of ValueObject's to use on insert operations
+   * @param tableName table name to use on insert
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields related to the specified table
+   * @param booleanTrueValue value to interpret as true
+   * @param booleanFalseValue value to interpret as false
+   * @param logSQL <code>true</code> to log the SQL, <code>false</code> to no log the SQL
+   * @return the insert response (VOListResponse object or an ErrorResponse object)
+   */
+  public static Response insertTable(
+      Connection conn,
+      ArrayList vos,
+      String tableName,
+      Map attribute2dbField,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      boolean logSQL
+  ) throws Exception {
+    return insertTable(
+      conn,
+      new UserSessionParameters(),
+      vos,
+      tableName,
+      attribute2dbField,
+      booleanTrueValue,
+      booleanFalseValue,
+      null,
+      logSQL
+    );
   }
 
 
@@ -841,6 +1029,46 @@ public class QueryUtil {
       }
      return new ErrorResponse(ex.getMessage());
     }
+ }
+
+
+ /**
+  * This method esecute an update on a table, by means of the value object and a subset of its fields: all field related to that table.
+  * The update operation verifies if the record is yet the same as when the v.o. was read (concurrent access resolution).
+  * @param pkAttributes v.o. attributes related to the primary key of the table
+  * @param oldVO previous value object to use on the where clause
+  * @param newVO new value object to use on update
+  * @param tableName table name to use on update
+  * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields related to the specified table
+  * @param booleanTrueValue value to interpret as true
+  * @param booleanFalseValue value to interpret as false
+  * @param logSQL <code>true</code> to log the SQL, <code>false</code> to no log the SQL
+  * @return the update response
+  */
+ public static Response updateTable(
+     Connection conn,
+     HashSet pkAttributes,
+     ValueObject oldVO,
+     ValueObject newVO,
+     String tableName,
+     Map attribute2dbField,
+     String booleanTrueValue,
+     String booleanFalseValue,
+     boolean logSQL
+ ) throws Exception {
+    return updateTable(
+      conn,
+      new UserSessionParameters(),
+      pkAttributes,
+      oldVO,
+      newVO,
+      tableName,
+      attribute2dbField,
+      booleanTrueValue,
+      booleanFalseValue,
+      null,
+      logSQL
+  );
  }
 
 

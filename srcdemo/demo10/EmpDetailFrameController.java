@@ -14,6 +14,8 @@ import org.openswing.swing.lookup.client.LookupController;
 import org.openswing.swing.lookup.client.LookupDataLocator;
 import org.openswing.swing.internationalization.java.Resources;
 import org.openswing.swing.mdi.client.MDIFrame;
+import org.openswing.swing.server.QueryUtil;
+import java.math.BigDecimal;
 
 
 /**
@@ -57,6 +59,43 @@ public class EmpDetailFrameController extends FormController {
    * @return a VOResponse object if data loading is successfully completed, or an ErrorResponse object if an error occours
    */
   public Response loadData(Class valueObjectClass) {
+    try {
+      String sql =
+        "select EMP.EMP_CODE,EMP.FIRST_NAME, EMP.LAST_NAME,EMP.DEPT_CODE,DEPT.DESCRIPTION,EMP.TASK_CODE,TASKS.DESCRIPTION,EMP.SEX,EMP.HIRE_DATE,EMP.SALARY,EMP.NOTE "+
+        "from EMP,DEPT,TASKS where EMP.DEPT_CODE=DEPT.DEPT_CODE and EMP.TASK_CODE=TASKS.TASK_CODE and EMP.EMP_CODE='"+pk+"'";
+
+      // mapping between attributes and database fields...
+      Map attribute2dbField = new HashMap();
+      attribute2dbField.put("empCode","EMP.EMP_CODE");
+      attribute2dbField.put("firstName","EMP.FIRST_NAME");
+      attribute2dbField.put("lastName","EMP.LAST_NAME");
+      attribute2dbField.put("deptCode","EMP.DEPT_CODE");
+      attribute2dbField.put("deptDescription","DEPT.DESCRIPTION");
+      attribute2dbField.put("taskCode","EMP.TASK_CODE");
+      attribute2dbField.put("taskDescription","TASKS.DESCRIPTION");
+      attribute2dbField.put("sex","EMP.SEX");
+      attribute2dbField.put("hireDate","EMP.HIRE_DATE");
+      attribute2dbField.put("salary","EMP.SALARY");
+      attribute2dbField.put("note","EMP.NOTE");
+
+      return QueryUtil.getQuery(
+        conn,
+        sql,
+        new ArrayList(), // list of values linked to "?" parameters in sql
+        attribute2dbField,
+        EmpVO.class, // v.o. to dinamically create for each row...
+        "Y",
+        "N",
+        true // log query...
+      );
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+      return new ErrorResponse(ex.getMessage());
+    }
+
+/*
+    // an alternative way: you can define your own business logic to retrieve data and adding filtering/sorting conditions at hand...
     Statement stmt = null;
     try {
       stmt = conn.createStatement();
@@ -93,7 +132,7 @@ public class EmpDetailFrameController extends FormController {
       catch (SQLException ex1) {
       }
     }
-
+*/
   }
 
 
@@ -106,6 +145,10 @@ public class EmpDetailFrameController extends FormController {
     frame.getControlCurrency().setDecimals(2);
     frame.getControlCurrency().setDecimalSymbol('.');
     frame.getControlCurrency().setGroupingSymbol(',');
+
+    EmpVO vo = (EmpVO)frame.getMainPanel().getVOModel().getValueObject();
+    frame.getGrid().getOtherGridParams().put("empCode",vo.getEmpCode());
+    frame.getGrid().reloadData();
   }
 
 
@@ -115,6 +158,80 @@ public class EmpDetailFrameController extends FormController {
    * @return an ErrorResponse value object in case of errors, VOResponse if the operation is successfully completed
    */
   public Response insertRecord(ValueObject newPersistentObject) throws Exception {
+    // mapping between attributes and database fields...
+    Map attribute2dbField = new HashMap();
+    attribute2dbField.put("empCode","EMP_CODE");
+    attribute2dbField.put("firstName","FIRST_NAME");
+    attribute2dbField.put("lastName","LAST_NAME");
+    attribute2dbField.put("deptCode","DEPT_CODE");
+    attribute2dbField.put("taskCode","TASK_CODE");
+    attribute2dbField.put("sex","SEX");
+    attribute2dbField.put("hireDate","HIRE_DATE");
+    attribute2dbField.put("salary","SALARY");
+    attribute2dbField.put("note","NOTE");
+
+    Response res = QueryUtil.insertTable(conn,newPersistentObject,"EMP",attribute2dbField,"Y","N",true);
+    if (res.isError()) {
+      conn.rollback();
+      return res;
+    }
+    else {
+      // insert 7 records in WORKING_DAYS, one for each day of week...
+      PreparedStatement pstmt = null;
+      try {
+        pstmt = conn.prepareStatement("insert into WORKING_DAYS(EMP_CODE,DAY) values(?,?)");
+
+        pstmt.setString(1,((EmpVO)newPersistentObject).getEmpCode());
+        pstmt.setInt(2,Calendar.SUNDAY);
+        pstmt.execute();
+
+        pstmt.setString(1,((EmpVO)newPersistentObject).getEmpCode());
+        pstmt.setInt(2,Calendar.MONDAY);
+        pstmt.execute();
+
+        pstmt.setString(1,((EmpVO)newPersistentObject).getEmpCode());
+        pstmt.setInt(2,Calendar.TUESDAY);
+        pstmt.execute();
+
+        pstmt.setString(1,((EmpVO)newPersistentObject).getEmpCode());
+        pstmt.setInt(2,Calendar.WEDNESDAY);
+        pstmt.execute();
+
+        pstmt.setString(1,((EmpVO)newPersistentObject).getEmpCode());
+        pstmt.setInt(2,Calendar.THURSDAY);
+        pstmt.execute();
+
+        pstmt.setString(1,((EmpVO)newPersistentObject).getEmpCode());
+        pstmt.setInt(2,Calendar.FRIDAY);
+        pstmt.execute();
+
+        pstmt.setString(1,((EmpVO)newPersistentObject).getEmpCode());
+        pstmt.setInt(2,Calendar.SATURDAY);
+        pstmt.execute();
+
+        conn.commit();
+
+        frame.getGrid().getOtherGridParams().put("empCode",((EmpVO)newPersistentObject).getEmpCode());
+        frame.getGrid().reloadData();
+
+        return res;
+      }
+      catch (Exception ex) {
+        conn.rollback();
+        return new ErrorResponse(ex.getMessage());
+      }
+      finally {
+        try {
+          pstmt.close();
+        }
+        catch (Exception ex1) {
+        }
+      }
+
+    }
+
+/*
+    // an alternative way: you can define your own business logic to store data at hand...
     PreparedStatement stmt = null;
     try {
       stmt = conn.prepareStatement("insert into EMP(EMP_CODE,FIRST_NAME,LAST_NAME,DEPT_CODE,TASK_CODE,SEX,HIRE_DATE,SALARY,NOTE) values(?,?,?,?,?,?,?,?,?)");
@@ -146,7 +263,7 @@ public class EmpDetailFrameController extends FormController {
       catch (SQLException ex1) {
       }
     }
-
+*/
   }
 
   /**
@@ -156,6 +273,30 @@ public class EmpDetailFrameController extends FormController {
    * @return an ErrorResponse value object in case of errors, VOResponse if the operation is successfully completed
    */
   public Response updateRecord(ValueObject oldPersistentObject,ValueObject persistentObject) throws Exception {
+    // mapping between attributes and database fields...
+    Map attribute2dbField = new HashMap();
+    attribute2dbField.put("empCode","EMP_CODE");
+    attribute2dbField.put("firstName","FIRST_NAME");
+    attribute2dbField.put("lastName","LAST_NAME");
+    attribute2dbField.put("deptCode","DEPT_CODE");
+    attribute2dbField.put("taskCode","TASK_CODE");
+    attribute2dbField.put("sex","SEX");
+    attribute2dbField.put("hireDate","HIRE_DATE");
+    attribute2dbField.put("salary","SALARY");
+    attribute2dbField.put("note","NOTE");
+
+    HashSet pk = new HashSet();
+    pk.add("empCode");
+
+    Response res = QueryUtil.updateTable(conn,pk,oldPersistentObject,persistentObject,"EMP",attribute2dbField,"Y","N",true);
+    if (res.isError())
+      conn.rollback();
+    else
+      conn.commit();
+    return res;
+
+/*
+    // an alternative way: you can define your own business logic to store data at hand...
     PreparedStatement stmt = null;
     try {
       stmt = conn.prepareStatement("update EMP set EMP_CODE=?,FIRST_NAME=?,LAST_NAME=?,DEPT_CODE=?,TASK_CODE=?,SEX=?,HIRE_DATE=?,SALARY=?,NOTE=? where EMP_CODE=?");
@@ -186,6 +327,7 @@ public class EmpDetailFrameController extends FormController {
       catch (SQLException ex1) {
       }
     }
+*/
   }
 
   /**
@@ -196,11 +338,22 @@ public class EmpDetailFrameController extends FormController {
   public Response deleteRecord(ValueObject persistentObject) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("delete from EMP where EMP_CODE=?");
       EmpVO vo = (EmpVO)persistentObject;
+
+      // delete from WORKING_DAYS...
+      stmt = conn.prepareStatement("delete from WORKING_DAYS where EMP_CODE=?");
+      stmt.setString(1,vo.getEmpCode());
+      stmt.execute();
+      stmt.close();
+
+      // delete from EMP...
+      stmt = conn.prepareStatement("delete from EMP where EMP_CODE=?");
       stmt.setString(1,vo.getEmpCode());
       stmt.execute();
       gridFrame.reloadData();
+
+      frame.getGrid().clearData();
+
       return new VOResponse(vo);
     }
     catch (SQLException ex) {
@@ -217,6 +370,21 @@ public class EmpDetailFrameController extends FormController {
     }
   }
 
+
+  /**
+   * Callback method called when the Form mode is changed.
+   * @param currentMode current Form mode
+   */
+  public void modeChanged(int currentMode) {
+    if (currentMode==Consts.INSERT) {
+      frame.getGrid().clearData();
+      frame.setEnableGridButtons(false);
+    }
+    else {
+      frame.setEnableGridButtons(true);
+    }
+
+  }
 
 
 

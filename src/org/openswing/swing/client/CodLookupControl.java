@@ -362,7 +362,7 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
     super.addNotify();
 
     // set Form object in the lookup container...
-    if (validationController!=null && validationController.getForm()==null) {
+    if (!Beans.isDesignTime() && validationController!=null && validationController.getForm()==null) {
       Form form = ClientUtils.getLinkedForm(this);
       if (form != null)
         validationController.setForm(form);

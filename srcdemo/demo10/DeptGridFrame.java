@@ -80,6 +80,7 @@ public class DeptGridFrame extends InternalFrame {
     colDeptCode.setUpperCase(true);
     colDescription.setColumnDuplicable(true);
     colDescription.setColumnName("description");
+    colDescription.setColumnSortable(true);
     colDescription.setEditableOnEdit(true);
     colDescription.setEditableOnInsert(true);
     colDescription.setPreferredWidth(200);
@@ -89,6 +90,7 @@ public class DeptGridFrame extends InternalFrame {
     colAddress.setColumnDuplicable(true);
     colAddress.setColumnName("address");
     colAddress.setColumnRequired(false);
+    colAddress.setColumnSortable(true);
     colAddress.setEditableOnEdit(true);
     colAddress.setEditableOnInsert(true);
     colAddress.setMaxWidth(200);

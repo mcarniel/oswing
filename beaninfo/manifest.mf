@@ -114,3 +114,15 @@ Java-Bean: True
 
 Name: org/openswing/swing/client/ImageControl.class
 Java-Bean: True
+
+Name: org/openswing/swing/miscellaneous/client/LicencePanel.class
+Java-Bean: True
+
+Name: org/openswing/swing/miscellaneous/client/ProgressBar.class
+Java-Bean: True
+
+Name: org/openswing/swing/miscellaneous/client/ProgressPanel.class
+Java-Bean: True
+
+Name: org/openswing/swing/miscellaneous/client/ProgressDialog.class
+Java-Bean: True

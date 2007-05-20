@@ -1,4 +1,32 @@
 
+Release Notes 1.1
+-------------------
+
+Final release 1.1 available
+
+Added a progress bar component, a progress bar panel and a progress bar dialog.
+Changed business logic in demo10 sample, by showing how to show ORM capabilities of QueryUtil utility class and 
+how applying filtering/sorting conditions provided by a grid. 
+Changed demo14 sample to show how using the new licence agreement panel and the new progress bar panel.
+Updated tutorial section of this web site, by showing more detailed instructions of development based on OpenSwing. 
+Fixed rendering problem in column header when filtering a column in grid that was previously dragged in another position.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.0.9
+-------------------
+
+Final release 1.0.9 available
+
+Fixed problem when binding a NumericControl to a non BigDecimal type attribute.
+Fixed problem when binding a CodLookupControl to a Form: now CodLookupControl is always linked to the Form, independetly from the setController() method invokation point.
+Improved quick filter on grid: now it supports check-box filtering columns too.
+Added a customizable tip of the day frame/internal frame. Demo10 shows an example of how using the 'tip of the day' window.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.0.8
 -------------------
 

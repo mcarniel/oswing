@@ -1521,13 +1521,13 @@ public class Grid extends JTable
 
     }
 
-    // set to a lower border the filterd column...
+    // set to a lower border the filtered column...
     int gridIndex = -1;
     for(int i=0;i<getModel().getColumnCount();i++) {
       try {
         gridIndex = this.convertColumnIndexToView(i);
         if (gridIndex!=-1) {
-          if (colProps.getColumnName().equals(getVOListTableModel().getColumnName(gridIndex)))
+          if (colProps.getColumnName().equals(getVOListTableModel().getColumnName(i)))
             ((TableColumnHeaderRenderer)this.getTableHeader().getColumnModel().getColumn(gridIndex).getHeaderRenderer()).setBorder(BorderFactory.createLoweredBevelBorder());
         }
       }
@@ -1563,7 +1563,7 @@ public class Grid extends JTable
       try {
         gridIndex = this.convertColumnIndexToView(i);
         if (gridIndex!=-1) {
-          if (attributeName.equals(getVOListTableModel().getColumnName(gridIndex)))
+          if (attributeName.equals(getVOListTableModel().getColumnName(i)))
             ((TableColumnHeaderRenderer)this.getTableHeader().getColumnModel().getColumn(gridIndex).getHeaderRenderer()).setBorder(BorderFactory.createRaisedBevelBorder());
         }
       }
