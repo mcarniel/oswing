@@ -65,7 +65,7 @@ public class AttributeNameEditor extends PropertyEditorSupport {
   /**
    * Method called by input controls.
    */
-  public static final void setColumnType(Class colType) {
+  public static final synchronized void setColumnType(Class colType) {
     if (colType!=null && columnType!=null && !columnType.equals(colType))
       attributeNames = null;
     columnType = colType;
