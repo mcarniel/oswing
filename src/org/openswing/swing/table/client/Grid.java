@@ -1509,7 +1509,7 @@ public class Grid extends JTable
         grids.getQuickFilterValues().put(
             colProps.getColumnName(),
             values = new FilterWhereClause[] {
-              new FilterWhereClause(colProps.getColumnName(),"like",value1),
+              new FilterWhereClause(colProps.getColumnName()," like ",value1),
               null
             }
         );
