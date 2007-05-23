@@ -35,6 +35,7 @@ public class GridFrame extends JFrame {
   InsertButton insertButton = new InsertButton();
   private Connection conn = null;
   EditButton editButton = new EditButton();
+  NavigatorBar navigatorBar1 = new NavigatorBar();
 
   public GridFrame(Connection conn,GridFrameController controller) {
     this.conn = conn;
@@ -66,6 +67,7 @@ public class GridFrame extends JFrame {
     grid.setFunctionId("F1");
     grid.setInsertButton(insertButton);
     grid.setMaxSortedColumns(1);
+    grid.setNavBar(navigatorBar1);
     grid.setReloadButton(reloadButton);
     grid.setValueObjectClassName("demo4.TestVO");
     grid.setOrderWithLoadData(false);
@@ -97,6 +99,7 @@ public class GridFrame extends JFrame {
     buttonsPanel.add(editButton, null);
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(deleteButton, null);
+    buttonsPanel.add(navigatorBar1, null);
     grid.getColumnContainer().add(colText, null);
     grid.getColumnContainer().add(colDecimal, null);
     grid.getColumnContainer().add(colCurrency, null);

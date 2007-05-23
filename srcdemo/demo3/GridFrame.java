@@ -39,6 +39,7 @@ public class GridFrame extends JFrame {
   CopyButton copyButton = new CopyButton();
   ExportButton exportButton = new ExportButton();
   ButtonColumn colButton = new ButtonColumn();
+  NavigatorBar navigatorBar1 = new NavigatorBar();
 
   public GridFrame(Connection conn,GridFrameController controller) {
     this.conn = conn;
@@ -73,12 +74,14 @@ public class GridFrame extends JFrame {
     grid.setEditButton(editButton);
     grid.setExportButton(exportButton);
     grid.setInsertButton(insertButton);
+    grid.setNavBar(navigatorBar1);
     grid.setReloadButton(reloadButton);
     grid.setSaveButton(saveButton);
     grid.setValueObjectClassName("demo3.TestVO");
     colText.setColumnName("stringValue");
     colText.setColumnSortable(true);
     colText.setEditableOnInsert(true);
+    colText.setSortVersus(org.openswing.swing.util.java.Consts.ASC_SORTED);
     colText.setMaxCharacters(5);
     colText.setTrimText(true);
     colText.setUpperCase(true);
@@ -135,6 +138,7 @@ public class GridFrame extends JFrame {
     buttonsPanel.add(saveButton, null);
     buttonsPanel.add(exportButton, null);
     buttonsPanel.add(deleteButton, null);
+    buttonsPanel.add(navigatorBar1, null);
     grid.getColumnContainer().add(colText, null);
     grid.getColumnContainer().add(colDecimal, null);
     grid.getColumnContainer().add(colCurrency, null);

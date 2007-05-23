@@ -99,6 +99,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         "N",
         null,
         gridParams,
+        50,
         true
       );
 //      String sql = "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE";
