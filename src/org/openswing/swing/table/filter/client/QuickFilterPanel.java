@@ -67,6 +67,21 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
     private Column colProperties=null;
     private Domain domain=null;
 
+    private String EQUALS = ClientSettings.getInstance().getResources().getResource("equals");
+    private String CONTAINS = ClientSettings.getInstance().getResources().getResource("contains");
+    private String STARTS_WITH = ClientSettings.getInstance().getResources().getResource("starts with");
+    private String ENDS_WITH = ClientSettings.getInstance().getResources().getResource("ends with");
+
+    /** list of filter criteria */
+    private JList opType = new JList(new String[] {
+      EQUALS,
+      CONTAINS,
+      STARTS_WITH,
+      ENDS_WITH
+    });
+
+    private JScrollPane opTypeScrollPane = new JScrollPane();
+
     private QuickFilterListener filterListener=null;
 
 
@@ -366,14 +381,24 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
               ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 2, 0, 0), 0, 0));
       this.add(label2,      new GridBagConstraints(0, 1, 1, 1, 10.0, 0.0
               ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 2, 0, 0), 0, 0));
-      this.add(value1,        new GridBagConstraints(1, 0, 1, 1, 70.0, 0.0
+      opType.setVisibleRowCount(1);
+      opTypeScrollPane.getViewport().add(opType);
+
+      if (colProperties.getColumnType()==Column.TYPE_LOOKUP ||
+          colProperties.getColumnType()==Column.TYPE_TEXT)
+        this.add(opTypeScrollPane,        new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
               ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 0, 0), 0, 0));
-      this.add(value2,      new GridBagConstraints(1, 1, 1, 1, 70.0, 0.0
+      this.add(value1,        new GridBagConstraints(2, 0, 1, 1, 70.0, 0.0
               ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 0, 0), 0, 0));
-      this.add(rangeButton,             new GridBagConstraints(2, 0, 1, 1, 10.0, 0.0
+      this.add(value2,      new GridBagConstraints(2, 1, 1, 1, 70.0, 0.0
+              ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 0, 0), 0, 0));
+      this.add(rangeButton,             new GridBagConstraints(3, 0, 1, 1, 10.0, 0.0
               ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
-      this.add(filterButton,       new GridBagConstraints(3, 0, 1, 1, 10.0, 0.0
+      this.add(filterButton,       new GridBagConstraints(4, 0, 1, 1, 10.0, 0.0
               ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
+
+      opTypeScrollPane.getVerticalScrollBar().addAdjustmentListener(new ListAdjustmentListener(opType));
+
     }
 
 
@@ -595,9 +620,21 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
      * Method called when user click the filter buttons.
      */
     private void filter() {
-      if (filterType==FILTER_TYPE_VALUE)
-        QuickFilterPanel.this.filterListener.filter(colProperties,getValue1(),null);
-      else
+      if (filterType==FILTER_TYPE_VALUE) {
+        Object value = getValue1();
+        if (value!=null &&
+            value.toString().indexOf("%")==-1 &&
+            opType.getSelectedIndex()>0) {
+          if (opType.getSelectedValue().equals(CONTAINS))
+            value = "%"+value+"%";
+          else if (opType.getSelectedValue().equals(STARTS_WITH))
+            value = "%"+value;
+          else if (opType.getSelectedValue().equals(ENDS_WITH))
+            value = value+"%";
+        }
+
+        QuickFilterPanel.this.filterListener.filter(colProperties,value,null);
+      } else
         QuickFilterPanel.this.filterListener.filter(colProperties,getValue1(),getValue2());
     }
 
