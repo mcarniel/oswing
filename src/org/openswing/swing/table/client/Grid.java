@@ -1305,7 +1305,8 @@ public class Grid extends JTable
       );
       // update navigation toolbar state...
       if (getMode()==Consts.READONLY && (grids.getNavBar()!=null)) {
-        if (grids.getLastIndex()+1==Math.min(model.getRowCount(),ClientSettings.BLOCK_SIZE) &&
+        if (model.getRowCount()==model.getRowCount() &&
+//             grids.getLastIndex()+1==Math.min(model.getRowCount(),ClientSettings.BLOCK_SIZE) &&
             this.getSelectedRow()==0)
           grids.getNavBar().setFirstRow(true);
         else

@@ -85,6 +85,11 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("To value","To value");
     dictionary.setProperty("Filter by","Filter by");
     dictionary.setProperty("From value","From value");
+    dictionary.setProperty("equals","equals");
+    dictionary.setProperty("contains","contains");
+    dictionary.setProperty("starts with","starts with");
+    dictionary.setProperty("ends with","ends with");
+
 
     // lookup...
     dictionary.setProperty("Code is not correct.","Code is not correct.");
@@ -202,6 +207,7 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("i accept the terms in the licence agreement","I accept the terms in the licence agreement");
     dictionary.setProperty("ok","Ok");
     dictionary.setProperty("i do not accept the terms in the licence agreement","I do not accept the terms in the licence agreement");
+
 
     dictionary.putAll(additionalDictionary);
 

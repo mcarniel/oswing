@@ -1067,8 +1067,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
     if (getNavBar()!=null) {
       if (grid.getSelectedRow() == 0 &&
-          lastIndex + 1 <=
-          Math.min(ClientSettings.BLOCK_SIZE, model.getRowCount()))
+          lastIndex + 1 <= model.getRowCount())
         getNavBar().setFirstRow(true);
       else
         getNavBar().setFirstRow(false);
