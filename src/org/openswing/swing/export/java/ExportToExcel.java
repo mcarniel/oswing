@@ -175,6 +175,7 @@ public class ExportToExcel {
             if (value instanceof String) {
               c.setCellValue(value.toString());
               c.setCellStyle(csText);
+              c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
             }
             else if (value instanceof BigDecimal ||
                      value instanceof Double ||
