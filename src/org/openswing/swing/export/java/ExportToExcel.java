@@ -173,9 +173,9 @@ public class ExportToExcel {
           value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
           if (value!=null) {
             if (value instanceof String) {
+              c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
               c.setCellValue(value.toString());
               c.setCellStyle(csText);
-              c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
             }
             else if (value instanceof BigDecimal ||
                      value instanceof Double ||
