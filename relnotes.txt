@@ -1,4 +1,17 @@
 
+Release Notes 1.1.1
+-------------------
+
+Final release 1.1.1 available
+
+Fixed navigation problem in grid when pressing up key on the first row and there are more than BLOCK_SIZE rows.
+Changed sorting icons painted inside a sorted column, by changing sort up and sort down icons.
+Improved quick filter on grid: now it is available a list of filter criteria: equals, contains, starts with and ends with.
+Fixed problem on exporting data from grid with Unicode characters.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.1
 -------------------
 

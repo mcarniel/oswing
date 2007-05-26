@@ -36,6 +36,7 @@ public class GridFrame extends JFrame {
   private Connection conn = null;
   EditButton editButton = new EditButton();
   NavigatorBar navigatorBar1 = new NavigatorBar();
+  ExportButton exportButton1 = new ExportButton();
 
   public GridFrame(Connection conn,GridFrameController controller) {
     this.conn = conn;
@@ -64,6 +65,7 @@ public class GridFrame extends JFrame {
     flowLayout1.setAlignment(FlowLayout.LEFT);
     grid.setDeleteButton(deleteButton);
     grid.setEditButton(editButton);
+    grid.setExportButton(exportButton1);
     grid.setFunctionId("F1");
     grid.setInsertButton(insertButton);
     grid.setMaxSortedColumns(1);
@@ -100,6 +102,7 @@ public class GridFrame extends JFrame {
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(deleteButton, null);
     buttonsPanel.add(navigatorBar1, null);
+    buttonsPanel.add(exportButton1, null);
     grid.getColumnContainer().add(colText, null);
     grid.getColumnContainer().add(colDecimal, null);
     grid.getColumnContainer().add(colCurrency, null);
