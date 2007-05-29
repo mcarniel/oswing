@@ -628,9 +628,9 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
           if (opType.getSelectedValue().equals(CONTAINS))
             value = "%"+value+"%";
           else if (opType.getSelectedValue().equals(STARTS_WITH))
-            value = "%"+value;
-          else if (opType.getSelectedValue().equals(ENDS_WITH))
             value = value+"%";
+          else if (opType.getSelectedValue().equals(ENDS_WITH))
+            value = "%"+value;
         }
 
         QuickFilterPanel.this.filterListener.filter(colProperties,value,null);
