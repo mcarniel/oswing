@@ -77,6 +77,7 @@ public class GridFrame extends JFrame {
     colText.setColumnName("stringValue");
     colText.setColumnSortable(true);
     colDecimal.setDecimals(2);
+    colDecimal.setColumnFilterable(true);
     colDecimal.setColumnName("numericValue");
     colDecimal.setColumnSortable(true);
     colCurrency.setColumnDuplicable(false);
@@ -88,11 +89,13 @@ public class GridFrame extends JFrame {
     colDate.setColumnName("dateValue");
     colDate.setColumnSortable(true);
     colCombo.setDomainId("ORDERSTATE");
+    colCombo.setColumnFilterable(true);
     colCombo.setColumnName("comboValue");
     colCombo.setColumnSortable(true);
     colLookup.setColumnName("lookupValue");
     textColumn1.setColumnName("descrLookupValue");
     textColumn1.setPreferredWidth(150);
+    colCheck.setColumnFilterable(true);
     colCheck.setColumnName("checkValue");
     insertButton.setText("insertButton1");
     this.getContentPane().add(grid, BorderLayout.CENTER);

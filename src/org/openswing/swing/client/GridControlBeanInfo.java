@@ -23,6 +23,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _gridDataLocator = new PropertyDescriptor("gridDataLocator", beanClass, "getGridDataLocator", "setGridDataLocator");
       PropertyDescriptor _insertButton = new PropertyDescriptor("insertButton", beanClass, "getInsertButton", "setInsertButton");
       PropertyDescriptor _exportButton = new PropertyDescriptor("exportButton", beanClass, "getExportButton", "setExportButton");
+      PropertyDescriptor _filterButton = new PropertyDescriptor("filterButton", beanClass, "getFilterButton", "setFilterButton");
       PropertyDescriptor _lockedColumns = new PropertyDescriptor("lockedColumns", beanClass, "getLockedColumns", "setLockedColumns");
       PropertyDescriptor _mode = new PropertyDescriptor("mode", beanClass, "getMode", "setMode");
       PropertyDescriptor _navBar = new PropertyDescriptor("navBar", beanClass, "getNavBar", "setNavBar");
@@ -38,6 +39,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _rowHeightFixed = new PropertyDescriptor("rowHeightFixed", beanClass, "getRowHeightFixed", "setRowHeightFixed");
       PropertyDescriptor _saveButton = new PropertyDescriptor("saveButton", beanClass, "getSaveButton", "setSaveButton");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
+      PropertyDescriptor _showFilterPanelOnGrid = new PropertyDescriptor("showFilterPanelOnGrid", beanClass, "isShowFilterPanelOnGrid", "setShowFilterPanelOnGrid");
       PropertyDescriptor _valueObjectClassName = new PropertyDescriptor("valueObjectClassName", beanClass, "getValueObjectClassName", "setValueObjectClassName");
       PropertyDescriptor _visibleStatusPanel = new PropertyDescriptor("visibleStatusPanel", beanClass, "isVisibleStatusPanel", "setVisibleStatusPanel");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
@@ -46,6 +48,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _deleteButton,
         _editButton,
         _exportButton,
+        _filterButton,
         _functionId,
         _gridDataLocator,
         _lockedColumns,
@@ -63,6 +66,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _rowHeightFixed,
         _saveButton,
         _selectionMode,
+        _showFilterPanelOnGrid,
         _valueObjectClassName,
         _visibleStatusPanel};
       return pds;

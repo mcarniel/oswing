@@ -25,6 +25,9 @@ Java-Bean: True
 Name: org/openswing/swing/client/EditButton.class
 Java-Bean: True
 
+Name: org/openswing/swing/client/FilterButton.class
+Java-Bean: True
+
 Name: org/openswing/swing/client/ExportButton.class
 Java-Bean: True
 

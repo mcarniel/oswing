@@ -153,6 +153,12 @@ public class ClientSettings {
   /** buttons authorizations */
   private ButtonsAuthorizations buttonsAuthorizations = null;
 
+  /** look 'n feel to use for the MDI frame; default value: UIManager.getSystemLookAndFeelClassName() */
+  public static String LOOK_AND_FEEL_CLASS_NAME = UIManager.getSystemLookAndFeelClassName();
+
+  /** <code>true</code> to automatically show a filter panel when moving mouse at right of the grid; <code>false</code> to do not show it */
+  public static boolean FILTER_PANEL_ON_GRID = false;
+
 
   /**
    * Contains application settings.
@@ -200,7 +206,7 @@ public class ClientSettings {
 
   ) {
     try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      UIManager.setLookAndFeel(ClientSettings.LOOK_AND_FEEL_CLASS_NAME);
     }
     catch (Exception ex) {
       ex.printStackTrace();

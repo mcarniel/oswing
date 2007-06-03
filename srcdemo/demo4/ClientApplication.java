@@ -58,6 +58,7 @@ public class ClientApplication {
         auth
     );
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
+    ClientSettings.FILTER_PANEL_ON_GRID = true;
 
 
     Domain orderStateDomain = new Domain("ORDERSTATE");

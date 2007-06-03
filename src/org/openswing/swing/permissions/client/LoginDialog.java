@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.util.HashMap;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.util.client.ClientUtils;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -68,7 +69,7 @@ public class LoginDialog extends JDialog {
 
   static {
     try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      UIManager.setLookAndFeel(ClientSettings.LOOK_AND_FEEL_CLASS_NAME);
     }
     catch (Exception ex) {
       ex.printStackTrace();

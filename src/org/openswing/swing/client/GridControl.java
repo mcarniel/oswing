@@ -17,6 +17,11 @@ import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.table.java.*;
 import org.openswing.swing.util.java.*;
+import org.openswing.swing.table.filter.client.FilterPanel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import org.openswing.swing.table.filter.client.FilterDialog;
 
 
 /**
@@ -100,6 +105,9 @@ public class GridControl extends JPanel {
   /** export button */
   private ExportButton exportButton = null;
 
+  /** filter/sort button */
+  private FilterButton filterButton = null;
+
   /** copy button */
   private CopyButton copyButton = null;
 
@@ -159,6 +167,15 @@ public class GridControl extends JPanel {
 
   /** flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded); default value: <code>true</code> */
   private boolean orderWithLoadData = true;
+
+  /** <code>true</code> to automatically show a filter panel when moving mouse at right of the grid; <code>false</code> to do not show it */
+  private boolean showFilterPanelOnGrid = ClientSettings.FILTER_PANEL_ON_GRID;
+
+  /** split pane used to split grid component from filter panel (optional) */
+  private JSplitPane split = new JSplitPane();
+
+  /** filter panel to show at the right of the grid (optional) */
+  private FilterPanel filterPanel = null;
 
 
   /**
@@ -247,6 +264,8 @@ public class GridControl extends JPanel {
         table.setInsertButton(insertButton);
       if (exportButton!=null)
         table.setExportButton(exportButton);
+      if (filterButton!=null)
+        table.setFilterButton(filterButton);
       if (copyButton!=null)
         table.setCopyButton(copyButton);
       if (editButton!=null)
@@ -283,6 +302,61 @@ public class GridControl extends JPanel {
       if (visibleStatusPanel)
         gridStatusPanel.add(labelPanel,BorderLayout.SOUTH);
 
+      if (showFilterPanelOnGrid) {
+        filterPanel = new FilterPanel(columnProperties,table);
+
+        split.setOrientation(split.HORIZONTAL_SPLIT);
+        split.setDividerSize(1);
+        split.add(gridStatusPanel,split.LEFT);
+        split.add(filterPanel,split.RIGHT);
+        super.add(split, BorderLayout.CENTER);
+        split.setDividerLocation(2048);
+        table.getGrid().addMouseListener(new MouseAdapter() {
+
+          public void mouseEntered(MouseEvent e) {
+            split.setDividerLocation(split.getWidth()-10);
+          }
+
+        });
+        if (table.getLockedGrid()!=null)
+          table.getLockedGrid().addMouseListener(new MouseAdapter() {
+
+            public void mouseEntered(MouseEvent e) {
+              split.setDividerLocation(split.getWidth()-10);
+            }
+
+          });
+
+        filterPanel.addMouseListener(new MouseAdapter() {
+
+          /**
+           * Invoked when the mouse enters a component.
+           */
+          public void mouseEntered(MouseEvent e) {
+            if (split.getDividerLocation()<=split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20)
+              return;
+
+            filterPanel.init();
+            if (split.getLastDividerLocation()>0 && split.getLastDividerLocation()<filterPanel.getPreferredSize().getWidth())
+              split.setDividerLocation(split.getLastDividerLocation());
+            else
+              split.setDividerLocation(split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20);
+          }
+
+          /**
+           * Invoked when the mouse exits a component.
+           */
+          public void mouseExited(MouseEvent e) {
+//            System.out.println(e.getX()+" "+e.getY()+" "+filterPanel.getWidth()+" "+filterPanel.getHeight());
+            if (e.getX()<=0 || e.getY()<=0 || e.getX()>=filterPanel.getWidth() || e.getY()>=filterPanel.getHeight()) {
+              split.setDividerLocation(split.getWidth()-10);
+            }
+          }
+
+        });
+
+      }
+
       gridStatusPanel.revalidate();
       gridStatusPanel.repaint();
 
@@ -310,6 +384,9 @@ public class GridControl extends JPanel {
       table.getGrid().setOrderWithLoadData(orderWithLoadData);
       if (table.getLockedGrid()!=null)
         table.getLockedGrid().setOrderWithLoadData(orderWithLoadData);
+
+//        split.setDividerLocation((int)split.getPreferredSize().getWidth());
+
 
     }
     catch (Exception ex) {
@@ -493,6 +570,14 @@ public class GridControl extends JPanel {
 
 
   /**
+   * @return filter button
+   */
+  public final FilterButton getFilterButton() {
+    return filterButton;
+  }
+
+
+  /**
    * @return copy button
    */
   public final CopyButton getCopyButton() {
@@ -587,6 +672,17 @@ public class GridControl extends JPanel {
     this.deleteButton = deleteButton;
     if (this.table!=null)
       this.table.setDeleteButton(deleteButton);
+  }
+
+
+  /**
+   * Set the filter button.
+   * @param filterButton filter button
+   */
+  public final void setFilterButton(FilterButton filterButton) {
+    this.filterButton = filterButton;
+    if (this.table!=null)
+      this.table.setFilterButton(filterButton);
   }
 
 
@@ -1021,6 +1117,23 @@ public class GridControl extends JPanel {
    */
   public final void setOrderWithLoadData(boolean orderWithLoadData) {
     this.orderWithLoadData = orderWithLoadData;
+  }
+
+
+  /**
+   * @return <code>true</code> to automatically show a filter panel when moving mouse at right of the grid; <code>false</code> to do not show it
+   */
+  public final boolean isShowFilterPanelOnGrid() {
+    return showFilterPanelOnGrid;
+  }
+
+
+  /**
+   * Set a <code>true</code> value to automatically show a filter panel when moving mouse at right of the grid; <code>false</code> to do not show it
+   * @param showFilterPanelOnGrid <code>true</code> to automatically show a filter panel when moving mouse at right of the grid; <code>false</code> to do not show it
+   */
+  public final void setShowFilterPanelOnGrid(boolean showFilterPanelOnGrid) {
+    this.showFilterPanelOnGrid = showFilterPanelOnGrid;
   }
 
 

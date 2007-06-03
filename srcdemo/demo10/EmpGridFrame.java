@@ -34,6 +34,7 @@ public class EmpGridFrame extends InternalFrame {
   TextColumn colLName = new TextColumn();
   TextColumn colDeptCode = new TextColumn();
   TextColumn colDeptDescr = new TextColumn();
+  FilterButton filterButton1 = new FilterButton();
 
   public EmpGridFrame(Connection conn,EmpGridFrameController controller) {
     this.conn = conn;
@@ -60,6 +61,7 @@ public class EmpGridFrame extends InternalFrame {
     flowLayout1.setAlignment(FlowLayout.LEFT);
     grid.setDeleteButton(deleteButton);
     grid.setExportButton(exportButton1);
+    grid.setFilterButton(filterButton1);
     grid.setFunctionId("getEmployees");
     grid.setInsertButton(null);
     grid.setNavBar(navigatorBar1);
@@ -83,12 +85,14 @@ public class EmpGridFrame extends InternalFrame {
     colDeptCode.setPreferredWidth(70);
     colDeptDescr.setColumnName("deptDescription");
     colDeptDescr.setPreferredWidth(200);
+    filterButton1.setText("filterButton1");
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(deleteButton, null);
     buttonsPanel.add(exportButton1, null);
+    buttonsPanel.add(filterButton1, null);
     buttonsPanel.add(navigatorBar1, null);
     grid.getColumnContainer().add(colEmpCode, null);
     grid.getColumnContainer().add(colFName, null);

@@ -99,6 +99,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** button linked to the grid, used to set INSERT mode (copy the previous row on grid) */
   private CopyButton copyButton = null;
 
+  /** button linked to the grid, used to open the filtering/sorting dialog (only in READONLY mode) */
+  private FilterButton filterButton = null;
+
   /** button linked to the grid, used to set EDIT mode (edit the selected row on grid) */
   private EditButton editButton = null;
 
@@ -178,6 +181,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
   /** current number of new rows  */
   private int currentNumberOfNewRows = 0;
+
+  /** filter dialog */
+  private FilterDialog filterDialog = null;
 
 
   /**
@@ -725,6 +731,27 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     this.copyButton = copyButton;
     if (copyButton != null)
       copyButton.addDataController(this);
+  }
+
+
+  /**
+   * Set filter button linked to grid.
+   * @param filterButton filter button linked to grid
+   */
+  public void setFilterButton(FilterButton filterButton) {
+    if (this.filterButton != null)
+      this.filterButton.removeDataController(this);
+    this.filterButton = filterButton;
+    if (filterButton != null)
+      filterButton.addDataController(this);
+  }
+
+
+  /**
+   * @return filter button linked to grid
+   */
+  public FilterButton getFilterButton() {
+    return filterButton;
   }
 
 
@@ -1386,6 +1413,20 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     }
     else
       Logger.error(this.getClass().getName(),"export","You cannot export data: grid must be in read only mode.",null);
+  }
+
+
+
+
+  /**
+   * Method called when used has clicked on filter button.
+   */
+  public final void filterSort() {
+    if (getMode()==Consts.READONLY) {
+      if (filterDialog==null)
+        filterDialog = new FilterDialog(colProps,this);
+      filterDialog.init();
+    }
   }
 
 
@@ -2180,6 +2221,23 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       if (colProps[i].getColumnName().equals(attributeName))
         return ClientSettings.getInstance().getResources().getResource( colProps[i].getHeaderColumnName() );
     return attributeName;
+  }
+
+
+  /**
+   * Method invoked by FilterPanel to repaint icons in column headers,
+   * according to sorting/filtering conditions just applied.
+   */
+  public final void updateColumnHeaderIcons() {
+    grid.updateColumnHeaderIcons();
+    if (lockedGrid!=null)
+      lockedGrid.updateColumnHeaderIcons();
+  }
+
+
+  public void finalize() {
+    if (filterDialog!=null)
+      filterDialog.dispose();
   }
 
 

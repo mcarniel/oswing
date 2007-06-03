@@ -1,4 +1,20 @@
 
+Release Notes 1.1.2
+-------------------
+
+Final release 1.1.2 available
+
+Fixed bug in quick filter on grid: filter criteria "starts with" and "ends with" were inverted.
+Added a filter panel to the grid: this optional panel will be showed when the mouse is moved at the right side of the grid
+and allows to define multiple filtering/sorting conditions.
+Added a new button: the filter button; this can be used in combination with the grid to show a filter dialog:
+this optional dialog will be showed when clicking on the filter button and allows to define multiple filtering/sorting conditions.
+Changed demo10 to show how to activate filter dialog.
+Added ClientSettings.FILTER_PANEL_ON_GRID constant to define if filter panel is enabled on grids as default setting.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.1.1
 -------------------
 

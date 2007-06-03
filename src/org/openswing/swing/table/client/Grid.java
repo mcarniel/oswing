@@ -243,6 +243,8 @@ public class Grid extends JTable
           // accelerator key pressed...
           if (e.getKeyCode()==e.VK_Z && e.isControlDown() && (Grid.this.grids.getReloadButton()!=null) && Grid.this.grids.getReloadButton().isEnabled())
             Grid.this.grids.reload();
+          else if (e.getKeyCode()==e.VK_F && e.isControlDown() && (Grid.this.grids.getFilterButton()!=null) && Grid.this.grids.getFilterButton().isEnabled())
+            Grid.this.grids.filterSort();
           else if (e.getKeyCode()==e.VK_S && e.isControlDown() & (Grid.this.grids.getSaveButton()!=null) && Grid.this.grids.getSaveButton().isEnabled())
             Grid.this.grids.save();
           else if (e.getKeyCode()==e.VK_I && e.isControlDown() && (Grid.this.grids.getInsertButton()!=null) && Grid.this.grids.getInsertButton().isEnabled())
@@ -1510,7 +1512,7 @@ public class Grid extends JTable
         grids.getQuickFilterValues().put(
             colProps.getColumnName(),
             values = new FilterWhereClause[] {
-              new FilterWhereClause(colProps.getColumnName()," like ",value1),
+              new FilterWhereClause(colProps.getColumnName(),"like",value1),
               null
             }
         );
@@ -1549,6 +1551,33 @@ public class Grid extends JTable
 
 
   /**
+   * Method invoked by FilterPanel to repaint icons in column headers,
+   * according to sorting/filtering conditions just applied.
+   */
+  public final void updateColumnHeaderIcons() {
+    // set to a lower/upper border the filtered column...
+    int gridIndex = -1;
+    FilterWhereClause[] where = null;
+    for(int i=0;i<getModel().getColumnCount();i++) {
+      try {
+        gridIndex = this.convertColumnIndexToView(i);
+        if (gridIndex!=-1) {
+
+          where = (FilterWhereClause[])grids.getQuickFilterValues().get( getVOListTableModel().getColumnName(i) );
+          if (where!=null)
+            ((TableColumnHeaderRenderer)this.getTableHeader().getColumnModel().getColumn(gridIndex).getHeaderRenderer()).setBorder(BorderFactory.createLoweredBevelBorder());
+          else
+            ((TableColumnHeaderRenderer)this.getTableHeader().getColumnModel().getColumn(gridIndex).getHeaderRenderer()).setBorder(BorderFactory.createRaisedBevelBorder());
+        }
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+
+
+  /**
    * Remove filter from the specified column.
    * @param attributeName attribute name that identifies the column
    */
@@ -1558,7 +1587,7 @@ public class Grid extends JTable
     if (values==null)
       return;
 
-    // set to a lower border the filterd column...
+    // set to a upper border the filtered column...
     int gridIndex = -1;
     for(int i=0;i<getModel().getColumnCount();i++) {
       try {

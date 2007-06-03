@@ -57,5 +57,16 @@ public class Consts {
   /** filter to apply in lookup grid data */
   public static final String TREE_FILTER = "TREE_FILTER";
 
+  /** filter criteria available in filter panel */
+  public static final String EQ = "=";
+  public static final String GE = ">=";
+  public static final String GT = ">";
+  public static final String IS_NOT_NULL = "is not null";
+  public static final String IS_NULL = "is null";
+  public static final String LE = "<=";
+  public static final String LIKE = "like";
+  public static final String LT = "<";
+  public static final String NEQ = "<>";
+
 
 }

@@ -1546,6 +1546,12 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   public final void export() {}
 
 
+  /**
+   * Method called when used has clicked on filter button: not supported.
+   */
+  public void filterSort() {}
+
+
 
   /**
    * Set the functionId identifier, associated to the container

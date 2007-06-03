@@ -10,6 +10,7 @@ import org.openswing.swing.message.send.java.GridParams;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
 import org.openswing.swing.internationalization.java.ResourcesFactory;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -111,16 +112,26 @@ public class QueryUtil {
               attributeName);
           baseSQL +=
               attributesMapping.get(attributeName) +
-              filterClauses[0].getOperator() +
-              "? AND ";
-          values.add(filterClauses[0].getValue());
+              " " + filterClauses[0].getOperator() + " ";
+          if (filterClauses[0].getValue()!=null &&
+              !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
+            baseSQL += "? AND ";
+            values.add(filterClauses[0].getValue());
+          }
+          else
+            baseSQL += "AND ";
           attrNames.add(filterClauses[0].getAttributeName());
           if (filterClauses[1] != null) {
             baseSQL +=
                 attributesMapping.get(attributeName) +
-                filterClauses[1].getOperator() +
-                "? AND ";
-            values.add(filterClauses[1].getValue());
+                " " + filterClauses[1].getOperator() + " ";
+            if (filterClauses[1].getValue()!=null &&
+                !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
+              baseSQL += "? AND ";
+              values.add(filterClauses[1].getValue());
+            }
+            else
+              baseSQL += "AND ";
             attrNames.add(filterClauses[1].getAttributeName());
           }
         }

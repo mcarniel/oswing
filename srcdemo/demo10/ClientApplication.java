@@ -123,7 +123,6 @@ public class ClientApplication implements MDIController,LoginController {
     );
 
 
-
     ClientSettings clientSettings = new ClientSettings(
         new EnglishOnlyResourceFactory("$",props,true),
         domains
@@ -133,6 +132,7 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.TREE_BACK = "treeback2.jpg";
     ClientSettings.VIEW_BACKGROUND_SEL_COLOR = true;
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
+    ClientSettings.FILTER_PANEL_ON_GRID = true;
 
     MDIFrame mdi = new MDIFrame(this);
 

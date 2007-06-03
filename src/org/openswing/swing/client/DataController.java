@@ -92,4 +92,10 @@ public interface DataController {
   public boolean isButtonDisabled(GenericButton button);
 
 
+  /**
+   * Method called when used has clicked on filter button.
+   */
+  public void filterSort();
+
+
 }

@@ -52,7 +52,7 @@ public class WindowMenu extends JMenu {
 
   static {
     try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      UIManager.setLookAndFeel(ClientSettings.LOOK_AND_FEEL_CLASS_NAME);
     }
     catch (Exception ex) {
       ex.printStackTrace();
