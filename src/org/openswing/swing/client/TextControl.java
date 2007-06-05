@@ -94,29 +94,38 @@ public class TextControl extends BaseInputControl implements InputControl {
   private void addKeyListener() {
     textBox.addKeyListener(new KeyAdapter() {
 
+      private boolean skip = false;
+
       public final void keyReleased(KeyEvent e) {
-        e.consume();
+        if (textBox.getText()!=null &&
+            textBox.getText().length()>maxCharacters) {
+          TextControl.this.setText(textBox.getText().substring(0,maxCharacters));
+        }
+        else if (textBox.getText()!=null &&
+                 !textBox.getText().equals(textBox.getText().toUpperCase())) {
+          TextControl.this.setText(textBox.getText().toUpperCase());
+        }
       }
 
       public final void keyTyped(KeyEvent e) {
+        if (skip)
+          return;
         if (textBox.getText()!=null &&
-            textBox.getText().length()>=maxCharacters &&
-            e.getKeyChar()!='\b') {
-          TextControl.this.setText(textBox.getText().substring(0,maxCharacters));
-          e.consume();
-        }
-        else if (textBox.getText()!=null &&
-                 upperCase &&
-                 e.getKeyChar()>=' ') {
-          TextControl.this.setText((textBox.getText()+String.valueOf(e.getKeyChar())).toUpperCase());
+            textBox.getText().length()>=maxCharacters) {
           e.consume();
         }
       }
 
-      public void keyPressed(KeyEvent e) { }
+      public void keyPressed(KeyEvent e) {
+        skip = false;
+        if (e.getKeyCode()==e.VK_BACK_SPACE)
+          skip = true;
+      }
 
     });
   }
+
+
 
 
   /**
