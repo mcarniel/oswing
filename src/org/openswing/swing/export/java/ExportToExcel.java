@@ -139,6 +139,8 @@ public class ExportToExcel {
     Object vo = null;
     int type;
     boolean firstRow = true;
+
+
     do {
       response=opt.getGridDataLocator().loadData(
         GridParams.NEXT_BLOCK_ACTION,
@@ -155,68 +157,54 @@ public class ExportToExcel {
       for(int j=0;j<((VOListResponse)response).getRows().size();j++) {
         if (firstRow) {
           firstRow = false;
-          // crate the first row...
+          // create the first row...
           r = s.createRow(rownum++);
           for(short i=0;i<opt.getExportColumns().size();i++) {
             c = r.createCell(i);
             c.setCellValue(opt.getExportColumns().get(i).toString());
             c.setCellStyle(csTitle);
           }
+
+
+          for(int k=0;k<opt.getTopRows().size();k++) {
+            // create a row for each top rows...
+            vo = opt.getTopRows().get(k);
+            appendRow(
+              s,
+              vo,
+              opt,
+              gettersMethods,
+              csText,
+              csBool,
+              csDecNum,
+              csIntNum,
+              csDate,
+              csTime,
+              csDateTime,
+              rownum
+            );
+            rownum++;
+          }
+
         }
 
         // create a row
-        r = s.createRow(rownum);
         vo = ((VOListResponse)response).getRows().get(j);
 
-        for(short i=0;i<opt.getExportColumns().size();i++) {
-          c = r.createCell(i);
-          value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-          if (value!=null) {
-            if (value instanceof String) {
-              c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
-              c.setCellValue(value.toString());
-              c.setCellStyle(csText);
-            }
-            else if (value instanceof BigDecimal ||
-                     value instanceof Double ||
-                     value instanceof Float) {
-              c.setCellValue(Double.parseDouble(value.toString()));
-              c.setCellStyle(csDecNum);
-            }
-            else if (value instanceof Integer ||
-                     value instanceof Long) {
-              c.setCellValue(Double.parseDouble(value.toString()));
-              c.setCellStyle(csIntNum);
-            }
-            else if (value instanceof Boolean) {
-              c.setCellValue(((Boolean)value).booleanValue());
-              c.setCellStyle(csBool);
-            }
-            else if (value.getClass().equals(boolean.class)) {
-              c.setCellValue(((Boolean)value).booleanValue());
-              c.setCellStyle(csBool);
-            }
-            else if (value instanceof Date ||
-                     value instanceof java.util.Date ||
-                     value instanceof java.sql.Timestamp) {
-              c.setCellValue((Date)value);
-              type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
-              if (type==opt.TYPE_DATE)
-                c.setCellStyle(csDate);
-              else if (type==opt.TYPE_DATE_TIME)
-                c.setCellStyle(csDateTime);
-              else if (type==opt.TYPE_TIME)
-                c.setCellStyle(csTime);
-            }
-          }
-          else {
-            c.setCellValue("");
-            c.setCellStyle(csText);
-          }
-
-          // make this column a bit wider
-          s.setColumnWidth( i, (short)(256/8*((Integer)opt.getColumnsWidth().get(opt.getExportAttrColumns().get(i))).shortValue()) );
-        }
+        appendRow(
+          s,
+          vo,
+          opt,
+          gettersMethods,
+          csText,
+          csBool,
+          csDecNum,
+          csIntNum,
+          csDate,
+          csTime,
+          csDateTime,
+          rownum
+        );
 
         rownum++;
       }
@@ -228,6 +216,28 @@ public class ExportToExcel {
     }
     while (rownum<opt.getMaxRows());
 
+
+    for(int j=0;j<opt.getBottomRows().size();j++) {
+      // create a row for each bottom rows...
+      vo = opt.getBottomRows().get(j);
+      appendRow(
+        s,
+        vo,
+        opt,
+        gettersMethods,
+        csText,
+        csBool,
+        csDecNum,
+        csIntNum,
+        csDate,
+        csTime,
+        csDateTime,
+        rownum
+      );
+      rownum++;
+    }
+
+
     // write the workbook to the output stream
     // close our file (don't blow out our file handles
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -236,6 +246,82 @@ public class ExportToExcel {
     out.close();
 
     return doc;
+  }
+
+
+  /**
+   * Append current row to result StringBuffer.
+   * @return current row to append
+   */
+  private void appendRow(
+    HSSFSheet s,
+    Object vo,
+    ExportOptions opt,
+    Hashtable gettersMethods,
+    HSSFCellStyle csText,
+    HSSFCellStyle csBool,
+    HSSFCellStyle csDecNum,
+    HSSFCellStyle csIntNum,
+    HSSFCellStyle csDate,
+    HSSFCellStyle csTime,
+    HSSFCellStyle csDateTime,
+    int rownum
+  ) throws Throwable {
+    int type;
+    Object value = null;
+    HSSFRow r = null;
+    HSSFCell c = null;
+    r = s.createRow(rownum);
+    for(short i=0;i<opt.getExportColumns().size();i++) {
+      c = r.createCell(i);
+      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
+      if (value!=null) {
+        if (value instanceof String) {
+          c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+          c.setCellValue(value.toString());
+          c.setCellStyle(csText);
+        }
+        else if (value instanceof BigDecimal ||
+                 value instanceof Double ||
+                 value instanceof Float) {
+          c.setCellValue(Double.parseDouble(value.toString()));
+          c.setCellStyle(csDecNum);
+        }
+        else if (value instanceof Integer ||
+                 value instanceof Long) {
+          c.setCellValue(Double.parseDouble(value.toString()));
+          c.setCellStyle(csIntNum);
+        }
+        else if (value instanceof Boolean) {
+          c.setCellValue(((Boolean)value).booleanValue());
+          c.setCellStyle(csBool);
+        }
+        else if (value.getClass().equals(boolean.class)) {
+          c.setCellValue(((Boolean)value).booleanValue());
+          c.setCellStyle(csBool);
+        }
+        else if (value instanceof Date ||
+                 value instanceof java.util.Date ||
+                 value instanceof java.sql.Timestamp) {
+          c.setCellValue((Date)value);
+          type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
+          if (type==opt.TYPE_DATE)
+            c.setCellStyle(csDate);
+          else if (type==opt.TYPE_DATE_TIME)
+            c.setCellStyle(csDateTime);
+          else if (type==opt.TYPE_TIME)
+            c.setCellStyle(csTime);
+        }
+      }
+      else {
+        c.setCellValue("");
+        c.setCellStyle(csText);
+      }
+
+      // make this column a bit wider
+      s.setColumnWidth( i, (short)(256/8*((Integer)opt.getColumnsWidth().get(opt.getExportAttrColumns().get(i))).shortValue()) );
+    }
+
   }
 
 

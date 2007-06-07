@@ -1611,7 +1611,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       topRows.addAll( gridControl.getTopTable().getVOListTableModel().getDataVector() );
 
     ArrayList bottomRows = new ArrayList();
-    if (gridControl.getTopTable()!=null)
+    if (gridControl.getBottomTable()!=null)
       bottomRows.addAll( gridControl.getBottomTable().getVOListTableModel().getDataVector() );
 
     ExportOptions opt = new ExportOptions(
