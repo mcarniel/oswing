@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.ArrayList;
 import org.openswing.swing.message.receive.java.VOListResponse;
 import java.math.BigDecimal;
+import org.openswing.swing.table.client.GridController;
 
 
 /**
@@ -56,7 +57,7 @@ public class GridFrame extends JFrame {
 
       LookupController lookupController = new DemoLookupController(conn);
       colLookup.setLookupController(lookupController);
-
+/*
       // set top grid content, i.e. the first row...
       grid.setTopGridDataLocator(new GridDataLocator() {
 
@@ -77,7 +78,7 @@ public class GridFrame extends JFrame {
         }
 
       });
-
+*/
 
       // set bottom grid content, i.e. the last two rows...
       grid.setBottomGridDataLocator(new GridDataLocator() {
@@ -96,6 +97,20 @@ public class GridFrame extends JFrame {
 
       });
 
+      grid.setBottomGridController(new GridController() {
+
+        /**
+         * Method used to define the background color for each cell of the grid.
+         * @param rowNumber selected row index
+         * @param attributedName attribute name related to the column currently selected
+         * @param value object contained in the selected cell
+         * @return background color of the selected cell
+         */
+        public Color getBackgroundColor(int row,String attributedName,Object value) {
+          return new Color(230,230,230);
+        }
+
+      });
 
 
       setVisible(true);
@@ -108,7 +123,7 @@ public class GridFrame extends JFrame {
 
 
   /**
-   * @return calculate totals for numeric and currency colums and return two rows having those totals.
+   * @return calculate totals for numeric and currency colums and return one row having those totals.
    */
   private ArrayList getTotals() {
     ArrayList rows = new ArrayList();
@@ -127,11 +142,6 @@ public class GridFrame extends JFrame {
         tot2 = tot2.add(testVO.getNumericValue());
     }
     vo.setCurrencyValue(tot);
-    rows.add(vo);
-
-    vo = new TestVO();
-    vo.setDateValue(new java.sql.Date(System.currentTimeMillis()));
-    vo.setStringValue("Total Numbers");
     vo.setNumericValue(tot2);
     rows.add(vo);
 
@@ -158,8 +168,10 @@ public class GridFrame extends JFrame {
     grid.setSaveButton(saveButton);
 
 //    grid.setLockedColumns(2);
+/*
     grid.setLockedRowsOnTop(1);
-    grid.setLockedRowsOnBottom(2);
+*/
+    grid.setLockedRowsOnBottom(1);
 
     grid.setValueObjectClassName("demo3.TestVO");
     colText.setColumnName("stringValue");
