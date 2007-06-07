@@ -141,6 +141,21 @@ public class Grid extends JTable
   /** flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded); default value: <code>true</code> */
   private boolean orderWithLoadData = true;
 
+  /** type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID */
+  private int gridType;
+
+  /** main grid */
+  public static final int MAIN_GRID = 0;
+
+  /** top grid (optional), that contains the top locked rows */
+  public static final int TOP_GRID = 1;
+
+  /** bottom grid (optional), that contains the bottom locked rows */
+  public static final int BOTTOM_GRID = 2;
+
+  /** mouse listener applied to tabler headers to sort columns */
+  private MouseListener sortingMouseListener = null;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -148,6 +163,11 @@ public class Grid extends JTable
    * @param statusPanel bottom panel included into the grid; used to view selected row numbers
    * @param fromColIndex column index from which to start to add TableColumn (related to colProps list)
    * @param toColIndex final column index of TableColumn objects to add (related to colProps list), index excluded
+   * @param model grid model
+   * @param modelAdapter grid model adapter
+   * @param gridController grid controller
+   * @param lockedGrid locked grid (optional)
+   * @param gridType type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID
    */
   public Grid(
       Grids grids,
@@ -158,7 +178,8 @@ public class Grid extends JTable
       VOListTableModel model,
       VOListAdapter modelAdapter,
       GridController gridController,
-      boolean lockedGrid) {
+      boolean lockedGrid,
+      int gridType) {
     super();
     this.grids = grids;
     this.modelAdapter = modelAdapter;
@@ -178,6 +199,7 @@ public class Grid extends JTable
     this.setForeground(ClientSettings.GRID_CELL_FOREGROUND);
     this.setSelectionBackground(ClientSettings.GRID_SELECTION_BACKGROUND);
     this.setSelectionForeground(ClientSettings.GRID_SELECTION_FOREGROUND);
+    this.gridType = gridType;
 
 
     try {
@@ -196,358 +218,398 @@ public class Grid extends JTable
       setVisibleColumns();
 
       // add mouse listener to capture righe mouse click event, used to show the popup menu...
-      this.addMouseListener(new RightClickMouseListener());
+      if (gridType==MAIN_GRID) {
+        this.addMouseListener(new RightClickMouseListener());
 
-      // add mouse listener to capture double click event in the selected row...
-      this.addMouseListener(new MouseAdapter() {
-        public void mouseClicked(MouseEvent e) {
-          if (e.getClickCount()==2 &&
-                     SwingUtilities.isLeftMouseButton(e) &&
-                     Grid.this.gridController!=null &&
-                     getSelectedRow()!=-1 &&
-                     Grid.this.model.getMode()==Consts.READONLY)
-            // call grid controller method on another thread
-            new Thread() {
-              public void run() {
-                Grid.this.gridController.doubleClick(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
-              }
-            }.start();
-        }
-      });
-
-      // add key listener to capture the ENTER pressed event in the selected row...
-      this.addKeyListener(new KeyAdapter() {
-        public void keyPressed(KeyEvent e) {
-
-          if (!Grid.this.grids.isListenEvent()) {
-            e.consume();
-            return;
+        // add mouse listener to capture double click event in the selected row...
+        this.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount()==2 &&
+                       SwingUtilities.isLeftMouseButton(e) &&
+                       Grid.this.gridController!=null &&
+                       getSelectedRow()!=-1 &&
+                       Grid.this.model.getMode()==Consts.READONLY)
+              // call grid controller method on another thread
+              new Thread() {
+                public void run() {
+                  Grid.this.gridController.doubleClick(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
+                }
+              }.start();
           }
+        });
 
-          // ENTER button pressed in the selected row: fire event to the grid controller...
-          if (e.getKeyCode()==e.VK_ENTER &&
-              Grid.this.gridController!=null &&
-              getSelectedRow()!=-1 &&
-              Grid.this.model.getMode()==Consts.READONLY)
-            // call grid controller method on another thread
-            new Thread() {
-              public void run() {
-                Grid.this.gridController.enterButton(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
-              }
-            }.start();
+        // add key listener to capture the ENTER pressed event in the selected row...
+        this.addKeyListener(new KeyAdapter() {
+          public void keyPressed(KeyEvent e) {
 
-          // ENTER button pressed in the selected row: consule event (otherwise the grid will select the next row)...
-          if (e.getKeyCode()==e.VK_ENTER)
-            e.consume();
-
-          // accelerator key pressed...
-          if (e.getKeyCode()==e.VK_Z && e.isControlDown() && (Grid.this.grids.getReloadButton()!=null) && Grid.this.grids.getReloadButton().isEnabled())
-            Grid.this.grids.reload();
-          else if (e.getKeyCode()==e.VK_F && e.isControlDown() && (Grid.this.grids.getFilterButton()!=null) && Grid.this.grids.getFilterButton().isEnabled())
-            Grid.this.grids.filterSort();
-          else if (e.getKeyCode()==e.VK_S && e.isControlDown() & (Grid.this.grids.getSaveButton()!=null) && Grid.this.grids.getSaveButton().isEnabled())
-            Grid.this.grids.save();
-          else if (e.getKeyCode()==e.VK_I && e.isControlDown() && (Grid.this.grids.getInsertButton()!=null) && Grid.this.grids.getInsertButton().isEnabled())
-            Grid.this.grids.insert();
-          else if (e.getKeyCode()==e.VK_E && e.isControlDown() && (Grid.this.grids.getEditButton()!=null) && Grid.this.grids.getEditButton().isEnabled())
-            Grid.this.grids.edit();
-          else if (e.getKeyCode()==e.VK_D && e.isControlDown() && (Grid.this.grids.getDeleteButton()!=null) && Grid.this.grids.getDeleteButton().isEnabled())
-            Grid.this.grids.delete();
-          else if (e.getKeyCode()==e.VK_C && e.isControlDown() && (Grid.this.grids.getCopyButton()!=null) && Grid.this.grids.getCopyButton().isEnabled())
-            Grid.this.grids.copy();
-          else if (e.getKeyCode()==e.VK_X && e.isControlDown() && (Grid.this.grids.getExportButton()!=null) && Grid.this.grids.getExportButton().isEnabled())
-            Grid.this.grids.export();
-
-          // (SHIFT) TAB pressed ...
-          if (Grid.this.grids.getLockedGrid()!=null &&
-              Grid.this.model.getRowCount()>0 &&
-              getSelectedRow()!=-1 &&
-              (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_RIGHT) &&
-              e.getModifiers()!=e.SHIFT_MASK &&
-              Grid.this.lockedGrid &&
-              getSelectedColumn()==getColumnCount()-1) {
-            // TAB pressed...
-            e.consume();
-            Grid.this.grids.setRowSelectionInterval(getSelectedRow(),getSelectedRow());
-            Grid.this.grids.getGrid().setColumnSelectionInterval(0,0);
-//            ensureRowIsVisible(getSelectedRow());
-            Grid.this.grids.getGrid().requestFocus();
-          }
-          else if (Grid.this.grids.getLockedGrid()!=null &&
-              Grid.this.model.getRowCount()>0 &&
-              getSelectedRow()<Grid.this.model.getRowCount()-1 &&
-              (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_RIGHT) &&
-              e.getModifiers()!=e.SHIFT_MASK &&
-              !Grid.this.lockedGrid &&
-              getSelectedColumn()==getColumnCount()-1) {
-            // TAB pressed...
-            e.consume();
-            try {
-              Grid.this.grids.setRowSelectionInterval(getSelectedRow() + 1, getSelectedRow() + 1);
+            if (!Grid.this.grids.isListenEvent()) {
+              e.consume();
+              return;
             }
-            catch (Exception ex) {
-            }
-            Grid.this.grids.getLockedGrid().setColumnSelectionInterval(0,0);
-//            ensureRowIsVisible(getSelectedRow());
-            Grid.this.grids.getLockedGrid().requestFocus();
-          }
-          else if (Grid.this.grids.getLockedGrid()!=null &&
-              Grid.this.model.getRowCount()>0 &&
-              getSelectedRow()>0 &&
-              (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
-              Grid.this.lockedGrid &&
-              getSelectedColumn()==0) {
-            // TAB pressed...
-            e.consume();
-            try {
-              Grid.this.grids.getGrid().setColumnSelectionInterval(Grid.this.grids.getGrid().getColumnCount()-1,Grid.this.grids.getGrid().getColumnCount()-1);
-              Grid.this.grids.setRowSelectionInterval(getSelectedRow()-1, getSelectedRow()-1);
-//              ensureRowIsVisible(getSelectedRow()-1);
-            }
-            catch (Exception ex1) {
-            }
-            Grid.this.grids.getGrid().requestFocus();
-          }
-          else if (Grid.this.grids.getLockedGrid()!=null &&
-              Grid.this.model.getRowCount()>0 &&
-              getSelectedRow()>=0 &&
-              (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
-              !Grid.this.lockedGrid &&
-              getSelectedColumn()==0) {
-            // TAB pressed...
-            e.consume();
-            Grid.this.grids.setRowSelectionInterval(getSelectedRow(), getSelectedRow());
-            Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getLockedGrid().getColumnCount()-1,Grid.this.grids.getLockedGrid().getColumnCount()-1);
-            Grid.this.grids.getLockedGrid().requestFocus();
-          }
-          else if (Grid.this.grids.getLockedGrid()!=null &&
-              Grid.this.model.getRowCount()>0 &&
-              getSelectedRow()>=0 &&
-              (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
-              !Grid.this.lockedGrid &&
-              getSelectedColumn()>0) {
-            // TAB pressed...
-            Grid.this.grids.setRowSelectionInterval(getSelectedRow(), getSelectedRow());
-          } else
 
-
-
-          // (SHIFT) TAB pressed ...
-          if (getMode()!=Consts.READONLY) {
-            if (Grid.this.model.getRowCount()>0 &&
+            // ENTER button pressed in the selected row: fire event to the grid controller...
+            if (e.getKeyCode()==e.VK_ENTER &&
+                Grid.this.gridController!=null &&
                 getSelectedRow()!=-1 &&
-                e.getKeyCode()==e.VK_TAB &&
-                e.getModifiers()!=e.SHIFT_MASK) {
-              // TAB pressed and grid is not in read only mode...
-              tabPressed(e);
-            }
-            else if (Grid.this.model.getRowCount()>0 &&
-                     getSelectedRow()!=-1 &&
-                     e.getKeyCode()==e.VK_TAB &&
-                     e.getModifiers()==e.SHIFT_MASK) {
-              // SHIFT+TAB pressed and grid is not in read only mode...
-              shiftTabPressed(e);
-            }
-            else if (getMode()==Consts.INSERT &&
-                     e.getKeyCode()==e.VK_DOWN &&
-                     getSelectedRow()!=-1 &&
-                     getSelectedRow()+1<Grid.this.grids.getMaxNumberOfRowsOnInsert() &&
-                     getSelectedRow()+1==Grid.this.grids.getCurrentNumberOfNewRows()) {
-              // user has pressed DOWN key and the grid is in INSERT mode and
-              // the current selected row is the last inserted row and
-              // grid is allowed to insert a new row (<max number of rows on insert...)
-              Grid.this.grids.setCurrentNumberOfNewRows( Grid.this.grids.getCurrentNumberOfNewRows()+1 );
+                Grid.this.model.getMode()==Consts.READONLY)
+              // call grid controller method on another thread
+              new Thread() {
+                public void run() {
+                  Grid.this.gridController.enterButton(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
+                }
+              }.start();
 
-              // create a new v.o. and add it to the grid model...
-              ValueObject vo = null;
+            // ENTER button pressed in the selected row: consule event (otherwise the grid will select the next row)...
+            if (e.getKeyCode()==e.VK_ENTER)
+              e.consume();
+
+            // accelerator key pressed...
+            if (e.getKeyCode()==e.VK_Z && e.isControlDown() && (Grid.this.grids.getReloadButton()!=null) && Grid.this.grids.getReloadButton().isEnabled())
+              Grid.this.grids.reload();
+            else if (e.getKeyCode()==e.VK_F && e.isControlDown() && (Grid.this.grids.getFilterButton()!=null) && Grid.this.grids.getFilterButton().isEnabled())
+              Grid.this.grids.filterSort();
+            else if (e.getKeyCode()==e.VK_S && e.isControlDown() & (Grid.this.grids.getSaveButton()!=null) && Grid.this.grids.getSaveButton().isEnabled())
+              Grid.this.grids.save();
+            else if (e.getKeyCode()==e.VK_I && e.isControlDown() && (Grid.this.grids.getInsertButton()!=null) && Grid.this.grids.getInsertButton().isEnabled())
+              Grid.this.grids.insert();
+            else if (e.getKeyCode()==e.VK_E && e.isControlDown() && (Grid.this.grids.getEditButton()!=null) && Grid.this.grids.getEditButton().isEnabled())
+              Grid.this.grids.edit();
+            else if (e.getKeyCode()==e.VK_D && e.isControlDown() && (Grid.this.grids.getDeleteButton()!=null) && Grid.this.grids.getDeleteButton().isEnabled())
+              Grid.this.grids.delete();
+            else if (e.getKeyCode()==e.VK_C && e.isControlDown() && (Grid.this.grids.getCopyButton()!=null) && Grid.this.grids.getCopyButton().isEnabled())
+              Grid.this.grids.copy();
+            else if (e.getKeyCode()==e.VK_X && e.isControlDown() && (Grid.this.grids.getExportButton()!=null) && Grid.this.grids.getExportButton().isEnabled())
+              Grid.this.grids.export();
+
+            // (SHIFT) TAB pressed ...
+            if (Grid.this.grids.getLockedGrid()!=null &&
+                Grid.this.model.getRowCount()>0 &&
+                getSelectedRow()!=-1 &&
+                (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_RIGHT) &&
+                e.getModifiers()!=e.SHIFT_MASK &&
+                Grid.this.lockedGrid &&
+                getSelectedColumn()==getColumnCount()-1) {
+              // TAB pressed...
+              e.consume();
+              Grid.this.grids.setRowSelectionInterval(getSelectedRow(),getSelectedRow());
+              Grid.this.grids.getGrid().setColumnSelectionInterval(0,0);
+  //            ensureRowIsVisible(getSelectedRow());
+              Grid.this.grids.getGrid().requestFocus();
+            }
+            else if (Grid.this.grids.getLockedGrid()!=null &&
+                Grid.this.model.getRowCount()>0 &&
+                getSelectedRow()<Grid.this.model.getRowCount()-1 &&
+                (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_RIGHT) &&
+                e.getModifiers()!=e.SHIFT_MASK &&
+                !Grid.this.lockedGrid &&
+                getSelectedColumn()==getColumnCount()-1) {
+              // TAB pressed...
+              e.consume();
               try {
-                vo = (ValueObject)Grid.this.model.getValueObjectType().getConstructor(new Class[0]).newInstance(new Object[0]);
-                Grid.this.model.insertObjectAt(vo,Grid.this.grids.getCurrentNumberOfNewRows()-1);
-                Grid.this.model.getChangedRowIndexes().add(new Integer(Grid.this.grids.getCurrentNumberOfNewRows()-1));
+                Grid.this.grids.setRowSelectionInterval(getSelectedRow() + 1, getSelectedRow() + 1);
               }
               catch (Exception ex) {
-                ex.printStackTrace();
               }
-              catch (Error er) {
-                er.printStackTrace();
-              }
-
+              Grid.this.grids.getLockedGrid().setColumnSelectionInterval(0,0);
+  //            ensureRowIsVisible(getSelectedRow());
+              Grid.this.grids.getLockedGrid().requestFocus();
+            }
+            else if (Grid.this.grids.getLockedGrid()!=null &&
+                Grid.this.model.getRowCount()>0 &&
+                getSelectedRow()>0 &&
+                (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
+                Grid.this.lockedGrid &&
+                getSelectedColumn()==0) {
+              // TAB pressed...
+              e.consume();
               try {
-                // fire create v.o. event to the grid controller: used to fill in the v.o. with default values...
-                Grid.this.gridController.createValueObject(vo);
+                Grid.this.grids.getGrid().setColumnSelectionInterval(Grid.this.grids.getGrid().getColumnCount()-1,Grid.this.grids.getGrid().getColumnCount()-1);
+                Grid.this.grids.setRowSelectionInterval(getSelectedRow()-1, getSelectedRow()-1);
+  //              ensureRowIsVisible(getSelectedRow()-1);
+              }
+              catch (Exception ex1) {
+              }
+              Grid.this.grids.getGrid().requestFocus();
+            }
+            else if (Grid.this.grids.getLockedGrid()!=null &&
+                Grid.this.model.getRowCount()>0 &&
+                getSelectedRow()>=0 &&
+                (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
+                !Grid.this.lockedGrid &&
+                getSelectedColumn()==0) {
+              // TAB pressed...
+              e.consume();
+              Grid.this.grids.setRowSelectionInterval(getSelectedRow(), getSelectedRow());
+              Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getLockedGrid().getColumnCount()-1,Grid.this.grids.getLockedGrid().getColumnCount()-1);
+              Grid.this.grids.getLockedGrid().requestFocus();
+            }
+            else if (Grid.this.grids.getLockedGrid()!=null &&
+                Grid.this.model.getRowCount()>0 &&
+                getSelectedRow()>=0 &&
+                (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
+                !Grid.this.lockedGrid &&
+                getSelectedColumn()>0) {
+              // TAB pressed...
+              Grid.this.grids.setRowSelectionInterval(getSelectedRow(), getSelectedRow());
+            } else
 
-                // check if there exists a combo-box editable column to pre-set...
-                for(int i=0;i<Grid.this.colProps.length;i++)
-                  if (Grid.this.colProps[i] instanceof ComboColumn &&
-                      !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue())
-                    Grid.this.model.setValueAt(
-                      ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode(),
-                      Grid.this.grids.getCurrentNumberOfNewRows()-1,
-                      Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName())
-                    );
+
+
+            // (SHIFT) TAB pressed ...
+            if (getMode()!=Consts.READONLY) {
+              if (Grid.this.model.getRowCount()>0 &&
+                  getSelectedRow()!=-1 &&
+                  e.getKeyCode()==e.VK_TAB &&
+                  e.getModifiers()!=e.SHIFT_MASK) {
+                // TAB pressed and grid is not in read only mode...
+                tabPressed(e);
+              }
+              else if (Grid.this.model.getRowCount()>0 &&
+                       getSelectedRow()!=-1 &&
+                       e.getKeyCode()==e.VK_TAB &&
+                       e.getModifiers()==e.SHIFT_MASK) {
+                // SHIFT+TAB pressed and grid is not in read only mode...
+                shiftTabPressed(e);
+              }
+              else if (getMode()==Consts.INSERT &&
+                       e.getKeyCode()==e.VK_DOWN &&
+                       getSelectedRow()!=-1 &&
+                       getSelectedRow()+1<Grid.this.grids.getMaxNumberOfRowsOnInsert() &&
+                       getSelectedRow()+1==Grid.this.grids.getCurrentNumberOfNewRows()) {
+                // user has pressed DOWN key and the grid is in INSERT mode and
+                // the current selected row is the last inserted row and
+                // grid is allowed to insert a new row (<max number of rows on insert...)
+                Grid.this.grids.setCurrentNumberOfNewRows( Grid.this.grids.getCurrentNumberOfNewRows()+1 );
+
+                // create a new v.o. and add it to the grid model...
+                ValueObject vo = null;
+                try {
+                  vo = (ValueObject)Grid.this.model.getValueObjectType().getConstructor(new Class[0]).newInstance(new Object[0]);
+                  Grid.this.model.insertObjectAt(vo,Grid.this.grids.getCurrentNumberOfNewRows()-1);
+                  Grid.this.model.getChangedRowIndexes().add(new Integer(Grid.this.grids.getCurrentNumberOfNewRows()-1));
+                }
+                catch (Exception ex) {
+                  ex.printStackTrace();
+                }
+                catch (Error er) {
+                  er.printStackTrace();
+                }
+
+                try {
+                  // fire create v.o. event to the grid controller: used to fill in the v.o. with default values...
+                  Grid.this.gridController.createValueObject(vo);
+
+                  // check if there exists a combo-box editable column to pre-set...
+                  for(int i=0;i<Grid.this.colProps.length;i++)
+                    if (Grid.this.colProps[i] instanceof ComboColumn &&
+                        !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue())
+                      Grid.this.model.setValueAt(
+                        ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode(),
+                        Grid.this.grids.getCurrentNumberOfNewRows()-1,
+                        Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName())
+                      );
+
+                }
+                catch (Throwable ex) {
+                  Logger.error(this.getClass().getName(),"modeChanged","Error while constructing value object '"+Grid.this.model.getValueObjectType().getName()+"'",ex);
+                }
+                setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                setColumnSelectionInterval(0,0);
+                ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
+
+                if (Grid.this.grids.getLockedGrid()!=null) {
+                  Grid.this.grids.getLockedGrid().setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                  Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                  Grid.this.grids.getLockedGrid().ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
+                  Grid.this.grids.getLockedGrid().editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                  Grid.this.grids.getLockedGrid().requestFocus();
+                }
+                else {
+                  editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1, 0);
+                  requestFocus();
+                }
+
+                e.consume();
+              }
+
+              else if (getMode()==Consts.INSERT &&
+                       e.getKeyCode()==e.VK_UP &&
+                       getSelectedRow()>0 &&
+                       getSelectedRow()+1==Grid.this.grids.getCurrentNumberOfNewRows()) {
+                // user has pressed UP key and the grid is in INSERT mode and
+                // the current selected row is NOT the first inserted and
+                // the selected row is the last inserted
+                // then check if the selected row's value object is null
+                // if it's null, then remove the related row from the grid...
+
+                try {
+                  ValueObject voToRemove = Grid.this.model.getObjectForRow(getSelectedRow());
+                  ValueObject clonedVO = (ValueObject) voToRemove.getClass().newInstance();
+                  Grid.this.gridController.createValueObject(clonedVO);
+                  boolean notNullValueFound = false;
+                  Object value = null;
+                  Object clonedValue = null;
+                  for(int i=0;i<Grid.this.model.getColumnCount();i++) {
+                    value = Grid.this.model.getValueAt(getSelectedRow(),i);
+                    if (value!=null) {
+                      // check if the value is the "default" value setted by createValueObject method,
+                      // by comparing "cloned v.o." attribute with "v.o. to remove" attribute
+                      clonedValue = clonedVO.getClass().getMethod("get"+Grid.this.model.getColumnName(i).toUpperCase().charAt(0)+Grid.this.model.getColumnName(i).substring(1),new Class[0]).invoke(clonedVO,new Object[0]);
+                      if (!value.equals(clonedValue) &&
+                          !(Grid.this.colProps[i] instanceof ComboColumn && !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue()) &&
+                          !(value.equals("") && clonedValue==null)
+                      ) {
+                        notNullValueFound = true;
+                        break;
+                      }
+                    }
+                  }
+                  if (!notNullValueFound) {
+                    Grid.this.grids.setCurrentNumberOfNewRows( Grid.this.grids.getCurrentNumberOfNewRows()-1 );
+                    Grid.this.model.removeObjectAt(Grid.this.grids.getCurrentNumberOfNewRows());
+                    Grid.this.model.getChangedRowIndexes().remove(Grid.this.model.getChangedRowIndexes().size()-1);
+                    setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                    setColumnSelectionInterval(0,0);
+                    ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
+
+                    if (Grid.this.grids.getLockedGrid()!=null) {
+                      Grid.this.grids.getLockedGrid().setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                      Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                      Grid.this.grids.getLockedGrid().ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
+                      Grid.this.grids.getLockedGrid().editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                      Grid.this.grids.getLockedGrid().requestFocus();
+                    }
+                    else {
+                      editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1, 0);
+                      requestFocus();
+                    }
+
+                    e.consume();
+                  }
+                }
+                catch (Exception ex2) {
+                  ex2.printStackTrace();
+                }
 
               }
-              catch (Throwable ex) {
-                Logger.error(this.getClass().getName(),"modeChanged","Error while constructing value object '"+Grid.this.model.getValueObjectType().getName()+"'",ex);
-              }
-              setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-              setColumnSelectionInterval(0,0);
-              ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
 
-              if (Grid.this.grids.getLockedGrid()!=null) {
-                Grid.this.grids.getLockedGrid().setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-                Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-                Grid.this.grids.getLockedGrid().ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
-                Grid.this.grids.getLockedGrid().editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-                Grid.this.grids.getLockedGrid().requestFocus();
-              }
-              else {
-                editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1, 0);
-                requestFocus();
-              }
+            } else
 
+            // navigation button pressed...
+            if (getMode()==Consts.READONLY &&
+                Grid.this.grids.getNavBar()!=null &&
+                (e.getKeyCode()==e.VK_UP ||
+                 e.getKeyCode()==e.VK_DOWN ||
+                 e.getKeyCode()==e.VK_PAGE_UP ||
+                 e.getKeyCode()==e.VK_PAGE_DOWN)) {
+              if (e.getKeyCode()==e.VK_UP && getSelectedRow()>0)
+                  Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
+              else if (e.getKeyCode()==e.VK_UP && getSelectedRow()==0 && Grid.this.grids.getNavBar().isPrevButtonEnabled())
+                Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
+              else if (e.getKeyCode()==e.VK_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1)
+                Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
+              else if (e.getKeyCode()==e.VK_DOWN && getSelectedRow()==Grid.this.model.getRowCount()-1 && Grid.this.grids.getNavBar().isNextButtonEnabled())
+                Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
+              else if (e.getKeyCode()==e.VK_PAGE_UP && getSelectedRow()>0) {
+                java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
+                int delta = (r.y-getVisibleRect().height)/(getRowHeight()+getRowMargin())+1;
+                setRowSelectionInterval(Math.max(0,delta),Math.max(0,delta));
+                ensureRowIsVisible(getSelectedRow());
+                if (getSelectedRow()<Grid.this.model.getRowCount()-1 || Grid.this.grids.isMoreRows())
+                  Grid.this.grids.getNavBar().setLastRow(false);
+                if (getSelectedRow()==0 && Grid.this.grids.getLastIndex()==Grid.this.model.getRowCount()-1)
+                  Grid.this.grids.getNavBar().setFirstRow(true);
+              }
+              else if (e.getKeyCode()==e.VK_PAGE_UP && getSelectedRow()==0 && Grid.this.grids.getNavBar().isPrevButtonEnabled()) {
+                if (Grid.this.grids.getLastIndex()==Grid.this.model.getRowCount() -1)
+                  Grid.this.grids.getNavBar().setFirstRow(true);
+                else
+                  Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
+              } else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1) {
+                java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
+                int delta = (r.y+getVisibleRect().height)/(getRowHeight()+getRowMargin());
+                setRowSelectionInterval(Math.min(Grid.this.model.getRowCount()-1,delta),Math.min(Grid.this.model.getRowCount()-1,delta));
+                ensureRowIsVisible(getSelectedRow());
+                if (getSelectedRow()>0)
+                  Grid.this.grids.getNavBar().setFirstRow(false);
+                if (getSelectedRow()==Grid.this.model.getRowCount()-1 && !Grid.this.grids.isMoreRows())
+                  Grid.this.grids.getNavBar().setLastRow(true);
+              }
+              else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()==Grid.this.model.getRowCount()-1 && Grid.this.grids.getNavBar().isNextButtonEnabled()) {
+                if (!Grid.this.grids.isMoreRows())
+                  Grid.this.grids.getNavBar().setLastRow(true);
+                else
+                  Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
+              }
+              e.consume();
+            }
+            else if (Grid.this.lockedGrid && getMode()==Consts.READONLY && Grid.this.grids.getNavBar()==null &&
+                (e.getKeyCode()==e.VK_PAGE_UP ||
+                 e.getKeyCode()==e.VK_PAGE_DOWN)) {
+              if (e.getKeyCode()==e.VK_PAGE_UP && getSelectedRow()>0) {
+                java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
+                int delta = (r.y-getVisibleRect().height)/(getRowHeight()+getRowMargin())+1;
+                setRowSelectionInterval(Math.max(0,delta),Math.max(0,delta));
+                ensureRowIsVisible(getSelectedRow());
+              } else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1) {
+                java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
+                int delta = (r.y+getVisibleRect().height)/(getRowHeight()+getRowMargin());
+                setRowSelectionInterval(Math.min(Grid.this.model.getRowCount()-1,delta),Math.min(Grid.this.model.getRowCount()-1,delta));
+                ensureRowIsVisible(getSelectedRow());
+              }
               e.consume();
             }
 
-            else if (getMode()==Consts.INSERT &&
-                     e.getKeyCode()==e.VK_UP &&
-                     getSelectedRow()>0 &&
-                     getSelectedRow()+1==Grid.this.grids.getCurrentNumberOfNewRows()) {
-              // user has pressed UP key and the grid is in INSERT mode and
-              // the current selected row is NOT the first inserted and
-              // the selected row is the last inserted
-              // then check if the selected row's value object is null
-              // if it's null, then remove the related row from the grid...
-
-              try {
-                ValueObject voToRemove = Grid.this.model.getObjectForRow(getSelectedRow());
-                ValueObject clonedVO = (ValueObject) voToRemove.getClass().newInstance();
-                Grid.this.gridController.createValueObject(clonedVO);
-                boolean notNullValueFound = false;
-                Object value = null;
-                Object clonedValue = null;
-                for(int i=0;i<Grid.this.model.getColumnCount();i++) {
-                  value = Grid.this.model.getValueAt(getSelectedRow(),i);
-                  if (value!=null) {
-                    // check if the value is the "default" value setted by createValueObject method,
-                    // by comparing "cloned v.o." attribute with "v.o. to remove" attribute
-                    clonedValue = clonedVO.getClass().getMethod("get"+Grid.this.model.getColumnName(i).toUpperCase().charAt(0)+Grid.this.model.getColumnName(i).substring(1),new Class[0]).invoke(clonedVO,new Object[0]);
-                    if (!value.equals(clonedValue) &&
-                        !(Grid.this.colProps[i] instanceof ComboColumn && !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue()) &&
-                        !(value.equals("") && clonedValue==null)
-                    ) {
-                      notNullValueFound = true;
-                      break;
-                    }
-                  }
-                }
-                if (!notNullValueFound) {
-                  Grid.this.grids.setCurrentNumberOfNewRows( Grid.this.grids.getCurrentNumberOfNewRows()-1 );
-                  Grid.this.model.removeObjectAt(Grid.this.grids.getCurrentNumberOfNewRows());
-                  Grid.this.model.getChangedRowIndexes().remove(Grid.this.model.getChangedRowIndexes().size()-1);
-                  setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-                  setColumnSelectionInterval(0,0);
-                  ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
-
-                  if (Grid.this.grids.getLockedGrid()!=null) {
-                    Grid.this.grids.getLockedGrid().setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-                    Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-                    Grid.this.grids.getLockedGrid().ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
-                    Grid.this.grids.getLockedGrid().editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-                    Grid.this.grids.getLockedGrid().requestFocus();
-                  }
-                  else {
-                    editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1, 0);
-                    requestFocus();
-                  }
-
-                  e.consume();
-                }
-              }
-              catch (Exception ex2) {
-                ex2.printStackTrace();
-              }
-
-            }
-
-          } else
-
-          // navigation button pressed...
-          if (getMode()==Consts.READONLY &&
-              Grid.this.grids.getNavBar()!=null &&
-              (e.getKeyCode()==e.VK_UP ||
-               e.getKeyCode()==e.VK_DOWN ||
-               e.getKeyCode()==e.VK_PAGE_UP ||
-               e.getKeyCode()==e.VK_PAGE_DOWN)) {
-            if (e.getKeyCode()==e.VK_UP && getSelectedRow()>0)
-                Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
-            else if (e.getKeyCode()==e.VK_UP && getSelectedRow()==0 && Grid.this.grids.getNavBar().isPrevButtonEnabled())
-              Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
-            else if (e.getKeyCode()==e.VK_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1)
-              Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
-            else if (e.getKeyCode()==e.VK_DOWN && getSelectedRow()==Grid.this.model.getRowCount()-1 && Grid.this.grids.getNavBar().isNextButtonEnabled())
-              Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
-            else if (e.getKeyCode()==e.VK_PAGE_UP && getSelectedRow()>0) {
-              java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
-              int delta = (r.y-getVisibleRect().height)/(getRowHeight()+getRowMargin())+1;
-              setRowSelectionInterval(Math.max(0,delta),Math.max(0,delta));
-              ensureRowIsVisible(getSelectedRow());
-              if (getSelectedRow()<Grid.this.model.getRowCount()-1 || Grid.this.grids.isMoreRows())
-                Grid.this.grids.getNavBar().setLastRow(false);
-              if (getSelectedRow()==0 && Grid.this.grids.getLastIndex()==Grid.this.model.getRowCount()-1)
-                Grid.this.grids.getNavBar().setFirstRow(true);
-            }
-            else if (e.getKeyCode()==e.VK_PAGE_UP && getSelectedRow()==0 && Grid.this.grids.getNavBar().isPrevButtonEnabled()) {
-              if (Grid.this.grids.getLastIndex()==Grid.this.model.getRowCount() -1)
-                Grid.this.grids.getNavBar().setFirstRow(true);
-              else
-                Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
-            } else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1) {
-              java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
-              int delta = (r.y+getVisibleRect().height)/(getRowHeight()+getRowMargin());
-              setRowSelectionInterval(Math.min(Grid.this.model.getRowCount()-1,delta),Math.min(Grid.this.model.getRowCount()-1,delta));
-              ensureRowIsVisible(getSelectedRow());
-              if (getSelectedRow()>0)
-                Grid.this.grids.getNavBar().setFirstRow(false);
-              if (getSelectedRow()==Grid.this.model.getRowCount()-1 && !Grid.this.grids.isMoreRows())
-                Grid.this.grids.getNavBar().setLastRow(true);
-            }
-            else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()==Grid.this.model.getRowCount()-1 && Grid.this.grids.getNavBar().isNextButtonEnabled()) {
-              if (!Grid.this.grids.isMoreRows())
-                Grid.this.grids.getNavBar().setLastRow(true);
-              else
-                Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
-            }
-            e.consume();
           }
-          else if (Grid.this.lockedGrid && getMode()==Consts.READONLY && Grid.this.grids.getNavBar()==null &&
-              (e.getKeyCode()==e.VK_PAGE_UP ||
-               e.getKeyCode()==e.VK_PAGE_DOWN)) {
-            if (e.getKeyCode()==e.VK_PAGE_UP && getSelectedRow()>0) {
-              java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
-              int delta = (r.y-getVisibleRect().height)/(getRowHeight()+getRowMargin())+1;
-              setRowSelectionInterval(Math.max(0,delta),Math.max(0,delta));
-              ensureRowIsVisible(getSelectedRow());
-            } else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1) {
-              java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
-              int delta = (r.y+getVisibleRect().height)/(getRowHeight()+getRowMargin());
-              setRowSelectionInterval(Math.min(Grid.this.model.getRowCount()-1,delta),Math.min(Grid.this.model.getRowCount()-1,delta));
-              ensureRowIsVisible(getSelectedRow());
-            }
-            e.consume();
-          }
+        });
 
-        }
-      });
+      } // end if on gridType==MAIN_GRID...
+
+
+      if (gridType==TOP_GRID) {
+        // disable row selection for top grid...
+        setRowSelectionAllowed(false);
+        setCellSelectionEnabled(true);
+        addFocusListener(new FocusAdapter() {
+          public void focusLost(FocusEvent e) {
+            if (getSelectedRow()!=-1)
+              removeRowSelectionInterval(getSelectedRow(),getSelectedRow());
+          }
+        });
+      }
+
+
+      if (gridType==BOTTOM_GRID) {
+        // disable row selection for bottom grid...
+        setRowSelectionAllowed(false);
+        setCellSelectionEnabled(true);
+        addFocusListener(new FocusAdapter() {
+          public void focusLost(FocusEvent e) {
+            if (getSelectedRow()!=-1)
+              removeRowSelectionInterval(getSelectedRow(),getSelectedRow());
+          }
+        });
+      }
+
+
 
       // set column headers...
       prepareHeader();
+
+      if (!(gridType==MAIN_GRID && grids.getGridControl().getLockedRowsOnTop()==0 || gridType==TOP_GRID)) {
+        getTableHeader().setVisible(false);
+        setTableHeader(null);
+      }
 
     }
     catch (Throwable t) {
       Logger.error(this.getClass().getName(),"Grid","Error while constructing grid.",t);
     }
   }
+
+
+
+
 
 
   /**
@@ -793,9 +855,8 @@ public class Grid extends JTable
     th.setPreferredSize(new Dimension(th.getPreferredSize().width,ClientSettings.HEADER_HEIGHT));
     th.setReorderingAllowed(reorderingAllowed);
     th.setResizingAllowed(resizingAllowed);
-    th.addMouseListener(new MouseAdapter() {
-      public void mouseClicked(MouseEvent e)
-        {
+    sortingMouseListener = new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
 
         // mouse click event is ignored if grid is not in read only mode or is not enabled...
         if(!isEnabled() || model.getMode()!=Consts.READONLY)
@@ -804,12 +865,24 @@ public class Grid extends JTable
         TableColumnModel columnModel = getColumnModel();
         int viewColumnIndex = columnModel.getColumnIndexAtX(e.getX());
         int modelColumnIndex = convertColumnIndexToModel(viewColumnIndex);
+
+
         if(e.getClickCount() == 1 && modelColumnIndex != -1) {
-          refreshIconsAndSort(modelColumnIndex);
+          boolean ok = refreshIconsAndSort(modelColumnIndex);
+
+          if (ok && gridType==Grid.TOP_GRID) {
+            if (lockedGrid)
+              grids.getGridControl().getTable().getLockedGrid().getSortingMouseListener().mouseClicked(e);
+            else
+              grids.getGridControl().getTable().getGrid().getSortingMouseListener().mouseClicked(e);
+          }
+
           return;
         }
       }
-    });
+    };
+
+    th.addMouseListener(sortingMouseListener);
     setOrderList();
   }
 
@@ -820,7 +893,7 @@ public class Grid extends JTable
    * according to the new sorting settings; sorting icons will be updated.
    * @param modelColumnIndex column model index of the column to sort
    */
-  private void refreshIconsAndSort(int modelColumnIndex) {
+  private boolean refreshIconsAndSort(int modelColumnIndex) {
     try {
       Column colProp = colProps[modelColumnIndex];
       if (!colProp.isColumnSortable()) {
@@ -831,7 +904,7 @@ public class Grid extends JTable
             ClientSettings.getInstance().getResources().getResource("Sorting not allowed"),
             JOptionPane.WARNING_MESSAGE
         );
-        return;
+        return false;
       }
 
       // (max) sorting order of columns...
@@ -882,7 +955,7 @@ public class Grid extends JTable
             ClientSettings.getInstance().getResources().getResource("Sorting not applicable"),
             JOptionPane.WARNING_MESSAGE
         );
-        return;
+        return false;
       }
 
       colProp.setSortVersus(currentSortVersus);
@@ -891,16 +964,22 @@ public class Grid extends JTable
         colProps.length-1:
         maxSortingOrder+1
       );
-      getTableHeader().repaint();
+      if (this.getTableHeader()!=null)
+        getTableHeader().repaint();
       setOrderList();
 
-      if (orderWithLoadData || grids.getLastIndex()-grids.getVOListTableModel().getRowCount() >0 || grids.isMoreRows())
+      if (orderWithLoadData ||
+          grids.getLastIndex()-grids.getVOListTableModel().getRowCount() >0 ||
+          grids.isMoreRows()
+      )
         grids.reload();
       else
         internalSorting();
+      return true;
     }
     catch (Exception ex) {
       Logger.error(this.getClass().getName(),"refreshIconsAndSort","Error while loading data on sorting",ex);
+      return false;
     }
   }
 
@@ -1230,6 +1309,25 @@ public class Grid extends JTable
     else if (colVisible && columnViewIndex==-1) {
       setVisibleColumns();
     }
+
+    // top grid is defined and this is the std grid...
+    if (grids.getGridControl().getLockedRowsOnTop()>0 &&
+        gridType==MAIN_GRID &&
+        grids.getGridControl().getTopTable()!=null){
+      grids.getGridControl().getTopTable().getGrid().setVisibleColumn(columnModelIndex,colVisible);
+      if (grids.getGridControl().getTopTable().getLockedGrid()!=null)
+        grids.getGridControl().getTopTable().getLockedGrid().setVisibleColumn(columnModelIndex,colVisible);
+    }
+
+    // bottom grid is defined and this is the std grid...
+    if (grids.getGridControl().getLockedRowsOnBottom()>0 &&
+        gridType==MAIN_GRID &&
+        grids.getGridControl().getBottomTable()!=null){
+      grids.getGridControl().getBottomTable().getGrid().setVisibleColumn(columnModelIndex,colVisible);
+      if (grids.getGridControl().getBottomTable().getLockedGrid()!=null)
+        grids.getGridControl().getBottomTable().getLockedGrid().setVisibleColumn(columnModelIndex,colVisible);
+    }
+
   }
 
 
@@ -1256,6 +1354,9 @@ public class Grid extends JTable
    */
   public final void valueChanged(ListSelectionEvent e) {
     super.valueChanged(e);
+
+    if (gridType!=MAIN_GRID)
+      return;
 
     if (model!=null && getMode()==Consts.INSERT) {
       // if grid is in insert mode then row selection is always forced to the inserted rows...
@@ -1358,8 +1459,10 @@ public class Grid extends JTable
 
     revalidate();
     repaint();
-    getTableHeader().revalidate();
-    getTableHeader().repaint();
+    if (this.getTableHeader()!=null) {
+      getTableHeader().revalidate();
+      getTableHeader().repaint();
+    }
 
   }
 
@@ -1395,7 +1498,8 @@ public class Grid extends JTable
    */
   public final void setReorderingAllowed(boolean reorderingAllowed) {
     this.reorderingAllowed = reorderingAllowed;
-    this.getTableHeader().setReorderingAllowed(reorderingAllowed);
+    if (this.getTableHeader()!=null)
+      this.getTableHeader().setReorderingAllowed(reorderingAllowed);
   }
 
 
@@ -1405,7 +1509,8 @@ public class Grid extends JTable
    */
   public final void setResizingAllowed(boolean resizingAllowed) {
     this.resizingAllowed = resizingAllowed;
-    this.getTableHeader().setResizingAllowed(resizingAllowed);
+    if (this.getTableHeader()!=null)
+      this.getTableHeader().setResizingAllowed(resizingAllowed);
   }
 
 
@@ -1431,20 +1536,6 @@ public class Grid extends JTable
           scrollPane = (JScrollPane)gp;
           scrollPane.addMouseListener(new RightClickMouseListener());
           createVerticalScrollBarListener(scrollPane);
-//          final Border defaultBorder = scrollPane.getBorder();
-
-          Grid.this.addFocusListener(new FocusListener() {
-
-            public void focusGained(FocusEvent e) {
-              scrollPane.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
-              Form.setCurrentFocusedForm(null);
-            }
-
-            public void focusLost(FocusEvent e) {
-              scrollPane.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
-//              scrollPane.setBorder(defaultBorder);
-            }
-          });
 
         }
     }
@@ -1530,7 +1621,7 @@ public class Grid extends JTable
       try {
         gridIndex = this.convertColumnIndexToView(i);
         if (gridIndex!=-1) {
-          if (colProps.getColumnName().equals(getVOListTableModel().getColumnName(i)))
+          if (colProps.getColumnName().equals(getVOListTableModel().getColumnName(i)) && this.getTableHeader()!=null)
             ((TableColumnHeaderRenderer)this.getTableHeader().getColumnModel().getColumn(gridIndex).getHeaderRenderer()).setBorder(BorderFactory.createLoweredBevelBorder());
         }
       }
@@ -1561,7 +1652,7 @@ public class Grid extends JTable
     for(int i=0;i<getModel().getColumnCount();i++) {
       try {
         gridIndex = this.convertColumnIndexToView(i);
-        if (gridIndex!=-1) {
+        if (gridIndex!=-1 && this.getTableHeader()!=null) {
 
           where = (FilterWhereClause[])grids.getQuickFilterValues().get( getVOListTableModel().getColumnName(i) );
           if (where!=null)
@@ -1593,7 +1684,8 @@ public class Grid extends JTable
       try {
         gridIndex = this.convertColumnIndexToView(i);
         if (gridIndex!=-1) {
-          if (attributeName.equals(getVOListTableModel().getColumnName(i)))
+          if (attributeName.equals(getVOListTableModel().getColumnName(i)) &&
+              this.getTableHeader()!=null)
             ((TableColumnHeaderRenderer)this.getTableHeader().getColumnModel().getColumn(gridIndex).getHeaderRenderer()).setBorder(BorderFactory.createRaisedBevelBorder());
         }
       }
@@ -1611,7 +1703,7 @@ public class Grid extends JTable
   */
   public final void addNotify() {
     super.addNotify();
-    if (firstTime) {
+    if (firstTime && gridType==MAIN_GRID) {
       // this flag allows only one execution of the following instructions...
       firstTime = false;
 
@@ -1738,6 +1830,13 @@ public class Grid extends JTable
     this.orderWithLoadData = orderWithLoadData;
   }
 
+
+  /**
+   * @return mouse listener applied to tabler headers to sort columns
+   */
+  public final MouseListener getSortingMouseListener() {
+    return sortingMouseListener;
+  }
 
 
 
@@ -1925,15 +2024,98 @@ public class Grid extends JTable
   }
 
 
-  public void columnMarginChanged(ChangeEvent e) {
+
+
+
+
+
+
+
+
+
+
+  /**
+   * Method called my JTable when moving a column.
+   */
+  public final void columnMoved(TableColumnModelEvent e) {
+    super.columnMoved(e);
+    if (gridType==TOP_GRID && grids.getGridControl().getTopTable()!=null){
+      if (lockedGrid)
+        grids.getGridControl().getTable().getLockedGrid().moveColumn(e.getFromIndex(),e.getToIndex());
+      else
+        grids.getGridControl().getTable().getGrid().moveColumn(e.getFromIndex(),e.getToIndex());
+      if (grids.getGridControl().getBottomTable()!=null) {
+        if (lockedGrid)
+          grids.getGridControl().getBottomTable().getLockedGrid().moveColumn(e.getFromIndex(),e.getToIndex());
+        else
+          grids.getGridControl().getBottomTable().getGrid().moveColumn(e.getFromIndex(),e.getToIndex());
+      }
+    }
+
+    if (grids.getGridControl().getLockedRowsOnTop()==0 &&
+        grids.getGridControl().getBottomTable()!=null &&
+        gridType==MAIN_GRID){
+      if (lockedGrid)
+        grids.getGridControl().getBottomTable().getLockedGrid().moveColumn(e.getFromIndex(),e.getToIndex());
+      else
+        grids.getGridControl().getBottomTable().getGrid().moveColumn(e.getFromIndex(),e.getToIndex());
+    }
+  }
+
+
+  /**
+   * Method called by JTable when resizing a column.
+   */
+  public final void columnMarginChanged(ChangeEvent e) {
     super.columnMarginChanged(e);
     try {
-      // ricalcolo l'ampiezza del pannello "tableHeader", a seguito del ridimensionamento di una colonna...
+      if (gridType==TOP_GRID && grids.getGridControl().getTopTable()!=null){
+        TableColumn resizingColumn = getTableHeader().getResizingColumn();
+        if (resizingColumn != null){
+          int index = resizingColumn.getModelIndex();
+          index = convertColumnIndexToView(index);
+          if (lockedGrid)
+            grids.getGridControl().getTable().getLockedGrid().getColumnModel().getColumn(index).setPreferredWidth(resizingColumn.getPreferredWidth());
+          else
+            grids.getGridControl().getTable().getGrid().getColumnModel().getColumn(index).setPreferredWidth(resizingColumn.getPreferredWidth());
+
+          if (grids.getGridControl().getBottomTable()!=null) {
+            if (lockedGrid)
+              grids.getGridControl().getBottomTable().getLockedGrid().getColumnModel().getColumn(index).setPreferredWidth(resizingColumn.getPreferredWidth());
+            else
+              grids.getGridControl().getBottomTable().getGrid().getColumnModel().getColumn(index).setPreferredWidth(resizingColumn.getPreferredWidth());
+          }
+        }
+
+      }
+
+      if (grids.getGridControl().getLockedRowsOnTop()==0 &&
+          grids.getGridControl().getLockedRowsOnBottom()>0 &&
+          gridType==MAIN_GRID &&
+          grids.getGridControl().getBottomTable()!=null){
+        TableColumn resizingColumn = getTableHeader().getResizingColumn();
+        int index = resizingColumn.getModelIndex();
+        index = convertColumnIndexToView(index);
+
+        if (lockedGrid)
+          grids.getGridControl().getBottomTable().getLockedGrid().getColumnModel().getColumn(index).setPreferredWidth(resizingColumn.getPreferredWidth());
+        else
+          grids.getGridControl().getBottomTable().getGrid().getColumnModel().getColumn(index).setPreferredWidth(resizingColumn.getPreferredWidth());
+      }
+
+
+    }
+    catch (Exception ex) {
+    }
+
+    try {
+      // recalculate column with...
       int width = 0;
       for(int i=0;i<tableHeader.getColumnModel().getColumnCount();i++)
         width += tableHeader.getColumnModel().getColumn(i).getWidth();
       tableHeader.setPreferredSize(new Dimension(width,ClientSettings.HEADER_HEIGHT));
 
+      // also to other grids???
     }
     catch (Exception ex) {
     }

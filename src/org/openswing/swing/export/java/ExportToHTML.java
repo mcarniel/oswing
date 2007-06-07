@@ -80,6 +80,36 @@ public class ExportToHTML {
 
     String newline = System.getProperty("line.separator");
 
+
+    sb.append("<HTML><HEAD><TITLE></TITLE></HEAD>").append(newline);
+    sb.append("<BODY>").append(newline);
+    sb.append("<TABLE BORDER=1>").append(newline);
+    // create tag related to column headers...
+    sb.append("<TR>").append(newline);
+    for(int i=0;i<opt.getExportColumns().size();i++) {
+      sb.append("\t<TD bgcolor=92C3EE align=CENTER><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").
+         append(opt.getExportColumns().get(i)).
+         append("</FONT></TD>").
+         append(newline);
+    }
+    sb.append("</TR>").append(newline);
+
+
+    for(int j=0;j<opt.getTopRows().size();j++) {
+      // create a row for each top rows...
+      vo = opt.getTopRows().get(j);
+      appendRow(
+        sb,
+        vo,
+        opt,
+        gettersMethods,
+        sdf,
+        sdatf,
+        stf,
+        newline
+      );
+    }
+
     do {
       response=opt.getGridDataLocator().loadData(
         GridParams.NEXT_BLOCK_ACTION,
@@ -93,48 +123,22 @@ public class ExportToHTML {
       if (response.isError())
         throw new Exception(response.getErrorMessage());
 
-      // create tag related to column headers...
-      sb.append("<HTML><HEAD><TITLE></TITLE></HEAD>").append(newline);
-      sb.append("<BODY>").append(newline);
-      sb.append("<TABLE BORDER=1>").append(newline);
-      sb.append("<TR>").append(newline);
-      for(int i=0;i<opt.getExportColumns().size();i++) {
-        sb.append("\t<TD bgcolor=92C3EE align=CENTER><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").
-           append(opt.getExportColumns().get(i)).
-           append("</FONT></TD>").
-           append(newline);
-      }
-      sb.append("</TR>").append(newline);
 
       for(int j=0;j<((VOListResponse)response).getRows().size();j++) {
-        // create a row
-
-        sb.append("<TR>").append(newline);
+        // create a row...
 
         vo = ((VOListResponse)response).getRows().get(j);
 
-        for(int i=0;i<opt.getExportColumns().size();i++) {
-          value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-          if (value!=null && !"".equals(value)) {
-            if (value instanceof Date ||
-                     value instanceof java.util.Date ||
-                     value instanceof java.sql.Timestamp) {
-              type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
-              if (type==opt.TYPE_DATE)
-                sb.append("\t<TD bgcolor=E8E8E8><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").append(sdf.format((java.util.Date)value)).append("</FONT></TD>").append(newline);
-              else if (type==opt.TYPE_DATE_TIME)
-                sb.append("\t<TD bgcolor=E8E8E8><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").append(sdatf.format((java.util.Date)value)).append("</FONT></TD>").append(newline);
-              else if (type==opt.TYPE_TIME)
-                sb.append("\t<TD bgcolor=E8E8E8><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").append(stf.format((java.util.Date)value)).append("</FONT></TD>").append(newline);
-            }
-            else {
-                sb.append("\t<TD bgcolor=E8E8E8><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").append(encodeText(value.toString())).append("</FONT></TD>").append(newline);
-            }
-          }
-          else
-            sb.append("\t<TD bgcolor=E8E8E8>&nbsp;</TD>").append(newline);
-        }
-        sb.append("</TR>").append(newline);
+        appendRow(
+          sb,
+          vo,
+          opt,
+          gettersMethods,
+          sdf,
+          sdatf,
+          stf,
+          newline
+        );
 
         rownum++;
       }
@@ -145,12 +149,73 @@ public class ExportToHTML {
     }
     while (rownum<opt.getMaxRows());
 
+
+    for(int j=0;j<opt.getBottomRows().size();j++) {
+      // create a row for each bottom rows...
+      vo = opt.getBottomRows().get(j);
+      appendRow(
+        sb,
+        vo,
+        opt,
+        gettersMethods,
+        sdf,
+        sdatf,
+        stf,
+        newline
+      );
+    }
+
+
     sb.append("</TABLE>").append("</BODY>").append(newline).append("</HTML>").append(newline);
 
 
     byte[] doc = sb.toString().getBytes();
     return doc;
   }
+
+
+  /**
+   * Append current row to result StringBuffer.
+   * @return current row to append
+   */
+  private void appendRow(
+    StringBuffer sb,
+    Object vo,
+    ExportOptions opt,
+    Hashtable gettersMethods,
+    SimpleDateFormat sdf,
+    SimpleDateFormat sdatf,
+    SimpleDateFormat stf,
+    String newline
+  ) throws Throwable {
+    int type;
+    Object value = null;
+
+    sb.append("<TR>").append(newline);
+    for(int i=0;i<opt.getExportColumns().size();i++) {
+      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
+      if (value!=null && !"".equals(value)) {
+        if (value instanceof Date ||
+                 value instanceof java.util.Date ||
+                 value instanceof java.sql.Timestamp) {
+          type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
+          if (type==opt.TYPE_DATE)
+            sb.append("\t<TD bgcolor=E8E8E8><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").append(sdf.format((java.util.Date)value)).append("</FONT></TD>").append(newline);
+          else if (type==opt.TYPE_DATE_TIME)
+            sb.append("\t<TD bgcolor=E8E8E8><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").append(sdatf.format((java.util.Date)value)).append("</FONT></TD>").append(newline);
+          else if (type==opt.TYPE_TIME)
+            sb.append("\t<TD bgcolor=E8E8E8><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").append(stf.format((java.util.Date)value)).append("</FONT></TD>").append(newline);
+        }
+        else {
+            sb.append("\t<TD bgcolor=E8E8E8><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").append(encodeText(value.toString())).append("</FONT></TD>").append(newline);
+        }
+      }
+      else
+        sb.append("\t<TD bgcolor=E8E8E8>&nbsp;</TD>").append(newline);
+    }
+    sb.append("</TR>").append(newline);
+  }
+
 
 
   /**

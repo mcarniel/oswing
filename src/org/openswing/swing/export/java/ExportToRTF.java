@@ -121,6 +121,22 @@ public class ExportToRTF {
 //    table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
 //    table.getDefaultCell().setVerticalAlignment(Element.ALIGN_TOP);
 
+
+    for(int j=0;j<opt.getTopRows().size();j++) {
+      // create a row for each top rows...
+      vo = opt.getTopRows().get(j);
+      appendRow(
+        table,
+        vo,
+        opt,
+        gettersMethods,
+        sdf,
+        sdatf,
+        stf
+      );
+    }
+
+
     do {
       response=opt.getGridDataLocator().loadData(
         GridParams.NEXT_BLOCK_ACTION,
@@ -138,43 +154,22 @@ public class ExportToRTF {
 
       for(int j=0;j<((VOListResponse)response).getRows().size();j++) {
         if (even) {
-//          table.getDefaultCell().setGrayFill(0.95f);
           even = false;
         } else {
-//          table.getDefaultCell().setGrayFill(1.00f);
           even = true;
         }
 
         vo = ((VOListResponse)response).getRows().get(j);
-        for(int i=0;i<opt.getExportColumns().size();i++) {
-          value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-          if (value!=null) {
-            if (value instanceof Date ||
-                     value instanceof java.util.Date ||
-                     value instanceof java.sql.Timestamp) {
-              type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
-              if (type==opt.TYPE_DATE) {
-//                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-                table.addCell(new Phrase(sdf.format((java.util.Date)value),new Font(Font.HELVETICA)));
-              }
-              else if (type==opt.TYPE_DATE_TIME) {
-//                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-                table.addCell(new Phrase(sdatf.format((java.util.Date)value),new Font(Font.HELVETICA)));
-              }
-              else if (type==opt.TYPE_TIME) {
-//                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-                table.addCell(new Phrase(stf.format((java.util.Date)value),new Font(Font.HELVETICA)));
-              }
-            }
-            else {
-//              table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-              table.addCell(new Phrase(value.toString(),new Font(Font.HELVETICA)));
-            }
-          }
-          else {
-            table.addCell(new Phrase("",new Font(Font.HELVETICA)));
-          }
-        }
+
+        appendRow(
+          table,
+          vo,
+          opt,
+          gettersMethods,
+          sdf,
+          sdatf,
+          stf
+        );
 
         rownum++;
       }
@@ -186,6 +181,22 @@ public class ExportToRTF {
     }
     while (rownum<opt.getMaxRows());
 
+
+    for(int j=0;j<opt.getBottomRows().size();j++) {
+      // create a row for each bottom rows...
+      vo = opt.getBottomRows().get(j);
+      appendRow(
+        table,
+        vo,
+        opt,
+        gettersMethods,
+        sdf,
+        sdatf,
+        stf
+      );
+    }
+
+
 //    rtfTable.importTable(table,total);
     document.add(table);
 
@@ -195,5 +206,52 @@ public class ExportToRTF {
     return baos.toByteArray();
   }
 
+
+  /**
+   * Append current row to result.
+   * @return current row to append
+   */
+  private void appendRow(
+    Table table,
+    Object vo,
+    ExportOptions opt,
+    Hashtable gettersMethods,
+    SimpleDateFormat sdf,
+    SimpleDateFormat sdatf,
+    SimpleDateFormat stf
+  ) throws Throwable {
+    int type;
+    Object value = null;
+
+    for(int i=0;i<opt.getExportColumns().size();i++) {
+      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
+      if (value!=null) {
+        if (value instanceof Date ||
+                 value instanceof java.util.Date ||
+                 value instanceof java.sql.Timestamp) {
+          type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
+          if (type==opt.TYPE_DATE) {
+//                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(new Phrase(sdf.format((java.util.Date)value),new Font(Font.HELVETICA)));
+          }
+          else if (type==opt.TYPE_DATE_TIME) {
+//                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(new Phrase(sdatf.format((java.util.Date)value),new Font(Font.HELVETICA)));
+          }
+          else if (type==opt.TYPE_TIME) {
+//                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(new Phrase(stf.format((java.util.Date)value),new Font(Font.HELVETICA)));
+          }
+        }
+        else {
+//              table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+          table.addCell(new Phrase(value.toString(),new Font(Font.HELVETICA)));
+        }
+      }
+      else {
+        table.addCell(new Phrase("",new Font(Font.HELVETICA)));
+      }
+    }
+  }
 
 }

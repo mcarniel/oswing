@@ -80,6 +80,27 @@ public class ExportToXMLFat {
 
     String newline = System.getProperty("line.separator");
 
+    sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(newline);
+    sb.append("<content>").append(newline);
+    String tagName = null;
+
+
+    for(int j=0;j<opt.getTopRows().size();j++) {
+      // create a row for each top rows...
+      vo = opt.getTopRows().get(j);
+      appendRow(
+        sb,
+        vo,
+        opt,
+        gettersMethods,
+        sdf,
+        sdatf,
+        stf,
+        newline
+      );
+    }
+
+
     do {
       response=opt.getGridDataLocator().loadData(
         GridParams.NEXT_BLOCK_ACTION,
@@ -94,46 +115,21 @@ public class ExportToXMLFat {
         throw new Exception(response.getErrorMessage());
 
       // create tag related to column headers...
-      sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(newline);
-      sb.append("<content>").append(newline);
-      String tagName = null;
 
       for(int j=0;j<((VOListResponse)response).getRows().size();j++) {
         // create a row
-
-        sb.append("\t<row>").append(newline);
-
         vo = ((VOListResponse)response).getRows().get(j);
 
-        for(int i=0;i<opt.getExportColumns().size();i++) {
-          value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-          tagName = opt.getExportAttrColumns().get(i).toString();
-          sb.append("\t\t<"+tagName).
-          append(" type=\"").
-          append( ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).getReturnType().getName() ).
-          append("\" >");
-
-          if (value!=null) {
-            if (value instanceof Date ||
-                     value instanceof java.util.Date ||
-                     value instanceof java.sql.Timestamp) {
-              type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
-              if (type==opt.TYPE_DATE)
-                sb.append(sdf.format((java.util.Date)value)).append("</"+tagName+">").append(newline);
-              else if (type==opt.TYPE_DATE_TIME)
-                sb.append(sdatf.format((java.util.Date)value)).append("</"+tagName+">").append(newline);
-              else if (type==opt.TYPE_TIME)
-                sb.append(stf.format((java.util.Date)value)).append("</"+tagName+">").append(newline);
-            }
-            else {
-                sb.append(encodeText(value.toString())).append("</"+tagName+">").append(newline);
-            }
-          }
-          else {
-            sb.append("</"+tagName+">").append(newline);
-          }
-        }
-        sb.append("\t</row>").append(newline);
+        appendRow(
+          sb,
+          vo,
+          opt,
+          gettersMethods,
+          sdf,
+          sdatf,
+          stf,
+          newline
+        );
 
         rownum++;
       }
@@ -144,11 +140,79 @@ public class ExportToXMLFat {
     }
     while (rownum<opt.getMaxRows());
 
+
+    for(int j=0;j<opt.getBottomRows().size();j++) {
+      // create a row for each bottom rows...
+      vo = opt.getBottomRows().get(j);
+      appendRow(
+        sb,
+        vo,
+        opt,
+        gettersMethods,
+        sdf,
+        sdatf,
+        stf,
+        newline
+      );
+    }
+
+
     sb.append("</content>").append(newline);
 
 
     byte[] doc = sb.toString().getBytes();
     return doc;
+  }
+
+
+  /**
+   * Append current row to result.
+   * @return current row to append
+   */
+  private void appendRow(
+    StringBuffer sb,
+    Object vo,
+    ExportOptions opt,
+    Hashtable gettersMethods,
+    SimpleDateFormat sdf,
+    SimpleDateFormat sdatf,
+    SimpleDateFormat stf,
+    String newline
+  ) throws Throwable {
+    int type;
+    Object value = null;
+    String tagName = null;
+
+    sb.append("\t<row>").append(newline);
+    for(int i=0;i<opt.getExportColumns().size();i++) {
+      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
+      tagName = opt.getExportAttrColumns().get(i).toString();
+      sb.append("\t\t<"+tagName).
+      append(" type=\"").
+      append( ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).getReturnType().getName() ).
+      append("\" >");
+
+      if (value!=null) {
+        if (value instanceof Date ||
+                 value instanceof java.util.Date ||
+                 value instanceof java.sql.Timestamp) {
+          type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
+          if (type==opt.TYPE_DATE)
+            sb.append(sdf.format((java.util.Date)value)).append("</"+tagName+">").append(newline);
+          else if (type==opt.TYPE_DATE_TIME)
+            sb.append(sdatf.format((java.util.Date)value)).append("</"+tagName+">").append(newline);
+          else if (type==opt.TYPE_TIME)
+            sb.append(stf.format((java.util.Date)value)).append("</"+tagName+">").append(newline);
+        }
+        else {
+            sb.append(encodeText(value.toString())).append("</"+tagName+">").append(newline);
+        }
+      }
+      else {
+        sb.append("</"+tagName+">").append(newline);
+      }
+    }
+    sb.append("\t</row>").append(newline);
   }
 
 
@@ -159,7 +223,8 @@ public class ExportToXMLFat {
     StringBuffer sb = new StringBuffer("");
     for(int i=0;i<text.length();i++)
       if (text.charAt(i)>=46 && text.charAt(i)<=90 ||
-          text.charAt(i)>=97 && text.charAt(i)<=122)
+          text.charAt(i)>=97 && text.charAt(i)<=122 ||
+          text.charAt(i)==' ')
         sb.append(text.charAt(i));
       else
         sb.append("&#").append((int)text.charAt(i)).append(";");

@@ -339,7 +339,9 @@ public class LookupController {
             }
 
           },
-          new HashMap());
+          new HashMap(),
+          Grid.MAIN_GRID
+      );
 
       // create the lookup grid frame...
       lookupGridFrame = new LookupGridFrame(parentFrame,frameTitle, table);
@@ -478,7 +480,9 @@ public class LookupController {
             }
 
           },
-          new HashMap());
+          new HashMap(),
+          Grid.MAIN_GRID
+      );
 
       TreeController treeContainer = new TreeController() {
 

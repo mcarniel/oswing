@@ -25,6 +25,8 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _exportButton = new PropertyDescriptor("exportButton", beanClass, "getExportButton", "setExportButton");
       PropertyDescriptor _filterButton = new PropertyDescriptor("filterButton", beanClass, "getFilterButton", "setFilterButton");
       PropertyDescriptor _lockedColumns = new PropertyDescriptor("lockedColumns", beanClass, "getLockedColumns", "setLockedColumns");
+      PropertyDescriptor _lockedRowsOnTop = new PropertyDescriptor("lockedRowsOnTop", beanClass, "getLockedRowsOnTop", "setLockedRowsOnTop");
+      PropertyDescriptor _lockedRowsOnBottom = new PropertyDescriptor("lockedRowsOnBottom", beanClass, "getLockedRowsOnBottom", "setLockedRowsOnBottom");
       PropertyDescriptor _mode = new PropertyDescriptor("mode", beanClass, "getMode", "setMode");
       PropertyDescriptor _navBar = new PropertyDescriptor("navBar", beanClass, "getNavBar", "setNavBar");
       PropertyDescriptor _functionId = new PropertyDescriptor("functionId", beanClass, "getFunctionId", "setFunctionId");
@@ -52,6 +54,8 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _functionId,
         _gridDataLocator,
         _lockedColumns,
+        _lockedRowsOnTop,
+        _lockedRowsOnBottom,
         _maxNumberOfRowsOnInsert,
         _maxSortedColumns,
         _insertButton,

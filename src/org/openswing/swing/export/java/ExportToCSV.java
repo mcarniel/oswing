@@ -84,6 +84,21 @@ public class ExportToCSV {
     SimpleDateFormat sdatf = new SimpleDateFormat(opt.getDateTimeFormat());
     SimpleDateFormat stf = new SimpleDateFormat(opt.getTimeFormat());
 
+    for(int j=0;j<opt.getTopRows().size();j++) {
+      // create a row for each top rows...
+      vo = opt.getTopRows().get(j);
+      appendRow(
+        sb,
+        vo,
+        opt,
+        gettersMethods,
+        sdf,
+        sdatf,
+        stf,
+        sep
+      );
+    }
+
     do {
       response=opt.getGridDataLocator().loadData(
         GridParams.NEXT_BLOCK_ACTION,
@@ -101,35 +116,16 @@ public class ExportToCSV {
         // create a row
         vo = ((VOListResponse)response).getRows().get(j);
 
-        for(int i=0;i<opt.getExportColumns().size();i++) {
-          value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-          if (value!=null) {
-            if (value instanceof Boolean) {
-              sb.append ((Boolean)value);
-            }
-            else if (value.getClass().equals(boolean.class)) {
-              sb.append ((Boolean)value);
-            }
-            else if (value instanceof Date ||
-                     value instanceof java.util.Date ||
-                     value instanceof java.sql.Timestamp) {
-              type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
-              if (type==opt.TYPE_DATE)
-                sb.append( sdf.format((java.util.Date)value) );
-              else if (type==opt.TYPE_DATE_TIME)
-                sb.append( sdatf.format((java.util.Date)value) );
-              else if (type==opt.TYPE_TIME)
-                sb.append( stf.format((java.util.Date)value) );
-            }
-            else {
-              sb.append( endodeText(value.toString(),sep) );
-            }
-          }
-
-          if (i<opt.getExportColumns().size()-1)
-            sb.append(sep);
-        }
-        sb.append("\n");
+        appendRow(
+          sb,
+          vo,
+          opt,
+          gettersMethods,
+          sdf,
+          sdatf,
+          stf,
+          sep
+        );
 
         rownum++;
       }
@@ -141,8 +137,73 @@ public class ExportToCSV {
     }
     while (rownum<opt.getMaxRows());
 
+
+    for(int j=0;j<opt.getBottomRows().size();j++) {
+      // create a row for each bottom rows...
+      vo = opt.getBottomRows().get(j);
+      appendRow(
+        sb,
+        vo,
+        opt,
+        gettersMethods,
+        sdf,
+        sdatf,
+        stf,
+        sep
+      );
+    }
+
+
     byte[] doc = sb.toString().getBytes();
     return doc;
+  }
+
+
+  /**
+   * Append current row to result StringBuffer.
+   * @return current row to append
+   */
+  private void appendRow(
+    StringBuffer sb,
+    Object vo,
+    ExportOptions opt,
+    Hashtable gettersMethods,
+    SimpleDateFormat sdf,
+    SimpleDateFormat sdatf,
+    SimpleDateFormat stf,
+    String sep
+  ) throws Throwable {
+    int type;
+    Object value = null;
+    for(int i=0;i<opt.getExportColumns().size();i++) {
+      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
+      if (value!=null) {
+        if (value instanceof Boolean) {
+          sb.append ((Boolean)value);
+        }
+        else if (value.getClass().equals(boolean.class)) {
+          sb.append ((Boolean)value);
+        }
+        else if (value instanceof Date ||
+                 value instanceof java.util.Date ||
+                 value instanceof java.sql.Timestamp) {
+          type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
+          if (type==opt.TYPE_DATE)
+            sb.append( sdf.format((java.util.Date)value) );
+          else if (type==opt.TYPE_DATE_TIME)
+            sb.append( sdatf.format((java.util.Date)value) );
+          else if (type==opt.TYPE_TIME)
+            sb.append( stf.format((java.util.Date)value) );
+        }
+        else {
+          sb.append( endodeText(value.toString(),sep) );
+        }
+      }
+
+      if (i<opt.getExportColumns().size()-1)
+        sb.append(sep);
+    }
+    sb.append("\n");
   }
 
 

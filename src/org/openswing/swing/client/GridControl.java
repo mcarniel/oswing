@@ -11,7 +11,7 @@ import org.openswing.swing.table.columns.client.*;
 
 import org.openswing.swing.table.model.client.*;
 
-
+import org.openswing.swing.form.client.Form;
 
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
@@ -22,6 +22,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import org.openswing.swing.table.filter.client.FilterDialog;
+import org.openswing.swing.message.receive.java.Response;
+import org.openswing.swing.message.receive.java.VOListResponse;
+import java.awt.event.FocusListener;
+import java.awt.event.FocusEvent;
 
 
 /**
@@ -56,6 +60,12 @@ public class GridControl extends JPanel {
 
   /** grid contained in this panel; it will be created only on run-time */
   private Grids table = null;
+
+  /** top grid contained in this panel (optional); it will be created only on run-time */
+  private Grids topTable = null;
+
+  /** bottom grid contained in this panel (optional); it will be created only on run-time */
+  private Grids bottomTable = null;
 
   /** columns container; used only in design-time */
   private ColumnContainer itsColumnContainer = new ColumnContainer();
@@ -177,6 +187,28 @@ public class GridControl extends JPanel {
   /** filter panel to show at the right of the grid (optional) */
   private FilterPanel filterPanel = null;
 
+  /** number of rows locked (anchored) on the bottom of the grid; default value: 0 */
+  private int lockedRowsOnBottom = 0;
+
+  /** number of rows locked (anchored) on the top of the grid; default value: 0 */
+  private int lockedRowsOnTop = 0;
+
+  /** top grid controller (optional) */
+  private GridController topGridController = new GridController();
+
+  /** bottom grid controller (optional) */
+  private GridController bottomGridController = new GridController();
+
+  /** top grid data locator (optional) */
+  private GridDataLocator topGridDataLocator = null;
+
+  /** bottom grid data locator (optional) */
+  private GridDataLocator bottomGridDataLocator = null;
+
+  /** container of all grids (top, std and bottom (locked and non) */
+  private JPanel tmpPanel = new JPanel();
+
+
 
   /**
    * Costructor.
@@ -251,7 +283,8 @@ public class GridControl extends JPanel {
           controller,
           labelPanel,
           gridDataLocator,
-          otherGridParams
+          otherGridParams,
+          Grid.MAIN_GRID
       );
       for(int i=0;i<columnProperties.length;i++) {
         columnProperties[i].setTable(table);
@@ -298,94 +331,263 @@ public class GridControl extends JPanel {
       if (gridId!=null)
         table.enableDrag(gridId);
 
-      gridStatusPanel.add(table,BorderLayout.CENTER);
-      if (visibleStatusPanel)
-        gridStatusPanel.add(labelPanel,BorderLayout.SOUTH);
 
-      if (showFilterPanelOnGrid) {
-        filterPanel = new FilterPanel(columnProperties,table);
 
-        split.setOrientation(split.HORIZONTAL_SPLIT);
-        split.setDividerSize(1);
-        split.add(gridStatusPanel,split.LEFT);
-        split.add(filterPanel,split.RIGHT);
-        super.add(split, BorderLayout.CENTER);
-        split.setDividerLocation(2048);
-        table.getGrid().addMouseListener(new MouseAdapter() {
+      // add top grid (optionally)...
+    if (lockedRowsOnTop>0) {
+      topTable = new Grids(
+          this,
+          lockedColumns,
+          valueObjectClassName,
+          columnProperties,
+          topGridController,
+          labelPanel,
+          topGridDataLocator,
+          otherGridParams,
+          Grid.TOP_GRID
+      );
+      topTable.setReorderingAllowed(reorderingAllowed);
+      topTable.setResizingAllowed(resizingAllowed);
+      topTable.setSelectionMode(selectionMode);
+      topTable.setMaxSortedColumns(maxSortedColumns);
+
+//      table.setFunctionId(functionId);
+
+      topTable.getVOListTableModel().setMode(Consts.READONLY);
+
+      topTable.getGrid().addFocusListener(new FocusListener() {
+
+        public void focusGained(FocusEvent e) {
+          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+          Form.setCurrentFocusedForm(null);
+        }
+
+        public void focusLost(FocusEvent e) {
+          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+        }
+      });
+
+      if (lockedColumns>0)
+        topTable.getLockedGrid().addFocusListener(new FocusListener() {
+
+          public void focusGained(FocusEvent e) {
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+            Form.setCurrentFocusedForm(null);
+          }
+
+          public void focusLost(FocusEvent e) {
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+          }
+        });
+
+    } // end top grid...
+
+
+      // add bottom grid (optionally)...
+    if (lockedRowsOnBottom>0) {
+      bottomTable = new Grids(
+          this,
+          lockedColumns,
+          valueObjectClassName,
+          columnProperties,
+          bottomGridController,
+          labelPanel,
+          bottomGridDataLocator,
+          otherGridParams,
+          Grid.BOTTOM_GRID
+      );
+      bottomTable.setReorderingAllowed(reorderingAllowed);
+      bottomTable.setResizingAllowed(resizingAllowed);
+      bottomTable.setSelectionMode(selectionMode);
+      bottomTable.setMaxSortedColumns(maxSortedColumns);
+
+  //      table.setFunctionId(functionId);
+
+      bottomTable.getVOListTableModel().setMode(Consts.READONLY);
+
+      bottomTable.getGrid().addFocusListener(new FocusListener() {
+
+        public void focusGained(FocusEvent e) {
+          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+          Form.setCurrentFocusedForm(null);
+        }
+
+        public void focusLost(FocusEvent e) {
+          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+        }
+      });
+
+      if (lockedColumns>0)
+        bottomTable.getLockedGrid().addFocusListener(new FocusListener() {
+
+          public void focusGained(FocusEvent e) {
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+            Form.setCurrentFocusedForm(null);
+          }
+
+          public void focusLost(FocusEvent e) {
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+          }
+        });
+
+
+    } // end bottom grid...
+
+
+
+    tmpPanel.setLayout(new GridBagLayout());
+    if (topTable!=null)
+      tmpPanel.add(topTable,
+                     new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0
+                                            , GridBagConstraints.WEST,
+                                            GridBagConstraints.BOTH,
+                                            new Insets(0, 0, 0, 0), 0, lockedRowsOnTop*rowHeight));
+
+    tmpPanel.add(table,
+                   new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0
+                                          , GridBagConstraints.WEST,
+                                          GridBagConstraints.BOTH,
+                                          new Insets(0, 0, 0, 0), 0, 0));
+    if (bottomTable!=null)
+      tmpPanel.add(bottomTable,
+                     new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0
+                                            , GridBagConstraints.WEST,
+                                            GridBagConstraints.BOTH,
+                                            new Insets(0, 0, 0, 0), 0, lockedRowsOnBottom*rowHeight));
+
+
+    table.getGrid().addFocusListener(new FocusListener() {
+
+      public void focusGained(FocusEvent e) {
+        tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+        Form.setCurrentFocusedForm(null);
+      }
+
+      public void focusLost(FocusEvent e) {
+        tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+      }
+    });
+
+    if (lockedColumns>0)
+      table.getLockedGrid().addFocusListener(new FocusListener() {
+
+        public void focusGained(FocusEvent e) {
+          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+          Form.setCurrentFocusedForm(null);
+        }
+
+        public void focusLost(FocusEvent e) {
+          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+        }
+      });
+
+
+    gridStatusPanel.add(tmpPanel,BorderLayout.CENTER);
+    if (visibleStatusPanel)
+      gridStatusPanel.add(labelPanel,BorderLayout.SOUTH);
+
+    if (showFilterPanelOnGrid) {
+      filterPanel = new FilterPanel(columnProperties,table);
+
+      split.setOrientation(split.HORIZONTAL_SPLIT);
+      split.setDividerSize(1);
+      split.add(gridStatusPanel,split.LEFT);
+      split.add(filterPanel,split.RIGHT);
+      super.add(split, BorderLayout.CENTER);
+      split.setDividerLocation(2048);
+      table.getGrid().addMouseListener(new MouseAdapter() {
+
+        public void mouseEntered(MouseEvent e) {
+          split.setDividerLocation(split.getWidth()-10);
+        }
+
+      });
+      if (table.getLockedGrid()!=null)
+        table.getLockedGrid().addMouseListener(new MouseAdapter() {
 
           public void mouseEntered(MouseEvent e) {
             split.setDividerLocation(split.getWidth()-10);
           }
 
         });
-        if (table.getLockedGrid()!=null)
-          table.getLockedGrid().addMouseListener(new MouseAdapter() {
 
-            public void mouseEntered(MouseEvent e) {
-              split.setDividerLocation(split.getWidth()-10);
-            }
+      filterPanel.addMouseListener(new MouseAdapter() {
 
-          });
+        /**
+         * Invoked when the mouse enters a component.
+         */
+        public void mouseEntered(MouseEvent e) {
+          if (split.getDividerLocation()<=split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20)
+            return;
 
-        filterPanel.addMouseListener(new MouseAdapter() {
+          filterPanel.init();
+          if (split.getLastDividerLocation()>0 && split.getLastDividerLocation()<filterPanel.getPreferredSize().getWidth())
+            split.setDividerLocation(split.getLastDividerLocation());
+          else
+            split.setDividerLocation(split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20);
+        }
 
-          /**
-           * Invoked when the mouse enters a component.
-           */
-          public void mouseEntered(MouseEvent e) {
-            if (split.getDividerLocation()<=split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20)
-              return;
-
-            filterPanel.init();
-            if (split.getLastDividerLocation()>0 && split.getLastDividerLocation()<filterPanel.getPreferredSize().getWidth())
-              split.setDividerLocation(split.getLastDividerLocation());
-            else
-              split.setDividerLocation(split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20);
+        /**
+         * Invoked when the mouse exits a component.
+         */
+        public void mouseExited(MouseEvent e) {
+          if (e.getX()<=0 || e.getY()<=0 || e.getX()>=filterPanel.getWidth() || e.getY()>=filterPanel.getHeight()) {
+            split.setDividerLocation(split.getWidth()-10);
           }
+        }
 
-          /**
-           * Invoked when the mouse exits a component.
-           */
-          public void mouseExited(MouseEvent e) {
-//            System.out.println(e.getX()+" "+e.getY()+" "+filterPanel.getWidth()+" "+filterPanel.getHeight());
-            if (e.getX()<=0 || e.getY()<=0 || e.getX()>=filterPanel.getWidth() || e.getY()>=filterPanel.getHeight()) {
-              split.setDividerLocation(split.getWidth()-10);
-            }
-          }
+      });
 
-        });
+    }
 
-      }
+    gridStatusPanel.revalidate();
+    gridStatusPanel.repaint();
 
-      gridStatusPanel.revalidate();
-      gridStatusPanel.repaint();
+    itsColumnContainer = null;
 
-      itsColumnContainer = null;
 
-      table.getVOListTableModel().setMode(mode);
-      table.setMaxNumberOfRowsOnInsert(maxNumberOfRowsOnInsert);
 
-      if (mode==Consts.READONLY && autoLoadData)
-        table.reload();
+    table.getVOListTableModel().setMode(mode);
+    table.setMaxNumberOfRowsOnInsert(maxNumberOfRowsOnInsert);
 
-      table.getGrid().requestFocus();
+    if (mode==Consts.READONLY && autoLoadData)
+      table.reload();
 
-      if (rowHeightFixed) {
-        table.getGrid().setRowHeight(rowHeight);
-        if (table.getLockedGrid()!=null)
-          table.getLockedGrid().setRowHeight(rowHeight);
-      }
-      else {
-        table.getGrid().setRowHeightFixed(false);
-        if (table.getLockedGrid()!=null)
-          table.getLockedGrid().setRowHeightFixed(false);
-      }
+    table.getGrid().requestFocus();
 
-      table.getGrid().setOrderWithLoadData(orderWithLoadData);
+    if (rowHeightFixed) {
+      table.getGrid().setRowHeight(rowHeight);
+      if (topTable!=null)
+        topTable.getGrid().setRowHeight(rowHeight);
+      if (bottomTable!=null)
+        bottomTable.getGrid().setRowHeight(rowHeight);
       if (table.getLockedGrid()!=null)
-        table.getLockedGrid().setOrderWithLoadData(orderWithLoadData);
+        table.getLockedGrid().setRowHeight(rowHeight);
+      if (topTable!=null && topTable.getLockedGrid()!=null)
+        topTable.getLockedGrid().setRowHeight(rowHeight);
+      if (bottomTable!=null && bottomTable.getLockedGrid()!=null)
+        bottomTable.getLockedGrid().setRowHeight(rowHeight);
+    }
+    else {
+      table.getGrid().setRowHeightFixed(false);
+      if (table.getLockedGrid()!=null)
+        table.getLockedGrid().setRowHeightFixed(false);
+      if (topTable!=null) {
+        topTable.getGrid().setRowHeightFixed(false);
+        if (topTable.getLockedGrid()!=null)
+          topTable.getLockedGrid().setRowHeightFixed(false);
+      }
+      if (bottomTable!=null) {
+        bottomTable.getGrid().setRowHeightFixed(false);
+        if (bottomTable.getLockedGrid()!=null)
+          bottomTable.getLockedGrid().setRowHeightFixed(false);
+      }
+    }
 
-//        split.setDividerLocation((int)split.getPreferredSize().getWidth());
+    table.getGrid().setOrderWithLoadData(orderWithLoadData);
+    if (table.getLockedGrid()!=null)
+      table.getLockedGrid().setOrderWithLoadData(orderWithLoadData);
+
 
 
     }
@@ -1134,6 +1336,132 @@ public class GridControl extends JPanel {
    */
   public final void setShowFilterPanelOnGrid(boolean showFilterPanelOnGrid) {
     this.showFilterPanelOnGrid = showFilterPanelOnGrid;
+  }
+
+
+  /**
+   * @return number of rows locked (anchored) on the bottom of the grid
+   */
+  public final int getLockedRowsOnBottom() {
+    return lockedRowsOnBottom;
+  }
+
+
+  /**
+   * @return number of rows locked (anchored) on the top of the grid; default value: 0
+   */
+  public final int getLockedRowsOnTop() {
+    return lockedRowsOnTop;
+  }
+
+
+  /**
+   * Set the number of rows locked (anchored) on the top of the grid.
+   * @param lockedRowsOnBottom number of rows locked (anchored) on the top of the grid
+   */
+  public final void setLockedRowsOnBottom(int lockedRowsOnBottom) {
+    this.lockedRowsOnBottom = lockedRowsOnBottom;
+  }
+
+
+  /**
+   * Set the number of rows locked (anchored) on the bottom of the grid.
+   * @param lockedRowsOnTop number of rows locked (anchored) on the top of the grid
+   */
+  public final void setLockedRowsOnTop(int lockedRowsOnTop) {
+    this.lockedRowsOnTop = lockedRowsOnTop;
+  }
+
+
+  /**
+   * @return top grid controller
+   */
+  public final GridController getTopGridController() {
+    return topGridController;
+  }
+
+
+  /**
+   * @return top grid data locator
+   */
+  public final GridDataLocator getTopGridDataLocator() {
+    return topGridDataLocator;
+  }
+
+
+  /**
+   * Set the top grid data locator.
+   * @param topGridDataLocator top grid data locator
+   */
+  public final void setTopGridDataLocator(GridDataLocator topGridDataLocator) {
+    this.topGridDataLocator = topGridDataLocator;
+  }
+
+
+  /**
+   * Set the top grid controller.
+   * @param topGridController top grid controller
+   */
+  public final void setTopGridController(GridController topGridController) {
+    this.topGridController = topGridController;
+  }
+
+
+  /**
+   * @return top grid contained in this panel (optional); it will be created only on run-time
+   */
+  public final Grids getTopTable() {
+    return topTable;
+  }
+
+
+  /**
+   * @return bottom grid contained in this panel (optional); it will be created only on run-time
+   */
+  public final Grids getBottomTable() {
+    return bottomTable;
+  }
+
+
+  /**
+   * @return std grid contained in this panel; it will be created only on run-time
+   */
+  public final Grids getTable() {
+    return table;
+  }
+
+
+  /**
+   * @return bottom grid data locator
+   */
+  public final GridDataLocator getBottomGridDataLocator() {
+    return bottomGridDataLocator;
+  }
+
+
+  /**
+   * @return bottom grid controller
+   */
+  public final GridController getBottomGridController() {
+    return bottomGridController;
+  }
+
+
+  /**
+   * Set the bottom grid controller.
+   * @param bottomGridController bottom grid controller
+   */
+  public final void setBottomGridController(GridController bottomGridController) {
+    this.bottomGridController = bottomGridController;
+  }
+
+
+  /**
+   * Set the bottomgrid data locator.
+   * @param bottomGridDataLocator bottom grid data locator
+   */
+  public final void setBottomGridDataLocator(GridDataLocator bottomGridDataLocator) {
+    this.bottomGridDataLocator = bottomGridDataLocator;
   }
 
 

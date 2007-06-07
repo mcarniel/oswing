@@ -139,10 +139,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   private QuickFilterPanel filterPanel = null;
 
   /** popup menu accessed by right mouse click on grid */
-  private JPopupMenu popup=new JPopupMenu();
+  private JPopupMenu popup = new JPopupMenu();
 
   /** menu item for removing column filtering */
-  private JMenuItem removefilterItem = new JMenuItem(ClientSettings.getInstance().getResources().getResource("Remove Filter"),new ImageIcon(ClientUtils.getImage("filter-undo.gif")));
+  private JMenuItem removefilterItem = new JMenuItem(ClientSettings.getInstance().
+      getResources().getResource("Remove Filter"),
+      new ImageIcon(ClientUtils.getImage("filter-undo.gif")));
 
   /** hashtable which contains the associations: attribute name, new FilterWhereClause[2] {FilterWhereClause,FilterWhereClause}) */
   private Map quickFilterValues = new HashMap();
@@ -176,7 +178,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** collection of GenericButton objects to disable when the specified attribute will be setted to the specified value; pairs of type (GenericButton object, List of GenericButtonController objects) */
   private Hashtable buttonsToDisable = new Hashtable();
 
-  /** maximum number of rows to insert by pressing "down" key; default value: 1 */
+      /** maximum number of rows to insert by pressing "down" key; default value: 1 */
   private int maxNumberOfRowsOnInsert = 1;
 
   /** current number of new rows  */
@@ -185,6 +187,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** filter dialog */
   private FilterDialog filterDialog = null;
 
+  /** type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID */
+  private int gridType;
+
+  /** locked + std grids scrollpane */
+  private JScrollPane scroll = null;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -192,6 +200,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @param colProps TableModel column properties (name, type, etc.)
    * @param controller grid controller, used to listen grid events
    * @param statusPanel bottom panel included into the grid; used to view selected row numbers
+   * @param gridType type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID
    */
   public Grids(
       GridControl gridControl,
@@ -201,7 +210,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       GridController gridController,
       GridStatusPanel statusPanel,
       GridDataLocator gridDataLocator,
-      Map otherGridParams) {
+      Map otherGridParams,
+      int gridType) {
     this.gridControl = gridControl;
     this.lockedColumns = lockedColumns;
     this.colProps = colProps;
@@ -209,6 +219,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     this.statusPanel = statusPanel;
     this.gridDataLocator = gridDataLocator;
     this.otherGridParams = otherGridParams;
+    this.gridType = gridType;
 
 
     try {
@@ -232,7 +243,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         model,
         modelAdapter,
         gridController,
-        false
+        false,
+        gridType
     );
     if (lockedColumns>0) {
       for(int i=0;i<lockedColumns;i++)
@@ -246,7 +258,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           model,
           modelAdapter,
           gridController,
-          true
+          true,
+          gridType
       );
       this.lockedGrid.setReorderingAllowed(false);
       this.lockedGrid.setResizingAllowed(false);
@@ -266,6 +279,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     }
     try {
       jbInit();
+      setupScrollBars();
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -277,9 +291,78 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   }
 
 
+  /**
+   * Setup vertical/horizontal scrollbars, according to grid type.
+   */
+  private void setupScrollBars() {
+    if (gridControl.getLockedRowsOnTop()>0 &&
+        gridControl.getLockedRowsOnBottom()==0 &&
+        gridType==Grid.TOP_GRID)
+      // no bottom grid defined and this is the top grid...
+      scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    else if (gridControl.getLockedRowsOnTop()==0 &&
+        gridControl.getLockedRowsOnBottom()>0 &&
+        gridType==Grid.MAIN_GRID)
+      // no top grid defined and bottom grid defined and this is the main grid...
+      scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    else if (gridControl.getLockedRowsOnTop()>0 &&
+             gridControl.getLockedRowsOnBottom()>0 &&
+             gridType!=Grid.BOTTOM_GRID) {
+      // top and bottom grids are defined and this is not the bottom grid...
+      scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    }
+
+    if (gridControl.getLockedRowsOnTop()>0 && gridType==Grid.TOP_GRID) {
+      scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+      scroll.setVerticalScrollBar(new JScrollBar() {
+        public void paint(Graphics g) { } // no vertical scrollbar is visible...
+      });
+    }
+    if (gridControl.getLockedRowsOnBottom()>0 && gridType==Grid.BOTTOM_GRID) {
+      scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+      scroll.setVerticalScrollBar(new JScrollBar() {
+        public void paint(Graphics g) { } // no vertical scrollbar is visible...
+      });
+    }
+
+    if (gridControl.getLockedRowsOnTop()>0 || gridControl.getLockedRowsOnBottom()>0)
+      scroll.setBorder(BorderFactory.createEmptyBorder());
+
+    // top or bottom grid is defined and this is not the std grid...
+    if ((gridControl.getLockedRowsOnTop()>0 || gridControl.getLockedRowsOnBottom()>0) && gridType!=Grid.MAIN_GRID){
+      // add a horizontal scrollback listener to this horizontal scrollbar...
+      scroll.getHorizontalScrollBar().addAdjustmentListener(
+        new AdjustmentListener(){
+         public void adjustmentValueChanged(AdjustmentEvent e){
+           if (gridControl.getTable().getScroll().getHorizontalScrollBar().getValue() != e.getValue())
+             gridControl.getTable().getScroll().getHorizontalScrollBar().setValue(e.getValue());
+         };
+      });
+    }
+
+    // top or bottom grid is defined and this is the std grid...
+    if ((gridControl.getLockedRowsOnTop()>0 || gridControl.getLockedRowsOnBottom()>0) && gridType==Grid.MAIN_GRID){
+      // add a horizontal scrollback listener to the horizontal scrollbar of the std grid...
+      scroll.getHorizontalScrollBar().addAdjustmentListener(
+        new AdjustmentListener(){
+         public void adjustmentValueChanged(AdjustmentEvent e){
+           if (getGridControl().getTopTable()!=null && getGridControl().getTopTable().getScroll().getHorizontalScrollBar().getValue() != e.getValue())
+             getGridControl().getTopTable().getScroll().getHorizontalScrollBar().setValue(e.getValue());
+
+           if (getGridControl().getBottomTable()!=null && getGridControl().getBottomTable().getScroll().getHorizontalScrollBar().getValue() != e.getValue())
+             getGridControl().getBottomTable().getScroll().getHorizontalScrollBar().setValue(e.getValue());
+
+         };
+      });
+    }
+
+
+  }
+
+
   private void jbInit() throws Exception {
     this.setLayout(gridBagLayout1);
-    JScrollPane scroll = new JScrollPane(grid);
+    scroll = new JScrollPane(grid);
 
     if (lockedColumns>0) {
       lockedGrid.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -288,7 +371,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       viewport.setView(lockedGrid);
       viewport.setPreferredSize(lockedGrid.getPreferredSize());
       scroll.setRowHeaderView(viewport);
-      scroll.setCorner(JScrollPane.UPPER_LEFT_CORNER, lockedGrid.getTableHeader());
+      if (lockedGrid.getTableHeader()!=null)
+        scroll.setCorner(JScrollPane.UPPER_LEFT_CORNER, lockedGrid.getTableHeader());
       this.add(scroll,  new GridBagConstraints(0, 0, 1, 1, 0.0, 1.0
               ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 //      scroll.setMinimumSize(new Dimension(lockedGrid.getPreferredSize().width+5,lockedGrid.getPreferredSize().height));
@@ -435,21 +519,98 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
         grid.revalidate();
         grid.repaint();
-        grid.getTableHeader().revalidate();
-        grid.getTableHeader().repaint();
+        if (grid.getTableHeader()!=null) {
+          grid.getTableHeader().revalidate();
+          grid.getTableHeader().repaint();
+        }
         if (lockedGrid!=null) {
           lockedGrid.revalidate();
           lockedGrid.repaint();
-          lockedGrid.getTableHeader().revalidate();
-          lockedGrid.getTableHeader().repaint();
+          if (lockedGrid.getTableHeader()!=null) {
+            lockedGrid.getTableHeader().revalidate();
+            lockedGrid.getTableHeader().repaint();
+          }
         }
 
 
         listenEvent = true;
 
+
+        if (gridType==Grid.MAIN_GRID) {
+          // load top grid if it exists...
+          if (getGridControl().getTopTable()!=null){
+
+            if (getGridControl().getTopGridDataLocator()==null) {
+              Logger.error(this.getClass().getName(), "reloadData", "'topGridDataLocator' property was not defined for grid control", null);
+              getGridControl().setTopGridDataLocator(new GridDataLocator() {
+
+                public Response loadData(
+                    int action,
+                    int startIndex,
+                    Map filteredColumns,
+                    ArrayList currentSortedColumns,
+                    ArrayList currentSortedVersusColumns,
+                    Class valueObjectType,
+                    Map otherGridParams) {
+                  ArrayList rows = new ArrayList();
+                  for(int i=0;i<getGridControl().getLockedRowsOnTop();i++)
+                    try {
+                      rows.add( Class.forName(getGridControl().getValueObjectClassName()).newInstance() );
+                    }
+                    catch (Throwable t) {
+                      Logger.error(this.getClass().getName(), "reloadData", "Error while attempting to fill in the top grid", t);
+                    }
+                  return new VOListResponse(rows,false,rows.size());
+                }
+
+              });
+            }
+
+            getGridControl().getTopTable().reload();
+            getGridControl().getTopTable().revalidate();
+            getGridControl().getTopTable().repaint();
+          }
+
+          // load bottom grid if it exists...
+          if (getGridControl().getBottomTable()!=null){
+
+            if (getGridControl().getBottomGridDataLocator()==null) {
+              Logger.error(this.getClass().getName(), "reloadData", "'bottomGridDataLocator' property was not defined for grid control", null);
+              getGridControl().setBottomGridDataLocator(new GridDataLocator() {
+
+                public Response loadData(
+                    int action,
+                    int startIndex,
+                    Map filteredColumns,
+                    ArrayList currentSortedColumns,
+                    ArrayList currentSortedVersusColumns,
+                    Class valueObjectType,
+                    Map otherGridParams) {
+                  ArrayList rows = new ArrayList();
+                  for(int i=0;i<getGridControl().getLockedRowsOnBottom();i++)
+                    try {
+                      rows.add( Class.forName(getGridControl().getValueObjectClassName()).newInstance() );
+                    }
+                    catch (Throwable t) {
+                      Logger.error(this.getClass().getName(), "reloadData", "Error while attempting to fill in the bottom grid", t);
+                    }
+                  return new VOListResponse(rows,false,rows.size());
+                }
+
+              });
+            }
+
+            getGridControl().getBottomTable().reload();
+            getGridControl().getBottomTable().revalidate();
+            getGridControl().getBottomTable().repaint();
+          }
+        }
+
+
         // fire loading data completed event...
         if (gridController!=null)
           gridController.loadDataCompleted(errorOnLoad);
+
 
         resetButtonsState();
       }
@@ -1186,8 +1347,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
                                     JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
         executeReload();
     } else if (getMode()==Consts.READONLY) {
-      grid.getTableHeader().repaint();
-      if (lockedGrid!=null)
+      if (grid.getTableHeader()!=null)
+        grid.getTableHeader().repaint();
+      if (lockedGrid!=null && lockedGrid.getTableHeader()!=null)
         lockedGrid.getTableHeader().repaint();
       reloadData();
     }
@@ -1444,6 +1606,14 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       columnsType.put(colProps[i].getColumnName(),new Integer(colProps[i].getColumnType()));
     }
 
+    ArrayList topRows = new ArrayList();
+    if (gridControl.getTopTable()!=null)
+      topRows.addAll( gridControl.getTopTable().getVOListTableModel().getDataVector() );
+
+    ArrayList bottomRows = new ArrayList();
+    if (gridControl.getTopTable()!=null)
+      bottomRows.addAll( gridControl.getBottomTable().getVOListTableModel().getDataVector() );
+
     ExportOptions opt = new ExportOptions(
         exportColumns,
         exportAttrColumns,
@@ -1459,7 +1629,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE),
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_TIME),
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE_TIME),
-        exportType
+        exportType,
+        topRows,
+        bottomRows
     );
 
     try {
@@ -2238,6 +2410,14 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public void finalize() {
     if (filterDialog!=null)
       filterDialog.dispose();
+  }
+
+
+  /**
+   * @return locked + std grid scrollpane
+   */
+  public final JScrollPane getScroll() {
+    return scroll;
   }
 
 

@@ -107,6 +107,12 @@ public class ExportOptions implements Serializable {
   public static final String PDF_FORMAT = "PDF";
   public static final String RTF_FORMAT = "RTF";
 
+  /** list of locked rows at the top of the grid */
+  private ArrayList topRows = new ArrayList();
+
+  /** list of locked rows at the bottom of the grid */
+  private ArrayList bottomRows = new ArrayList();
+
 
   /**
    * Method called by Grid.
@@ -125,6 +131,8 @@ public class ExportOptions implements Serializable {
    * @param timeFormat time format
    * @param dateTimeFormat date+time format
    * @param exportType export format
+   * @param topRows list of locked rows at the top of the grid
+   * @param bottomRows list of locked rows at the bottom of the grid
    */
   public ExportOptions(
       ArrayList exportColumns,
@@ -141,7 +149,9 @@ public class ExportOptions implements Serializable {
       String dateFormat,
       String timeFormat,
       String dateTimeFormat,
-      String exportType
+      String exportType,
+      ArrayList topRows,
+      ArrayList bottomRows
    ) {
     this.exportColumns = exportColumns;
     this.exportAttrColumns = exportAttrColumns;
@@ -158,6 +168,8 @@ public class ExportOptions implements Serializable {
     this.timeFormat = timeFormat;
     this.dateTimeFormat = dateTimeFormat;
     this.exportType = exportType;
+    this.topRows = topRows;
+    this.bottomRows = bottomRows;
   }
 
 
@@ -301,6 +313,22 @@ public class ExportOptions implements Serializable {
    */
   public final String getExportType() {
     return exportType;
+  }
+
+
+  /**
+   * @return list of locked rows at the top of the grid
+   */
+  public final ArrayList getTopRows() {
+    return topRows;
+  }
+
+
+  /**
+   * @return list of locked rows at the bottom of the grid
+   */
+  public final ArrayList getBottomRows() {
+    return bottomRows;
   }
 
 
