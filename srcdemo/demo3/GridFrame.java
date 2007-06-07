@@ -8,6 +8,11 @@ import org.openswing.swing.lookup.client.LookupController;
 import java.sql.*;
 import java.awt.event.*;
 import org.openswing.swing.table.java.*;
+import org.openswing.swing.message.receive.java.Response;
+import java.util.Map;
+import java.util.ArrayList;
+import org.openswing.swing.message.receive.java.VOListResponse;
+import java.math.BigDecimal;
 
 
 /**
@@ -51,7 +56,48 @@ public class GridFrame extends JFrame {
 
       LookupController lookupController = new DemoLookupController(conn);
       colLookup.setLookupController(lookupController);
-//      grid.setLockedColumns(2);
+
+      // set top grid content, i.e. the first row...
+      grid.setTopGridDataLocator(new GridDataLocator() {
+
+        public Response loadData(
+            int action,
+            int startIndex,
+            Map filteredColumns,
+            ArrayList currentSortedColumns,
+            ArrayList currentSortedVersusColumns,
+            Class valueObjectType,
+            Map otherGridParams) {
+          ArrayList rows = new ArrayList();
+          TestVO vo = new TestVO();
+          vo.setDateValue(new java.sql.Date(System.currentTimeMillis()));
+          vo.setStringValue("This is a locked row");
+          rows.add(vo);
+          return new VOListResponse(rows,false,rows.size());
+        }
+
+      });
+
+
+      // set bottom grid content, i.e. the last two rows...
+      grid.setBottomGridDataLocator(new GridDataLocator() {
+
+        public Response loadData(
+            int action,
+            int startIndex,
+            Map filteredColumns,
+            ArrayList currentSortedColumns,
+            ArrayList currentSortedVersusColumns,
+            Class valueObjectType,
+            Map otherGridParams) {
+          ArrayList rows = getTotals();
+          return new VOListResponse(rows,false,rows.size());
+        }
+
+      });
+
+
+
       setVisible(true);
 
     }
@@ -59,6 +105,39 @@ public class GridFrame extends JFrame {
       e.printStackTrace();
     }
   }
+
+
+  /**
+   * @return calculate totals for numeric and currency colums and return two rows having those totals.
+   */
+  private ArrayList getTotals() {
+    ArrayList rows = new ArrayList();
+
+    TestVO vo = new TestVO();
+    vo.setDateValue(new java.sql.Date(System.currentTimeMillis()));
+    vo.setStringValue("Total currencies");
+    BigDecimal tot = new BigDecimal(0);
+    BigDecimal tot2 = new BigDecimal(0);
+    TestVO testVO = null;
+    for(int i=0;i<grid.getVOListTableModel().getRowCount();i++) {
+      testVO = (TestVO)grid.getVOListTableModel().getObjectForRow(i);
+      if (testVO.getCurrencyValue()!=null)
+        tot = tot.add(testVO.getCurrencyValue());
+      if (testVO.getNumericValue()!=null)
+        tot2 = tot2.add(testVO.getNumericValue());
+    }
+    vo.setCurrencyValue(tot);
+    rows.add(vo);
+
+    vo = new TestVO();
+    vo.setDateValue(new java.sql.Date(System.currentTimeMillis()));
+    vo.setStringValue("Total Numbers");
+    vo.setNumericValue(tot2);
+    rows.add(vo);
+
+    return rows;
+  }
+
 
 
   public void reloadData() {
@@ -77,6 +156,11 @@ public class GridFrame extends JFrame {
     grid.setNavBar(navigatorBar1);
     grid.setReloadButton(reloadButton);
     grid.setSaveButton(saveButton);
+
+//    grid.setLockedColumns(2);
+    grid.setLockedRowsOnTop(1);
+    grid.setLockedRowsOnBottom(2);
+
     grid.setValueObjectClassName("demo3.TestVO");
     colText.setColumnName("stringValue");
     colText.setColumnSortable(true);
@@ -150,6 +234,9 @@ public class GridFrame extends JFrame {
     grid.getColumnContainer().add(colCheck, null);
 
 
+  }
+  public GridControl getGrid() {
+    return grid;
   }
 
 

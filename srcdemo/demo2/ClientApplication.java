@@ -65,7 +65,6 @@ public class ClientApplication implements MDIController,LoginController {
     MDIFrame.addStatusComponent(userPanel);
     userPanel.setText(username);
     MDIFrame.addStatusComponent(new Clock());
-
   }
 
 
