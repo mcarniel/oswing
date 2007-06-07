@@ -107,7 +107,7 @@ public class GridFrame extends JFrame {
          * @return background color of the selected cell
          */
         public Color getBackgroundColor(int row,String attributedName,Object value) {
-          return new Color(230,230,230);
+          return new Color(220,220,220);
         }
 
       });
