@@ -17,7 +17,8 @@ import java.sql.Types;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.client.CheckBoxControl;
-
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -84,19 +85,25 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
 
     private QuickFilterListener filterListener=null;
 
+    /** default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
+    private int defaultQuickFilterCriteria;
+
 
     /**
      * Costructor called by Grid object.
+     * @param defaultQuickFilterCriteria default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH
      * @param filterListener listener that manages filter events (the grid)
      * @param filterType type of filter: FILTER_TYPE_VALUE or FILTER_TYPE_RANGE (for date, number, ...)
      * @param colProperties column properties
      * @param initValue initial value to set into the filter
      */
     public QuickFilterPanel(
+        int defaultQuickFilterCriteria,
         QuickFilterListener filterListener,
         int filterType,Column colProperties,Object initValue) {
       this.filterListener=filterListener;
       this.filterType=filterType;
+      this.defaultQuickFilterCriteria = defaultQuickFilterCriteria;
       filterIcon = new ImageIcon(ClientUtils.getImage("filter.gif"));
       rangeButton= new JToggleButton(new ImageIcon(ClientUtils.getImage("chiuso.gif")),false) {
 
@@ -174,6 +181,8 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
       }
 
       public void adjustmentValueChanged(AdjustmentEvent e) {
+        if (e.getValueIsAdjusting())
+          return;
         if (theList.getHeight()>0 && e.getValue()>0) {
           theList.setSelectedIndex((e.getValue()+20)/20);
         }
@@ -477,6 +486,13 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
 
       try {
         jbInit();
+
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            opType.ensureIndexIsVisible(defaultQuickFilterCriteria);
+            opType.setSelectedIndex(defaultQuickFilterCriteria);
+          }
+        });
       }
       catch (Exception ex) {
         ex.printStackTrace();

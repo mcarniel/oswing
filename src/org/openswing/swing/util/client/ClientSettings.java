@@ -10,6 +10,7 @@ import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.permissions.java.ButtonsAuthorizations;
 import org.openswing.swing.internationalization.java.*;
 import java.lang.reflect.*;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -120,9 +121,6 @@ public class ClientSettings {
   /** height of grid headers */
   public static int HEADER_HEIGHT = 24;
 
-  /** number of rows to view on grid per block */
-  public static int BLOCK_SIZE = 25;
-
   /** progress bar color (inside the status panel of the MDI frame) */
   public static Color PROGRESS_BAR_COLOR = new Color(185,219,243);
 
@@ -158,6 +156,9 @@ public class ClientSettings {
 
   /** <code>true</code> to automatically show a filter panel when moving mouse at right of the grid; <code>false</code> to do not show it */
   public static boolean FILTER_PANEL_ON_GRID = false;
+
+  /** default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
+  public static int DEFAULT_QUICK_FILTER_CRITERIA = Consts.EQUALS;
 
 
   /**

@@ -1,4 +1,21 @@
 
+Release Notes 1.1.3
+-------------------
+
+Final release 1.1.3 available
+
+Improved grid control: now it is possible to lock (anchor) rows at the top and/or at the bottom of the grid,
+e.g. to show grid totals. Updated GUI documentation in the web site.
+Changed export algorithms by supporting top/bottom locked rows exporting.
+Changed demo3 sample to show how to use row locking. 
+Added "defaultQuickFilterCriteria" property to GridControl, used to set the default criteria (equals or contains or starts with or ends with)
+showed in the quick filter panel. Added DEFAULT_QUICK_FILTER_CRITERIA property to ClientSettings to define a default criteria for all grids.
+Fixed bug when scrolling rows in grid where data loading is based on pagination.
+Fixed bug in text control and text column when "uppercase" property is set to "true".
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.1.2
 -------------------
 

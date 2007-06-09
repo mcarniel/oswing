@@ -155,6 +155,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** last row index already loaded on grid (related to result set); -1 = no rows yet loaded */
   private int lastIndex = -1;
 
+  /** first row index to load on grid (related to result set); -1 = no rows yet loaded */
+  private int startIndex = -1;
+
   /** there are other rows in result set not yet loaded */
   private boolean moreRows;
 
@@ -455,6 +458,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       lockedGrid.repaint();
     }
     moreRows = false;
+    startIndex = -1;
     lastIndex = -1;
   }
 
@@ -487,10 +491,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           deleteButton.setEnabled(false);
         if (saveButton!=null)
           saveButton.setEnabled(false);
-        lastIndex = Math.max(0,lastIndex-model.getRowCount()+1)-1;
+        startIndex = Math.max(0,lastIndex-model.getRowCount()+1);
 
         // reload data...
-        errorOnLoad = ! loadData(lastIndex+1,GridParams.NEXT_BLOCK_ACTION);
+        errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
         if (model.getRowCount()>0) {
           grid.setRowSelectionInterval(0,0);
           if (lockedGrid!=null)
@@ -1044,20 +1048,19 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         if (getSaveButton()!=null)
           getSaveButton().setEnabled(false);
 
-        // data reloading...
-        errorOnLoad = ! loadData(0,GridParams.NEXT_BLOCK_ACTION);
+        // data reloading (from the beginning)...
+        startIndex = 0;
+        errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
         if (getNavBar()!=null)
           getNavBar().setEnabled(false);
         lastIndex = model.getRowCount()-1;
         if (getNavBar()!=null) {
-          if (model.getRowCount() <= 1)
+          if (lastIndex <= 0)
             getNavBar().setFirstRow(true);
           else
             getNavBar().setFirstRow(false);
-          if (model.getRowCount() <= 1 &&
-              !moreRows &&
-              lastIndex + 1 ==
-              Math.min(ClientSettings.BLOCK_SIZE, model.getRowCount()))
+          if (model.getRowCount() <= 1 && !moreRows
+          )
             getNavBar().setLastRow(true);
           else
             getNavBar().setLastRow(false);
@@ -1108,48 +1111,51 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (!listenEvent)
       return;
     if (grid.getSelectedRow()!=-1 && grid.getSelectedRow()==model.getRowCount()-1) {
-      listenEvent = false;
-      new Thread() {
-        public void run() {
-          boolean errorOnLoad = true;
-          if (getNavBar()!=null)
-            getNavBar().setEnabled(false);
-          if (getReloadButton()!=null)
-            getReloadButton().setEnabled(false);
-          if (getInsertButton()!=null)
-            getInsertButton().setEnabled(false);
-          if (getExportButton()!=null)
-            getExportButton().setEnabled(false);
-          if (getCopyButton()!=null)
-            getCopyButton().setEnabled(false);
-          if (getEditButton()!=null)
-            getEditButton().setEnabled(false);
-          setGenericButtonsEnabled(false);
-          if (getDeleteButton()!=null)
-            getDeleteButton().setEnabled(false);
-          if (getSaveButton()!=null)
-            getSaveButton().setEnabled(false);
-          // reload data...
-          errorOnLoad = ! loadData(lastIndex+1,GridParams.NEXT_BLOCK_ACTION);
-          if (model.getRowCount()>0) {
-            grid.setRowSelectionInterval(0,0);
-            if (lockedGrid!=null)
-              lockedGrid.setRowSelectionInterval(0,0);
+      if (moreRows) {
+        listenEvent = false;
+        new Thread() {
+          public void run() {
+            boolean errorOnLoad = true;
+            if (getNavBar()!=null)
+              getNavBar().setEnabled(false);
+            if (getReloadButton()!=null)
+              getReloadButton().setEnabled(false);
+            if (getInsertButton()!=null)
+              getInsertButton().setEnabled(false);
+            if (getExportButton()!=null)
+              getExportButton().setEnabled(false);
+            if (getCopyButton()!=null)
+              getCopyButton().setEnabled(false);
+            if (getEditButton()!=null)
+              getEditButton().setEnabled(false);
+            setGenericButtonsEnabled(false);
+            if (getDeleteButton()!=null)
+              getDeleteButton().setEnabled(false);
+            if (getSaveButton()!=null)
+              getSaveButton().setEnabled(false);
+            // reload data...
+            startIndex = lastIndex+1;
+            errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
+            if (model.getRowCount()>0) {
+              grid.setRowSelectionInterval(0,0);
+              if (lockedGrid!=null)
+                lockedGrid.setRowSelectionInterval(0,0);
+            }
+            afterNextRow();
+            if (getReloadButton()!=null)
+              getReloadButton().setEnabled(getReloadButton().getOldValue());
+            if (getSaveButton()!=null)
+              getSaveButton().setEnabled(getSaveButton().getOldValue());
+            listenEvent = true;
+
+            // fire loading data completed event...
+            if (gridController!=null)
+              gridController.loadDataCompleted(errorOnLoad);
+
+            resetButtonsState();
           }
-          afterNextRow();
-          if (getReloadButton()!=null)
-            getReloadButton().setEnabled(getReloadButton().getOldValue());
-          if (getSaveButton()!=null)
-            getSaveButton().setEnabled(getSaveButton().getOldValue());
-          listenEvent = true;
-
-          // fire loading data completed event...
-          if (gridController!=null)
-            gridController.loadDataCompleted(errorOnLoad);
-
-          resetButtonsState();
-        }
-      }.start();
+        }.start();
+      }
     } else {
       grid.setRowSelectionInterval(grid.getSelectedRow()+1,grid.getSelectedRow()+1);
       if (lockedGrid!=null)
@@ -1192,7 +1198,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       return;
     if (!listenEvent)
       return;
-    if (grid.getSelectedRow()==0 && lastIndex+1>Math.min(ClientSettings.BLOCK_SIZE,model.getRowCount())) {
+    if (grid.getSelectedRow()==0 && lastIndex+1>model.getRowCount()) {
       listenEvent = false;
       new Thread() {
         public void run() {
@@ -1215,11 +1221,22 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           if (getSaveButton()!=null)
             getSaveButton().setEnabled(false);
           // reload data...
-          errorOnLoad = ! loadData(Math.max(0,lastIndex-ClientSettings.BLOCK_SIZE+1),GridParams.PREVIOUS_BLOCK_ACTION);
-          grid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
+//          startIndex = Math.max(0,startIndex + 1);
+          errorOnLoad = !loadData(GridParams.PREVIOUS_BLOCK_ACTION);
+          grid.revalidate();
+          grid.repaint();
           if (lockedGrid!=null) {
-            lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
+            lockedGrid.revalidate();
+            lockedGrid.repaint();
           }
+          SwingUtilities.invokeLater(new Runnable(){
+            public void run() {
+              grid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
+              if (lockedGrid!=null) {
+                lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
+              }
+            }
+          });
           afterPreviousRow();
           if (getReloadButton()!=null)
             getReloadButton().setEnabled(getReloadButton().getOldValue());
@@ -1300,22 +1317,30 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           getSaveButton().setEnabled(false);
 
         // reload data...
-        errorOnLoad = ! loadData(-1,GridParams.LAST_BLOCK_ACTION);
+        startIndex = -1;
+        errorOnLoad = !loadData(GridParams.LAST_BLOCK_ACTION);
         if (getNavBar()!=null) {
           getNavBar().setLastRow(true);
           if (model.getRowCount() == 1 &&
-              lastIndex + 1 ==
-              Math.min(ClientSettings.BLOCK_SIZE, model.getRowCount()))
+              lastIndex + 1 == model.getRowCount())
             getNavBar().setFirstRow(true);
           else
             getNavBar().setFirstRow(false);
         }
-        grid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
-        grid.ensureRowIsVisible(grid.getSelectedRow());
-        if (lockedGrid!=null) {
-          lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
-          lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            grid.revalidate();
+            grid.repaint();
+            grid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
+            grid.ensureRowIsVisible(grid.getSelectedRow());
+            if (lockedGrid!=null) {
+              lockedGrid.revalidate();
+              lockedGrid.repaint();
+              lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
+              lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
+            }
+          }
+        });
         if (getReloadButton()!=null)
           getReloadButton().setEnabled(getReloadButton().getOldValue());
         if (getSaveButton()!=null)
@@ -1400,18 +1425,18 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @param startIndex row index used to start data fetching
    * @param action action to execute on the startIndex; three possible action may be executed: GridCommand.NEXT_BLOCK_ACTION, GridCommand.PREVIOUS_BLOCK_ACTION, GridCommand.LAST_BLOCK_ACTION
    */
-  private boolean loadData(int startIndex,int action) {
+  private boolean loadData(int action) {
     boolean result = false;
     int selMode = grid.getSelectionModel().getSelectionMode();
     try {
-//      MDIFrame.setBusy(true);
-      if (startIndex+1<ClientSettings.BLOCK_SIZE && action==GridParams.PREVIOUS_BLOCK_ACTION) {
-        startIndex = 0;
-        lastIndex = -1;
-        action = GridParams.NEXT_BLOCK_ACTION;
-      }
+//      if (startIndex+1<lastIndex-model.getRowCount() && action==GridParams.PREVIOUS_BLOCK_ACTION) {
+//        startIndex = 0;
+//        lastIndex = -1;
+//        action = GridParams.NEXT_BLOCK_ACTION;
+//      }
       grid.getSelectionModel().setSelectionMode(grid.getSelectionModel().SINGLE_SELECTION);
-      statusPanel.setText(ClientSettings.getInstance().getResources().getResource("Loading data..."));
+      if (gridType==Grid.MAIN_GRID)
+        statusPanel.setText(ClientSettings.getInstance().getResources().getResource("Loading data..."));
       // data fetching is dispached to the grid controller...
       Response answer = gridDataLocator.loadData(
           action,
@@ -1448,10 +1473,14 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         moreRows = ((VOListResponse)answer).isMoreRows();
         if (action == GridParams.NEXT_BLOCK_ACTION)
           lastIndex = lastIndex + data.size();
-        else if (action == GridParams.PREVIOUS_BLOCK_ACTION)
-          lastIndex = lastIndex - data.size();
-        else if (action == GridParams.LAST_BLOCK_ACTION)
+        else if (action == GridParams.PREVIOUS_BLOCK_ACTION) {
+          startIndex = startIndex - data.size();
+          lastIndex = startIndex + data.size() - 1; // lastIndex - data.size();
+        }
+        else if (action == GridParams.LAST_BLOCK_ACTION) {
           lastIndex = ((VOListResponse)answer).getResultSetLength() - 1;
+          startIndex = lastIndex - data.size() + 1;
+        }
         grid.clearSelection();
         if (lockedGrid!=null) {
           lockedGrid.clearSelection();
@@ -2278,6 +2307,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
+   * @return default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH
+   */
+  public final int getDefaultQuickFilterCriteria() {
+    return gridControl.getDefaultQuickFilterCriteria();
+  }
+
+
+
+  /**
    * Enable drag onto the grid.
    * @param gridId grid identifier
    */
@@ -2418,6 +2456,14 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    */
   public final JScrollPane getScroll() {
     return scroll;
+  }
+
+
+  /**
+   * @return first row index to load on grid (related to result set); -1 = no rows yet loaded
+   */
+  public final int getstartIndex() {
+    return startIndex;
   }
 
 

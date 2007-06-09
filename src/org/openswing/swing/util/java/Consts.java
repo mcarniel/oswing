@@ -68,5 +68,18 @@ public class Consts {
   public static final String LT = "<";
   public static final String NEQ = "<>";
 
+  /** default value that could be set in the quick filter criteria: equals */
+  public static final int EQUALS = 0;
+
+  /** default value that could be set in the quick filter criteria: contains */
+  public static final int CONTAINS = 1;
+
+  /** default value that could be set in the quick filter criteria: starts with */
+  public static final int STARTS_WITH = 2;
+
+  /** default value that could be set in the quick filter criteria: ends with */
+  public static final int ENDS_WITH = 3;
+
+
 
 }

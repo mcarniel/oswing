@@ -18,6 +18,8 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _autoLoadData = new PropertyDescriptor("autoLoadData", beanClass, "isAutoLoadData", "setAutoLoadData");
       PropertyDescriptor _copyButton = new PropertyDescriptor("copyButton", beanClass, "getCopyButton", "setCopyButton");
+      PropertyDescriptor _defaultQuickFilterCriteria = new PropertyDescriptor("defaultQuickFilterCriteria", beanClass, "getDefaultQuickFilterCriteria", "setDefaultQuickFilterCriteria");
+      _defaultQuickFilterCriteria.setPropertyEditorClass(org.openswing.swing.client.QuickFilterCriteriaEditor.class);
       PropertyDescriptor _deleteButton = new PropertyDescriptor("deleteButton", beanClass, "getDeleteButton", "setDeleteButton");
       PropertyDescriptor _editButton = new PropertyDescriptor("editButton", beanClass, "getEditButton", "setEditButton");
       PropertyDescriptor _gridDataLocator = new PropertyDescriptor("gridDataLocator", beanClass, "getGridDataLocator", "setGridDataLocator");
@@ -38,7 +40,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _reorderingAllowed = new PropertyDescriptor("reorderingAllowed", beanClass, "isReorderingAllowed", "setReorderingAllowed");
       PropertyDescriptor _resizingAllowed = new PropertyDescriptor("resizingAllowed", beanClass, "isResizingAllowed", "setResizingAllowed");
       PropertyDescriptor _rowHeight = new PropertyDescriptor("rowHeight", beanClass, "getRowHeight", "setRowHeight");
-      PropertyDescriptor _rowHeightFixed = new PropertyDescriptor("rowHeightFixed", beanClass, "getRowHeightFixed", "setRowHeightFixed");
+      PropertyDescriptor _rowHeightFixed = new PropertyDescriptor("rowHeightFixed", beanClass, "isRowHeightFixed", "setRowHeightFixed");
       PropertyDescriptor _saveButton = new PropertyDescriptor("saveButton", beanClass, "getSaveButton", "setSaveButton");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
       PropertyDescriptor _showFilterPanelOnGrid = new PropertyDescriptor("showFilterPanelOnGrid", beanClass, "isShowFilterPanelOnGrid", "setShowFilterPanelOnGrid");
@@ -47,6 +49,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _autoLoadData,
         _copyButton,
+        _defaultQuickFilterCriteria,
         _deleteButton,
         _editButton,
         _exportButton,
@@ -72,7 +75,8 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _selectionMode,
         _showFilterPanelOnGrid,
         _valueObjectClassName,
-        _visibleStatusPanel};
+        _visibleStatusPanel
+      };
       return pds;
     }
     catch(IntrospectionException ex) {
@@ -80,6 +84,8 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       return null;
     }
   }
+
+
   public java.awt.Image getIcon(int iconKind) {
     switch (iconKind) {
       case BeanInfo.ICON_COLOR_16x16:

@@ -208,6 +208,8 @@ public class GridControl extends JPanel {
   /** container of all grids (top, std and bottom (locked and non) */
   private JPanel tmpPanel = new JPanel();
 
+  /** default value that could be set in the quick filter criteria; default value: ClientSettings.DEFAULT_QUICK_FILTER_CRITERIA; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
+  private int defaultQuickFilterCriteria = ClientSettings.DEFAULT_QUICK_FILTER_CRITERIA;
 
 
   /**
@@ -1462,6 +1464,23 @@ public class GridControl extends JPanel {
    */
   public final void setBottomGridDataLocator(GridDataLocator bottomGridDataLocator) {
     this.bottomGridDataLocator = bottomGridDataLocator;
+  }
+
+
+  /**
+   * @return default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH
+   */
+  public final int getDefaultQuickFilterCriteria() {
+    return defaultQuickFilterCriteria;
+  }
+
+
+  /**
+   * Set default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH.
+   * @param defaultQuickFilterCriteria values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH
+   */
+  public final void setDefaultQuickFilterCriteria(int defaultQuickFilterCriteria) {
+    this.defaultQuickFilterCriteria = defaultQuickFilterCriteria;
   }
 
 

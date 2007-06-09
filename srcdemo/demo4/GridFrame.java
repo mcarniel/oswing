@@ -63,6 +63,7 @@ public class GridFrame extends JFrame {
   private void jbInit() throws Exception {
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
+    grid.setDefaultQuickFilterCriteria(org.openswing.swing.util.java.Consts.CONTAINS);
     grid.setDeleteButton(deleteButton);
     grid.setEditButton(editButton);
     grid.setExportButton(exportButton1);

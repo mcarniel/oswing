@@ -827,14 +827,14 @@ public class Grid extends JTable
       return;
 
     int scrollableZoneSize = scrollBar.getMaximum()-scrollBar.getVisibleAmount();
-    if ((scrollBar.getValue()>scrollableZoneSize/4*3) && grids.isMoreRows()) {
+    if ((scrollBar.getValue() > scrollableZoneSize/4*3) && grids.isMoreRows()) {
       // scrolling table over 75% of rows (near the end)
       setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
       grids.nextRow();
       setRowSelectionInterval(model.getRowCount()/2,model.getRowCount()/2);
       ensureRowIsVisible(getSelectedRow());
-    } else if ((scrollBar.getValue()< scrollableZoneSize/4) &&
-               grids.getLastIndex()+1>Math.min(ClientSettings.BLOCK_SIZE,model.getRowCount())) {
+    } else if ((scrollBar.getValue() < scrollableZoneSize/4) &&
+               grids.getLastIndex()+1 > model.getRowCount()) {
       // scrolling table on 25% of rows (near the beginning)
       setRowSelectionInterval(0,0);
       grids.previousRow();
@@ -1091,6 +1091,7 @@ public class Grid extends JTable
         grids.getRemovefilterItem().setVisible(false);
 
        grids.setFilterPanel( new QuickFilterPanel(
+           grids.getDefaultQuickFilterCriteria(),
            this,
            filterType,
            colProps[modelColIndex],

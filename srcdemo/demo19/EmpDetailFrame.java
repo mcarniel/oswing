@@ -115,7 +115,7 @@ public class EmpDetailFrame extends InternalFrame {
         return IBatisUtils.getBlockFromQuery(
             action,
             startIndex,
-            ClientSettings.BLOCK_SIZE,
+            50,
             sqlMap,
             "getTasks",
             gridParams
