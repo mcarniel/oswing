@@ -156,7 +156,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   private int lastIndex = -1;
 
   /** first row index to load on grid (related to result set); -1 = no rows yet loaded */
-  private int startIndex = -1;
+  private int startIndex = 0;
 
   /** there are other rows in result set not yet loaded */
   private boolean moreRows;
@@ -328,7 +328,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       });
     }
 
-    if (gridControl.getLockedRowsOnTop()>0 || gridControl.getLockedRowsOnBottom()>0)
+//    if (gridControl.getLockedRowsOnTop()>0 || gridControl.getLockedRowsOnBottom()>0)
       scroll.setBorder(BorderFactory.createEmptyBorder());
 
     // top or bottom grid is defined and this is not the std grid...
@@ -491,7 +491,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           deleteButton.setEnabled(false);
         if (saveButton!=null)
           saveButton.setEnabled(false);
-        startIndex = Math.max(0,lastIndex-model.getRowCount()+1);
+//        startIndex = Math.max(0,lastIndex-model.getRowCount()+1);
 
         // reload data...
         errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
@@ -1472,7 +1472,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         ArrayList data = ((VOListResponse)answer).getRows();
         moreRows = ((VOListResponse)answer).isMoreRows();
         if (action == GridParams.NEXT_BLOCK_ACTION)
-          lastIndex = lastIndex + data.size();
+          lastIndex = startIndex + data.size() - 1;
         else if (action == GridParams.PREVIOUS_BLOCK_ACTION) {
           startIndex = startIndex - data.size();
           lastIndex = startIndex + data.size() - 1; // lastIndex - data.size();
