@@ -60,6 +60,9 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
   /** grid container */
   private GridController gridContainer = null;
 
+  /** default font */
+  private Font defaultFont = null;
+
 
   /**
    * Constructor.
@@ -73,6 +76,8 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
 
   public Component getTableCellRendererComponent(JTable table, Object value,
                         boolean isSelected, boolean hasFocus, int row, int column) {
+    if (defaultFont==null)
+      defaultFont = rend.getFont();
     if (hasFocus && table instanceof Grid) {
 //      rend.setBackground(((Grid)table).getActiveCellBackgroundColor());
 //      Color selColor = ((Grid)table).getActiveCellBackgroundColor();
@@ -147,6 +152,14 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
     else
       selected = false;
     rend.setPreferredSize(new Dimension(table.getColumnModel().getColumn(column).getWidth(),table.getHeight()));
+
+
+    Font f = gridContainer.getFont(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value,defaultFont);
+    if (f!=null)
+      rend.setFont(f);
+    else
+      rend.setFont(defaultFont);
+
     return rend;
   }
 

@@ -110,6 +110,21 @@ public class GridFrame extends JFrame {
           return new Color(220,220,220);
         }
 
+        /**
+         * Method used to define the font to use for each cell of the grid.
+         * @param rowNumber selected row index
+         * @param attributeName attribute name related to the column currently selected
+         * @param value object contained in the selected cell
+         * @param defaultFont default font currently in used with this column
+         * @return font to use for the current cell; null means default font usage; default value: null
+         */
+        public Font getFont(int row,String attributeName,Object value,Font defaultFont) {
+          if (attributeName.equals("currencyValue") || attributeName.equals("numericValue"))
+            return new Font(defaultFont.getFontName(),Font.BOLD,defaultFont.getSize());
+          else
+            return null;
+        }
+
       });
 
 
@@ -193,6 +208,7 @@ public class GridFrame extends JFrame {
     colCurrency.setDecimals(3);
     colCurrency.setEditableOnEdit(true);
     colCurrency.setEditableOnInsert(true);
+    colCurrency.setGrouping(true);
     colDate.setColumnDuplicable(true);
     colDate.setColumnFilterable(true);
     colDate.setColumnName("dateValue");

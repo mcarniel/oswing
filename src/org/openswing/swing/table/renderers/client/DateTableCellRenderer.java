@@ -13,6 +13,7 @@ import org.openswing.swing.util.client.*;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.util.java.*;
 import java.awt.Color;
+import java.awt.Font;
 
 
 /**
@@ -57,6 +58,9 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
   /** date format */
   private String dateFormat;
 
+  /** default font */
+  private Font defaultFont = null;
+
 
   /**
    * Constructor.
@@ -75,6 +79,10 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
 
     JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
     ((JLabel)c).setHorizontalAlignment(SwingConstants.CENTER);
+
+    if (defaultFont==null)
+      defaultFont = ((JLabel)c).getFont();
+
     if (isSelected && !hasFocus) {
       ((JLabel)c).setForeground(table.getSelectionForeground());
 //      c.setBackground(table.getSelectionBackground());
@@ -159,6 +167,13 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
           c.setBackground(ClientSettings.GRID_NOT_EDITABLE_CELL_BACKGROUND);
       }
     }
+
+
+    Font f = gridController.getFont(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value,defaultFont);
+    if (f!=null)
+      c.setFont(f);
+    else
+      c.setFont(defaultFont);
 
     return c;
   }

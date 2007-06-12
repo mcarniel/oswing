@@ -70,6 +70,9 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
   /** current editing row*/
   private int row = -1;
 
+  /** default font */
+  private Font defaultFont = null;
+
 
   /**
    * Constructor.
@@ -121,6 +124,10 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
                           boolean isSelected, boolean hasFocus, int row, int column) {
     this.row = row;
     JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
+
+    if (defaultFont==null)
+      defaultFont = ((JLabel)c).getFont();
+
     if (isSelected && !hasFocus) {
       ((JLabel)c).setForeground(table.getSelectionForeground());
 //      c.setBackground(table.getSelectionBackground());
@@ -206,6 +213,13 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
           c.setBackground(ClientSettings.GRID_NOT_EDITABLE_CELL_BACKGROUND);
       }
     }
+
+
+    Font f = gridController.getFont(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value,defaultFont);
+    if (f!=null)
+      c.setFont(f);
+    else
+      c.setFont(defaultFont);
 
     return c;
   }

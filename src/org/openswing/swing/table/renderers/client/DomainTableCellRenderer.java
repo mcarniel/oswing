@@ -14,6 +14,7 @@ import org.openswing.swing.domains.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import java.awt.Color;
+import java.awt.Font;
 
 
 /**
@@ -55,6 +56,9 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
   /** grid controller */
   private GridController gridController = null;
 
+  /** default font */
+  private Font defaultFont = null;
+
 
   /**
    * Constructor.
@@ -70,6 +74,8 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
 
   public Component getTableCellRendererComponent(JTable table, Object value,
                           boolean isSelected, boolean hasFocus, int row, int column) {
+    if (defaultFont==null)
+      defaultFont = rend.getFont();
     DomainPair pair = (DomainPair)domain.getDomainPair(value);
     if (pair==null)
       rend.setText(null);
@@ -141,6 +147,14 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
           rend.setBackground(ClientSettings.GRID_NOT_EDITABLE_CELL_BACKGROUND);
       }
     }
+
+
+    Font f = gridController.getFont(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value,defaultFont);
+    if (f!=null)
+      rend.setFont(f);
+    else
+      rend.setFont(defaultFont);
+
     return rend;
   }
 

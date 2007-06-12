@@ -10,6 +10,7 @@ import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.Consts;
 import org.openswing.swing.table.model.client.VOListAdapter;
 import org.openswing.swing.table.model.client.VOListTableModel;
+import java.awt.Font;
 
 
 /**
@@ -88,11 +89,11 @@ public class GridController {
   /**
    * Method used to define the background color for each cell of the grid.
    * @param rowNumber selected row index
-   * @param attributedName attribute name related to the column currently selected
+   * @param attributeName attribute name related to the column currently selected
    * @param value object contained in the selected cell
    * @return background color of the selected cell
    */
-  public Color getBackgroundColor(int row,String attributedName,Object value) {
+  public Color getBackgroundColor(int row,String attributeName,Object value) {
     if (deltaRow>0 && deltaColor!=null && row%deltaRow==0)
       return deltaColor;
     return ClientSettings.GRID_CELL_BACKGROUND;
@@ -102,11 +103,11 @@ public class GridController {
   /**
    * Method used to define the foreground color for each cell of the grid.
    * @param rowNumber selected row index
-   * @param attributedName attribute name related to the column currently selected
+   * @param attributeName attribute name related to the column currently selected
    * @param value object contained in the selected cell
    * @return foreground color of the selected cell
    */
-  public Color getForegroundColor(int row,String attributedName,Object value) {
+  public Color getForegroundColor(int row,String attributeName,Object value) {
     return ClientSettings.GRID_CELL_FOREGROUND;
   }
 
@@ -300,6 +301,18 @@ public class GridController {
     return grid.isFieldEditable(row,attributeName);
   }
 
+
+  /**
+   * Method used to define the font to use for each cell of the grid.
+   * @param rowNumber selected row index
+   * @param attributeName attribute name related to the column currently selected
+   * @param value object contained in the selected cell
+   * @param defaultFont default font currently in used with this column
+   * @return font to use for the current cell; null means default font usage; default value: null
+   */
+  public Font getFont(int row,String attributeName,Object value,Font defaultFont) {
+    return null;
+  }
 
 
 

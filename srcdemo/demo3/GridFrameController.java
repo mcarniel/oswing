@@ -6,6 +6,7 @@ import org.openswing.swing.message.receive.java.*;
 import java.sql.*;
 import org.openswing.swing.message.send.java.FilterWhereClause;
 import org.openswing.swing.table.java.GridDataLocator;
+import java.awt.Font;
 
 
 /**

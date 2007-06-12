@@ -48,6 +48,9 @@ public class TextTableCellRenderer extends DefaultTableCellRenderer {
   /** flag used to view "*" symbols instead of the real text */
   private boolean encryptText;
 
+  /** default font */
+  private Font defaultFont = null;
+
 
   /**
    * Constructor.
@@ -63,6 +66,8 @@ public class TextTableCellRenderer extends DefaultTableCellRenderer {
   public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
                           boolean isSelected, boolean hasFocus, int row, int column) {
     JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
+    if (defaultFont==null)
+      defaultFont = ((JLabel)c).getFont();
 
     if (hasFocus && table instanceof Grid) {
 //      c.setBackground(((Grid)table).getActiveCellBackgroundColor());
@@ -131,6 +136,13 @@ public class TextTableCellRenderer extends DefaultTableCellRenderer {
 
     if (value!=null && encryptText)
       ((JLabel)c).setText("*********");
+
+
+    Font f = gridController.getFont(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value,defaultFont);
+    if (f!=null)
+      c.setFont(f);
+    else
+      c.setFont(defaultFont);
 
     return c;
   }
