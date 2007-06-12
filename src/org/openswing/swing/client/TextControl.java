@@ -101,7 +101,7 @@ public class TextControl extends BaseInputControl implements InputControl {
             textBox.getText().length()>maxCharacters) {
           TextControl.this.setText(textBox.getText().substring(0,maxCharacters));
         }
-        else if (textBox.getText()!=null &&
+        else if (upperCase && textBox.getText()!=null &&
                  !textBox.getText().equals(textBox.getText().toUpperCase())) {
           TextControl.this.setText(textBox.getText().toUpperCase());
         }

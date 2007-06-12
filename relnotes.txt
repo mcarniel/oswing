@@ -1,4 +1,17 @@
 
+
+Release Notes 1.1.4
+-------------------
+
+Final release 1.1.4 available
+Added getFont method to GridController to set font for each cell.
+Changed demo3 sample to show how to use this new feature.
+Fixed bug in text control and text columns: text was always in uppercase.
+Fixed exceptions fired in grid control.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.1.3
 -------------------
 

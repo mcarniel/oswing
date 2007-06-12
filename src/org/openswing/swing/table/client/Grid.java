@@ -596,9 +596,11 @@ public class Grid extends JTable
       // set column headers...
       prepareHeader();
 
-      if (!(gridType==MAIN_GRID && grids.getGridControl().getLockedRowsOnTop()==0 || gridType==TOP_GRID)) {
-        getTableHeader().setVisible(false);
-        setTableHeader(null);
+      if (grids.getGridControl()!=null && !(gridType==MAIN_GRID && grids.getGridControl().getLockedRowsOnTop()==0 || gridType==TOP_GRID)) {
+        if (getTableHeader()!=null) {
+          getTableHeader().setVisible(false);
+          setTableHeader(null);
+        }
       }
 
     }
@@ -870,7 +872,7 @@ public class Grid extends JTable
         if(e.getClickCount() == 1 && modelColumnIndex != -1) {
           boolean ok = refreshIconsAndSort(modelColumnIndex);
 
-          if (ok && gridType==Grid.TOP_GRID) {
+          if (grids.getGridControl()!=null && ok && gridType==Grid.TOP_GRID) {
             if (lockedGrid)
               grids.getGridControl().getTable().getLockedGrid().getSortingMouseListener().mouseClicked(e);
             else
@@ -1312,7 +1314,7 @@ public class Grid extends JTable
     }
 
     // top grid is defined and this is the std grid...
-    if (grids.getGridControl().getLockedRowsOnTop()>0 &&
+    if (grids.getGridControl()!=null && grids.getGridControl().getLockedRowsOnTop()>0 &&
         gridType==MAIN_GRID &&
         grids.getGridControl().getTopTable()!=null){
       grids.getGridControl().getTopTable().getGrid().setVisibleColumn(columnModelIndex,colVisible);
@@ -1321,7 +1323,7 @@ public class Grid extends JTable
     }
 
     // bottom grid is defined and this is the std grid...
-    if (grids.getGridControl().getLockedRowsOnBottom()>0 &&
+    if (grids.getGridControl()!=null && grids.getGridControl().getLockedRowsOnBottom()>0 &&
         gridType==MAIN_GRID &&
         grids.getGridControl().getBottomTable()!=null){
       grids.getGridControl().getBottomTable().getGrid().setVisibleColumn(columnModelIndex,colVisible);
@@ -2040,7 +2042,7 @@ public class Grid extends JTable
    */
   public final void columnMoved(TableColumnModelEvent e) {
     super.columnMoved(e);
-    if (gridType==TOP_GRID && grids.getGridControl().getTopTable()!=null){
+    if (gridType==TOP_GRID && grids.getGridControl()!=null && grids.getGridControl().getTopTable()!=null){
       if (lockedGrid)
         grids.getGridControl().getTable().getLockedGrid().moveColumn(e.getFromIndex(),e.getToIndex());
       else
@@ -2053,7 +2055,8 @@ public class Grid extends JTable
       }
     }
 
-    if (grids.getGridControl().getLockedRowsOnTop()==0 &&
+    if (grids.getGridControl()!=null &&
+        grids.getGridControl().getLockedRowsOnTop()==0 &&
         grids.getGridControl().getBottomTable()!=null &&
         gridType==MAIN_GRID){
       if (lockedGrid)
@@ -2070,7 +2073,7 @@ public class Grid extends JTable
   public final void columnMarginChanged(ChangeEvent e) {
     super.columnMarginChanged(e);
     try {
-      if (gridType==TOP_GRID && grids.getGridControl().getTopTable()!=null){
+      if (gridType==TOP_GRID && grids.getGridControl()!=null && grids.getGridControl().getTopTable()!=null){
         TableColumn resizingColumn = getTableHeader().getResizingColumn();
         if (resizingColumn != null){
           int index = resizingColumn.getModelIndex();
@@ -2090,7 +2093,8 @@ public class Grid extends JTable
 
       }
 
-      if (grids.getGridControl().getLockedRowsOnTop()==0 &&
+      if (grids.getGridControl()!=null &&
+          grids.getGridControl().getLockedRowsOnTop()==0 &&
           grids.getGridControl().getLockedRowsOnBottom()>0 &&
           gridType==MAIN_GRID &&
           grids.getGridControl().getBottomTable()!=null){
