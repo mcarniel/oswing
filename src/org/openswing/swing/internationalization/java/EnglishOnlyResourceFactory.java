@@ -117,6 +117,8 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Copy record (CTRL+C)","Copy record (CTRL+C)");
     dictionary.setProperty("Export record (CTRL+X)","Export record (CTRL+X)");
     dictionary.setProperty("Load the first block of records","Load the first block of records");
+    dictionary.setProperty("Select the previous row in grid","Select the previous row in grid");
+    dictionary.setProperty("Select the next row in grid","Select the next row in grid");
     dictionary.setProperty("Load the previous block of records","Load the previous block of records");
     dictionary.setProperty("Load the next block of records","Load the next block of records");
     dictionary.setProperty("Load the last block of records","Load the last block of records");

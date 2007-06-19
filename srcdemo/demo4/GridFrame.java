@@ -118,6 +118,9 @@ public class GridFrame extends JFrame {
 
 
   }
+  public GridControl getGrid() {
+    return grid;
+  }
 
 
 

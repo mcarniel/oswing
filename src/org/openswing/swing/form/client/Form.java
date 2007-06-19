@@ -28,6 +28,10 @@ import javax.swing.border.Border;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.text.JTextComponent;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.AncestorEvent;
+import org.openswing.swing.message.send.java.FilterWhereClause;
+import org.openswing.swing.message.send.java.GridParams;
 
 
 /**
@@ -60,7 +64,7 @@ import javax.swing.text.JTextComponent;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class Form extends JPanel implements DataController,ValueChangeListener,GenericButtonController {
+public class Form extends JPanel implements DataController,ValueChangeListener,GenericButtonController,ActionListener {
 
   /** insert button */
   private InsertButton insertButton = null;
@@ -121,6 +125,15 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
   /** collection of input controls linked to this form; couples of type: attribute name, List of InputControl objects */
   private Hashtable bindings = new Hashtable();
+
+  /** grid control linked to the current Form (optional) */
+  private GridControl grid = null;
+
+  /** navigation bar linked to the current Form (optional); if this property is defined then Form data loading is automatically performed when using navigator bar; also grid selection row is updated */
+  private NavigatorBar navBar = null;
+
+  /** attributes that must be defined both on grid v.o. and on the Form v.o. used to select on grid the (first) row that matches pk values */
+  private HashSet pkAttributes = null;
 
 
   public Form() {
@@ -1074,9 +1087,23 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         try {
           Response response = this.formController.deleteRecord((ValueObject)model.getValueObject());
           if (!response.isError()) {
+
+            int gridRowIndex = -1;
+            if (grid!=null && pkAttributes!=null) {
+              gridRowIndex = getRowIndexInGrid();
+            }
+
             insert();
             //funzione call back avvenuta cancellazione dati
             this.formController.afterDeleteData();
+
+            // if a grid has been linked to this Form then update automatically its content:
+            // the removed record will be dropped from the grid...
+            if (grid!=null && pkAttributes!=null) {
+              if (gridRowIndex!=-1)
+                grid.getVOListTableModel().removeObjectAt(gridRowIndex);
+            }
+
           }
           else JOptionPane.showMessageDialog(
               ClientUtils.getParentFrame(this),
@@ -1300,6 +1327,55 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           }
 
           resetButtonsState();
+
+          // if a grid has been linked to this Form then update automatically its content:
+          // the new/updated row will be reloaded and set into the grid...
+          if (grid!=null && pkAttributes!=null) {
+            Map filters = new HashMap();
+            String pkAttrName = null;
+            Iterator it = pkAttributes.iterator();
+            FilterWhereClause[] filter = null;
+            while(it.hasNext()) {
+              pkAttrName = it.next().toString();
+              filter = new FilterWhereClause[2];
+              filter[0] = new FilterWhereClause(pkAttrName,Consts.EQ,model.getValue(pkAttrName));
+              filters.put(pkAttrName,filter);
+            }
+            Response res = grid.getGridDataLocator().loadData(
+                GridParams.NEXT_BLOCK_ACTION,
+                0,
+                filters,
+                new ArrayList(),
+                new ArrayList(),
+                Class.forName(grid.getValueObjectClassName()),
+                grid.getOtherGridParams()
+            );
+            if (res.isError())
+              Logger.error(this.getClass().getName(), "save", "Error while loading new row for grid:\n"+res.getErrorMessage(),null);
+            else {
+              ArrayList rows = ((VOListResponse)res).getRows();
+              if (rows.size()==1) {
+                final int gridRowIndex = getRowIndexInGrid();
+                if (gridRowIndex==-1) {
+                  grid.getVOListTableModel().addObject((ValueObject)rows.get(0));
+                  SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                      grid.setRowSelectionInterval(grid.getVOListTableModel().getRowCount()-1,grid.getVOListTableModel().getRowCount()-1);
+                    }
+                  });
+                }
+                else {
+                  grid.getVOListTableModel().updateObjectAt((ValueObject)rows.get(0),gridRowIndex);
+                  SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                      grid.setRowSelectionInterval(gridRowIndex,gridRowIndex);
+                    }
+                  });
+                }
+              }
+            }
+
+          }
           return true;
         } else {
           JOptionPane.showMessageDialog(
@@ -1594,6 +1670,136 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   public final void removeGenericButton(GenericButton b) {
     genericButtons.remove(b);
   }
+
+
+  /**
+   * Link the specified grid control to the current Form, so that:
+   * - row selection event (fired by grid navigator bar) will force the Form data loading (ONLY IF loadModelWhenSelectingOnGrid is set to <code>true</code>)
+   * - insert new data on the Form will refresh grid by adding a new row
+   * - update data on Form will refresh grid for the related changed row
+   * - delete existing data on the Form will refresh grid content by removing the related row
+   * To correctly identify the row on grid to change a matching beetween attributes (specified in "pkAttributes" argument)
+   * of grid v.o. and Form v.o. is performed: it will be identified the first row on grid that matches this filter criteria, based on attribute values.
+   * @param grid grid control linked to the current Form, to update grid content
+   * @param pkAttributes attributes that must be defined both on grid v.o. and on the Form v.o. used to select on grid the (first) row that matches pk values; if the grid v.o. is the same class or a super-class of Form v.o. then this HashSet could
+   * @param reloadModelWhenSelectingOnGrid <code>true</code> to force data Form reloading when changing row selection on grid by grid navigator bar
+   */
+  public final void linkGrid(GridControl grid,HashSet pkAttributes,boolean reloadModelWhenSelectingOnGrid) {
+    linkGrid(grid,pkAttributes,reloadModelWhenSelectingOnGrid,null);
+  }
+
+
+  /**
+   * Link the specified grid control to the current Form, so that:
+   * - grid navigator bar event (i.e. pressing one of its buttons) on grid will force the Form data loading (e.g. when using grid navigator bar)
+   * - insert new data on the Form will refresh grid by adding a new row
+   * - update data on Form will refresh grid for the related changed row
+   * - delete existing data on the Form will refresh grid content by removing the related row
+   * To correctly identify the row on grid to change a matching beetween attributes (specified in "pkAttributes" argument)
+   * of grid v.o. and Form v.o. is performed: it will be identified the first row on grid that matches this filter criteria, based on attribute values.
+   * NOTE: if more than one Form has been opened, then all Forms will be reloaded to the same row when a grid navigator button is being pressed.
+   *
+   * In addition, Form data loading is automatically performed when using the specified navigator bar; also grid selection row is updated.
+   *
+   * @param grid grid control linked to the current Form, to update grid content
+   * @param pkAttributes attributes that must be defined both on grid v.o. and on the Form v.o. used to select on grid the (first) row that matches pk values; if the grid v.o. is the same class or a super-class of Form v.o. then this HashSet could
+   * @param reloadModelWhenSelectingOnGrid <code>true</code> to force data Form reloading when changing row selection on grid by grid navigator bar
+   * @param navBar navigation bar linked to the current Form, used to load data on Form according to the selected row on grid, whose selection has been changed when using this navigator bar
+   */
+  public final void linkGrid(GridControl grid,HashSet pkAttributes,boolean reloadModelWhenSelectingOnGrid,NavigatorBar navBar) {
+    this.grid = grid;
+    this.pkAttributes = pkAttributes;
+    this.navBar = navBar;
+
+    if (grid!=null && pkAttributes!=null) {
+      if (grid.getNavBar()!=null && reloadModelWhenSelectingOnGrid) {
+        // if there exist a navigator bar linked to the grid, then listen events from it...
+        grid.getNavBar().addAfterActionListener(this);
+
+        // remove that listener when this Form is destroyed...
+        this.addAncestorListener(new AncestorListener() {
+
+             public void ancestorAdded(AncestorEvent event) {
+             }
+
+             public void ancestorMoved(AncestorEvent event) {
+             }
+
+             public void ancestorRemoved(AncestorEvent event) {
+               if (Form.this.grid!=null && Form.this.grid.getNavBar()!=null) {
+                 Form.this.grid.getNavBar().removeAfterActionListener(Form.this);
+               }
+             }
+        });
+
+      }
+
+      if (navBar!=null) {
+        navBar.initNavigator(grid.getTable());
+        navBar.addAfterActionListener(this);
+
+        // used to correctly set the row in grid related to the current v.o. in the Form...
+        navBar.addBeforeActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            int rowInGrid = getRowIndexInGrid();
+            if (rowInGrid!=-1)
+              Form.this.grid.setRowSelectionInterval(rowInGrid,rowInGrid);
+          }
+        });
+      }
+    }
+  }
+
+
+  /**
+   * @return row index in grid related to the linked grid's v.o. having the same pk of the current Form v.o.; -1 if that row does not exist in grid or when the grid has not been linked to this Form (see linkGrid method))
+   */
+  public final int getRowIndexInGrid() {
+    if (grid!=null && pkAttributes!=null) {
+      ValueObject gridVO = null;
+      Iterator it = null;
+      String pkAttrName = null;
+      int colIndex;
+      Object o1,o2;
+      boolean rowFound;
+      for(int i=0;i<grid.getVOListTableModel().getRowCount();i++) {
+        gridVO = grid.getVOListTableModel().getObjectForRow(i);
+        it = pkAttributes.iterator();
+        rowFound = true;
+        while(it.hasNext()) {
+          pkAttrName = it.next().toString();
+          colIndex = grid.getVOListTableModel().findColumn(pkAttrName);
+          if (colIndex==-1) {
+            rowFound = false;
+            break;
+          }
+          o1 = grid.getVOListTableModel().getValueAt(i,colIndex);
+          o2 = model.getValue(pkAttrName);
+          if (o1==null && o2!=null ||
+              o1!=null && o2==null ||
+              o1!=null && o2!=null && !o1.equals(o2)) {
+            rowFound = false;
+            break;
+          }
+        }
+        if (rowFound)
+          return i;
+      }
+    }
+    return -1;
+  }
+
+
+  /**
+   * Callback method invoked by the navigator bar of the grid when the user has pressed a button on it.
+   */
+  public final void actionPerformed(ActionEvent e) {
+    // a row on the linked grid has been just selected: reload data model for this Form...
+    if (e.getSource().equals(navBar) || grid.getNavBar()!=null && e.getSource().equals(grid.getNavBar()))
+      reload();
+  }
+
+
 
 }
 

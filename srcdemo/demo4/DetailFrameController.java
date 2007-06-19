@@ -56,6 +56,14 @@ public class DetailFrameController extends FormController {
   public Response loadData(Class valueObjectClass) {
     Statement stmt = null;
     try {
+      // since this method could be invoked also when selecting another row on the linked grid,
+      // the pk attribute must be recalculated from the grid...
+      int row = gridFrame.getGrid().getSelectedRow();
+      if (row!=-1) {
+        TestVO gridVO = (TestVO)gridFrame.getGrid().getVOListTableModel().getObjectForRow(row);
+        pk = gridVO.getStringValue();
+      }
+
       stmt = conn.createStatement();
       ResultSet rset = stmt.executeQuery("select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE,DEMO4.TA from DEMO4,DEMO4_LOOKUP where TEXT='"+pk+"' and DEMO4.CODE=DEMO4_LOOKUP.CODE");
       if (rset.next()) {
@@ -83,7 +91,7 @@ public class DetailFrameController extends FormController {
       try {
         stmt.close();
       }
-      catch (SQLException ex1) {
+      catch (Exception ex1) {
       }
     }
 
@@ -113,7 +121,9 @@ public class DetailFrameController extends FormController {
       stmt.setString(9,vo.getTaValue());
       stmt.execute();
       pk = vo.getStringValue();
-      gridFrame.reloadData();
+
+// this instruction is no more needed: the grid has been linked to the Form (see Form.linkGrid method...)
+//      gridFrame.reloadData();
       return new VOResponse(vo);
     }
     catch (SQLException ex) {
@@ -153,7 +163,9 @@ public class DetailFrameController extends FormController {
       stmt.setString(9,vo.getTaValue());
       stmt.setString(10,vo.getStringValue());
       stmt.execute();
-      gridFrame.reloadData();
+
+// this instruction is no more needed: the grid has been linked to the Form (see Form.linkGrid method...)
+//      gridFrame.reloadData();
       return new VOResponse(vo);
     }
     catch (SQLException ex) {
@@ -182,7 +194,9 @@ public class DetailFrameController extends FormController {
       TestVO vo = (TestVO)persistentObject;
       stmt.setString(1,vo.getStringValue());
       stmt.execute();
-      gridFrame.reloadData();
+
+// this instruction is no more needed: the grid has been linked to the Form (see Form.linkGrid method...)
+//      gridFrame.reloadData();
       return new VOResponse(vo);
     }
     catch (SQLException ex) {
@@ -197,6 +211,15 @@ public class DetailFrameController extends FormController {
       catch (SQLException ex1) {
       }
     }
+  }
+  public GridFrame getGridFrame() {
+    return gridFrame;
+  }
+  public String getPk() {
+    return pk;
+  }
+  public void setPk(String pk) {
+    this.pk = pk;
   }
 
 

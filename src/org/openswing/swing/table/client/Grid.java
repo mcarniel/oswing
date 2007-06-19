@@ -156,6 +156,9 @@ public class Grid extends JTable
   /** mouse listener applied to tabler headers to sort columns */
   private MouseListener sortingMouseListener = null;
 
+  /** vertical scrollbar */
+  private PaginationVerticalScrollbar vScrollbar;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -596,6 +599,10 @@ public class Grid extends JTable
       // set column headers...
       prepareHeader();
 
+      if (gridType==MAIN_GRID && grids.getGridControl()==null)
+        // lookup grid...
+        setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+
       if (grids.getGridControl()!=null && !(gridType==MAIN_GRID && grids.getGridControl().getLockedRowsOnTop()==0 || gridType==TOP_GRID)) {
         if (getTableHeader()!=null) {
           getTableHeader().setVisible(false);
@@ -784,12 +791,51 @@ public class Grid extends JTable
   }
 
 
+  /**
+   * Method called when user click on "previous page" button on the navigation bar:
+   * it does clear table model, reload previous data block and select the last row of the block.
+   */
+  public final void previousPage(NavigatorBar navBar) {
+    if (this.getMode()!=Consts.READONLY)
+      return;
+    vScrollbar.setValue(vScrollbar.getMinimum());
+    scrollMov(vScrollbar);
+    if (getRowCount()>0)
+      setRowSelectionInterval(0,0);
+
+    // fire events related to navigator button pressed...
+    if (navBar!=null) {
+      navBar.fireButtonPressedEvent(NavigatorBar.PREV_PG_BUTTON);
+    }
+  }
+
+
+  /**
+   * Method called when user click on "next page" button on the navigation bar:
+   * it does clear table model, reload next data block and select the first row of the block.
+   * This operations are executed in a separated thread.
+   */
+  public final void nextPage(NavigatorBar navBar) {
+    if (this.getMode()!=Consts.READONLY)
+      return;
+    vScrollbar.setValue(vScrollbar.getMaximum());
+    scrollMov(vScrollbar);
+    if (getRowCount()>0)
+      setRowSelectionInterval(getRowCount()-1,getRowCount()-1);
+
+    // fire events related to navigator button pressed...
+    if (navBar!=null) {
+      navBar.fireButtonPressedEvent(NavigatorBar.NEXT_PG_BUTTON);
+    }
+  }
+
 
   /**
    * Add vertical listener to capture grid vertical scrolling events.
    */
   private void createVerticalScrollBarListener(JScrollPane scrollPane) {
-    JScrollBar vScrollbar = vScrollbar=scrollPane.getVerticalScrollBar();
+    vScrollbar = new PaginationVerticalScrollbar();
+//    JScrollBar vScrollbar = vScrollbar=scrollPane.getVerticalScrollBar();
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
     vScrollbar.setUnitIncrement(getRowHeight());
     vScrollbar.setBlockIncrement(getRowHeight());
@@ -799,9 +845,33 @@ public class Grid extends JTable
       }
     });
     VerticalScrollBarMouseListener vsListener = new VerticalScrollBarMouseListener();
-    vScrollbar.addMouseListener(vsListener); // mouse lister alla scrollbar
-    vScrollbar.getComponents()[0].addMouseListener(vsListener); // mouse lister al pulsante su della scrollbar
-    vScrollbar.getComponents()[1].addMouseListener(vsListener); // mouse lister al pulsante giu' della scrollbar
+    vScrollbar.addMouseListener(vsListener);
+
+    vScrollbar.getDecrButton().addMouseListener(vsListener);
+
+    vScrollbar.getIncrButton().addMouseListener(vsListener);
+
+    if (vScrollbar.getPrevPgButton()!=null)
+      vScrollbar.getPrevPgButton().addMouseListener(new MouseAdapter()  {
+        public void mousePressed(MouseEvent e) {
+          if(!SwingUtilities.isLeftMouseButton(e))
+            return;
+          previousPage(grids.getGridControl()==null?null:grids.getGridControl().getNavBar());
+        }
+      });
+
+    if (vScrollbar.getNextPgButton()!=null)
+      vScrollbar.getNextPgButton().addMouseListener(new MouseAdapter()  {
+        public void mousePressed(MouseEvent e) {
+          if(!SwingUtilities.isLeftMouseButton(e))
+            return;
+          nextPage(grids.getGridControl()==null?null:grids.getGridControl().getNavBar());
+        }
+      });
+
+    if (gridType==MAIN_GRID)
+      scrollPane.setVerticalScrollBar(vScrollbar);
+
   }
 
 
@@ -832,14 +902,14 @@ public class Grid extends JTable
     if ((scrollBar.getValue() > scrollableZoneSize/4*3) && grids.isMoreRows()) {
       // scrolling table over 75% of rows (near the end)
       setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
-      grids.nextRow();
+      grids.nextRow(grids.getGridControl()==null?null:grids.getGridControl().getNavBar());
       setRowSelectionInterval(model.getRowCount()/2,model.getRowCount()/2);
       ensureRowIsVisible(getSelectedRow());
     } else if ((scrollBar.getValue() < scrollableZoneSize/4) &&
                grids.getLastIndex()+1 > model.getRowCount()) {
       // scrolling table on 25% of rows (near the beginning)
       setRowSelectionInterval(0,0);
-      grids.previousRow();
+      grids.previousRow(grids.getGridControl()==null?null:grids.getGridControl().getNavBar());
       setRowSelectionInterval(model.getRowCount()/2,model.getRowCount()/2);
       ensureRowIsVisible(getSelectedRow());
     }

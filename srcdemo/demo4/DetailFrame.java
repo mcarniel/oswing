@@ -59,14 +59,21 @@ public class DetailFrame extends JFrame {
   TitledBorder titledBorder2;
   ButtonGroup buttonGroup1 = new ButtonGroup();
   RadioButtonControl controlRadioButton2 = new RadioButtonControl();
+  NavigatorBar navigatorBar = new NavigatorBar();
 
 
-  public DetailFrame(Connection conn,FormController dataController) {
+  public DetailFrame(Connection conn,DetailFrameController dataController) {
     try {
       this.conn = conn;
       jbInit();
 
       mainPanel.setFormController(dataController);
+
+      // link the parent grid to the current Form...
+      HashSet pk = new HashSet();
+      pk.add("stringValue"); // pk for Form is based on one only attribute...
+      mainPanel.linkGrid(dataController.getGridFrame().getGrid(),pk,true,navigatorBar);
+
 
 
       setSize(500,420);
@@ -103,7 +110,7 @@ public class DetailFrame extends JFrame {
     controlNumeric.setDecimals(3);
     controlNumeric.setRequired(true);
     labelRadioButton.setText("radio button");
-    controlText.setMaxCharacters(5);
+    controlText.setMaxCharacters(7);
     controlText.setTrimText(true);
     controlText.setUpperCase(true);
     controlText.setEnabledOnEdit(false);
@@ -142,6 +149,7 @@ public class DetailFrame extends JFrame {
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(saveButton, null);
     buttonsPanel.add(deleteButton, null);
+    buttonsPanel.add(navigatorBar, null);
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);
     mainPanel.add(controlDate,       new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));

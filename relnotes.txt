@@ -1,9 +1,27 @@
 
 
+Release Notes 1.1.5
+-------------------
+
+Final release 1.1.5 available
+
+Improved navigator bar by adding two new buttons: "previous page" and "next page" to scroll data on grid per page.
+Added ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR flag to show/hide pagination buttons in navigator bar.
+Improved vertical scrollbar of the grid by adding two new buttons: "previous page" and "next page" to scroll data on grid per page.
+Added ClientSettings.SHOW_PAGINATION_BUTTONS_ON_GRID flag to show/hide pagination buttons in the vertical scrollbar of the grid.
+Added setRowSelectionInterval method to grid control to select an interval of rows on grid.
+Added a link mechanism between a grid and a Form panel: now it is possible to navigate through the grid and automatically show in the Form 
+the current selected row in grid. It is possible to link a navigator bat directly to the Form too.
+Moreover, a new row added through a Form will be automatically showed in the grid (if the link mechanism has been activated); idem for changed row and delete row.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.1.4
 -------------------
 
 Final release 1.1.4 available
+
 Added getFont method to GridController to set font for each cell.
 Changed demo3 sample to show how to use this new feature.
 Fixed bug in text control and text columns: text was always in uppercase.

@@ -26,6 +26,8 @@ import org.openswing.swing.message.receive.java.Response;
 import org.openswing.swing.message.receive.java.VOListResponse;
 import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 /**
@@ -1482,6 +1484,26 @@ public class GridControl extends JPanel {
   public final void setDefaultQuickFilterCriteria(int defaultQuickFilterCriteria) {
     this.defaultQuickFilterCriteria = defaultQuickFilterCriteria;
   }
+
+
+  /**
+   * Set row selection interval.
+   * @param startRow first selected row index
+   * @param endRow last selected row index
+   */
+  public final void setRowSelectionInterval(int startRow,int endRow) {
+    if (table!=null) {
+      table.setRowSelectionInterval(startRow,endRow);
+    }
+  }
+
+
+
+
+
+
+
+
 
 
   /**

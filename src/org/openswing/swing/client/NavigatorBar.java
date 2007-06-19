@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.awt.*;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.table.client.Grids;
+import java.util.ArrayList;
 
 
 /**
@@ -45,17 +46,36 @@ public class NavigatorBar extends JPanel {
   /** load the first block of records into the grid */
   private JButton firstButton = new GenericButton(new ImageIcon(ClientUtils.getImage("first.gif")));
 
-  /** load the previous block of records into the grid */
+  /** select the previous row in the grid */
   private JButton prevButton = new GenericButton(new ImageIcon(ClientUtils.getImage("prev.gif")));
 
-  /** load the next block of records into the grid */
+  /** select the next row in the grid */
   private JButton nextButton = new GenericButton(new ImageIcon(ClientUtils.getImage("next.gif")));
 
   /** load the last block of records into the grid */
   private JButton lastButton = new GenericButton(new ImageIcon(ClientUtils.getImage("last.gif")));
 
+  /** load the next block of records from the grid */
+  private JButton nextPgButton = new GenericButton(new ImageIcon(ClientUtils.getImage("nextpg.gif")));
+
+  /** load the previous block of records from the grid */
+  private JButton prevPgButton = new GenericButton(new ImageIcon(ClientUtils.getImage("prevpg.gif")));
+
   /** grid control */
   private Grids resultSetController = null;
+
+  /** list of ActionListeners registered to this navigator bar; these listeners will be called AFTER a navigator button has been pressed (AFTER selecting row event) */
+  private ArrayList afterActionListeners = new ArrayList();
+
+  /** list of ActionListeners registered to this navigator bar; these listeners will be called as the first instruction when a navigator button is being pressed (BEFORE selecting row event) */
+  private ArrayList beforeActionListeners = new ArrayList();
+
+  public static final String FIRST_BUTTON = "FIRST_BUTTON";
+  public static final String PREV_BUTTON = "PREV_BUTTON";
+  public static final String NEXT_BUTTON = "NEXT_BUTTON";
+  public static final String LAST_BUTTON = "LAST_BUTTON";
+  public static final String NEXT_PG_BUTTON = "NEXT_PG_BUTTON";
+  public static final String PREV_PG_BUTTON = "PREV_PG_BUTTON";
 
 
   public NavigatorBar() {
@@ -63,10 +83,14 @@ public class NavigatorBar extends JPanel {
       jbInit();
       firstButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the first block of records"));
       firstButton.setPreferredSize(new Dimension(32,32));
-      prevButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the previous block of records"));
+      prevPgButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the previous block of records"));
+      prevPgButton.setPreferredSize(new Dimension(32,32));
+      prevButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Select the previous row in grid"));
       prevButton.setPreferredSize(new Dimension(32,32));
-      nextButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the next block of records"));
+      nextButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Select the next row in grid"));
       nextButton.setPreferredSize(new Dimension(32,32));
+      nextPgButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the next block of records"));
+      nextPgButton.setPreferredSize(new Dimension(32,32));
       lastButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the last block of records"));
       lastButton.setPreferredSize(new Dimension(32,32));
     }
@@ -87,6 +111,16 @@ public class NavigatorBar extends JPanel {
         prevButton_actionPerformed(e);
       }
     });
+    prevPgButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        prevPgButton_actionPerformed(e);
+      }
+    });
+    nextPgButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        nextPgButton_actionPerformed(e);
+      }
+    });
     nextButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
         nextButton_actionPerformed(e);
@@ -100,30 +134,90 @@ public class NavigatorBar extends JPanel {
 
     this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     this.add(firstButton,null);
+    if (ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR)
+      this.add(prevPgButton,null);
     this.add(prevButton,null);
     this.add(nextButton,null);
+    if (ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR)
+      this.add(nextPgButton,null);
     this.add(lastButton,null);
   }
 
 
   public void firstButton_actionPerformed(ActionEvent e) {
-    if (resultSetController!=null)
-      resultSetController.firstRow();
+    if (resultSetController!=null) {
+      for(int i=0;i<beforeActionListeners.size();i++)
+        ((ActionListener)beforeActionListeners.get(i)).actionPerformed(new ActionEvent(
+            this,
+            ActionEvent.ACTION_PERFORMED,
+            FIRST_BUTTON
+        ));
+      resultSetController.firstRow(this);
+    }
+  }
+
+  public void prevPgButton_actionPerformed(ActionEvent e) {
+    if (resultSetController!=null) {
+      for(int i=0;i<beforeActionListeners.size();i++)
+        ((ActionListener)beforeActionListeners.get(i)).actionPerformed(new ActionEvent(
+            this,
+            ActionEvent.ACTION_PERFORMED,
+            PREV_PG_BUTTON
+        ));
+      resultSetController.previousPage(this);
+    }
   }
 
   public void prevButton_actionPerformed(ActionEvent e) {
-    if (resultSetController!=null)
-      resultSetController.previousRow();
+    if (resultSetController!=null) {
+      for(int i=0;i<beforeActionListeners.size();i++)
+        ((ActionListener)beforeActionListeners.get(i)).actionPerformed(new ActionEvent(
+            this,
+            ActionEvent.ACTION_PERFORMED,
+            PREV_BUTTON
+        ));
+
+      resultSetController.previousRow(this);
+    }
   }
 
   public void nextButton_actionPerformed(ActionEvent e) {
-    if (resultSetController!=null)
-      resultSetController.nextRow();
+    if (resultSetController!=null) {
+      for(int i=0;i<beforeActionListeners.size();i++)
+        ((ActionListener)beforeActionListeners.get(i)).actionPerformed(new ActionEvent(
+            this,
+            ActionEvent.ACTION_PERFORMED,
+            NEXT_BUTTON
+        ));
+
+      resultSetController.nextRow(this);
+    }
+  }
+
+  public void nextPgButton_actionPerformed(ActionEvent e) {
+    if (resultSetController!=null) {
+      for(int i=0;i<beforeActionListeners.size();i++)
+        ((ActionListener)beforeActionListeners.get(i)).actionPerformed(new ActionEvent(
+            this,
+            ActionEvent.ACTION_PERFORMED,
+            NEXT_PG_BUTTON
+        ));
+
+      resultSetController.nextPage(this);
+    }
   }
 
   public void lastButton_actionPerformed(ActionEvent e) {
-    if (resultSetController!=null)
-      resultSetController.lastRow();
+    if (resultSetController!=null) {
+      for(int i=0;i<beforeActionListeners.size();i++)
+        ((ActionListener)beforeActionListeners.get(i)).actionPerformed(new ActionEvent(
+            this,
+            ActionEvent.ACTION_PERFORMED,
+            LAST_BUTTON
+        ));
+
+      resultSetController.lastRow(this);
+    }
   }
 
 
@@ -133,6 +227,7 @@ public class NavigatorBar extends JPanel {
    */
   public void setFirstRow(boolean isFirstRecord) {
     firstButton.setEnabled(!isFirstRecord);
+    prevPgButton.setEnabled(!isFirstRecord);
     prevButton.setEnabled(!isFirstRecord);
   }
 
@@ -143,13 +238,16 @@ public class NavigatorBar extends JPanel {
   public void setLastRow(boolean isLastRecord) {
     lastButton.setEnabled(!isLastRecord);
     nextButton.setEnabled(!isLastRecord);
+    nextPgButton.setEnabled(!isLastRecord);
   }
 
 
   public void setEnabled(boolean enabled) {
     firstButton.setEnabled(enabled);
+    prevPgButton.setEnabled(enabled);
     prevButton.setEnabled(enabled);
     nextButton.setEnabled(enabled);
+    nextPgButton.setEnabled(enabled);
     lastButton.setEnabled(enabled);
   }
 
@@ -176,6 +274,56 @@ public class NavigatorBar extends JPanel {
 
   public boolean isLastButtonEnabled() {
     return lastButton.isEnabled();
+  }
+
+
+  /**
+   * Add an ActionListener that will be called AFTER a navigator button has been pressed (AFTER selecting row event).
+   * @param listener ActionListener to register.
+   */
+  public final void addAfterActionListener(ActionListener listener) {
+    afterActionListeners.add(listener);
+  }
+
+
+  /**
+   * Remove the specified ActionListener.
+   * @param listener ActionListener to remove.
+   */
+  public final void removeAfterActionListener(ActionListener listener) {
+    afterActionListeners.remove(listener);
+  }
+
+
+  /**
+   * Method invoked by the grid control when pressing a navigator button.
+   * @param buttonType possible values: NavigatorBar.xxx_BUTTON
+   */
+  public final void fireButtonPressedEvent(String buttonType) {
+    for(int i=0;i<afterActionListeners.size();i++)
+      ((ActionListener)afterActionListeners.get(i)).actionPerformed(new ActionEvent(
+          this,
+          ActionEvent.ACTION_PERFORMED,
+          buttonType
+      ));
+  }
+
+
+  /**
+   * Add an ActionListener that will be called as the first instruction when a navigator button is being pressed (BEFORE selecting row event).
+   * @param listener ActionListener to register.
+   */
+  public final void addBeforeActionListener(ActionListener listener) {
+    beforeActionListeners.add(listener);
+  }
+
+
+  /**
+   * Remove the specified ActionListener.
+   * @param listener ActionListener to remove.
+   */
+  public final void removeBeforerActionListener(ActionListener listener) {
+    beforeActionListeners.remove(listener);
   }
 
 

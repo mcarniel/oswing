@@ -1020,7 +1020,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * it will clear table model, reload data and select the first row of the block.
    * This operations are executed in a separated thread.
    */
-  public final void firstRow() {
+  public final void firstRow(final NavigatorBar navBar) {
     if (!listenEvent)
       return;
     if (getMode()!=Consts.READONLY) {
@@ -1095,6 +1095,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           gridController.loadDataCompleted(errorOnLoad);
 
         resetButtonsState();
+
+        // fire events related to navigator button pressed...
+        if (navBar!=null) {
+          navBar.fireButtonPressedEvent(NavigatorBar.FIRST_BUTTON);
+        }
       }
     }.start();
   }
@@ -1105,7 +1110,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * it may clear table model, reload next data block and select the first row of the block.
    * This operations are executed in a separated thread.
    */
-  public final void nextRow() {
+  public final void nextRow(final NavigatorBar navBar) {
     if (getMode()!=Consts.READONLY)
       return;
     if (!listenEvent)
@@ -1153,6 +1158,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               gridController.loadDataCompleted(errorOnLoad);
 
             resetButtonsState();
+
+            // fire events related to navigator button pressed...
+            if (navBar!=null) {
+              navBar.fireButtonPressedEvent(NavigatorBar.NEXT_BUTTON);
+            }
           }
         }.start();
       }
@@ -1161,6 +1171,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       if (lockedGrid!=null)
         lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow()+1,lockedGrid.getSelectedRow()+1);
       afterNextRow();
+
+      // fire events related to navigator button pressed...
+      if (navBar!=null) {
+        navBar.fireButtonPressedEvent(NavigatorBar.NEXT_BUTTON);
+      }
+
       listenEvent = true;
     }
   }
@@ -1189,11 +1205,30 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
+   * Method called when user click on "previous page" button on the navigation bar:
+   * it does clear table model, reload previous data block and select the last row of the block.
+   */
+  public final void previousPage(NavigatorBar navBar) {
+    grid.previousPage(navBar);
+  }
+
+
+  /**
+   * Method called when user click on "next page" button on the navigation bar:
+   * it does clear table model, reload next data block and select the first row of the block.
+   * This operations are executed in a separated thread.
+   */
+  public final void nextPage(NavigatorBar navBar) {
+    grid.nextPage(navBar);
+  }
+
+
+  /**
    * Method called when user click on "previous" button on the navigation bar:
    * it may clear table model, reload previous data block and select the last row of the block.
    * This operations are executed in a separated thread.
    */
-  public final void previousRow() {
+  public final void previousRow(final NavigatorBar navBar) {
     if (getMode()!=Consts.READONLY)
       return;
     if (!listenEvent)
@@ -1249,6 +1284,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             gridController.loadDataCompleted(errorOnLoad);
 
           resetButtonsState();
+
+          // fire events related to navigator button pressed...
+          if (navBar!=null) {
+            navBar.fireButtonPressedEvent(NavigatorBar.PREV_BUTTON);
+          }
+
         }
       }.start();
     } else {
@@ -1258,6 +1299,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow() - 1, lockedGrid.getSelectedRow() - 1);
       }
       afterPreviousRow();
+
+      // fire events related to navigator button pressed...
+      if (navBar!=null) {
+        navBar.fireButtonPressedEvent(NavigatorBar.PREV_BUTTON);
+      }
+
       listenEvent = true;
     }
   }
@@ -1289,7 +1336,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * it may clear table model, reload the last data block and select the last row of the block.
    * This operations are executed in a separated thread.
    */
-  public final void lastRow() {
+  public final void lastRow(final NavigatorBar navBar) {
     if (!listenEvent)
       return;
     if (getMode()!=Consts.READONLY)
@@ -1339,6 +1386,13 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
               lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
             }
+
+            // fire events related to navigator button pressed...
+            if (navBar!=null) {
+              navBar.fireButtonPressedEvent(NavigatorBar.LAST_BUTTON);
+            }
+
+
           }
         });
         if (getReloadButton()!=null)
@@ -1352,6 +1406,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           gridController.loadDataCompleted(errorOnLoad);
 
         resetButtonsState();
+
       }
     }.start();
   }
@@ -2266,6 +2321,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   private boolean onLoop = false;
 
 
+  /**
+   * Set row selection interval.
+   * @param startRow first selected row index
+   * @param endRow last selected row index
+   */
   public void setRowSelectionInterval(int startRow,int endRow) {
     if (startRow==-1 || endRow==-1)
       return;

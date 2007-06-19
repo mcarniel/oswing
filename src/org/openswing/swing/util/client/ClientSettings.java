@@ -160,6 +160,12 @@ public class ClientSettings {
   /** default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
   public static int DEFAULT_QUICK_FILTER_CRITERIA = Consts.EQUALS;
 
+  /** <code>true</code> to show pagination buttons in vertical scrollbar of grid; <code>false</code> to do not show them; default value: <code>true</code> */
+  public static boolean SHOW_PAGINATION_BUTTONS_ON_GRID = true;
+
+  /** <code>true</code> to show pagination buttons in navigator bar; <code>false</code> to do not show them; default value: <code>true</code> */
+  public static boolean SHOW_PAGINATION_BUTTONS_ON_NAVBAR = true;
+
 
   /**
    * Contains application settings.
