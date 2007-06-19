@@ -790,6 +790,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     }
 
     resetButtonsState();
+    if (gridController!=null)
+      gridController.modeChanged(mode);
   }
 
 

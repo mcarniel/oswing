@@ -28,6 +28,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import org.openswing.swing.logger.client.Logger;
 
 
 /**
@@ -1498,10 +1499,58 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * Set editing to the specified cell.
+   * This method is ignored if the grid control is in READONY mode.
+   * @param row row index
+   * @param attributeName attribute name that identify the grid column
+   */
+  public final void editCellAt(final int row,String attributeName) {
+    try {
+      if (getMode() == Consts.READONLY) {
+        return;
+      }
+      int colIndex = table.getVOListTableModel().findColumn(attributeName);
+      if (colIndex==-1)
+        Logger.error(this.getClass().getName(), "editCellAt", "The specified attribute '"+attributeName+"' does not exist.",null);
+      else {
+        colIndex = table.getGrid().convertColumnIndexToView(colIndex);
+        if (colIndex==-1) {
+        if (table.getLockedGrid()!=null) {
+          colIndex = table.getLockedGrid().convertColumnIndexToView(colIndex);
+          if (colIndex!=-1) {
+            editCellAt(row,colIndex);
+          }
+          else
+            Logger.error(this.getClass().getName(), "editCellAt", "The specified attribute '"+attributeName+"' has not a visible column associated.",null);
+        }
+        else
+          Logger.error(this.getClass().getName(), "editCellAt", "The specified attribute '"+attributeName+"' has not a visible column associated.",null);
+        }
+        else {
+          editCellAt(row,colIndex);
+        }
+      }
+    }
+    catch (Throwable ex) {
+      Logger.error(this.getClass().getName(), "editCellAt", "Error while setting cell editing",ex);
+    }
+  }
 
 
-
-
+  /**
+   * Method called by editCellAt public method.
+   * @param row row index
+   * @param colIndex column index (related to the JTable)
+   */
+  private void editCellAt(final int row,final int colIndex) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        setRowSelectionInterval(row,row);
+        table.getGrid().editCellAt(row,colIndex);
+      }
+    });
+  }
 
 
 
