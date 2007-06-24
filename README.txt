@@ -51,6 +51,8 @@ docs		documentation files.
 
 classes/demo*   demos
 
+srclnf          source files of OpenSwing framework specifically related to Look and Feel issues; currently it contains a UI components used for MAC O.S. to render pagination buttons inside the vertical scrollbar; to correctly compile this source you have to include in the classpath the swingall.jar file too (not included in this distribution).
+
 
 
 3. Installation instructions

@@ -12,8 +12,10 @@ Added ClientSettings.SHOW_PAGINATION_BUTTONS_ON_GRID flag to show/hide paginatio
 Added setRowSelectionInterval method to grid control to select an interval of rows on grid.
 Added a link mechanism between a grid and a Form panel: now it is possible to navigate through the grid and automatically show in the Form 
 the current selected row in grid. It is possible to link a navigator bar directly to the Form too.
-Moreover, a new row added through a Form will be automatically showed in the grid (if the link mechanism has been activated); idem for changed row and deleted row(in Form).
+Moreover, a new row added through a Form will be automatically showed in the grid (if the link mechanism has been activated); idem for changed row and deleted row (in Form).
+Demo4 was changed to show how to link a Form to its parent grid control (see demo4.DetailFrame class).
 Added editCellAt method to grid control, to set editing in the specified cell.
+Improved demo19 by changing Emp.xml file: now it supports "is null" and "is not null" criteria.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

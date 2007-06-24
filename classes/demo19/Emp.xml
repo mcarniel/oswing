@@ -42,7 +42,12 @@
       <iterate property="filteredColumns" conjunction=" and ">
           <isEqual property="filteredColumns[].attributeName" compareValue="empCode"> EMP_CODE  </isEqual> 
           <isEqual property="filteredColumns[].attributeName" compareValue="taskVO.taskCode"> TASK_CODE  </isEqual> 
-          $filteredColumns[].operator$ #filteredColumns[].value#
+          $filteredColumns[].operator$ 
+          <isNotEqual property="filteredColumns[].operator" compareValue="is null">
+	  <isNotEqual property="filteredColumns[].operator" compareValue="is not null">
+          #filteredColumns[].value#
+          </isNotEqual>
+          </isNotEqual>
       </iterate>
     </dynamic>
     <dynamic prepend=" order by ">

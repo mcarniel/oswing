@@ -43,6 +43,7 @@ public class EmpGridFrame extends InternalFrame {
       setSize(750,300);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
+      grid.setShowFilterPanelOnGrid(true);
     }
     catch(Exception e) {
       e.printStackTrace();
