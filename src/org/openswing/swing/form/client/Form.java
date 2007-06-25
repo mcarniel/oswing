@@ -1338,6 +1338,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             while(it.hasNext()) {
               pkAttrName = it.next().toString();
               filter = new FilterWhereClause[2];
+
               filter[0] = new FilterWhereClause(pkAttrName,Consts.EQ,model.getValue(pkAttrName));
               filters.put(pkAttrName,filter);
             }
@@ -1358,6 +1359,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
                 final int gridRowIndex = getRowIndexInGrid();
                 if (gridRowIndex==-1) {
                   grid.getVOListTableModel().addObject((ValueObject)rows.get(0));
+                  grid.repaint();
                   SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                       grid.setRowSelectionInterval(grid.getVOListTableModel().getRowCount()-1,grid.getVOListTableModel().getRowCount()-1);
@@ -1366,6 +1368,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
                 }
                 else {
                   grid.getVOListTableModel().updateObjectAt((ValueObject)rows.get(0),gridRowIndex);
+                  grid.repaint();
                   SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                       grid.setRowSelectionInterval(gridRowIndex,gridRowIndex);
@@ -1774,7 +1777,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             break;
           }
           o1 = grid.getVOListTableModel().getValueAt(i,colIndex);
-          o2 = model.getValue(pkAttrName);
+          o2 = model.getValue(pkAttrName,previousVO);
           if (o1==null && o2!=null ||
               o1!=null && o2==null ||
               o1!=null && o2!=null && !o1.equals(o2)) {

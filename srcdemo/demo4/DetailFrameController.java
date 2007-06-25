@@ -152,6 +152,7 @@ public class DetailFrameController extends FormController {
     try {
       stmt = conn.prepareStatement("update DEMO4 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,TA=? where TEXT=?");
       TestVO vo = (TestVO)persistentObject;
+      TestVO oldVO = (TestVO)oldPersistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setString(5,vo.getComboValue());
       stmt.setBigDecimal(3,vo.getCurrencyValue());
@@ -161,7 +162,7 @@ public class DetailFrameController extends FormController {
       stmt.setString(1,vo.getStringValue());
       stmt.setString(8,vo.getLookupValue());
       stmt.setString(9,vo.getTaValue());
-      stmt.setString(10,vo.getStringValue());
+      stmt.setString(10,oldVO.getStringValue());
       stmt.execute();
 
 // this instruction is no more needed: the grid has been linked to the Form (see Form.linkGrid method...)

@@ -213,6 +213,33 @@ public class VOModel {
 
 
   /**
+   * @param attributeName attribute name of the value object
+   * @param valueobject value object used to fetch the attribute value
+   * @return value value associated to the specified attribute name
+   */
+  public final Object getValue(String attributeName,ValueObject valueobject) {
+      if (valueobject == null) {
+        return null;
+      }
+      try {
+        Method[] readMethods = (Method[])voGetterMethods.get(attributeName);
+        if (readMethods != null) {
+          Object obj = valueobject;
+          if (obj!=null)
+            for(int i=0;i<readMethods.length-1;i++)
+              obj = readMethods[i].invoke(obj,new Object[0]);
+          return obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
+        }
+      }
+      catch (Throwable ex) {
+        Logger.error(this.getClass().getName(),"getValue","Error while reading the value object attribute '"+attributeName+"'",ex);
+      }
+      return null;
+  }
+
+
+
+  /**
    * Set a value in the value object for an attribute name.
    * @param attributeName attribute name of the value object
    * @return value value to set for the specified attribute name

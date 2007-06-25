@@ -236,7 +236,7 @@ public class Controller extends HttpServlet {
         else {
           // document retrieving...
           Object doc = getServletContext().getAttribute(docId);
-          getServletContext().removeAttribute(docId);
+          new TimeoutDocIdThread(docId);
           if (doc == null) {
             Logger.error(
                 "NONAME",
@@ -407,6 +407,37 @@ public class Controller extends HttpServlet {
     ObjectOutputStream oos = new ObjectOutputStream(response.getOutputStream());
     oos.writeObject(answer);
     oos.close();
+  }
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class< used to remove the document identifier from the context:
+   * this is done after 5 minutes because some browser will call twice the same document request.</p>
+   */
+  class TimeoutDocIdThread extends Thread {
+
+    /** document identifier to remove */
+    private String docId;
+
+    public TimeoutDocIdThread(String docId) {
+      this.docId = docId;
+      start();
+    }
+
+    public void run() {
+      try {
+        sleep(300000);
+      }
+      catch (InterruptedException ex) {
+      }
+      try {
+        getServletContext().removeAttribute(docId);
+      }
+      catch (Exception ex1) {
+      }
+    }
+
   }
 
 

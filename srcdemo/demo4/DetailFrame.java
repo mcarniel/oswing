@@ -113,7 +113,6 @@ public class DetailFrame extends JFrame {
     controlText.setMaxCharacters(7);
     controlText.setTrimText(true);
     controlText.setUpperCase(true);
-    controlText.setEnabledOnEdit(false);
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     mainPanel.setBorder(titledBorder1);
