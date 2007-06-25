@@ -1272,6 +1272,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               if (lockedGrid!=null) {
                 lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
               }
+              // fire events related to navigator button pressed...
+              if (navBar!=null) {
+                navBar.fireButtonPressedEvent(NavigatorBar.PREV_BUTTON);
+              }
             }
           });
           afterPreviousRow();
@@ -1286,11 +1290,6 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             gridController.loadDataCompleted(errorOnLoad);
 
           resetButtonsState();
-
-          // fire events related to navigator button pressed...
-          if (navBar!=null) {
-            navBar.fireButtonPressedEvent(NavigatorBar.PREV_BUTTON);
-          }
 
         }
       }.start();

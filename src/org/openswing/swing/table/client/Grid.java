@@ -238,6 +238,12 @@ public class Grid extends JTable
                   Grid.this.gridController.doubleClick(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
                 }
               }.start();
+            else if (e.getClickCount()==1 &&
+                     SwingUtilities.isLeftMouseButton(e) &&
+                     Grid.this.gridController!=null &&
+                     Grid.this.model.getMode()==Consts.READONLY &&
+                     Grid.this.grids.getNavBar()!=null)
+              Grid.this.grids.getNavBar().fireButtonPressedEvent(null);
           }
         });
 
