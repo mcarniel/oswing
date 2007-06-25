@@ -528,7 +528,7 @@ public class Grid extends JTable
                   Grid.this.grids.getNavBar().setFirstRow(true);
                 else
                   Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
-              } else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1) {
+              } else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1 && Grid.this.grids.isMoreRows()) {
                 java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
                 int delta = (r.y+getVisibleRect().height)/(getRowHeight()+getRowMargin());
                 setRowSelectionInterval(Math.min(Grid.this.model.getRowCount()-1,delta),Math.min(Grid.this.model.getRowCount()-1,delta));
@@ -544,7 +544,9 @@ public class Grid extends JTable
                 else
                   Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
               }
-              e.consume();
+              if (!(e.getKeyCode()==e.VK_PAGE_DOWN && !Grid.this.grids.isMoreRows()) &&
+                       !(e.getKeyCode()==e.VK_PAGE_UP && Grid.this.grids.getstartIndex()==0))
+                e.consume();
             }
             else if (Grid.this.lockedGrid && getMode()==Consts.READONLY && Grid.this.grids.getNavBar()==null &&
                 (e.getKeyCode()==e.VK_PAGE_UP ||
@@ -1470,10 +1472,14 @@ public class Grid extends JTable
     }
 
     if (gridController!=null &&
-        this.getSelectedRows().length==1 &&
-        this.getSelectedColumn()!=-1) {
+        this.getSelectedRows().length==1
+        ) {
       // fire cell selected event...
-      int columnIndex = this.convertColumnIndexToModel(this.getSelectedColumn());
+      int columnIndex = this.getSelectedColumn();
+      if (columnIndex!=-1)
+        columnIndex = this.convertColumnIndexToModel(columnIndex);
+      else
+        columnIndex = 0;
       gridController.selectedCell(
           e.getFirstIndex(), columnIndex,
           model.getColumnName(columnIndex),
@@ -1481,8 +1487,7 @@ public class Grid extends JTable
       );
       // update navigation toolbar state...
       if (getMode()==Consts.READONLY && (grids.getNavBar()!=null)) {
-        if (model.getRowCount()==model.getRowCount() &&
-//             grids.getLastIndex()+1==Math.min(model.getRowCount(),ClientSettings.BLOCK_SIZE) &&
+        if (grids.getstartIndex()==0 &&
             this.getSelectedRow()==0)
           grids.getNavBar().setFirstRow(true);
         else

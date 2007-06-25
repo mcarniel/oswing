@@ -102,14 +102,14 @@ public class ClientApplication {
 
         for(int i=0;i<200;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO4 values('ABC"+i+"',"+12+i+0.333+","+1234+i+0.56+",?,'ABC','Y','Y','A"+i+"','AAAAAA"+i+"')");
+          stmt = conn.prepareStatement("insert into DEMO4 values('ABC"+getCode(3,i+1)+"',"+12+i+0.333+","+1234+i+0.56+",?,'ABC','Y','Y','A"+i+"','AAAAAA"+i+"')");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }
 
         for(int i=0;i<200;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO4_LOOKUP values('A"+i+"','ABCDEF"+String.valueOf((char)(i+78))+"')");
+          stmt = conn.prepareStatement("insert into DEMO4_LOOKUP values('A"+i+"','ABCDEF"+i+"')");
           stmt.execute();
         }
 
@@ -134,6 +134,12 @@ public class ClientApplication {
   }
 
 
+  private String getCode(int len,int num) {
+    String code = String.valueOf(num);
+    for(int i=code.length();i<len;i++)
+      code = "0"+code;
+    return code;
+  }
 
 
 }
