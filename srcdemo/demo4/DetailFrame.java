@@ -72,7 +72,7 @@ public class DetailFrame extends JFrame {
       // link the parent grid to the current Form...
       HashSet pk = new HashSet();
       pk.add("stringValue"); // pk for Form is based on one only attribute...
-      mainPanel.linkGrid(dataController.getGridFrame().getGrid(),pk,true,navigatorBar);
+      mainPanel.linkGrid(dataController.getGridFrame().getGrid(),pk,true,true,true,navigatorBar);
 
 
 

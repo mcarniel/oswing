@@ -135,6 +135,12 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   /** attributes that must be defined both on grid v.o. and on the Form v.o. used to select on grid the (first) row that matches pk values */
   private HashSet pkAttributes = null;
 
+  /** flag used to enable Form data reloading when clicking with the left mouse button onto the grid */
+  private boolean reloadModelWhenClickingWithMouse;
+
+  /** flag used to enable Form data reloading when pressing up/down keys onto the grid */
+  private boolean reloadModelWhenPressingKey;
+
 
   public Form() {
   }
@@ -1683,12 +1689,38 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * - delete existing data on the Form will refresh grid content by removing the related row
    * To correctly identify the row on grid to change a matching beetween attributes (specified in "pkAttributes" argument)
    * of grid v.o. and Form v.o. is performed: it will be identified the first row on grid that matches this filter criteria, based on attribute values.
+   *
+   * NOTE: "reloadModelWhenSelectingOnGrid" is set to <code>true</code> then Form data reloading is performed also when clicking with the left mouse button onto the grid and when pressing up/down keys onto the grid.
+   *
    * @param grid grid control linked to the current Form, to update grid content
    * @param pkAttributes attributes that must be defined both on grid v.o. and on the Form v.o. used to select on grid the (first) row that matches pk values; if the grid v.o. is the same class or a super-class of Form v.o. then this HashSet could
    * @param reloadModelWhenSelectingOnGrid <code>true</code> to force data Form reloading when changing row selection on grid by grid navigator bar
    */
   public final void linkGrid(GridControl grid,HashSet pkAttributes,boolean reloadModelWhenSelectingOnGrid) {
-    linkGrid(grid,pkAttributes,reloadModelWhenSelectingOnGrid,null);
+    linkGrid(grid,pkAttributes,reloadModelWhenSelectingOnGrid,reloadModelWhenSelectingOnGrid,reloadModelWhenSelectingOnGrid,null);
+  }
+
+
+  /**
+   * Link the specified grid control to the current Form, so that:
+   * - grid navigator bar event (i.e. pressing one of its buttons) on grid will force the Form data loading (e.g. when using grid navigator bar)
+   * - insert new data on the Form will refresh grid by adding a new row
+   * - update data on Form will refresh grid for the related changed row
+   * - delete existing data on the Form will refresh grid content by removing the related row
+   * To correctly identify the row on grid to change a matching beetween attributes (specified in "pkAttributes" argument)
+   * of grid v.o. and Form v.o. is performed: it will be identified the first row on grid that matches this filter criteria, based on attribute values.
+   * NOTE: if more than one Form has been opened, then all Forms will be reloaded to the same row when a grid navigator button is being pressed.
+   *
+   * In addition, Form data loading is automatically performed when using the specified navigator bar; also grid selection row is updated.
+   * NOTE: "reloadModelWhenSelectingOnGrid" is set to <code>true</code> then Form data reloading is performed also when clicking with the left mouse button onto the grid and when pressing up/down keys onto the grid.
+   *
+   * @param grid grid control linked to the current Form, to update grid content
+   * @param pkAttributes attributes that must be defined both on grid v.o. and on the Form v.o. used to select on grid the (first) row that matches pk values; if the grid v.o. is the same class or a super-class of Form v.o. then this HashSet could
+   * @param reloadModelWhenSelectingOnGrid <code>true</code> to force data Form reloading when changing row selection on grid by grid navigator bar
+   * @param navBar navigation bar linked to the current Form, used to load data on Form according to the selected row on grid, whose selection has been changed when using this navigator bar
+   */
+  public final void linkGrid(GridControl grid,HashSet pkAttributes,boolean reloadModelWhenSelectingOnGrid,NavigatorBar navBar) {
+    linkGrid(grid,pkAttributes,reloadModelWhenSelectingOnGrid,reloadModelWhenSelectingOnGrid,reloadModelWhenSelectingOnGrid,navBar);
   }
 
 
@@ -1707,12 +1739,16 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @param grid grid control linked to the current Form, to update grid content
    * @param pkAttributes attributes that must be defined both on grid v.o. and on the Form v.o. used to select on grid the (first) row that matches pk values; if the grid v.o. is the same class or a super-class of Form v.o. then this HashSet could
    * @param reloadModelWhenSelectingOnGrid <code>true</code> to force data Form reloading when changing row selection on grid by grid navigator bar
+   * @param reloadModelWhenClickingWithMouse <code>true</code> to enable Form data reloading when clicking with the left mouse button onto the grid
+   * @param reloadModelWhenPressingKey <code>true</code> to enable Form data reloading when pressing up/down keys onto the grid
    * @param navBar navigation bar linked to the current Form, used to load data on Form according to the selected row on grid, whose selection has been changed when using this navigator bar
    */
-  public final void linkGrid(GridControl grid,HashSet pkAttributes,boolean reloadModelWhenSelectingOnGrid,NavigatorBar navBar) {
+  public final void linkGrid(GridControl grid,HashSet pkAttributes,boolean reloadModelWhenSelectingOnGrid,boolean reloadModelWhenClickingWithMouse,boolean reloadModelWhenPressingKey,NavigatorBar navBar) {
     this.grid = grid;
     this.pkAttributes = pkAttributes;
     this.navBar = navBar;
+    this.reloadModelWhenClickingWithMouse = reloadModelWhenClickingWithMouse;
+    this.reloadModelWhenPressingKey = reloadModelWhenPressingKey;
 
     if (grid!=null && pkAttributes!=null) {
       if (grid.getNavBar()!=null && reloadModelWhenSelectingOnGrid) {
@@ -1798,7 +1834,14 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   public final void actionPerformed(ActionEvent e) {
     // a row on the linked grid has been just selected: reload data model for this Form...
-    if (e.getSource().equals(navBar) || grid.getNavBar()!=null && e.getSource().equals(grid.getNavBar()))
+    if (e.getSource().equals(navBar) ||
+        (
+          grid.getNavBar()!=null && e.getSource().equals(grid.getNavBar()) &&
+          !(!reloadModelWhenClickingWithMouse && e.getActionCommand().equals(NavigatorBar.LEFT_MOUSE_BUTTON)) &&
+          !(!reloadModelWhenPressingKey && e.getActionCommand().equals(NavigatorBar.UP_KEY)) &&
+          !(!reloadModelWhenPressingKey && e.getActionCommand().equals(NavigatorBar.DOWN_KEY))
+        )
+    )
       reload();
   }
 

@@ -1112,7 +1112,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * it may clear table model, reload next data block and select the first row of the block.
    * This operations are executed in a separated thread.
    */
-  public final void nextRow(final NavigatorBar navBar) {
+  public final void nextRow(final NavigatorBar navBar,final ActionEvent e) {
     if (getMode()!=Consts.READONLY)
       return;
     if (!listenEvent)
@@ -1162,8 +1162,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             resetButtonsState();
 
             // fire events related to navigator button pressed...
-            if (navBar!=null) {
-              navBar.fireButtonPressedEvent(NavigatorBar.NEXT_BUTTON);
+            if (navBar!=null && e!=null) {
+              navBar.fireButtonPressedEvent(e.getActionCommand());
             }
           }
         }.start();
@@ -1175,8 +1175,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       afterNextRow();
 
       // fire events related to navigator button pressed...
-      if (navBar!=null) {
-        navBar.fireButtonPressedEvent(NavigatorBar.NEXT_BUTTON);
+      if (navBar!=null && e!=null) {
+        navBar.fireButtonPressedEvent(e.getActionCommand());
       }
 
       listenEvent = true;
@@ -1230,7 +1230,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * it may clear table model, reload previous data block and select the last row of the block.
    * This operations are executed in a separated thread.
    */
-  public final void previousRow(final NavigatorBar navBar) {
+  public final void previousRow(final NavigatorBar navBar,final ActionEvent e) {
     if (getMode()!=Consts.READONLY)
       return;
     if (!listenEvent)
@@ -1273,8 +1273,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
                 lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
               }
               // fire events related to navigator button pressed...
-              if (navBar!=null) {
-                navBar.fireButtonPressedEvent(NavigatorBar.PREV_BUTTON);
+              if (navBar!=null && e!=null) {
+                navBar.fireButtonPressedEvent(e.getActionCommand());
               }
             }
           });
@@ -1302,8 +1302,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       afterPreviousRow();
 
       // fire events related to navigator button pressed...
-      if (navBar!=null) {
-        navBar.fireButtonPressedEvent(NavigatorBar.PREV_BUTTON);
+      if (navBar!=null && e!=null) {
+        navBar.fireButtonPressedEvent(e.getActionCommand());
       }
 
       listenEvent = true;

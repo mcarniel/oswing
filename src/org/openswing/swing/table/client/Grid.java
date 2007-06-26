@@ -243,7 +243,7 @@ public class Grid extends JTable
                      Grid.this.gridController!=null &&
                      Grid.this.model.getMode()==Consts.READONLY &&
                      Grid.this.grids.getNavBar()!=null)
-              Grid.this.grids.getNavBar().fireButtonPressedEvent(null);
+              Grid.this.grids.getNavBar().fireButtonPressedEvent(NavigatorBar.LEFT_MOUSE_BUTTON);
           }
         });
 
@@ -512,13 +512,13 @@ public class Grid extends JTable
                  e.getKeyCode()==e.VK_PAGE_UP ||
                  e.getKeyCode()==e.VK_PAGE_DOWN)) {
               if (e.getKeyCode()==e.VK_UP && getSelectedRow()>0)
-                  Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
+                  Grid.this.grids.getNavBar().prevButton_actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.UP_KEY));
               else if (e.getKeyCode()==e.VK_UP && getSelectedRow()==0 && Grid.this.grids.getNavBar().isPrevButtonEnabled())
-                Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
+                Grid.this.grids.getNavBar().prevButton_actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.UP_KEY));
               else if (e.getKeyCode()==e.VK_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1)
-                Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
+                Grid.this.grids.getNavBar().nextButton_actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.DOWN_KEY));
               else if (e.getKeyCode()==e.VK_DOWN && getSelectedRow()==Grid.this.model.getRowCount()-1 && Grid.this.grids.getNavBar().isNextButtonEnabled())
-                Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
+                Grid.this.grids.getNavBar().nextButton_actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.DOWN_KEY));
               else if (e.getKeyCode()==e.VK_PAGE_UP && getSelectedRow()>0) {
                 java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
                 int delta = (r.y-getVisibleRect().height)/(getRowHeight()+getRowMargin())+1;
@@ -533,7 +533,7 @@ public class Grid extends JTable
                 if (Grid.this.grids.getLastIndex()==Grid.this.model.getRowCount() -1)
                   Grid.this.grids.getNavBar().setFirstRow(true);
                 else
-                  Grid.this.grids.getNavBar().prevButton_actionPerformed(null);
+                  Grid.this.grids.getNavBar().prevButton_actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.UP_KEY));
               } else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1 && Grid.this.grids.isMoreRows()) {
                 java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
                 int delta = (r.y+getVisibleRect().height)/(getRowHeight()+getRowMargin());
@@ -551,7 +551,7 @@ public class Grid extends JTable
                   Grid.this.grids.getNavBar().nextButton_actionPerformed(null);
               }
               if (!(e.getKeyCode()==e.VK_PAGE_DOWN && !Grid.this.grids.isMoreRows()) &&
-                       !(e.getKeyCode()==e.VK_PAGE_UP && Grid.this.grids.getstartIndex()==0))
+                  !(e.getKeyCode()==e.VK_PAGE_UP && Grid.this.grids.getstartIndex()==0))
                 e.consume();
             }
             else if (Grid.this.lockedGrid && getMode()==Consts.READONLY && Grid.this.grids.getNavBar()==null &&
@@ -910,14 +910,20 @@ public class Grid extends JTable
     if ((scrollBar.getValue() > scrollableZoneSize/4*3) && grids.isMoreRows()) {
       // scrolling table over 75% of rows (near the end)
       setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
-      grids.nextRow(grids.getGridControl()==null?null:grids.getGridControl().getNavBar());
+      grids.nextRow(
+        grids.getGridControl()==null?null:grids.getGridControl().getNavBar(),
+        new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.NEXT_PG_BUTTON)
+      );
       setRowSelectionInterval(model.getRowCount()/2,model.getRowCount()/2);
       ensureRowIsVisible(getSelectedRow());
     } else if ((scrollBar.getValue() < scrollableZoneSize/4) &&
                grids.getLastIndex()+1 > model.getRowCount()) {
       // scrolling table on 25% of rows (near the beginning)
       setRowSelectionInterval(0,0);
-      grids.previousRow(grids.getGridControl()==null?null:grids.getGridControl().getNavBar());
+      grids.previousRow(
+        grids.getGridControl()==null?null:grids.getGridControl().getNavBar(),
+        new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.PREV_PG_BUTTON)
+      );
       setRowSelectionInterval(model.getRowCount()/2,model.getRowCount()/2);
       ensureRowIsVisible(getSelectedRow());
     }

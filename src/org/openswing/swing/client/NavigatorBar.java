@@ -76,6 +76,9 @@ public class NavigatorBar extends JPanel {
   public static final String LAST_BUTTON = "LAST_BUTTON";
   public static final String NEXT_PG_BUTTON = "NEXT_PG_BUTTON";
   public static final String PREV_PG_BUTTON = "PREV_PG_BUTTON";
+  public static final String UP_KEY = "UP_KEY";
+  public static final String DOWN_KEY = "DOWN_KEY";
+  public static final String LEFT_MOUSE_BUTTON = "LEFT_MOUSE_BUTTON";
 
 
   public NavigatorBar() {
@@ -106,6 +109,7 @@ public class NavigatorBar extends JPanel {
         firstButton_actionPerformed(e);
       }
     });
+    prevButton.setActionCommand(PREV_BUTTON);
     prevButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
         prevButton_actionPerformed(e);
@@ -121,6 +125,7 @@ public class NavigatorBar extends JPanel {
         nextPgButton_actionPerformed(e);
       }
     });
+    nextButton.setActionCommand(NEXT_BUTTON);
     nextButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
         nextButton_actionPerformed(e);
@@ -174,10 +179,10 @@ public class NavigatorBar extends JPanel {
         ((ActionListener)beforeActionListeners.get(i)).actionPerformed(new ActionEvent(
             this,
             ActionEvent.ACTION_PERFORMED,
-            PREV_BUTTON
+            e.getActionCommand()
         ));
 
-      resultSetController.previousRow(this);
+      resultSetController.previousRow(this,e);
     }
   }
 
@@ -187,12 +192,13 @@ public class NavigatorBar extends JPanel {
         ((ActionListener)beforeActionListeners.get(i)).actionPerformed(new ActionEvent(
             this,
             ActionEvent.ACTION_PERFORMED,
-            NEXT_BUTTON
+            e.getActionCommand()
         ));
 
-      resultSetController.nextRow(this);
+      resultSetController.nextRow(this,e);
     }
   }
+
 
   public void nextPgButton_actionPerformed(ActionEvent e) {
     if (resultSetController!=null) {
@@ -206,6 +212,7 @@ public class NavigatorBar extends JPanel {
       resultSetController.nextPage(this);
     }
   }
+
 
   public void lastButton_actionPerformed(ActionEvent e) {
     if (resultSetController!=null) {
