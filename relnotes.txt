@@ -6,8 +6,9 @@ Release Notes 1.1.6
 Final release 1.1.6 available
 
 Fixed problems while using grid to Form linking feature: now it works fine when using mouse, up/key keys and navitator bar buttons.
-Improved Form.linkGrid() method by providing additional flags to control Form data loading when using left mouse buttona and up/down keys.
+Improved Form.linkGrid() method by providing additional flags to control Form data loading when using left mouse button and up/down keys.
 Add set/getFont methods to LabelControl and all input controls.
+Changed sample18 by showing login error message when login is failed.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 
