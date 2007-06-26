@@ -3,6 +3,7 @@ package org.openswing.swing.client;
 import org.openswing.swing.util.client.ClientSettings;
 import javax.swing.JLabel;
 import org.openswing.swing.internationalization.java.*;
+import java.awt.Font;
 
 
 /**
@@ -65,6 +66,23 @@ public class LabelControl extends JLabel {
    */
   public final void setLabel(String label) {
     setText(label);
+  }
+
+
+  /**
+   * @return current Font setting
+   */
+  public final Font getFont() {
+    return super.getFont();
+  }
+
+
+  /**
+   * Set the specified font.
+   * @param font Font to set
+   */
+  public final void setFont(Font font) {
+    super.setFont(font);
   }
 
 

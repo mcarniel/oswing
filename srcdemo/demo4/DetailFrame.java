@@ -110,6 +110,7 @@ public class DetailFrame extends JFrame {
     controlNumeric.setDecimals(3);
     controlNumeric.setRequired(true);
     labelRadioButton.setText("radio button");
+    controlText.setFont(new java.awt.Font(controlText.getFont().getName(), Font.BOLD, controlText.getFont().getSize()));
     controlText.setMaxCharacters(7);
     controlText.setTrimText(true);
     controlText.setUpperCase(true);

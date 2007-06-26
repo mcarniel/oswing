@@ -27,6 +27,7 @@ public class NumericControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
       PropertyDescriptor _columns = new PropertyDescriptor("columns", beanClass, "getColumns", "setColumns");
       PropertyDescriptor _decimals = new PropertyDescriptor("decimals", beanClass, "getDecimals", "setDecimals");
+      PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _grouping = new PropertyDescriptor("grouping", beanClass, "isGrouping", "setGrouping");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
@@ -41,6 +42,7 @@ public class NumericControlBeanInfo extends SimpleBeanInfo {
         _canCopy,
         _columns,
         _decimals,
+        _font,
         _grouping,
         _linkLabel,
         _maxCharacters,

@@ -23,7 +23,9 @@ public class LabelControlBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _label = new PropertyDescriptor("label", beanClass, "getLabel", "setLabel");
+      PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _font,
         _label};
       return pds;
     }

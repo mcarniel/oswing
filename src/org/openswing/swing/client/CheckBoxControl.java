@@ -16,6 +16,7 @@ import org.openswing.swing.form.model.client.ValueChangeEvent;
 import org.openswing.swing.logger.client.Logger;
 import javax.swing.UIManager;
 import java.beans.Beans;
+import java.awt.Font;
 
 
 /**
@@ -80,6 +81,23 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
   public CheckBoxControl() {
     setOpaque(false);
     initListeners();
+  }
+
+
+  /**
+   * @return current Font setting
+   */
+  public final Font getFont() {
+    return super.getFont();
+  }
+
+
+  /**
+   * Set the specified font.
+   * @param font Font to set
+   */
+  public final void setFont(Font font) {
+    super.setFont(font);
   }
 
 

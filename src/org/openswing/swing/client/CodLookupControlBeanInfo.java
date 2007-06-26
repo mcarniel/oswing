@@ -30,6 +30,7 @@ public class CodLookupControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _columns = new PropertyDescriptor("columns", beanClass, "getColumns", "setColumns");
       PropertyDescriptor _controllerClassName = new PropertyDescriptor("controllerClassName", beanClass, "getControllerClassName", "setControllerClassName");
       PropertyDescriptor _controllerMethodName = new PropertyDescriptor("controllerMethodName", beanClass, "getControllerMethodName", "setControllerMethodName");
+      PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _enabled = new PropertyDescriptor("enabled", beanClass, "isEnabled", "setEnabled");
       PropertyDescriptor _enableCodBox = new PropertyDescriptor("enableCodBox", beanClass, "isEnableCodBox", "setEnableCodBox");
       PropertyDescriptor _enabledOnEdit = new PropertyDescriptor("enabledOnEdit", beanClass, "isEnabledOnEdit", "setEnabledOnEdit");
@@ -50,6 +51,7 @@ public class CodLookupControlBeanInfo extends SimpleBeanInfo {
         _enableCodBox,
         _enabledOnEdit,
         _enabledOnInsert,
+        _font,
         _linkLabel,
         _lookupController,
         _maxCharacters,

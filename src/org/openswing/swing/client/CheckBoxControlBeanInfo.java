@@ -26,12 +26,14 @@ public class CheckBoxControlBeanInfo extends SimpleBeanInfo {
       _attributeName.setPropertyEditorClass(AttributeNameEditor.class);
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
+      PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _enabled = new PropertyDescriptor("enabled", beanClass, "isEnabled", "setEnabled");
       PropertyDescriptor _enabledOnInsert = new PropertyDescriptor("enabledOnInsert", beanClass, "isEnabledOnInsert", "setEnabledOnInsert");
       PropertyDescriptor _enabledOnEdit = new PropertyDescriptor("enabledOnEdit", beanClass, "isEnabledOnEdit", "setEnabledOnEdit");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _attributeName,
         _canCopy,
+        _font,
         _linkLabel,
         _enabled,
         _enabledOnInsert,

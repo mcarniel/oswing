@@ -27,6 +27,7 @@ public class TextControlBeanInfo extends SimpleBeanInfo {
       _attributeName.setPropertyEditorClass(AttributeNameEditor.class);
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
       PropertyDescriptor _columns = new PropertyDescriptor("columns", beanClass, "getColumns", "setColumns");
+      PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
       PropertyDescriptor _required = new PropertyDescriptor("required", beanClass, "isRequired", "setRequired");
@@ -40,6 +41,7 @@ public class TextControlBeanInfo extends SimpleBeanInfo {
         _attributeName,
         _canCopy,
         _columns,
+        _font,
         _linkLabel,
         _maxCharacters,
         _required,

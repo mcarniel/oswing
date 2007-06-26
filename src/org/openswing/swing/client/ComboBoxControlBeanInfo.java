@@ -26,6 +26,7 @@ public class ComboBoxControlBeanInfo extends SimpleBeanInfo {
       _attributeName.setPropertyEditorClass(AttributeNameEditor.class);
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
       PropertyDescriptor _domainId = new PropertyDescriptor("domainId", beanClass, "getDomainId", "setDomainId");
+      PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _nullAsDefaultValue = new PropertyDescriptor("nullAsDefaultValue", beanClass, "isNullAsDefaultValue", "setNullAsDefaultValue");
       PropertyDescriptor _required = new PropertyDescriptor("required", beanClass, "isRequired", "setRequired");
@@ -36,6 +37,7 @@ public class ComboBoxControlBeanInfo extends SimpleBeanInfo {
           _attributeName,
           _canCopy,
           _domainId,
+          _font,
           _linkLabel,
           _nullAsDefaultValue,
           _required,

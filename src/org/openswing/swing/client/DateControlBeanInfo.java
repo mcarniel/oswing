@@ -25,6 +25,7 @@ public class DateControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _attributeName = new PropertyDescriptor("attributeName", beanClass, "getAttributeName", "setAttributeName");
       _attributeName.setPropertyEditorClass(AttributeNameEditor.class);
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
+      PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _required = new PropertyDescriptor("required", beanClass, "isRequired", "setRequired");
       PropertyDescriptor _showCentury = new PropertyDescriptor("showCentury", beanClass, "isShowCentury", "setShowCentury");
@@ -39,7 +40,9 @@ public class DateControlBeanInfo extends SimpleBeanInfo {
         _showCentury,
         _enabled,
         _enabledOnInsert,
-        _enabledOnEdit};
+        _enabledOnEdit,
+        _font
+      };
 
       return pds;
     }

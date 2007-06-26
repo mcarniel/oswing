@@ -25,6 +25,7 @@ public class RadioButtonControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _attributeName = new PropertyDescriptor("attributeName", beanClass, "getAttributeName", "setAttributeName");
       _attributeName.setPropertyEditorClass(AttributeNameEditor.class);
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
+      PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _enabled = new PropertyDescriptor("enabled", beanClass, "isEnabled", "setEnabled");
       PropertyDescriptor _enabledOnInsert = new PropertyDescriptor("enabledOnInsert", beanClass, "isEnabledOnInsert", "setEnabledOnInsert");
@@ -35,7 +36,9 @@ public class RadioButtonControlBeanInfo extends SimpleBeanInfo {
         _linkLabel,
         _enabled,
         _enabledOnInsert,
-        _enabledOnEdit};
+        _enabledOnEdit,
+        _font
+      };
 
       return pds;
     }

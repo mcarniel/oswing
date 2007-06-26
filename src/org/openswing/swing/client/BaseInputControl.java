@@ -232,6 +232,24 @@ public class BaseInputControl extends JPanel implements InputControl {
 
 
   /**
+   * @return current Font setting
+   */
+  public final Font getFont() {
+    return getBindingComponent()==null?null:getBindingComponent().getFont();
+  }
+
+
+  /**
+   * Set the specified font.
+   * @param font Font to set
+   */
+  public final void setFont(Font font) {
+    if (getBindingComponent()!=null)
+      getBindingComponent().setFont(font);
+  }
+
+
+  /**
    * Define mandatory property of the input control.
    * @param require mandatory property of the input control
    */
