@@ -17,6 +17,7 @@ import java.sql.*;
 import org.openswing.swing.domains.java.Domain;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.message.receive.java.Response;
+import org.openswing.swing.client.OptionPane;
 
 
 /**
@@ -194,6 +195,9 @@ public class ClientApplicationWithLogin implements MDIController,LoginController
    */
   public boolean authenticateUser(Map loginInfo) throws Exception {
     Response res = ClientUtils.getData("login",loginInfo);
+    if (res.isError()) {
+      OptionPane.showMessageDialog(null,res.getErrorMessage(),"Login",JOptionPane.ERROR_MESSAGE);
+    }
     return !res.isError();
   }
 
