@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import org.openswing.swing.message.receive.java.VOListResponse;
 import java.math.BigDecimal;
 import org.openswing.swing.table.client.GridController;
+import javax.swing.text.MaskFormatter;
 
 
 /**
@@ -46,6 +47,7 @@ public class GridFrame extends JFrame {
   ExportButton exportButton = new ExportButton();
   ButtonColumn colButton = new ButtonColumn();
   NavigatorBar navigatorBar1 = new NavigatorBar();
+  FormattedTextColumn colFormattedText = new FormattedTextColumn();
 
   public GridFrame(Connection conn,GridFrameController controller) {
     this.conn = conn;
@@ -241,6 +243,17 @@ public class GridFrame extends JFrame {
     colButton.setColumnName("button");
     colButton.setHeaderColumnName("button");
     colButton.setPreferredWidth(50);
+    colFormattedText.setColumnFilterable(true);
+    colFormattedText.setColumnName("formattedTextValue");
+    colFormattedText.setColumnSortable(false);
+    colFormattedText.setEditableOnEdit(true);
+    colFormattedText.setEditableOnInsert(true);
+
+    MaskFormatter mask = new MaskFormatter("###-##-####");
+    mask.setValidCharacters("0123456789");
+
+    colFormattedText.setFormatter(mask);
+
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
@@ -254,6 +267,7 @@ public class GridFrame extends JFrame {
     grid.getColumnContainer().add(colText, null);
     grid.getColumnContainer().add(colDecimal, null);
     grid.getColumnContainer().add(colCurrency, null);
+    grid.getColumnContainer().add(colFormattedText, null);
     grid.getColumnContainer().add(colDate, null);
     grid.getColumnContainer().add(colCombo, null);
     grid.getColumnContainer().add(colButton, null);

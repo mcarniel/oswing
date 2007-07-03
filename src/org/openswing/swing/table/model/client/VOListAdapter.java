@@ -354,6 +354,19 @@ public class VOListAdapter {
             ((TextColumn)colProperties[colIndex]).isEncryptText()
         );
       }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_FORMATTED_TEXT) {
+        return new TextTableCellRenderer(
+            tableContainer,
+            false
+        );
+      }
+
+//      else if (colProperties[colIndex].getColumnType()==Column.TYPE_FORMATTED_TEXT) {
+//        return new FormattedTextTableCellRenderer(
+//            tableContainer,
+//            ((FormattedTextColumn)colProperties[colIndex]).getTextBox()
+//        );
+//      }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_CHECK) {
         return new CheckBoxTableCellRenderer(tableContainer);
       }
@@ -482,6 +495,12 @@ public class VOListAdapter {
             ((TextColumn)colProperties[colIndex]).isTrimText(),
             ((TextColumn)colProperties[colIndex]).isUpperCase()
           );
+      }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_FORMATTED_TEXT) {
+        return new FormattedTextCellEditor(
+          ((FormattedTextColumn)colProperties[colIndex]).getTextBox(),
+          colProperties[colIndex].isColumnRequired()
+        );
       }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_CHECK) {
         return new CheckBoxCellEditor(colProperties[colIndex].isColumnRequired(),((CheckBoxColumn)colProperties[colIndex]).getItemListeners());

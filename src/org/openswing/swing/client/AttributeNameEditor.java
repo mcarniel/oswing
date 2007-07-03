@@ -191,6 +191,9 @@ public class AttributeNameEditor extends PropertyEditorSupport {
       else if (attrType.equals(String.class) && columnType.equals(TextControl.class)) {
         return true;
       }
+      else if (columnType.equals(FormattedTextControl.class)) {
+        return true;
+      }
       else if (attrType.equals(String.class) && columnType.equals(TextAreaControl.class)) {
         return true;
       }
@@ -236,6 +239,9 @@ public class AttributeNameEditor extends PropertyEditorSupport {
         return true;
       }
       else if (attrType.equals(String.class) && columnType.equals(TextColumn.class)) {
+        return true;
+      }
+      else if (columnType.equals(FormattedTextColumn.class)) {
         return true;
       }
       else if (columnType.equals(CheckBoxColumn.class)) {

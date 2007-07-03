@@ -351,6 +351,19 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
           result=edit;
         }
         ;break;
+        case Column.TYPE_FORMATTED_TEXT:
+        {
+          JFormattedTextField edit = ((FormattedTextColumn)colProperties).getTextBox();
+          edit.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+              if (e.getKeyCode()==e.VK_ENTER)
+                valueKeyPressed(e);
+            }
+          } );
+          edit.setText(initValue==null?"":initValue.toString());
+          result=edit;
+        }
+        ;break;
         case Column.TYPE_LOOKUP:
         {
           TextControl edit = new TextControl();
@@ -584,6 +597,11 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         case Column.TYPE_LOOKUP:
         {
           result=((TextControl)value).getText();
+        }
+        ;break;
+        case Column.TYPE_FORMATTED_TEXT:
+        {
+          result=((JFormattedTextField)value).getText();
         }
         ;break;
         default:

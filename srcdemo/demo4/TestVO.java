@@ -26,6 +26,7 @@ public class TestVO extends ValueObjectImpl {
   private String lookupValue;
   private String descrLookupValue;
   private String taValue;
+  private String formattedTextValue;
 
   public TestVO() {
   }
@@ -90,6 +91,12 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setTaValue(String taValue) {
     this.taValue = taValue;
+  }
+  public String getFormattedTextValue() {
+    return formattedTextValue;
+  }
+  public void setFormattedTextValue(String formattedTextValue) {
+    this.formattedTextValue = formattedTextValue;
   }
 
 

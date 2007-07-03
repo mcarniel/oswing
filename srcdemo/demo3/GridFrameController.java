@@ -50,7 +50,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       Map otherGridParams) {
     PreparedStatement stmt = null;
     try {
-      String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK_BOX,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
+      String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK_BOX,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE,DEMO3.FORMATTED_TEXT from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
         FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("dateValue");
@@ -85,6 +85,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         vo.setStringValue(rset.getString(1));
         vo.setLookupValue(rset.getString(8));
         vo.setDescrLookupValue(rset.getString(9));
+        vo.setFormattedTextValue(rset.getString(10));
         list.add(vo);
       }
       return new VOListResponse(list,false,list.size());
@@ -114,7 +115,7 @@ public class GridFrameController extends GridController implements GridDataLocat
 
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE) values(?,?,?,?,?,?,?,?)");
+      stmt = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,FORMATTED_TEXT) values(?,?,?,?,?,?,?,?,?)");
       TestVO vo = (TestVO)newValueObjects.get(0);
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setString(5,vo.getComboValue());
@@ -124,6 +125,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       stmt.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");
       stmt.setString(1,vo.getStringValue());
       stmt.setString(8,vo.getLookupValue());
+      stmt.setString(9,vo.getFormattedTextValue());
       stmt.execute();
       return new VOListResponse(newValueObjects,false,newValueObjects.size());
     }
@@ -153,7 +155,7 @@ public class GridFrameController extends GridController implements GridDataLocat
   public Response updateRecords(int[] rowNumbers,ArrayList oldPersistentObjects,ArrayList persistentObjects) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("update DEMO3 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=? where TEXT=?");
+      stmt = conn.prepareStatement("update DEMO3 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,FORMATTED_TEXT=? where TEXT=?");
       TestVO vo = null;
       for(int i=0;i<persistentObjects.size();i++) {
         vo = (TestVO)persistentObjects.get(i);
@@ -165,7 +167,8 @@ public class GridFrameController extends GridController implements GridDataLocat
         stmt.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");
         stmt.setString(1,vo.getStringValue());
         stmt.setString(8,vo.getLookupValue());
-        stmt.setString(9,vo.getStringValue());
+        stmt.setString(9,vo.getFormattedTextValue());
+        stmt.setString(10,vo.getStringValue());
         stmt.execute();
       }
       return new VOListResponse(persistentObjects,false,persistentObjects.size());

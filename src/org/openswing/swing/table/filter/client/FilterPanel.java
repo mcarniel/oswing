@@ -531,6 +531,12 @@ public class FilterPanel extends JPanel {
         result=edit;
       }
       ;break;
+      case Column.TYPE_FORMATTED_TEXT:
+      {
+        JFormattedTextField edit = ((FormattedTextColumn)colProperties).getTextBox();
+        result=edit;
+      }
+      ;break;
       case Column.TYPE_LOOKUP:
       {
         BaseInputControl edit = null;
@@ -606,6 +612,11 @@ public class FilterPanel extends JPanel {
         ((TextControl)result).setValue(initValue==null?"":initValue.toString());
       }
       ;break;
+      case Column.TYPE_FORMATTED_TEXT:
+      {
+        ((JFormattedTextField)result).setValue(initValue==null?"":initValue.toString());
+      }
+      ;break;
       default: {
         Logger.error(this.getClass().getName(),"setValueComponent","Error while setting input control value: column type not supported",null);
       }
@@ -649,6 +660,8 @@ public class FilterPanel extends JPanel {
       }
       case Column.TYPE_TEXT:
         return ((TextControl)result).getValue();
+      case Column.TYPE_FORMATTED_TEXT:
+        return ((JFormattedTextField)result).getValue();
       case Column.TYPE_LOOKUP: {
         if (((CodLookupColumn)colProperties).isAllowOnlyNumbers())
           return ((NumericControl)result).getValue();

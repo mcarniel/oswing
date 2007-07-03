@@ -123,6 +123,7 @@ public class Column extends JPanel {
   public static final int TYPE_CURRENCY = 10;
   public static final int TYPE_BUTTON = 11;
   public static final int TYPE_IMAGE = 12;
+  public static final int TYPE_FORMATTED_TEXT = 13;
 
 
   public Column() {

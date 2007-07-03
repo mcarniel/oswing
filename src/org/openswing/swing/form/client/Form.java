@@ -1142,17 +1142,29 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     InputControl comp = null;
     Enumeration en = bindings.keys();
     ArrayList models = new ArrayList();
+    Object value = null;
     while(en.hasMoreElements()) {
       attrName = en.nextElement().toString();
       list = (ArrayList)bindings.get(attrName);
       if (list!=null)
         for(int i=0;i<list.size();i++) {
           comp = (InputControl)list.get(i);
-          if ((comp.getValue()==null || comp.getValue().equals("")) && comp.isRequired()) {
+          if (comp instanceof FormattedTextControl &&
+              !((FormattedTextControl)comp).isEditValid()) {
+            // input control is a formatted text control and its context is invalid...
             if (comp.getLinkLabel()!=null)
               inputControlsNotValid.add( comp.getLinkLabel().getText() );
             else
               inputControlsNotValid.add( comp.getAttributeName() );
+          }
+          else {
+            value = comp.getValue();
+            if ((value==null || value.equals("")) && comp.isRequired()) {
+              if (comp.getLinkLabel()!=null)
+                inputControlsNotValid.add( comp.getLinkLabel().getText() );
+              else
+                inputControlsNotValid.add( comp.getAttributeName() );
+            }
           }
         }
     }

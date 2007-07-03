@@ -43,7 +43,8 @@ public class ColumnTypeEditor extends PropertyEditorSupport {
     Column.TYPE_DEC,
     Column.TYPE_CHECK,
     Column.TYPE_COMBO,
-    Column.TYPE_LOOKUP
+    Column.TYPE_LOOKUP,
+    Column.TYPE_FORMATTED_TEXT,
   };
 
   static private String[] descColTypes = new String[]{
@@ -55,7 +56,8 @@ public class ColumnTypeEditor extends PropertyEditorSupport {
       "Decimal",
       "Check-box",
       "Combo-box",
-      "Lookup"
+      "Lookup",
+      "Formatted Text"
   };
 
 
