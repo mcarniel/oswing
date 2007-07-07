@@ -173,6 +173,9 @@ public class GridFrame extends JFrame {
 
 
   private void jbInit() throws Exception {
+
+    grid.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     grid.setCopyButton(copyButton);

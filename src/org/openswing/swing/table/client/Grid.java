@@ -159,6 +159,9 @@ public class Grid extends JTable
   /** vertical scrollbar */
   private PaginationVerticalScrollbar vScrollbar;
 
+  /** flag used to store a control key pressed event (in READONLY mode) */
+  private boolean controlDown = false;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -255,6 +258,11 @@ public class Grid extends JTable
               e.consume();
               return;
             }
+
+            if (getMode()==Consts.READONLY)
+              controlDown = e.isControlDown();
+            else
+              controlDown = false;
 
             // ENTER button pressed in the selected row: fire event to the grid controller...
             if (e.getKeyCode()==e.VK_ENTER &&
@@ -572,6 +580,15 @@ public class Grid extends JTable
             }
 
           }
+
+
+          public void keyReleased(KeyEvent e) {
+            if (getMode()==Consts.READONLY)
+              controlDown = e.isControlDown();
+            else
+              controlDown = false;
+          }
+
         });
 
       } // end if on gridType==MAIN_GRID...
@@ -662,9 +679,11 @@ public class Grid extends JTable
 
 
   /**
-   * Method redefined to store the current selected cell when user clicks directly in the cell witi the mouse.
+   * Method redefined to store the current selected cell when user clicks directly in the cell with the mouse.
    */
     public boolean editCellAt(int row, int column, EventObject e) {
+      if (grids==null || grids!=null && grids.getMode()==Consts.READONLY)
+        return false;
       setRowSelectionInterval(row,row);
       setColumnSelectionInterval(column,column);
       return super.editCellAt(row, column, e);
@@ -807,7 +826,7 @@ public class Grid extends JTable
     if (this.getMode()!=Consts.READONLY)
       return;
     vScrollbar.setValue(vScrollbar.getMinimum());
-    scrollMov(vScrollbar);
+    scrollMov(vScrollbar,NavigatorBar.PREV_PG_BUTTON);
     if (getRowCount()>0)
       setRowSelectionInterval(0,0);
 
@@ -827,7 +846,7 @@ public class Grid extends JTable
     if (this.getMode()!=Consts.READONLY)
       return;
     vScrollbar.setValue(vScrollbar.getMaximum());
-    scrollMov(vScrollbar);
+    scrollMov(vScrollbar,NavigatorBar.NEXT_PG_BUTTON);
     if (getRowCount()>0)
       setRowSelectionInterval(getRowCount()-1,getRowCount()-1);
 
@@ -890,7 +909,7 @@ public class Grid extends JTable
 
     public void mouseReleased(MouseEvent e){
       if (javax.swing.SwingUtilities.isLeftMouseButton(e)){
-          scrollMov((JScrollBar)adjEvent.getAdjustable());
+          scrollMov((JScrollBar)adjEvent.getAdjustable(),null);
       }
     }
   }
@@ -898,8 +917,9 @@ public class Grid extends JTable
 
   /**
    * Method called on scrolling grid: grid must fetch a new block of rows.
+   * @param pageButton null if no page button has been pressed, NavigatorBar.PREV_PG_BUTTON or NavigatorBar.NEXT_PG_BUTTON otherwise
    */
-  private void scrollMov(JScrollBar scrollBar){
+  private void scrollMov(JScrollBar scrollBar,String pageButton){
     if (getMode()!=Consts.READONLY)
       return;
 
@@ -907,7 +927,9 @@ public class Grid extends JTable
       return;
 
     int scrollableZoneSize = scrollBar.getMaximum()-scrollBar.getVisibleAmount();
-    if ((scrollBar.getValue() > scrollableZoneSize/4*3) && grids.isMoreRows()) {
+    if ((scrollBar.getValue() >= scrollableZoneSize/4*3) &&
+        grids.isMoreRows() &&
+        (pageButton==null || NavigatorBar.NEXT_PG_BUTTON.equals(pageButton))) {
       // scrolling table over 75% of rows (near the end)
       setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
       grids.nextRow(
@@ -916,8 +938,9 @@ public class Grid extends JTable
       );
       setRowSelectionInterval(model.getRowCount()/2,model.getRowCount()/2);
       ensureRowIsVisible(getSelectedRow());
-    } else if ((scrollBar.getValue() < scrollableZoneSize/4) &&
-               grids.getLastIndex()+1 > model.getRowCount()) {
+    } else if ((scrollBar.getValue() <= scrollableZoneSize/4) &&
+               grids.getLastIndex()+1 > model.getRowCount() &&
+               (pageButton==null || NavigatorBar.PREV_PG_BUTTON.equals(pageButton))) {
       // scrolling table on 25% of rows (near the beginning)
       setRowSelectionInterval(0,0);
       grids.previousRow(
@@ -1460,8 +1483,26 @@ public class Grid extends JTable
       }
     }
 
-    if (grids!=null && grids.getLockedGrid()!=null)
-      grids.setRowSelectionInterval(this.getSelectedRow(),this.getSelectedRow());
+    if (grids!=null && grids.getLockedGrid()!=null) {
+      if (!controlDown || getSelectionModel().getSelectionMode()==ListSelectionModel.SINGLE_SELECTION)
+        grids.setRowSelectionInterval(this.getSelectedRow(),this.getSelectedRow());
+      else if (controlDown && getSelectionModel().getSelectionMode()==ListSelectionModel.SINGLE_INTERVAL_SELECTION) {
+        getSelectionModel().addSelectionInterval(this.getSelectedRow(),this.getSelectedRow());
+      }
+      else {
+        addRowSelectionInterval(this.getSelectedRow(),this.getSelectedRow());
+      }
+    }
+//    else if (grids!=null && grids.getLockedGrid()==null) {
+//      if (!controlDown || getSelectionModel().getSelectionMode()==ListSelectionModel.SINGLE_SELECTION)
+//        grids.setRowSelectionInterval(this.getSelectedRow(),this.getSelectedRow());
+//      else if (controlDown && getSelectionModel().getSelectionMode()==ListSelectionModel.SINGLE_INTERVAL_SELECTION) {
+//        addRowSelectionInterval(this.getSelectedRow(),this.getSelectedRow());
+//      }
+//      else {
+//        addRowSelectionInterval(this.getSelectedRow(),this.getSelectedRow());
+//      }
+//    }
 
     // skip additional events...
     if (e.getValueIsAdjusting())
@@ -1536,6 +1577,7 @@ public class Grid extends JTable
     // fire row selected event...
     if (gridController!=null && this.getSelectedRow()!=-1)
       gridController.rowChanged(this.getSelectedRow());
+
   }
 
 

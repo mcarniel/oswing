@@ -169,9 +169,6 @@ public class BaseInputControl extends JPanel implements InputControl {
          (this.oldValue!=null && newValue==null) ||
          (this.oldValue!=null && newValue!=null && ! this.oldValue.equals(newValue)))) {
 
-      // update old value...
-      this.oldValue = newValue;
-
       // mark the input control as changed
       setChanged(true);
 
@@ -179,6 +176,9 @@ public class BaseInputControl extends JPanel implements InputControl {
       ValueChangeEvent e = new ValueChangeEvent(this, attributeName, this.oldValue, newValue);
       for (int i = 0; i < this.valueChangedListeners.size(); i++)
         ((ValueChangeListener)this.valueChangedListeners.get(i)).valueChanged(e);
+
+      // update old value...
+      this.oldValue = newValue;
     }
 
   }

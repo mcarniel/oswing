@@ -21,7 +21,9 @@
   <object key="Saving Error" value="Errore di salvataggio" />
   <object key="A mandatory column is empty." value="Una colonna obbligatoria ha una cella vuota." />
   <object key="Value not valid" value="Valore non valido" />
-
+  <object key="Select the previous row in grid" value="Seleziona la riga precedente in griglia" />
+  <object key="Select the next row in grid" value="Seleziona la riga successiva in griglia" />
+  
 <!-- export -->
   <object key="grid export" value="Esportazione dati in griglia" />
   <object key="export" value="Esportazione" />

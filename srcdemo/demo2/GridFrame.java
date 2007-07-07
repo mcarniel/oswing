@@ -44,7 +44,7 @@ public class GridFrame extends InternalFrame {
   private Connection conn = null;
   ExportButton exportButton1 = new ExportButton();
   NavigatorBar navigatorBar1 = new NavigatorBar();
-  
+
 
 
   public GridFrame(Connection conn,GridFrameController controller) {
@@ -76,6 +76,7 @@ public class GridFrame extends InternalFrame {
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     this.setSize(new Dimension(1400, 305));
+    grid.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     grid.setDeleteButton(deleteButton);
     grid.setExportButton(exportButton1);
     grid.setFunctionId("F1");
