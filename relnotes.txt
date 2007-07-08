@@ -1,5 +1,17 @@
 
 
+Release Notes 1.1.7
+-------------------
+
+Final release 1.1.7 available
+
+Added new input control: FormattedTextControl, based on JFormattedTextField class.
+Added new grid column: FormattedTextColumn, based on JFormattedTextField class.
+Added "toolTipText" property to graphics controls. This text is automatically converted according to internationalization settings.
+Fixed some problems with multiple rows selection on grid, with page scrolling on grid and selecting row on grid using navigator bar in a Form.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
 Release Notes 1.1.6
 -------------------
 

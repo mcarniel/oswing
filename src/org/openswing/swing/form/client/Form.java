@@ -502,7 +502,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       // set the form model with data just loaded...
       if (!answer.isError()) {
         model.setValueObject( (ValueObject)((VOResponse)answer).getVo() );
-      }
+        previousVO = getVOModel().getValueObject();
+       }
       else
         JOptionPane.showMessageDialog(
             ClientUtils.getParentFrame(this),
@@ -1397,6 +1398,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             }
 
           }
+          previousVO = getVOModel().getValueObject();
           return true;
         } else {
           JOptionPane.showMessageDialog(

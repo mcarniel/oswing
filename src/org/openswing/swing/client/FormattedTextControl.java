@@ -411,7 +411,7 @@ public class FormattedTextControl extends BaseInputControl implements InputContr
   public final boolean isEditValid() {
     try {
       if (textBox != null) {
-        return textBox.isEditValid();
+        return textBox.isEditValid() || "".equals(textBox.getValue());
       }
       return false;
     }
