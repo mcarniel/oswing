@@ -102,6 +102,7 @@ public class DetailFrame extends JFrame {
     controlComboBox.setCanCopy(true);
     controlComboBox.setDomainId("ORDERSTATE");
     controlFormattedText.setAttributeName("formattedTextValue");
+    controlFormattedText.setToolTipText("formattedTextValue");
 
     MaskFormatter mask = new MaskFormatter("###-##-####");
     mask.setValidCharacters("0123456789");

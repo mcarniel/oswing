@@ -77,6 +77,9 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
   /** define if the input control value is changed */
   private boolean changed = false;
 
+  /** tooltip text */
+  private String toolTipText = null;
+
 
   public CheckBoxControl() {
     setOpaque(false);
@@ -98,6 +101,25 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
    */
   public final void setFont(Font font) {
     super.setFont(font);
+  }
+
+
+  /**
+   * Set a tooltip text. This text will be translated according to the internationalization settings.
+   * @param toolTipText tool tip text entry in the dictionary
+   */
+  public final void setToolTipText(String toolTipText) {
+    this.toolTipText = toolTipText;
+    if (!Beans.isDesignTime())
+      setToolTipText(ClientSettings.getInstance().getResources().getResource(toolTipText));
+  }
+
+
+  /**
+   * @return tool tip text entry in the dictionary
+   */
+  public final String getToolTipText() {
+    return toolTipText;
   }
 
 

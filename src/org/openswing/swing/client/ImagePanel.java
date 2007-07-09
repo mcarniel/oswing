@@ -7,6 +7,7 @@ import java.awt.image.PixelGrabber;
 import java.io.InputStream;
 import java.io.IOException;
 import java.beans.Beans;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -56,6 +57,9 @@ public class ImagePanel extends JPanel {
   public static final int SCROLLBAR_AS_NEEDED = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
   public static final int SCROLLBAR_NEVER = JScrollPane.VERTICAL_SCROLLBAR_NEVER;
   public static final int SCROLLBAR_ALWAYS = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
+
+  /** tooltip text */
+  private String toolTipText = null;
 
 
   public ImagePanel() {
@@ -144,6 +148,25 @@ public class ImagePanel extends JPanel {
     else
       imagePanel.setImage(null);
     this.imageName = imageName;
+  }
+
+
+  /**
+   * Set a tooltip text. This text will be translated according to the internationalization settings.
+   * @param toolTipText tool tip text entry in the dictionary
+   */
+  public final void setToolTipText(String toolTipText) {
+    this.toolTipText = toolTipText;
+    if (!Beans.isDesignTime())
+      imagePanel.setToolTipText(ClientSettings.getInstance().getResources().getResource(toolTipText));
+  }
+
+
+  /**
+   * @return tool tip text entry in the dictionary
+   */
+  public final String getToolTipText() {
+    return toolTipText;
   }
 
 

@@ -24,9 +24,11 @@ public class LabelControlBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _label = new PropertyDescriptor("label", beanClass, "getLabel", "setLabel");
       PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
+      PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _font,
-        _label};
+        _label,
+        _toolTipText};
       return pds;
     }
     catch(IntrospectionException ex) {

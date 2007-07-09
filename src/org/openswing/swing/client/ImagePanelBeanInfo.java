@@ -24,9 +24,11 @@ public class ImagePanelBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _image = new PropertyDescriptor("image", beanClass, "getImage", "setImage");
       PropertyDescriptor _imageName = new PropertyDescriptor("imageName", beanClass, "getImageName", "setImageName");
+      PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _image,
-        _imageName};
+        _imageName,
+        _toolTipText};
       return pds;
     }
     catch(IntrospectionException ex) {

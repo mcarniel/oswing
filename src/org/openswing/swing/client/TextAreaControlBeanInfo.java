@@ -32,6 +32,7 @@ public class TextAreaControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
       PropertyDescriptor _required = new PropertyDescriptor("required", beanClass, "isRequired", "setRequired");
+      PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _attributeName,
         _canCopy,
@@ -41,7 +42,8 @@ public class TextAreaControlBeanInfo extends SimpleBeanInfo {
         _font,
         _linkLabel,
         _maxCharacters,
-        _required};
+        _required,
+        _toolTipText};
       return pds;
     }
     catch(IntrospectionException ex) {

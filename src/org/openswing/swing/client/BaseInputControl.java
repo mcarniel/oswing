@@ -74,6 +74,9 @@ public class BaseInputControl extends JPanel implements InputControl {
   /** default background color of the binding component */
   private Color defaultBackgroundColor = null;
 
+  /** tooltip text */
+  private String toolTipText = null;
+
 
   /**
    * Constructor.
@@ -246,6 +249,25 @@ public class BaseInputControl extends JPanel implements InputControl {
   public final void setFont(Font font) {
     if (getBindingComponent()!=null)
       getBindingComponent().setFont(font);
+  }
+
+
+  /**
+   * Set a tooltip text. This text will be translated according to the internationalization settings.
+   * @param toolTipText tool tip text entry in the dictionary
+   */
+  public final void setToolTipText(String toolTipText) {
+    this.toolTipText = toolTipText;
+    if (!Beans.isDesignTime())
+      getBindingComponent().setToolTipText(ClientSettings.getInstance().getResources().getResource(toolTipText));
+  }
+
+
+  /**
+   * @return tool tip text entry in the dictionary
+   */
+  public final String getToolTipText() {
+    return toolTipText;
   }
 
 

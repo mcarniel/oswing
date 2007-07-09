@@ -4,6 +4,7 @@ import org.openswing.swing.util.client.ClientSettings;
 import javax.swing.JLabel;
 import org.openswing.swing.internationalization.java.*;
 import java.awt.Font;
+import java.beans.Beans;
 
 
 /**
@@ -38,6 +39,9 @@ public class LabelControl extends JLabel {
 
   /** label not yet translated */
   private String label = null;
+
+  /** tooltip text */
+  private String toolTipText = null;
 
 
   public LabelControl() { }
@@ -83,6 +87,25 @@ public class LabelControl extends JLabel {
    */
   public final void setFont(Font font) {
     super.setFont(font);
+  }
+
+
+  /**
+   * Set a tooltip text. This text will be translated according to the internationalization settings.
+   * @param toolTipText tool tip text entry in the dictionary
+   */
+  public final void setToolTipText(String toolTipText) {
+    this.toolTipText = toolTipText;
+    if (!Beans.isDesignTime())
+      setToolTipText(ClientSettings.getInstance().getResources().getResource(toolTipText));
+  }
+
+
+  /**
+   * @return tool tip text entry in the dictionary
+   */
+  public final String getToolTipText() {
+    return toolTipText;
   }
 
 
