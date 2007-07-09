@@ -116,6 +116,12 @@ public class GridFrame extends JFrame {
     grid.getColumnContainer().add(colCheck, null);
     grid.getColumnContainer().add(colLookup, null);
 
+//    grid.setIntercellSpacing(new Dimension(2,2));
+//    grid.setRowMargin(2);
+
+//    Font f = new Font(new JLabel().getFont().getName(),Font.BOLD,new JLabel().getFont().getSize());
+//    grid.setHeaderTextFont("dateValue",f);
+//    grid.setHeaderTextForeground("dateValue",Color.red);
 
   }
   public GridControl getGrid() {

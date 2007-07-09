@@ -60,7 +60,7 @@ public class ClientApplication {
     );
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.FILTER_PANEL_ON_GRID = true;
-
+    ClientSettings.SHOW_SORTING_ORDER = true;
 
     Domain orderStateDomain = new Domain("ORDERSTATE");
     orderStateDomain.addDomainPair("O","opened");

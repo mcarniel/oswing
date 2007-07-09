@@ -214,6 +214,18 @@ public class GridControl extends JPanel {
   /** default value that could be set in the quick filter criteria; default value: ClientSettings.DEFAULT_QUICK_FILTER_CRITERIA; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
   private int defaultQuickFilterCriteria = ClientSettings.DEFAULT_QUICK_FILTER_CRITERIA;
 
+  /** collection of pairs <attribute name,Font object> */
+  private Hashtable headerTextFonts = new Hashtable();
+
+  /** collection of pairs <attribute name,Color object> */
+  private Hashtable headerTextForegrounds = new Hashtable();
+
+  /** intercell spacing; default value = ClientSettings.INTERCELL_SPACING */
+  private Dimension spacing = ClientSettings.INTERCELL_SPACING;
+
+  /** row margin; default value = ClientSettings.ROW_MARGIN */
+  private int rowMargin = ClientSettings.ROW_MARGIN;
+
 
   /**
    * Costructor.
@@ -336,6 +348,23 @@ public class GridControl extends JPanel {
       if (gridId!=null)
         table.enableDrag(gridId);
 
+      Enumeration en = headerTextFonts.keys();
+      String attrName = null;
+      while(en.hasMoreElements()) {
+        attrName = en.nextElement().toString();
+        table.setHeaderTextFont(attrName,(Font)headerTextFonts.get(attrName));
+      }
+
+      en = headerTextForegrounds.keys();
+      while(en.hasMoreElements()) {
+        attrName = en.nextElement().toString();
+        table.setHeaderTextForeground(attrName,(Color)headerTextForegrounds.get(attrName));
+      }
+
+      if (spacing!=null)
+        table.setIntercellSpacing(spacing);
+      if (rowMargin!=-1)
+        table.setRowMargin(rowMargin);
 
 
       // add top grid (optionally)...
@@ -384,6 +413,25 @@ public class GridControl extends JPanel {
             tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
           }
         });
+
+
+      en = headerTextFonts.keys();
+      while(en.hasMoreElements()) {
+        attrName = en.nextElement().toString();
+        topTable.setHeaderTextFont(attrName,(Font)headerTextFonts.get(attrName));
+      }
+
+      en = headerTextForegrounds.keys();
+      while(en.hasMoreElements()) {
+        attrName = en.nextElement().toString();
+        topTable.setHeaderTextForeground(attrName,(Color)headerTextForegrounds.get(attrName));
+      }
+
+      if (spacing!=null)
+        topTable.setIntercellSpacing(spacing);
+      if (rowMargin!=-1)
+        topTable.setRowMargin(rowMargin);
+
 
     } // end top grid...
 
@@ -434,6 +482,11 @@ public class GridControl extends JPanel {
             tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
           }
         });
+
+      if (spacing!=null)
+        bottomTable.setIntercellSpacing(spacing);
+      if (rowMargin!=-1)
+        bottomTable.setRowMargin(rowMargin);
 
 
     } // end bottom grid...
@@ -1551,6 +1604,67 @@ public class GridControl extends JPanel {
       }
     });
   }
+
+
+  /**
+   * Set column header font in the specified column.
+   */
+  public final void setHeaderTextFont(String attributeName, Font font) {
+    if (table!=null)
+      table.setHeaderTextFont(attributeName, font);
+    else
+      headerTextFonts.put(attributeName,font);
+  }
+
+
+  /**
+   * Set foreground color in the specified column header.
+   */
+  public final void setHeaderTextForeground(String attributeName, Color color) {
+    if (table!=null)
+      table.setHeaderTextForeground(attributeName, color);
+    else
+      headerTextForegrounds.put(attributeName,color);
+  }
+
+
+  /**
+   * Sets the <code>rowMargin</code> and the <code>columnMargin</code> --
+   * the height and width of the space between cells -- to
+   * <code>intercellSpacing</code>.
+   *
+   * @param   intercellSpacing        a <code>Dimension</code>
+   *					specifying the new width
+   *					and height between cells
+   * @see     #getIntercellSpacing
+   * @beaninfo
+   *  description: The spacing between the cells,
+   *               drawn in the background color of the JTable.
+   */
+  public void setIntercellSpacing(Dimension spacing) {
+    if (table!=null)
+      table.setIntercellSpacing(spacing);
+    else
+      this.spacing = spacing;
+  }
+
+
+  /**
+   * Sets the amount of empty space between cells in adjacent rows.
+   *
+   * @param  rowMargin  the number of pixels between cells in a row
+   * @see     #getRowMargin
+   * @beaninfo
+   *  bound: true
+   *  description: The amount of space between cells.
+   */
+  public void setRowMargin(int rowMargin) {
+    if (table!=null)
+      table.setRowMargin(rowMargin);
+    else
+      this.rowMargin = rowMargin;
+  }
+
 
 
 

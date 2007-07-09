@@ -37,8 +37,11 @@ public class ClientApplication implements MDIController,LoginController {
     );
     ClientSettings.BACKGROUND = "background3.jpg";
     ClientSettings.TREE_BACK = "treeback2.jpg";
+//    ClientSettings.MAX_MENU_WIDTH = 300;
+//    ClientSettings.MENU_WIDTH = 300;
 
     MDIFrame mdi = new MDIFrame(this);
+//    mdi.setLocked(false);
   }
 
 

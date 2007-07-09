@@ -1171,7 +1171,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     } else {
       grid.setRowSelectionInterval(grid.getSelectedRow()+1,grid.getSelectedRow()+1);
       if (lockedGrid!=null)
-        lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow()+1,lockedGrid.getSelectedRow()+1);
+        lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow(),lockedGrid.getSelectedRow());
       afterNextRow();
 
       // fire events related to navigator button pressed...
@@ -1270,7 +1270,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             public void run() {
               grid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
               if (lockedGrid!=null) {
-                lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
+                lockedGrid.setRowSelectionInterval(model.getRowCount(),model.getRowCount());
               }
               // fire events related to navigator button pressed...
               if (navBar!=null && e!=null) {
@@ -1297,7 +1297,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       if (grid.getSelectedRow()>0) {
         grid.setRowSelectionInterval(grid.getSelectedRow() - 1, grid.getSelectedRow() - 1);
         if (lockedGrid!=null)
-          lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow() - 1, lockedGrid.getSelectedRow() - 1);
+          lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow(), lockedGrid.getSelectedRow());
       }
       afterPreviousRow();
 
@@ -2526,6 +2526,78 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public final int getstartIndex() {
     return startIndex;
   }
+
+
+  /**
+   * Set column header font in the specified column.
+   */
+  public final void setHeaderTextFont(String attributeName, Font font) {
+    int modelIndex = modelAdapter.getFieldIndex(attributeName);
+    if (modelIndex!=-1) {
+      int gridIndex = grid.convertColumnIndexToView(modelIndex);
+      if (gridIndex!=-1)
+        grid.setHeaderTextFont(gridIndex,font);
+      else
+        Logger.error(this.getClass().getName(),"setHeaderTextFont","There is not a visible column having attribute '"+attributeName+"'",null);
+    }
+    else
+      Logger.error(this.getClass().getName(),"setHeaderTextFont","There is not an attribute '"+attributeName+"' in the grid model",null);
+  }
+
+
+  /**
+   * Set foreground color in the specified column header.
+   */
+  public final void setHeaderTextForeground(String attributeName, Color color) {
+    int modelIndex = modelAdapter.getFieldIndex(attributeName);
+    if (modelIndex!=-1) {
+      int gridIndex = grid.convertColumnIndexToView(modelIndex);
+      if (gridIndex!=-1)
+        grid.setHeaderTextForeground(gridIndex,color);
+      else
+        Logger.error(this.getClass().getName(),"setHeaderTextForeground","There is not a visible column having attribute '"+attributeName+"'",null);
+    }
+    else
+      Logger.error(this.getClass().getName(),"setHeaderTextForeground","There is not an attribute '"+attributeName+"' in the grid model",null);
+  }
+
+
+  /**
+   * Sets the <code>rowMargin</code> and the <code>columnMargin</code> --
+   * the height and width of the space between cells -- to
+   * <code>intercellSpacing</code>.
+   *
+   * @param   intercellSpacing        a <code>Dimension</code>
+   *					specifying the new width
+   *					and height between cells
+   * @see     #getIntercellSpacing
+   * @beaninfo
+   *  description: The spacing between the cells,
+   *               drawn in the background color of the JTable.
+   */
+  public void setIntercellSpacing(Dimension spacing) {
+    grid.setIntercellSpacing(spacing);
+    if (lockedGrid!=null)
+      lockedGrid.setIntercellSpacing(spacing);
+  }
+
+
+  /**
+   * Sets the amount of empty space between cells in adjacent rows.
+   *
+   * @param  rowMargin  the number of pixels between cells in a row
+   * @see     #getRowMargin
+   * @beaninfo
+   *  bound: true
+   *  description: The amount of space between cells.
+   */
+  public void setRowMargin(int rowMargin) {
+    grid.setRowMargin(rowMargin);
+    if (lockedGrid!=null)
+      lockedGrid.setRowMargin(rowMargin);
+  }
+
+
 
 
 }

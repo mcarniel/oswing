@@ -11,6 +11,8 @@ import org.openswing.swing.permissions.java.ButtonsAuthorizations;
 import org.openswing.swing.internationalization.java.*;
 import java.lang.reflect.*;
 import org.openswing.swing.util.java.Consts;
+import java.awt.Font;
+import java.awt.Dimension;
 
 
 /**
@@ -71,7 +73,7 @@ public class ClientSettings {
   public static int DIVIDER_WIDTH = 15;
 
   /** width of MDI Frame menu window */
-  public static int MENU_WIDTH = 200;
+  public static int MENU_WIDTH = 250;
 
   /** maximum width of MDI Frame menu window */
   public static int MAX_MENU_WIDTH = 300;
@@ -165,6 +167,19 @@ public class ClientSettings {
 
   /** <code>true</code> to show pagination buttons in navigator bar; <code>false</code> to do not show them; default value: <code>true</code> */
   public static boolean SHOW_PAGINATION_BUTTONS_ON_NAVBAR = true;
+
+  /** <code>true</code> to show sorting order (number) in the column header of the grid; <code>false</code> to do not show it; default value: <code>false</code> */
+  public static boolean SHOW_SORTING_ORDER = false;
+
+  /** default font to use in column headers of grid; default value: null (i.e. use default JLabel font) */
+  public static Font HEADER_FONT = null;
+
+  /** default intercell spacing between cells in grid; default value: 1,1 */
+  public static Dimension INTERCELL_SPACING = new Dimension(1,1);
+
+  /** default margin between two rows in grid; default value: 1 */
+  public static int ROW_MARGIN = 1;
+
 
 
   /**

@@ -395,6 +395,17 @@ public class MDIFrame extends JFrame implements BusyListener {
   }
 
 
+  /**
+   * @param locked <code>true</code> if menu window is locked <code>false</code> otherwise
+   */
+  public final void setLocked(boolean locked) {
+    treeMenu.setLocked(locked);
+    if (!locked && splitPane.getDividerLocation()>0)
+      splitPane.setDividerLocation(0);
+
+  }
+
+
   //File | Exit action performed
   public void menuFileExit_actionPerformed(ActionEvent e) {
     onWindowClosing();
@@ -436,7 +447,7 @@ public class MDIFrame extends JFrame implements BusyListener {
     splitPane.setPreferredSize(this.getSize());
     splitPane.setOneTouchExpandable(true);
     splitPane.setDividerSize(ClientSettings.DIVIDER_WIDTH);
-    splitPane.setDividerLocation(250);
+    splitPane.setDividerLocation(ClientSettings.MENU_WIDTH);
     splitPane.setLastDividerLocation(0);
     splitPaneUI.getDivider().addMouseListener(new DivMouseListener());
   }

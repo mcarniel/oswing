@@ -1,5 +1,21 @@
 
 
+Release Notes 1.1.8
+-------------------
+
+Final release 1.1.8 available
+
+Added setLocked method to MDIFrame, to disable tree panel locking on the MDI frame.
+Fixed problem when using ClientSettings.MENU_WIDTH property.
+Fixed problem in grid, related to the sorting order of columns, when more than one columns has been sorted.
+Added ClientSettings.SHOW_SORTING_ORDER property to show the sorting order in the column header of a grid and
+when clicking many times on column headers to re-sort them.
+Added ClientSettings.HEADER_FONT property to change column header font for all grids.
+Added two methods in GridControl to manage Font and Color in column headers: setHeaderTextFont() and setHeaderTextForeground().
+Added two methods in GridControl to manage cell/row margins: setIntercellSpacing and setRowMargin.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
 Release Notes 1.1.7
 -------------------
 

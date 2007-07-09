@@ -1068,11 +1068,27 @@ public class Grid extends JTable
       }
 
       colProp.setSortVersus(currentSortVersus);
-      colProp.setSortingOrder(
-        maxSortingOrder+1>=colProps.length?
-        colProps.length-1:
-        maxSortingOrder+1
-      );
+      if (currentSortVersus.equals(Consts.NO_SORTED))
+        colProp.setSortingOrder(0);
+      else if (colProp.getSortingOrder()==0)
+        colProp.setSortingOrder(maxSortingOrder+1);
+
+      // redefine sortingOrder property for each (already) sorted column...
+      if (maxSortingOrder!=-1) {
+        Integer[] aux = new Integer[Math.max(maxSortingOrder+1,colProps.length+1)];
+        for(int i=0;i<colProps.length;i++)
+          if (colProps[i].isColumnSortable() &&
+              !colProps[i].getSortVersus().equals(Consts.NO_SORTED)) {
+            aux[colProps[i].getSortingOrder()] = new Integer(i);
+          }
+        int pos = 1;
+        for(int i=0;i<aux.length;i++)
+          if (aux[i]!=null) {
+            colProps[aux[i].intValue()].setSortingOrder(pos);
+            pos++;
+          }
+      }
+
       if (this.getTableHeader()!=null)
         getTableHeader().repaint();
       setOrderList();
@@ -1230,17 +1246,25 @@ public class Grid extends JTable
       setBorder(columnHeaderBorder);
       setLayout(new BorderLayout(0, 0));
       l_text = new JLabel();
+      if (ClientSettings.HEADER_FONT!=null)
+        l_text.setFont(ClientSettings.HEADER_FONT);
       l_text.setVerticalTextPosition(SwingConstants.CENTER);
       l_text.setHorizontalAlignment(headerTextAlignment);
       l_text.setOpaque(false);
       add(l_text, BorderLayout.CENTER);
       l_icon = new JLabel("");
+      if (ClientSettings.HEADER_FONT!=null)
+        l_icon.setFont(ClientSettings.HEADER_FONT);
       l_icon.setOpaque(false);
       add(l_icon, BorderLayout.EAST);
     }
 
 
-    public void setIcon(Icon icon) {
+    public void setIcon(Icon icon,int sortingOrder) {
+      if (sortingOrder>0 && ClientSettings.SHOW_SORTING_ORDER)
+        l_icon.setText(String.valueOf(sortingOrder));
+      else
+        l_icon.setText("");
       l_icon.setIcon(icon);
     }
 
@@ -1252,15 +1276,14 @@ public class Grid extends JTable
                                                    int row,
                                                    int viewColumnIndex) {
      int columnModelIndex = table.convertColumnIndexToModel(viewColumnIndex);
-     setIcon(null);
+     setIcon(null,0);
      for(int i=0;i<grids.getCurrentSortedColumns().size();i++)
        if (grids.getCurrentSortedColumns().get(i).equals(colProps[columnModelIndex].getColumnName())) {
          // current column is sorted...
          if (grids.getCurrentSortedVersusColumns().get(i).equals(Consts.ASC_SORTED))
-           setIcon(ascSort);
+           setIcon(ascSort,i+1);
          else
-           setIcon(descSort);
-
+           setIcon(descSort,i+1);
        }
       l_text.setText(value.toString());
       return this;
@@ -1275,6 +1298,8 @@ public class Grid extends JTable
     public void setHeaderTextFont(Font font) {
       l_text.setFont(font);
       l_text.repaint();
+      l_icon.setFont(font);
+      l_icon.repaint();
     }
 
 
@@ -1286,6 +1311,8 @@ public class Grid extends JTable
     public void setHeaderTextForeground(Color color) {
       l_text.setForeground(color);
       l_text.repaint();
+      l_icon.setForeground(color);
+      l_icon.repaint();
     }
 
 
@@ -1969,12 +1996,6 @@ public class Grid extends JTable
   public final MouseListener getSortingMouseListener() {
     return sortingMouseListener;
   }
-
-
-
-
-
-
 
 
   /********************************************************************
