@@ -13,6 +13,7 @@ when clicking many times on column headers to re-sort them.
 Added ClientSettings.HEADER_FONT property to change column header font for all grids.
 Added two methods in GridControl to manage Font and Color in column headers: setHeaderTextFont() and setHeaderTextForeground().
 Added two methods in GridControl to manage cell/row margins: setIntercellSpacing and setRowMargin.
+Added two equivalent properties in ClientSettings: INTERCELL_SPACING and ROW_MARGIN.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 
