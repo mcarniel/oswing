@@ -1303,6 +1303,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           response = formController.updateRecord(previousVO,(ValueObject)model.getValueObject());
         if (!response.isError()) {
           model.setValueObject( (ValueObject)((VOResponse)response).getVo() );
+          if (getMode()==Consts.INSERT)
+            previousVO = getVOModel().getValueObject();
 
           // reset input controls value according to value object content (which could be filled on the server side)
           pull();

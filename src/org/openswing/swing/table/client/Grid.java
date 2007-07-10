@@ -81,9 +81,6 @@ public class Grid extends JTable
   /** TableColumn linked to the grid */
   private TableColumn[] tableColumnModel = null;
 
-  /** maximum number of sorted columns */
-  private int maxSortedColumns = 1;
-
   /** active cell background color */
   private Color activeCellBackgroundColor = ClientSettings.GRID_ACTIVE_CELL_BACKGROUND;
 
@@ -1044,8 +1041,8 @@ public class Grid extends JTable
       // determine if it's possible to sort by the specified column:
       if (colProp.getSortVersus().equals(Consts.NO_SORTED) &&
           !currentSortVersus.equals(Consts.NO_SORTED) &&
-          currentColSorted==maxSortedColumns &&
-          maxSortedColumns==1) {
+          currentColSorted==grids.getMaxSortedColumns() &&
+          grids.getMaxSortedColumns()==1) {
         // only one column per time is allowed to be sorted and
         // user has clicked on another one column:
         // the previous sorted column will be set NO_SORTED...
@@ -1060,7 +1057,7 @@ public class Grid extends JTable
       }
       else if (colProp.getSortVersus().equals(Consts.NO_SORTED) &&
           !currentSortVersus.equals(Consts.NO_SORTED) &&
-          currentColSorted>=maxSortedColumns) {
+          currentColSorted>=grids.getMaxSortedColumns()) {
         // view warning message...
         JOptionPane.showMessageDialog(
             ClientUtils.getParentFrame(this),
@@ -1447,15 +1444,6 @@ public class Grid extends JTable
    */
   public final VOListTableModel getVOListTableModel() {
     return model;
-  }
-
-
-  /**
-   * Set maximum number of sorted columns.
-   * @param maxSortedColumns maximum number of sorted columns
-   */
-  public final void setMaxSortedColumns(int maxSortedColumns) {
-    this.maxSortedColumns = maxSortedColumns;
   }
 
 

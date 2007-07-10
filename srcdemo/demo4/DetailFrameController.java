@@ -109,7 +109,7 @@ public class DetailFrameController extends FormController {
   public Response insertRecord(ValueObject newPersistentObject) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("insert into DEMO4(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,TA,DEMO4.FORMATTED_TEXT ) values(?,?,?,?,?,?,?,?,?,?)");
+      stmt = conn.prepareStatement("insert into DEMO4(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,TA,FORMATTED_TEXT ) values(?,?,?,?,?,?,?,?,?,?)");
       TestVO vo = (TestVO)newPersistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setString(5,vo.getComboValue());

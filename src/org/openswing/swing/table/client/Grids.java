@@ -196,6 +196,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** locked + std grids scrollpane */
   private JScrollPane scroll = null;
 
+  /** maximum number of sorted columns */
+  private int maxSortedColumns = 1;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -665,7 +668,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @param maxSortedColumns maximum number of sorted columns
    */
   public final void setMaxSortedColumns(int maxSortedColumns) {
-    grid.setMaxSortedColumns(maxSortedColumns);
+    this.maxSortedColumns = maxSortedColumns;
+  }
+
+
+  /**
+   * @return maximum number of sorted columns
+   */
+  public final int getMaxSortedColumns() {
+    return this.maxSortedColumns;
   }
 
 

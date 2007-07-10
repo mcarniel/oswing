@@ -69,7 +69,7 @@ public class GridFrame extends JFrame {
     grid.setExportButton(exportButton1);
     grid.setFunctionId("F1");
     grid.setInsertButton(insertButton);
-    grid.setMaxSortedColumns(1);
+    grid.setMaxSortedColumns(3);
     grid.setNavBar(navigatorBar1);
     grid.setReloadButton(reloadButton);
     grid.setValueObjectClassName("demo4.TestVO");
@@ -115,6 +115,8 @@ public class GridFrame extends JFrame {
     grid.getColumnContainer().add(textColumn1, null);
     grid.getColumnContainer().add(colCheck, null);
     grid.getColumnContainer().add(colLookup, null);
+
+//    grid.setLockedColumns(2);
 
 //    grid.setIntercellSpacing(new Dimension(10,0));
 //    grid.setRowMargin(2);
