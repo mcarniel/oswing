@@ -26,6 +26,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _insertButton = new PropertyDescriptor("insertButton", beanClass, "getInsertButton", "setInsertButton");
       PropertyDescriptor _exportButton = new PropertyDescriptor("exportButton", beanClass, "getExportButton", "setExportButton");
       PropertyDescriptor _filterButton = new PropertyDescriptor("filterButton", beanClass, "getFilterButton", "setFilterButton");
+      PropertyDescriptor _intercellSpacing = new PropertyDescriptor("intercellSpacing", beanClass, "getIntercellSpacing", "setIntercellSpacing");
       PropertyDescriptor _lockedColumns = new PropertyDescriptor("lockedColumns", beanClass, "getLockedColumns", "setLockedColumns");
       PropertyDescriptor _lockedRowsOnTop = new PropertyDescriptor("lockedRowsOnTop", beanClass, "getLockedRowsOnTop", "setLockedRowsOnTop");
       PropertyDescriptor _lockedRowsOnBottom = new PropertyDescriptor("lockedRowsOnBottom", beanClass, "getLockedRowsOnBottom", "setLockedRowsOnBottom");
@@ -41,6 +42,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _resizingAllowed = new PropertyDescriptor("resizingAllowed", beanClass, "isResizingAllowed", "setResizingAllowed");
       PropertyDescriptor _rowHeight = new PropertyDescriptor("rowHeight", beanClass, "getRowHeight", "setRowHeight");
       PropertyDescriptor _rowHeightFixed = new PropertyDescriptor("rowHeightFixed", beanClass, "isRowHeightFixed", "setRowHeightFixed");
+      PropertyDescriptor _rowMargin = new PropertyDescriptor("rowMargin", beanClass, "getRowMargin", "seRowMargin");
       PropertyDescriptor _saveButton = new PropertyDescriptor("saveButton", beanClass, "getSaveButton", "setSaveButton");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
       PropertyDescriptor _showFilterPanelOnGrid = new PropertyDescriptor("showFilterPanelOnGrid", beanClass, "isShowFilterPanelOnGrid", "setShowFilterPanelOnGrid");
@@ -56,6 +58,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _filterButton,
         _functionId,
         _gridDataLocator,
+        _intercellSpacing,
         _lockedColumns,
         _lockedRowsOnTop,
         _lockedRowsOnBottom,
@@ -71,6 +74,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _resizingAllowed,
         _rowHeight,
         _rowHeightFixed,
+        _rowMargin,
         _saveButton,
         _selectionMode,
         _showFilterPanelOnGrid,

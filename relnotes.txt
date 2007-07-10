@@ -11,9 +11,12 @@ Fixed problem in grid, related to the sorting order of columns, when more than o
 Added ClientSettings.SHOW_SORTING_ORDER property to show the sorting order in the column header of a grid and
 when clicking many times on column headers to re-sort them.
 Added ClientSettings.HEADER_FONT property to change column header font for all grids.
-Added two methods in GridControl to manage Font and Color in column headers: setHeaderTextFont() and setHeaderTextForeground().
-Added two methods in GridControl to manage cell/row margins: setIntercellSpacing and setRowMargin.
+Added two properties in all columns, to manage Font and Color in column headers: "headerFont" and "headerForegroundColor".
+Added two properties in GridControl to manage cell/row margins: "intercellSpacing" and "rowMargin".
 Added two equivalent properties in ClientSettings: INTERCELL_SPACING and ROW_MARGIN.
+Added "textAlignment" property to all columns, to set horizontal alignement of cell content.
+Fixed problem in grid's filter panel when applying a filter to a combo column and with numeric type columns.
+Fixed problem when invoking GridController.selectedCell: the selected row index was incorrect.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

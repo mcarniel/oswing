@@ -375,7 +375,7 @@ public class FilterPanel extends JPanel {
           fPanel.add(colOpsComboBox2,
                      new GridBagConstraints(1, row, 1, 1, 0.0, 0.0
                   ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-          fPanel.add(c,
+          fPanel.add(c2,
                      new GridBagConstraints(2, row, 1, 1, 1.0, 0.0
                   ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 
@@ -580,6 +580,16 @@ public class FilterPanel extends JPanel {
       JComboBox combo = (JComboBox)((JPanel)result).getComponent(0);
       if (initValue==null)
         combo.setSelectedIndex(0);
+      else {
+        Domain domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
+        Vector couple = null;
+        DomainPair[] pairs = domain.getDomainPairList();
+        for(int i=0;i<pairs.length;i++)
+          if (pairs[i].getCode().equals(initValue)) {
+            combo.setSelectedIndex(i+1);
+            break;
+          }
+      }
       return;
     }
 

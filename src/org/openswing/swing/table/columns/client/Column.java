@@ -109,6 +109,15 @@ public class Column extends JPanel {
   /** inner grid */
   private Grids table;
 
+  /** header font; default value: ClientSettings.HEADER_FONT */
+  private Font headerFont = ClientSettings.HEADER_FONT;
+
+  /** header foreground color; default value: null (i.e. default JLabel foreground color) */
+  private Color headerForegroundColor = null;
+
+  /** column text horizontal alignment */
+  private int textAlignment = SwingConstants.LEFT;
+
 
   public static final int TYPE_TEXT = 0;
   public static final int TYPE_DATE = Consts.TYPE_DATE;
@@ -427,7 +436,7 @@ public class Column extends JPanel {
    * @return column header horizontal alignment
    */
   public int getHeaderTextAlignment() {
-    return(this.headerTextAlignment);
+    return this.headerTextAlignment;
   }
 
 
@@ -491,5 +500,60 @@ public class Column extends JPanel {
   public final void setTable(Grids table) {
     this.table = table;
   }
+
+
+  /**
+   * Set column header font.
+   */
+  public final void setHeaderFont(Font headerFont) {
+    this.headerFont = headerFont;
+    if (headerFont!=null && Beans.isDesignTime())
+      colHeader.setFont(headerFont);
+  }
+
+
+  /**
+   * @return column header font
+   */
+  public final Font getHeaderFont() {
+    return this.headerFont;
+  }
+
+
+  /**
+   * Set foreground color for column header.
+   */
+  public final void setHeaderForegroundColor(Color headerForegroundColor) {
+    this.headerForegroundColor = headerForegroundColor;
+    if (headerForegroundColor!=null && Beans.isDesignTime())
+      colHeader.setForeground(headerForegroundColor);
+  }
+
+
+  /**
+   * @return foreground color for column header
+   */
+  public final Color getHeaderForegroundColor() {
+    return this.headerForegroundColor;
+  }
+
+
+  /**
+   * @return column text horizontal alignment
+   */
+  public final int getTextAlignment() {
+    return this.textAlignment;
+  }
+
+
+  /**
+   * Set column text horizontal alignement.
+   * @param alignment column text horizontal alignement; possible values: "SwingConstants.LEFT", "SwingConstants.RIGHT", "SwingConstants.CENTER".
+   */
+  public final void setTextAlignment(int alignment) {
+    this.textAlignment = alignment;
+  }
+
+
 
 }

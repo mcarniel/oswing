@@ -658,7 +658,8 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         Object value = getValue1();
         if (value!=null &&
             value.toString().indexOf("%")==-1 &&
-            opType.getSelectedIndex()>0) {
+            opType.getSelectedIndex()>0 &&
+            domain==null) {
           if (opType.getSelectedValue().equals(CONTAINS))
             value = "%"+value+"%";
           else if (opType.getSelectedValue().equals(STARTS_WITH))

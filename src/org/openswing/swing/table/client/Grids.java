@@ -2529,40 +2529,6 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
-   * Set column header font in the specified column.
-   */
-  public final void setHeaderTextFont(String attributeName, Font font) {
-    int modelIndex = modelAdapter.getFieldIndex(attributeName);
-    if (modelIndex!=-1) {
-      int gridIndex = grid.convertColumnIndexToView(modelIndex);
-      if (gridIndex!=-1)
-        grid.setHeaderTextFont(gridIndex,font);
-      else
-        Logger.error(this.getClass().getName(),"setHeaderTextFont","There is not a visible column having attribute '"+attributeName+"'",null);
-    }
-    else
-      Logger.error(this.getClass().getName(),"setHeaderTextFont","There is not an attribute '"+attributeName+"' in the grid model",null);
-  }
-
-
-  /**
-   * Set foreground color in the specified column header.
-   */
-  public final void setHeaderTextForeground(String attributeName, Color color) {
-    int modelIndex = modelAdapter.getFieldIndex(attributeName);
-    if (modelIndex!=-1) {
-      int gridIndex = grid.convertColumnIndexToView(modelIndex);
-      if (gridIndex!=-1)
-        grid.setHeaderTextForeground(gridIndex,color);
-      else
-        Logger.error(this.getClass().getName(),"setHeaderTextForeground","There is not a visible column having attribute '"+attributeName+"'",null);
-    }
-    else
-      Logger.error(this.getClass().getName(),"setHeaderTextForeground","There is not an attribute '"+attributeName+"' in the grid model",null);
-  }
-
-
-  /**
    * Sets the <code>rowMargin</code> and the <code>columnMargin</code> --
    * the height and width of the space between cells -- to
    * <code>intercellSpacing</code>.

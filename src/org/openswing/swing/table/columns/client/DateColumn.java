@@ -1,5 +1,7 @@
 package org.openswing.swing.table.columns.client;
 
+import javax.swing.SwingConstants;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -33,7 +35,9 @@ package org.openswing.swing.table.columns.client;
 public class DateColumn extends Column {
 
 
-  public DateColumn() { }
+  public DateColumn() {
+    setTextAlignment(SwingConstants.CENTER);
+  }
 
 
   /**

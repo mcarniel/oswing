@@ -65,10 +65,11 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
    * @param domain domain linked to the column
    * @param gridController grid controller
    */
-  public DomainTableCellRenderer(Domain domain,GridController gridController) {
+  public DomainTableCellRenderer(Domain domain,GridController gridController,int alignement) {
     this.domain = domain;
     this.gridController = gridController;
     rend.setOpaque(true);
+    rend.setHorizontalAlignment(alignement);
   }
 
 

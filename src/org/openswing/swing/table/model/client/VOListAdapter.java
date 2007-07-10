@@ -308,7 +308,8 @@ public class VOListAdapter {
             0,
             ((IntegerColumn)colProperties[colIndex]).isGrouping(),
             tableContainer,
-            ((IntegerColumn)colProperties[colIndex]).getDynamicSettings()
+            ((IntegerColumn)colProperties[colIndex]).getDynamicSettings(),
+            colProperties[colIndex].getTextAlignment()
         );
 
       }
@@ -317,7 +318,8 @@ public class VOListAdapter {
             ((DecimalColumn)colProperties[colIndex]).getDecimals(),
             ((DecimalColumn)colProperties[colIndex]).isGrouping(),
             tableContainer,
-            ((DecimalColumn)colProperties[colIndex]).getDynamicSettings()
+            ((DecimalColumn)colProperties[colIndex]).getDynamicSettings(),
+            colProperties[colIndex].getTextAlignment()
         );
       }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_PERC) {
@@ -326,7 +328,8 @@ public class VOListAdapter {
             ((PercentageColumn)colProperties[colIndex]).getDecimals(),
             ((PercentageColumn)colProperties[colIndex]).isGrouping(),
             tableContainer,
-            ((PercentageColumn)colProperties[colIndex]).getDynamicSettings()
+            ((PercentageColumn)colProperties[colIndex]).getDynamicSettings(),
+            colProperties[colIndex].getTextAlignment()
         );
       }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_CURRENCY) {
@@ -336,28 +339,31 @@ public class VOListAdapter {
             ((CurrencyColumn)colProperties[colIndex]).isGrouping(),
             ((CurrencyColumn)colProperties[colIndex]).getCurrencySymbol(),
             tableContainer,
-            ((CurrencyColumn)colProperties[colIndex]).getDynamicSettings()
+            ((CurrencyColumn)colProperties[colIndex]).getDynamicSettings(),
+            colProperties[colIndex].getTextAlignment()
         );
       }
       else if ( colProperties[colIndex].getColumnType()==Column.TYPE_DATE) {
-        return new DateTableCellRenderer(Column.TYPE_DATE,tableContainer);
+        return new DateTableCellRenderer(Column.TYPE_DATE,tableContainer,colProperties[colIndex].getTextAlignment());
       }
       else if ( colProperties[colIndex].getColumnType()==Column.TYPE_DATE_TIME) {
-        return new DateTableCellRenderer(Column.TYPE_DATE_TIME,tableContainer);
+        return new DateTableCellRenderer(Column.TYPE_DATE_TIME,tableContainer,colProperties[colIndex].getTextAlignment());
       }
       else if ( colProperties[colIndex].getColumnType()==Column.TYPE_TIME) {
-        return new DateTableCellRenderer(Column.TYPE_TIME,tableContainer);
+        return new DateTableCellRenderer(Column.TYPE_TIME,tableContainer,colProperties[colIndex].getTextAlignment());
       }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_TEXT) {
         return new TextTableCellRenderer(
             tableContainer,
-            ((TextColumn)colProperties[colIndex]).isEncryptText()
+            ((TextColumn)colProperties[colIndex]).isEncryptText(),
+            colProperties[colIndex].getTextAlignment()
         );
       }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_FORMATTED_TEXT) {
         return new TextTableCellRenderer(
             tableContainer,
-            false
+            false,
+            colProperties[colIndex].getTextAlignment()
         );
       }
 
@@ -368,7 +374,7 @@ public class VOListAdapter {
 //        );
 //      }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_CHECK) {
-        return new CheckBoxTableCellRenderer(tableContainer);
+        return new CheckBoxTableCellRenderer(tableContainer,colProperties[colIndex].getTextAlignment());
       }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_COMBO) {
         if (((ComboColumn)colProperties[colIndex]).getDomainId()==null &&
@@ -380,7 +386,7 @@ public class VOListAdapter {
         if (domain==null)
           domain = ClientSettings.getInstance().getDomain( ((ComboColumn)colProperties[colIndex]).getDomainId() );
         if (domain!=null)
-          return new DomainTableCellRenderer(domain,tableContainer);
+          return new DomainTableCellRenderer(domain,tableContainer,colProperties[colIndex].getTextAlignment());
         else {
           Logger.error(this.getClass().getName(),"getCellRenderer","The domainId '"+((ComboColumn)colProperties[colIndex]).getDomainId()+"' for the column index "+colIndex+" doesn't exist.",null);
           return null;
@@ -389,19 +395,22 @@ public class VOListAdapter {
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_LOOKUP) {
         return new CodLookupCellRenderer(
             tableContainer,
-            ((CodLookupColumn)colProperties[colIndex]).isHideCodeBox()
+            ((CodLookupColumn)colProperties[colIndex]).isHideCodeBox(),
+            colProperties[colIndex].getTextAlignment()
         );
       }
       else if ( colProperties[colIndex].getColumnType()==Column.TYPE_BUTTON) {
         return new ButtonTableCellRenderer(
           ((ButtonColumn)colProperties[colIndex]).getText(),
           ((ButtonColumn)colProperties[colIndex]).isShowAttributeValue(),
-          tableContainer
+          tableContainer,
+            colProperties[colIndex].getTextAlignment()
         );
       }
       else if ( colProperties[colIndex].getColumnType()==Column.TYPE_IMAGE) {
         return new ImageTableCellRenderer(
-          tableContainer
+          tableContainer,
+          colProperties[colIndex].getTextAlignment()
         );
       }
       else {

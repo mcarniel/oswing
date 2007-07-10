@@ -3,6 +3,7 @@ package org.openswing.swing.table.columns.client;
 import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import org.openswing.swing.util.client.ClientSettings;
+import javax.swing.SwingConstants;
 
 
 /**
@@ -48,6 +49,7 @@ public class ButtonColumn extends Column {
 
   public ButtonColumn() {
     setColumnRequired(false);
+    setTextAlignment(SwingConstants.CENTER);
   }
 
 

@@ -129,3 +129,9 @@ Java-Bean: True
 
 Name: org/openswing/swing/miscellaneous/client/ProgressDialog.class
 Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/FormattedTextColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/FormattedTextControl.class
+Java-Bean: True

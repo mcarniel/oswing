@@ -81,12 +81,12 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
    * @param gridController grid controller
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
    */
-  public NumericTableCellRenderer(int decimals,boolean grouping,GridController gridController,IntegerColumnSettings dynamicSettings) {
+  public NumericTableCellRenderer(int decimals,boolean grouping,GridController gridController,IntegerColumnSettings dynamicSettings,int alignement) {
     this.decimals = decimals;
     this.grouping = false;
     this.gridController = gridController;
     this.dynamicSettings = dynamicSettings;
-    setHorizontalAlignment(SwingConstants.RIGHT);
+    setHorizontalAlignment(alignement);
     setFormat(decimals,grouping);
   }
 

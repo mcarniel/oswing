@@ -57,15 +57,17 @@ public class TextTableCellRenderer extends DefaultTableCellRenderer {
    * @param gridController grid controller
    * @param encryptText flag used to view "*" symbols instead of the real text
    */
-  public TextTableCellRenderer(GridController gridController,boolean encryptText) {
+  public TextTableCellRenderer(GridController gridController,boolean encryptText,int alignement) {
     this.gridController = gridController;
     this.encryptText = encryptText;
+    setHorizontalAlignment(alignement);
   }
 
 
   public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
                           boolean isSelected, boolean hasFocus, int row, int column) {
     JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
+
     if (defaultFont==null)
       defaultFont = ((JLabel)c).getFont();
 

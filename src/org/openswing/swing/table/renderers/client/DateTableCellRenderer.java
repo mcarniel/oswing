@@ -61,16 +61,20 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
   /** default font */
   private Font defaultFont = null;
 
+  /** horizontal alignement*/
+  private int alignement;
+
 
   /**
    * Constructor.
    * @param type column type; possibile values: Column.TYPE_DATE, Column.TYPE_DATE_TIME, Column.TYPE_TIME
    * @param gridController grid controller
    */
-  public DateTableCellRenderer(int type,GridController gridController) {
+  public DateTableCellRenderer(int type,GridController gridController,int alignement) {
     this.type = type;
     this.gridController = gridController;
     this.dateFormat = ClientSettings.getInstance().getResources().getDateMask(type);
+    this.alignement = alignement;
   }
 
 
@@ -78,7 +82,7 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
                           boolean isSelected, boolean hasFocus, int row, int column) {
 
     JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
-    ((JLabel)c).setHorizontalAlignment(SwingConstants.CENTER);
+    ((JLabel)c).setHorizontalAlignment(alignement);
 
     if (defaultFont==null)
       defaultFont = ((JLabel)c).getFont();

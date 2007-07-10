@@ -59,12 +59,13 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
    * @param text button text
    * @param gridController grid controller
    */
-  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController) {
+  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController,int alignement) {
     this.gridController = gridController;
     this.showAttributeValue = showAttributeValue;
     if (!showAttributeValue)
       rend.setText(ClientSettings.getInstance().getResources().getResource(text));
     rend.setBorder(BorderFactory.createRaisedBevelBorder());
+    rend.setHorizontalAlignment(alignement);
   }
 
 

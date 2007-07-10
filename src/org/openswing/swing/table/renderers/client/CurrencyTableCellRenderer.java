@@ -59,8 +59,8 @@ public class CurrencyTableCellRenderer extends NumericTableCellRenderer {
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
    */
   public CurrencyTableCellRenderer(int decimals, boolean grouping,String currencySymbol,
-                                   GridController gridController,IntegerColumnSettings dynamicSettings) {
-    super(decimals,grouping,gridController,dynamicSettings);
+                                   GridController gridController,IntegerColumnSettings dynamicSettings,int alignement) {
+    super(decimals,grouping,gridController,dynamicSettings,alignement);
     this.currencySymbol = currencySymbol;
     setFormat(decimals,grouping);
   }

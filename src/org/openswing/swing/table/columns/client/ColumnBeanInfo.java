@@ -53,6 +53,8 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _editableOnEdit = new PropertyDescriptor("editableOnEdit", beanClass, "isEditableOnEdit", "setEditableOnEdit");
       PropertyDescriptor _editableOnInsert = new PropertyDescriptor("editableOnInsert", beanClass, "isEditableOnInsert", "setEditableOnInsert");
       PropertyDescriptor _headerColumnName = new PropertyDescriptor("headerColumnName", beanClass, "getHeaderColumnName", "setHeaderColumnName");
+      PropertyDescriptor _headerFont = new PropertyDescriptor("headerFont", beanClass, "getHeaderFont", "setHeaderFont");
+      PropertyDescriptor _headerForegroundColor = new PropertyDescriptor("headerForegroundColor", beanClass, "getHeaderForegroundColor", "setHeaderForegroundColor");
       PropertyDescriptor _headerTextAlignment = new PropertyDescriptor("headerTextAlignment", beanClass, "getHeaderTextAlignment", "setHeaderTextAlignment");
       _headerTextAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextAlignmentEditor.class);
       PropertyDescriptor _maxWidth = new PropertyDescriptor("maxWidth", beanClass, "getMaxWidth", "setMaxWidth");
@@ -61,6 +63,8 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _sortingOrder = new PropertyDescriptor("sortingOrder", beanClass, "getSortingOrder", "setSortingOrder");
       PropertyDescriptor _sortVersus = new PropertyDescriptor("sortVersus", beanClass, "getSortVersus", "setSortVersus");
       _sortVersus.setPropertyEditorClass(org.openswing.swing.table.columns.client.SortVersusEditor.class);
+      PropertyDescriptor _textAlignment = new PropertyDescriptor("textAlignment", beanClass, "getTextAlignment", "setTextAlignment");
+      _textAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextAlignmentEditor.class);
 
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
               _columnDuplicable,
@@ -73,12 +77,15 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
 	      _editableOnEdit,
 	      _editableOnInsert,
               _headerColumnName,
+              _headerFont,
+              _headerForegroundColor,
               _headerTextAlignment,
 	      _maxWidth,
 	      _minWidth,
 	      _preferredWidth,
               _sortingOrder,
-	      _sortVersus};
+	      _sortVersus,
+              _textAlignment};
       return pds;
     }
     catch(IntrospectionException ex) {

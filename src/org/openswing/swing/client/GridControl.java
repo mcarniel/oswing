@@ -214,12 +214,6 @@ public class GridControl extends JPanel {
   /** default value that could be set in the quick filter criteria; default value: ClientSettings.DEFAULT_QUICK_FILTER_CRITERIA; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
   private int defaultQuickFilterCriteria = ClientSettings.DEFAULT_QUICK_FILTER_CRITERIA;
 
-  /** collection of pairs <attribute name,Font object> */
-  private Hashtable headerTextFonts = new Hashtable();
-
-  /** collection of pairs <attribute name,Color object> */
-  private Hashtable headerTextForegrounds = new Hashtable();
-
   /** intercell spacing; default value = ClientSettings.INTERCELL_SPACING */
   private Dimension spacing = ClientSettings.INTERCELL_SPACING;
 
@@ -348,19 +342,6 @@ public class GridControl extends JPanel {
       if (gridId!=null)
         table.enableDrag(gridId);
 
-      Enumeration en = headerTextFonts.keys();
-      String attrName = null;
-      while(en.hasMoreElements()) {
-        attrName = en.nextElement().toString();
-        table.setHeaderTextFont(attrName,(Font)headerTextFonts.get(attrName));
-      }
-
-      en = headerTextForegrounds.keys();
-      while(en.hasMoreElements()) {
-        attrName = en.nextElement().toString();
-        table.setHeaderTextForeground(attrName,(Color)headerTextForegrounds.get(attrName));
-      }
-
       if (spacing!=null)
         table.setIntercellSpacing(spacing);
       if (rowMargin!=-1)
@@ -414,18 +395,6 @@ public class GridControl extends JPanel {
           }
         });
 
-
-      en = headerTextFonts.keys();
-      while(en.hasMoreElements()) {
-        attrName = en.nextElement().toString();
-        topTable.setHeaderTextFont(attrName,(Font)headerTextFonts.get(attrName));
-      }
-
-      en = headerTextForegrounds.keys();
-      while(en.hasMoreElements()) {
-        attrName = en.nextElement().toString();
-        topTable.setHeaderTextForeground(attrName,(Color)headerTextForegrounds.get(attrName));
-      }
 
       if (spacing!=null)
         topTable.setIntercellSpacing(spacing);
@@ -1607,28 +1576,6 @@ public class GridControl extends JPanel {
 
 
   /**
-   * Set column header font in the specified column.
-   */
-  public final void setHeaderTextFont(String attributeName, Font font) {
-    if (table!=null)
-      table.setHeaderTextFont(attributeName, font);
-    else
-      headerTextFonts.put(attributeName,font);
-  }
-
-
-  /**
-   * Set foreground color in the specified column header.
-   */
-  public final void setHeaderTextForeground(String attributeName, Color color) {
-    if (table!=null)
-      table.setHeaderTextForeground(attributeName, color);
-    else
-      headerTextForegrounds.put(attributeName,color);
-  }
-
-
-  /**
    * Sets the <code>rowMargin</code> and the <code>columnMargin</code> --
    * the height and width of the space between cells -- to
    * <code>intercellSpacing</code>.
@@ -1640,12 +1587,13 @@ public class GridControl extends JPanel {
    * @beaninfo
    *  description: The spacing between the cells,
    *               drawn in the background color of the JTable.
+   *
+   * NOTE: there is a bug in JDK1.4.x: do not use this property with java 1.4!!!
    */
-  public void setIntercellSpacing(Dimension spacing) {
+  public final void setIntercellSpacing(Dimension spacing) {
+    this.spacing = spacing;
     if (table!=null)
       table.setIntercellSpacing(spacing);
-    else
-      this.spacing = spacing;
   }
 
 
@@ -1658,12 +1606,28 @@ public class GridControl extends JPanel {
    *  bound: true
    *  description: The amount of space between cells.
    */
-  public void setRowMargin(int rowMargin) {
+  public final void setRowMargin(int rowMargin) {
+    this.rowMargin = rowMargin;
     if (table!=null)
       table.setRowMargin(rowMargin);
-    else
-      this.rowMargin = rowMargin;
   }
+
+
+  /**
+   * @return a <code>Dimension</code> specifying the new width and height between cells
+   */
+  public final Dimension getIntercellSpacing() {
+    return this.spacing;
+  }
+
+
+  /**
+   * @return the number of pixels between cells in a row
+   */
+  public final int getRowMargin() {
+    return this.rowMargin;
+  }
+
 
 
 

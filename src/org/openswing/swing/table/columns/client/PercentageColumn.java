@@ -1,5 +1,7 @@
 package org.openswing.swing.table.columns.client;
 
+import javax.swing.SwingConstants;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -36,6 +38,7 @@ public class PercentageColumn extends DecimalColumn {
     super.setMaxValue(100);
     super.setMinValue(0);
     super.setDecimals(0);
+    setTextAlignment(SwingConstants.RIGHT);
   }
 
 

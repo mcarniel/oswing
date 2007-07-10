@@ -2,6 +2,7 @@ package org.openswing.swing.table.columns.client;
 
 import org.openswing.swing.util.client.ClientSettings;
 import org.openswing.swing.internationalization.java.*;
+import javax.swing.SwingConstants;
 
 
 /**
@@ -39,7 +40,9 @@ public class CurrencyColumn extends DecimalColumn {
   private String currencySymbol = ClientSettings.getInstance().getResources().getCurrencySymbol();
 
 
-  public CurrencyColumn() { }
+  public CurrencyColumn() {
+    setTextAlignment(SwingConstants.RIGHT);
+  }
 
 
   /**

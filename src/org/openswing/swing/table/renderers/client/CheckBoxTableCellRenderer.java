@@ -68,9 +68,10 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
    * Constructor.
    * @param gridContainer grid container
    */
-  public CheckBoxTableCellRenderer(GridController gridContainer) {
+  public CheckBoxTableCellRenderer(GridController gridContainer,int alignement) {
     this.gridContainer = gridContainer;
     rend.setOpaque(true);
+    rend.setHorizontalAlignment(alignement);
   }
 
 

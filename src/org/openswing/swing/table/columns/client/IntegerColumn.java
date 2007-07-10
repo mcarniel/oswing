@@ -1,5 +1,7 @@
 package org.openswing.swing.table.columns.client;
 
+import javax.swing.SwingConstants;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -45,7 +47,9 @@ public class IntegerColumn extends Column {
   private IntegerColumnSettings dynamicSettings = null;
 
 
-  public IntegerColumn() { }
+  public IntegerColumn() {
+    setTextAlignment(SwingConstants.RIGHT);
+  }
 
 
   /**

@@ -52,8 +52,8 @@ public class CodLookupCellRenderer extends TextTableCellRenderer {
    * @param gridController grid controller
    * @param encryptText flag used to view "*" symbols instead of the real text
    */
-  public CodLookupCellRenderer(GridController gridController,boolean hideCodBox) {
-    super(gridController,false);
+  public CodLookupCellRenderer(GridController gridController,boolean hideCodBox,int alignement) {
+    super(gridController,false,alignement);
     this.hideCodBox = hideCodBox;
   }
 

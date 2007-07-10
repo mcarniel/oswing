@@ -958,7 +958,11 @@ public class Grid extends JTable
    */
   private void prepareHeader() {
     for(int i=0;i<tableColumnModel.length;i++) {
-      tableColumnModel[i].setHeaderRenderer(new TableColumnHeaderRenderer(this.colProps[i].getHeaderTextAlignment()));
+      tableColumnModel[i].setHeaderRenderer(new TableColumnHeaderRenderer(
+          this.colProps[i].getHeaderTextAlignment(),
+          this.colProps[i].getHeaderFont(),
+          this.colProps[i].getHeaderForegroundColor()
+      ));
     }
     JTableHeader th = this.getTableHeader();
     th.setPreferredSize(new Dimension(th.getPreferredSize().width,ClientSettings.HEADER_HEIGHT));
@@ -1241,22 +1245,27 @@ public class Grid extends JTable
     private Icon sortIcon;
     private JLabel l_text, l_icon;
 
-    public TableColumnHeaderRenderer(int headerTextAlignment) {
+    public TableColumnHeaderRenderer(int headerTextAlignment,Font headerFont,Color headerColor) {
       setOpaque(false);
       setBorder(columnHeaderBorder);
       setLayout(new BorderLayout(0, 0));
       l_text = new JLabel();
-      if (ClientSettings.HEADER_FONT!=null)
-        l_text.setFont(ClientSettings.HEADER_FONT);
+      if (headerFont!=null)
+        l_text.setFont(headerFont);
+      if (headerColor!=null)
+        l_text.setForeground(headerColor);
       l_text.setVerticalTextPosition(SwingConstants.CENTER);
       l_text.setHorizontalAlignment(headerTextAlignment);
       l_text.setOpaque(false);
       add(l_text, BorderLayout.CENTER);
       l_icon = new JLabel("");
-      if (ClientSettings.HEADER_FONT!=null)
-        l_icon.setFont(ClientSettings.HEADER_FONT);
+      if (headerFont!=null)
+        l_icon.setFont(headerFont);
+      if (headerColor!=null)
+        l_icon.setForeground(headerColor);
       l_icon.setOpaque(false);
       add(l_icon, BorderLayout.EAST);
+
     }
 
 
@@ -1289,41 +1298,6 @@ public class Grid extends JTable
       return this;
     }
 
-
-    public Font getHeaderTextFont() {
-      return(l_text.getFont());
-    }
-
-
-    public void setHeaderTextFont(Font font) {
-      l_text.setFont(font);
-      l_text.repaint();
-      l_icon.setFont(font);
-      l_icon.repaint();
-    }
-
-
-    public Color getHeaderTextForeground() {
-      return(l_text.getForeground());
-    }
-
-
-    public void setHeaderTextForeground(Color color) {
-      l_text.setForeground(color);
-      l_text.repaint();
-      l_icon.setForeground(color);
-      l_icon.repaint();
-    }
-
-
-    public int getHeaderTextAlignment() {
-      return(l_text.getHorizontalAlignment());
-    }
-
-
-    public void setHeaderTextAlignment(int alignment) {
-      l_text.setHorizontalAlignment(alignment);
-    }
 
 
   } //TableColumnHeaderRenderer
@@ -1561,9 +1535,9 @@ public class Grid extends JTable
       else
         columnIndex = 0;
       gridController.selectedCell(
-          e.getFirstIndex(), columnIndex,
+          this.getSelectedRow(), columnIndex,
           model.getColumnName(columnIndex),
-          model.getObjectForRow(e.getFirstIndex())
+          model.getObjectForRow(this.getSelectedRow())
       );
       // update navigation toolbar state...
       if (getMode()==Consts.READONLY && (grids.getNavBar()!=null)) {
@@ -1925,42 +1899,6 @@ public class Grid extends JTable
    */
   public int getColumnIndex(String columnName) {
     return(this.modelAdapter.getFieldIndex(columnName));
-  }
-
-
-  /**
-   * Set column header font in the specified column.
-   */
-  public void setHeaderTextFont(int columnIndex, Font font) {
-    try {
-      ((TableColumnHeaderRenderer) tableColumnModel[columnIndex].getHeaderRenderer()).setHeaderTextFont(font);
-    }
-    catch (Exception ex) {
-      Logger.error(this.getClass().getName(), "setHeaderTextFont", "Error on setting font to the column header.", ex);
-    }
-  }
-
-
-  public Font getHeaderTextFont(int columnIndex) {
-    return(((TableColumnHeaderRenderer) tableColumnModel[columnIndex].getHeaderRenderer()).getHeaderTextFont());
-  }
-
-
-  /**
-   * Set foreground color in the specified column header.
-   */
-  public void setHeaderTextForeground(int columnIndex, Color color) {
-    try {
-      ((TableColumnHeaderRenderer) tableColumnModel[columnIndex].getHeaderRenderer()).setHeaderTextForeground(color);
-    }
-    catch (Exception ex) {
-      Logger.error(this.getClass().getName(), "setHeaderTextForeground", "Error on setting color to the column header.", ex);
-    }
-  }
-
-
-  public Color getHeaderTextForeground(int columnIndex) {
-    return(((TableColumnHeaderRenderer) tableColumnModel[columnIndex].getHeaderRenderer()).getHeaderTextForeground());
   }
 
 

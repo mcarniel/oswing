@@ -1,5 +1,7 @@
 package org.openswing.swing.table.columns.client;
 
+import javax.swing.SwingConstants;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -48,7 +50,9 @@ public class DecimalColumn extends Column {
   private DecimalColumnSettings dynamicSettings = null;
 
 
-  public DecimalColumn() { }
+  public DecimalColumn() {
+    setTextAlignment(SwingConstants.RIGHT);
+  }
 
 
   /**

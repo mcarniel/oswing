@@ -55,7 +55,7 @@ public class ImageTableCellRenderer extends DefaultTableCellRenderer {
    * @param text button text
    * @param gridController grid controller
    */
-  public ImageTableCellRenderer(GridController gridController) {
+  public ImageTableCellRenderer(GridController gridController,int alignement) {
     this.gridController = gridController;
     rend.setScrollBarsPolicy(ImagePanel.SCROLLBAR_NEVER);
   }

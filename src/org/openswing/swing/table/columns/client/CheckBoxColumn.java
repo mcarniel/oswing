@@ -2,6 +2,7 @@ package org.openswing.swing.table.columns.client;
 
 import java.util.ArrayList;
 import java.awt.event.ItemListener;
+import javax.swing.SwingConstants;
 
 
 /**
@@ -44,7 +45,9 @@ public class CheckBoxColumn extends Column {
   private ArrayList itemListeners = new ArrayList();
 
 
-  public CheckBoxColumn() { }
+  public CheckBoxColumn() {
+    setTextAlignment(SwingConstants.CENTER);
+  }
 
 
   /**
