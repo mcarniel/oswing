@@ -17,6 +17,7 @@ Added two equivalent properties in ClientSettings: INTERCELL_SPACING and ROW_MAR
 Added "textAlignment" property to all columns, to set horizontal alignement of cell content.
 Fixed problem in grid's filter panel when applying a filter to a combo column and with numeric type columns.
 Fixed problem when invoking GridController.selectedCell: the selected row index was incorrect.
+Fixed problem with GridController.validateCell method when editing numeric type cells.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 
