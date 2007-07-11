@@ -48,6 +48,8 @@ public class GridFrame extends JFrame {
   ButtonColumn colButton = new ButtonColumn();
   NavigatorBar navigatorBar1 = new NavigatorBar();
   FormattedTextColumn colFormattedText = new FormattedTextColumn();
+  IntegerColumn colInt = new IntegerColumn();
+
 
   public GridFrame(Connection conn,GridFrameController controller) {
     this.conn = conn;
@@ -246,7 +248,7 @@ public class GridFrame extends JFrame {
     colButton.setColumnName("button");
     colButton.setHeaderColumnName("button");
     colButton.setPreferredWidth(50);
-    colFormattedText.setColumnFilterable(true);
+    colFormattedText.setColumnFilterable(false);
     colFormattedText.setColumnName("formattedTextValue");
     colFormattedText.setColumnSortable(false);
     colFormattedText.setEditableOnEdit(true);
@@ -256,6 +258,12 @@ public class GridFrame extends JFrame {
     mask.setValidCharacters("0123456789");
 
     colFormattedText.setFormatter(mask);
+
+    colInt.setColumnFilterable(false);
+    colInt.setColumnName("intValue");
+    colInt.setColumnSortable(false);
+    colInt.setEditableOnEdit(true);
+    colInt.setEditableOnInsert(true);
 
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
@@ -269,6 +277,7 @@ public class GridFrame extends JFrame {
     buttonsPanel.add(navigatorBar1, null);
     grid.getColumnContainer().add(colText, null);
     grid.getColumnContainer().add(colDecimal, null);
+    grid.getColumnContainer().add(colInt, null);
     grid.getColumnContainer().add(colCurrency, null);
     grid.getColumnContainer().add(colFormattedText, null);
     grid.getColumnContainer().add(colDate, null);

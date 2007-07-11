@@ -352,6 +352,21 @@ public class VOListTableModel extends AbstractTableModel {
       if (oldValue!=null && oldValue instanceof Number && value instanceof Double) {
         oldValue = new Double(oldValue.toString());
       }
+      if (value!=null && value instanceof BigDecimal && oldValue!=null && this.fieldAdapter.getFieldClass(column).equals(BigDecimal.class)) {
+        value = new BigDecimal(value.toString()).setScale(((BigDecimal)oldValue).scale());
+      }
+      else if (value!=null && value instanceof BigDecimal && this.fieldAdapter.getFieldClass(column).equals(Integer.class)) {
+        value = new Integer(value.toString());
+      }
+      else if (value!=null && value instanceof BigDecimal && this.fieldAdapter.getFieldClass(column).equals(Double.class)) {
+        value = new Double(value.toString());
+      }
+      else if (value!=null && value instanceof BigDecimal && this.fieldAdapter.getFieldClass(column).equals(Long.class)) {
+        value = new Long(value.toString());
+      }
+      else if (value!=null && value instanceof BigDecimal && this.fieldAdapter.getFieldClass(column).equals(Float.class)) {
+        value = new Float(value.toString());
+      }
       if (oldValue==null && value!=null ||
           oldValue!=null && value==null ||
           oldValue!=null && !oldValue.equals(value)) {

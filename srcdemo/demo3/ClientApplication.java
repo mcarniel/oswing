@@ -48,6 +48,7 @@ public class ClientApplication {
     props.setProperty("descrLookupValue","Lookup Description");
     props.setProperty("button","Button");
     props.setProperty("formattedTextValue","Formatted Text");
+    props.setProperty("intValue","Integer Value");
     props.setProperty("...","...");
     ClientSettings clientSettings = new ClientSettings(
         new EnglishOnlyResourceFactory("£",props,true),
@@ -86,7 +87,7 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,INT_VALUE NUMERIC(6),PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 
@@ -95,7 +96,7 @@ public class ClientApplication {
 
         for(int i=0;i<900;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',null,"+12+i+0.33+","+1234+i+0.560+",?,'ABC','Y','Y','A"+i+"')");
+          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',null,"+12+i+0.33+","+1234+i+0.560+",?,'ABC','Y','Y','A"+i+"',"+i+")");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }
