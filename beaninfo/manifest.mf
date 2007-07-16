@@ -135,3 +135,6 @@ Java-Bean: True
 
 Name: org/openswing/swing/client/FormattedTextControl.class
 Java-Bean: True
+
+Name: org/openswing/swing/client/ListControl.class
+Java-Bean: True

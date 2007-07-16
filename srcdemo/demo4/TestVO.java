@@ -27,6 +27,8 @@ public class TestVO extends ValueObjectImpl {
   private String descrLookupValue;
   private String taValue;
   private String formattedTextValue;
+  private String listValue;
+
 
   public TestVO() {
   }
@@ -97,6 +99,12 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setFormattedTextValue(String formattedTextValue) {
     this.formattedTextValue = formattedTextValue;
+  }
+  public String getListValue() {
+    return listValue;
+  }
+  public void setListValue(String listValue) {
+    this.listValue = listValue;
   }
 
 

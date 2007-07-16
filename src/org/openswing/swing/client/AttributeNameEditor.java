@@ -91,7 +91,7 @@ public class AttributeNameEditor extends PropertyEditorSupport {
       if (o instanceof ValueObject) {
         try {
           ArrayList attrList = new ArrayList();
-          analyzeClassFields("",attrList,designVOClass);
+          analyzeClassFields(0,"",attrList,designVOClass);
 //          Method[] methods = designVOClass.getMethods();
 //          String attrName = null;
 //          for(int i=0;i<methods.length;i++) {
@@ -136,7 +136,7 @@ public class AttributeNameEditor extends PropertyEditorSupport {
   }
 
 
-  private void analyzeClassFields(String prefix,ArrayList attributes,Class classType) {
+  private void analyzeClassFields(int loop,String prefix,ArrayList attributes,Class classType) {
     try {
       BeanInfo  info = Introspector.getBeanInfo(classType);
       // retrieve attribute properties...
@@ -147,7 +147,8 @@ public class AttributeNameEditor extends PropertyEditorSupport {
             props[i].getReadMethod().getParameterTypes().length==0 &&
             ValueObject.class.isAssignableFrom( props[i].getReadMethod().getReturnType() )
         ) {
-          analyzeClassFields(prefix+props[i].getName()+".",attributes,props[i].getReadMethod().getReturnType());
+          if (loop<100)
+            analyzeClassFields(loop+1,prefix+props[i].getName()+".",attributes,props[i].getReadMethod().getReturnType());
         }
         else {
           if (props[i].getReadMethod().getReturnType()!=null &&
@@ -204,6 +205,9 @@ public class AttributeNameEditor extends PropertyEditorSupport {
         return true;
       }
       else if (columnType.equals(ComboBoxControl.class) || ComboBoxControl.class.isAssignableFrom(columnType)) {
+        return true;
+      }
+      else if (columnType.equals(ListControl.class) || ListControl.class.isAssignableFrom(columnType)) {
         return true;
       }
       else if (columnType.equals(CodLookupControl.class)) {

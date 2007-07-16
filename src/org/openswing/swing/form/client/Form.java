@@ -558,6 +558,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @param mode form mode; possible values: READONLY, INSERT, EDIT
    */
   public final void setMode(int mode) {
+    if (Beans.isDesignTime())
+      return;
     if (mode!=Consts.READONLY && mode!=Consts.EDIT && mode!=Consts.INSERT)
       throw new UnsupportedOperationException("Mode not supported");
     this.mode = mode;
@@ -1447,7 +1449,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   public final String getVOClassName() {
     try {
-      AttributeNameEditor.setDesignVOClass(Class.forName(voClassName));
+      if (Beans.isDesignTime())
+        AttributeNameEditor.setDesignVOClass(Class.forName(voClassName));
     }
     catch (Throwable ex) {
     }
@@ -1462,7 +1465,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   public final void setVOClassName(String voClassName) {
     this.voClassName = voClassName;
     try {
-      AttributeNameEditor.setDesignVOClass(Class.forName(voClassName));
+      if (Beans.isDesignTime())
+        AttributeNameEditor.setDesignVOClass(Class.forName(voClassName));
     }
     catch (Throwable ex) {
     }
@@ -1637,6 +1641,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @param e ValueChangeEvent describing the event
    */
   public final void valueChanged(ValueChangeEvent e) {
+    if (Beans.isDesignTime())
+      return;
     model.setValue(e.getAttributeName(),e.getNewValue());
   }
 
@@ -1765,6 +1771,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     this.navBar = navBar;
     this.reloadModelWhenClickingWithMouse = reloadModelWhenClickingWithMouse;
     this.reloadModelWhenPressingKey = reloadModelWhenPressingKey;
+
+    if (Beans.isDesignTime())
+      return;
 
     if (grid!=null && pkAttributes!=null) {
       if (grid.getNavBar()!=null && reloadModelWhenSelectingOnGrid) {

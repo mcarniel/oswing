@@ -111,13 +111,18 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 
 
   public DateControl() {
-    this(
-      Consts.TYPE_DATE,
-      ClientSettings.getInstance().getResources().getDateFormat(),
-      ClientSettings.getInstance().getResources().getDateFormatSeparator(),
-      ClientSettings.getInstance().getResources().isShowCenturyInDateFormat(),
-      Resources.HH_MM
-    );
+    try {
+      init(
+          Consts.TYPE_DATE,
+          ClientSettings.getInstance().getResources().getDateFormat(),
+          ClientSettings.getInstance().getResources().getDateFormatSeparator(),
+          ClientSettings.getInstance().getResources().isShowCenturyInDateFormat(),
+          Resources.HH_MM
+          );
+    }
+    catch (Throwable ex) {
+      ex.printStackTrace();
+    }
   }
 
 
@@ -130,152 +135,165 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA
    */
   public DateControl(int dateType,int dateFormat,char dateFormatSeparator,boolean showCenturyInDateFormat,String timeFormat) {
-    date.setDisabledTextColor(date.getForeground());
-    if (dateType==Consts.TYPE_DATE_TIME)
-      this.date.setColumns(12);
-    this.dateType = dateType;
-    this.separator = dateFormatSeparator;
-    this.showCentury = showCenturyInDateFormat;
-    this.timeFormat = timeFormat;
-    setFormat(dateFormat);
+    init(dateType,dateFormat,dateFormatSeparator,showCenturyInDateFormat,timeFormat);
+  }
+
+
+  private void init(int dateType,int dateFormat,char dateFormatSeparator,boolean showCenturyInDateFormat,String timeFormat) {
     try {
-      setOpaque(false);
+      date.setDisabledTextColor(date.getForeground());
+      if (dateType==Consts.TYPE_DATE_TIME)
+        this.date.setColumns(12);
+      this.dateType = dateType;
+      this.separator = dateFormatSeparator;
+      this.showCentury = showCenturyInDateFormat;
+      this.timeFormat = timeFormat;
+      setFormat(dateFormat);
+      try {
+        setOpaque(false);
 
-      // patch inserted for Linux OS where the calendar dialog is not correctly showed to front...
-      if (System.getProperty("os.name").startsWith("Windows")) {
-        menu = menuW;
-        ((JDialog)menu).setUndecorated(true);
-        ((JDialog)menu).getContentPane().setLayout(new BorderLayout());
-        ((JDialog)menu).getContentPane().add(calendar,BorderLayout.CENTER);
-      }
-      else {
-        menu = menuNW;
-        menu.add(calendar);
-      }
+        // patch inserted for Linux OS where the calendar dialog is not correctly showed to front...
+        if (System.getProperty("os.name").startsWith("Windows")) {
+          menu = menuW;
+          ((JDialog)menu).setUndecorated(true);
+          ((JDialog)menu).getContentPane().setLayout(new BorderLayout());
+          ((JDialog)menu).getContentPane().add(calendar,BorderLayout.CENTER);
+        }
+        else {
+          menu = menuNW;
+          menu.add(calendar);
+        }
 
-      Icon icon = new ImageIcon(ClientUtils.getImage(ClientSettings.CALENDAR));
-      buttonChooser = new JButton(icon);
+        Icon icon = new ImageIcon(ClientUtils.getImage(ClientSettings.CALENDAR));
+        buttonChooser = new JButton(icon);
+        buttonChooser.setPreferredSize(new Dimension(icon.getIconWidth()+6,date.getPreferredSize().height));
+        buttonChooser.setMaximumSize(new Dimension(icon.getIconWidth()+6,date.getPreferredSize().height));
+        buttonChooser.setMinimumSize(new Dimension(icon.getIconWidth()+6,date.getPreferredSize().height));
 //      add("East",buttonChooser);
 
-      this.setLayout(new GridBagLayout());
+        this.setLayout(new GridBagLayout());
 
-      if (Beans.isDesignTime()) {
-        this.add(new JTextField(" __ /  __ / __ "), new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-      }
-      else
-        this.add(date, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-      this.add(buttonChooser, new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        if (Beans.isDesignTime())
+          this.add(new JTextField(" __ /  __ / __ "), new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        else
+          this.add(date, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        this.add(buttonChooser, new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+
+        if (Beans.isDesignTime())
+          return;
+
 
 //      setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 //      this.add(date);
 //      this.add(buttonChooser);
 
 //      setLayout(new BorderLayout(0, 0));
-      date.setEnabled(true);
+        date.setEnabled(true);
 //      add("Center", date);
-      date.addKeyListener(this);
-      date.addFocusListener(this);
+        date.addKeyListener(this);
+        date.addFocusListener(this);
 
 
-      buttonChooser.setPreferredSize(new Dimension(icon.getIconWidth()+6,date.getPreferredSize().height));
-      buttonChooser.setMaximumSize(new Dimension(icon.getIconWidth()+6,date.getPreferredSize().height));
-      buttonChooser.setMinimumSize(new Dimension(icon.getIconWidth()+6,date.getPreferredSize().height));
 
-      ApplicationEventQueue.getInstance().addKeyListener(new KeyAdapter() {
-        public void keyPressed(KeyEvent e) {
-          if (e.getKeyCode()==e.VK_ESCAPE) {
-            Container c = ((JComponent)e.getSource()).getParent();
-            while(c.getParent()!=null && !c.equals(menu))
-              c = c.getParent();
-            if (c.equals(menu)) {
+        ApplicationEventQueue.getInstance().addKeyListener(new KeyAdapter() {
+          public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode()==e.VK_ESCAPE) {
+              Container c = ((JComponent)e.getSource()).getParent();
+              while(c.getParent()!=null && !c.equals(menu))
+                c = c.getParent();
+              if (c.equals(menu)) {
+                menuIsVisible = false;
+                menu.setVisible(false);
+              }
+            }
+          }
+        });
+
+        calendar.setBorder(BorderFactory.createLineBorder(Color.black));
+        menu.setSize(calendar.getPreferredSize().width+30,calendar.getPreferredSize().height+20);
+        calendar.setLocale(new Locale(ClientSettings.getInstance().getResources().getLanguageId()));
+
+        calendar.getDayChooser().addPropertyChangeListener(new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            if (skipDateSetting) {
+              return;
+            }
+            if (Beans.isDesignTime())
+              return;
+
+            if (menuIsVisible) {
+              menuIsVisible = false;
+              setDate(calendar.getCalendar().getTime());
+              calendar.transferFocus();
+              menu.setVisible(false);
+            }
+
+          }
+        });
+
+
+        buttonChooser.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
+
+            if (menuIsVisible) {
               menuIsVisible = false;
               menu.setVisible(false);
             }
-          }
-        }
-      });
+            else {
+              Container c = DateControl.this;
+              int x = (int)c.getLocation().getX();
+              int y = (int)c.getLocation().getY();
+              while(c.getParent()!=null) {
+                c = c.getParent();
+                x += (int)c.getLocation().getX();
+                y += (int)c.getLocation().getY();
+              }
 
-      calendar.setBorder(BorderFactory.createLineBorder(Color.black));
-      menu.setSize(calendar.getPreferredSize().width+30,calendar.getPreferredSize().height+20);
-      calendar.setLocale(new Locale(ClientSettings.getInstance().getResources().getLanguageId()));
+              if (currentDate != null) {
+                calendar.setCalendar(currentDate);
+              }
 
-      calendar.getDayChooser().addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (skipDateSetting) {
-            return;
-          }
-          if (Beans.isDesignTime())
-            return;
+              menu.setLocation(
+                x,
+                y+buttonChooser.getY() + buttonChooser.getHeight()
+              );
 
-          if (menuIsVisible) {
-            menuIsVisible = false;
-            setDate(calendar.getCalendar().getTime());
-            calendar.transferFocus();
-            menu.setVisible(false);
-          }
-
-        }
-      });
-
-
-      buttonChooser.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-
-          if (menuIsVisible) {
-            menuIsVisible = false;
-            menu.setVisible(false);
-          }
-          else {
-            Container c = DateControl.this;
-            int x = (int)c.getLocation().getX();
-            int y = (int)c.getLocation().getY();
-            while(c.getParent()!=null) {
-              c = c.getParent();
-              x += (int)c.getLocation().getX();
-              y += (int)c.getLocation().getY();
+              menu.setVisible(true);
+              menuIsVisible = true;
             }
 
-            if (currentDate != null) {
-              calendar.setCalendar(currentDate);
-            }
-
-            menu.setLocation(
-              x,
-              y+buttonChooser.getY() + buttonChooser.getHeight()
-            );
-
-            menu.setVisible(true);
-            menuIsVisible = true;
-          }
-
-          monthSelected = false;
-
-        }
-
-      });
-
-      calendar.getMonthChooser().addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (menuIsVisible) {
-            monthSelected = true;
-          }
-        }
-      });
-
-      buttonChooser.addFocusListener(new FocusAdapter() {
-        public void focusGained(FocusEvent e) {
-          if (menuIsVisible && !monthSelected) {
-            menu.setVisible(false);
-            menuIsVisible = false;
-          }
-          if (monthSelected)
             monthSelected = false;
-        }
-      });
 
-      initListeners();
+          }
+
+        });
+
+        calendar.getMonthChooser().addPropertyChangeListener(new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            if (menuIsVisible) {
+              monthSelected = true;
+            }
+          }
+        });
+
+        buttonChooser.addFocusListener(new FocusAdapter() {
+          public void focusGained(FocusEvent e) {
+            if (menuIsVisible && !monthSelected) {
+              menu.setVisible(false);
+              menuIsVisible = false;
+            }
+            if (monthSelected)
+              monthSelected = false;
+          }
+        });
+
+        initListeners();
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+      }
     }
-    catch (Exception ex) {
+    catch (Throwable ex) {
       ex.printStackTrace();
     }
   }

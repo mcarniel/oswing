@@ -65,7 +65,7 @@ public class DetailFrameController extends FormController {
       }
 
       stmt = conn.createStatement();
-      ResultSet rset = stmt.executeQuery("select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE,DEMO4.TA,DEMO4.FORMATTED_TEXT from DEMO4,DEMO4_LOOKUP where TEXT='"+pk+"' and DEMO4.CODE=DEMO4_LOOKUP.CODE");
+      ResultSet rset = stmt.executeQuery("select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE,DEMO4.TA,DEMO4.FORMATTED_TEXT,DEMO4.LIST from DEMO4,DEMO4_LOOKUP where TEXT='"+pk+"' and DEMO4.CODE=DEMO4_LOOKUP.CODE");
       if (rset.next()) {
         TestVO vo = new TestVO();
         vo.setCheckValue(rset.getObject(6)==null || !rset.getObject(6).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
@@ -79,6 +79,7 @@ public class DetailFrameController extends FormController {
         vo.setDescrLookupValue(rset.getString(9));
         vo.setTaValue(rset.getString(10));
         vo.setFormattedTextValue(rset.getString(11));
+        vo.setListValue(rset.getString(12));
         return new VOResponse(vo);
       }
       else
@@ -109,7 +110,7 @@ public class DetailFrameController extends FormController {
   public Response insertRecord(ValueObject newPersistentObject) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("insert into DEMO4(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,TA,FORMATTED_TEXT ) values(?,?,?,?,?,?,?,?,?,?)");
+      stmt = conn.prepareStatement("insert into DEMO4(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,TA,FORMATTED_TEXT,LIST) values(?,?,?,?,?,?,?,?,?,?,?)");
       TestVO vo = (TestVO)newPersistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setString(5,vo.getComboValue());
@@ -121,6 +122,7 @@ public class DetailFrameController extends FormController {
       stmt.setString(8,vo.getLookupValue());
       stmt.setString(9,vo.getTaValue());
       stmt.setString(10,vo.getFormattedTextValue());
+      stmt.setString(11,vo.getListValue());
       stmt.execute();
       pk = vo.getStringValue();
 
@@ -152,7 +154,7 @@ public class DetailFrameController extends FormController {
   public Response updateRecord(ValueObject oldPersistentObject,ValueObject persistentObject) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("update DEMO4 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,TA=?,FORMATTED_TEXT=? where TEXT=?");
+      stmt = conn.prepareStatement("update DEMO4 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,TA=?,FORMATTED_TEXT=?,LIST=? where TEXT=?");
       TestVO vo = (TestVO)persistentObject;
       TestVO oldVO = (TestVO)oldPersistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
@@ -165,7 +167,8 @@ public class DetailFrameController extends FormController {
       stmt.setString(8,vo.getLookupValue());
       stmt.setString(9,vo.getTaValue());
       stmt.setString(10,vo.getFormattedTextValue());
-      stmt.setString(11,oldVO.getStringValue());
+      stmt.setString(11,vo.getListValue());
+      stmt.setString(12,oldVO.getStringValue());
       stmt.execute();
 
 // this instruction is no more needed: the grid has been linked to the Form (see Form.linkGrid method...)

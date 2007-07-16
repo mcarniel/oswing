@@ -1239,6 +1239,17 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * Method invoked by UI designers (e.g. Eclipse + Window Builder plugin) that does not correctly use the "containerDelegate" property defined in GridControlBeanInfo
+   * @param comp Component to add
+   * @param constraint contraint to use for the component to add
+   */
+  public final Component add(Component comp) {
+    itsColumnContainer.add(comp,null);
+    return comp;
+  }
+
+
   public final void paint(Graphics g) {
     if (Beans.isDesignTime()) {
       // show "itsColumnContainer" children components...
@@ -1643,7 +1654,7 @@ public class GridControl extends JPanel {
   public class ColumnContainer extends JPanel { /** columns container; used only in design-time */
 
     /**
-     * Method invoked by UI designers (e.g. NetBeans) that adds a column via "containerDelegate" property defined in GridControlBeanInfo
+     * Method invoked by UI designers (e.g. NetBeans and Swing Designer in Eclipse) that adds a column via "containerDelegate" property defined in GridControlBeanInfo
      * @param comp Component to add, WITHOUT contraint
      */
     public final Component add(Component comp) {
