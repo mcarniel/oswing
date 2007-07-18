@@ -1383,7 +1383,14 @@ public class Grid extends JTable
 
     public void actionPerformed(ActionEvent e) {
       colProps[columnIndex].setColumnVisible(!colProps[columnIndex].isColumnVisible());
-      setVisibleColumn(columnIndex,colProps[columnIndex].isColumnVisible());
+      if (fromColIndex<=columnIndex && columnIndex<toColIndex)
+        setVisibleColumn(columnIndex,colProps[columnIndex].isColumnVisible());
+      else if (grids!=null) {
+        if (!lockedGrid)
+          grids.getLockedGrid().setVisibleColumn(columnIndex,colProps[columnIndex].isColumnVisible());
+        else
+          grids.getGrid().setVisibleColumn(columnIndex,colProps[columnIndex].isColumnVisible());
+      }
     }
   }
 
