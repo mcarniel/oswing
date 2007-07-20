@@ -525,10 +525,37 @@ public class Grid extends JTable
               else if (e.getKeyCode()==e.VK_DOWN && getSelectedRow()==Grid.this.model.getRowCount()-1 && Grid.this.grids.getNavBar().isNextButtonEnabled())
                 Grid.this.grids.getNavBar().nextButton_actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.DOWN_KEY));
               else if (e.getKeyCode()==e.VK_PAGE_UP && getSelectedRow()>0) {
-                java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
-                int delta = (r.y-getVisibleRect().height)/(getRowHeight()+getRowMargin())+1;
-                setRowSelectionInterval(Math.max(0,delta),Math.max(0,delta));
-                ensureRowIsVisible(getSelectedRow());
+//                System.out.println(getSelectedRow()+1+" "+Grid.this.grids.getstartIndex()+" "+getRowCount());
+                if (Grid.this.grids.getstartIndex()==0) {
+                  if (getSelectedRow()+1<getRowCount()) {
+                    setRowSelectionInterval(getSelectedRow()+2,getSelectedRow()+2);
+                    ensureRowIsVisible(getSelectedRow());
+                  }
+                  else
+                    SwingUtilities.invokeLater(new Runnable() {
+                      public void run() {
+                        if (getSelectedRow()+1<getRowCount()) {
+                            java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
+                            r = getCellRect(
+                                getSelectedRow()+(r.y+getVisibleRect().height)/getRowHeight(),
+                                0,
+                                false
+                            );
+                            scrollRectToVisible(r);
+                            setRowSelectionInterval(getSelectedRow()+2,getSelectedRow()+2);
+                          }
+                        else {
+                          setRowSelectionInterval(getSelectedRow()-getVisibleRect().height/getRowHeight()+1,getSelectedRow()-getVisibleRect().height/getRowHeight()+1);
+                          ensureRowIsVisible(getSelectedRow());
+                        }
+                      }
+                    });
+                }
+                else {
+                  setRowSelectionInterval(getSelectedRow()-getVisibleRect().height/getRowHeight()+1,getSelectedRow()-getVisibleRect().height/getRowHeight()+1);
+                  ensureRowIsVisible(getSelectedRow());
+                }
+
                 if (getSelectedRow()<Grid.this.model.getRowCount()-1 || Grid.this.grids.isMoreRows())
                   Grid.this.grids.getNavBar().setLastRow(false);
                 if (getSelectedRow()==0 && Grid.this.grids.getLastIndex()==Grid.this.model.getRowCount()-1)
@@ -541,7 +568,8 @@ public class Grid extends JTable
                   Grid.this.grids.getNavBar().prevButton_actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.UP_KEY));
               } else if (e.getKeyCode()==e.VK_PAGE_DOWN && getSelectedRow()<Grid.this.model.getRowCount()-1 && Grid.this.grids.isMoreRows()) {
                 java.awt.Rectangle r = getCellRect(getSelectedRow(), 0, false);
-                int delta = (r.y+getVisibleRect().height)/(getRowHeight()+getRowMargin());
+//                System.out.println("r.y="+r.y+" getVisibleRect().height="+getVisibleRect().height+" getRowHeight()="+getRowHeight()+" getRowMargin()="+getRowMargin());
+                int delta = (r.y+getVisibleRect().height)/(getRowHeight())-1;
                 setRowSelectionInterval(Math.min(Grid.this.model.getRowCount()-1,delta),Math.min(Grid.this.model.getRowCount()-1,delta));
                 ensureRowIsVisible(getSelectedRow());
                 if (getSelectedRow()>0)
@@ -906,7 +934,19 @@ public class Grid extends JTable
 
     public void mouseReleased(MouseEvent e){
       if (javax.swing.SwingUtilities.isLeftMouseButton(e)){
-          scrollMov((JScrollBar)adjEvent.getAdjustable(),null);
+        String button = null;
+        if (e.getSource().equals(vScrollbar.getIncrButton()))
+          button = NavigatorBar.NEXT_PG_BUTTON;
+        else if (e.getSource().equals(vScrollbar.getDecrButton()))
+          button = NavigatorBar.PREV_PG_BUTTON;
+        if (adjEvent!=null && button==null) {
+          if (e.getY()>=vScrollbar.getHeight()*3/4)
+            button = NavigatorBar.NEXT_PG_BUTTON;
+          else if (e.getY()<=vScrollbar.getHeight()/4)
+            button = NavigatorBar.PREV_PG_BUTTON;;
+        }
+
+        scrollMov((JScrollBar)adjEvent.getAdjustable(),button);
       }
     }
   }
@@ -1647,7 +1687,7 @@ public class Grid extends JTable
    * @param selRow selected row
    */
   public final void ensureRowIsVisible(int selRow) {
-    java.awt.Rectangle r = getCellRect(this.getSelectedRow(),this.getSelectedColumn()==-1?0:this.getSelectedColumn(), false);
+    java.awt.Rectangle r = getCellRect(this.getSelectedRow(),this.getSelectedColumn()==-1?0:this.getSelectedColumn(), true);
     scrollRectToVisible(r);
   }
 

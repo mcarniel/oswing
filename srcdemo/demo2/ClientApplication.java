@@ -210,6 +210,13 @@ public class ClientApplication implements MDIController,LoginController {
     );
 
     MDIFrame mdi = new MDIFrame(this);
+//    try {
+//      UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+//      SwingUtilities.updateComponentTreeUI(mdi);
+//    }
+//    catch (Throwable ex) {
+//      ex.printStackTrace();
+//    }
 
   }
 
