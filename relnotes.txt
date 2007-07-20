@@ -7,6 +7,7 @@ Final release 1.1.9 available
 
 Added new input control: ListControl.
 Added add(Component comp) method to GridControl to support Eclipse's Window Builder plugin.
+Fixed bugs related to scrolling grid using vertical scrollbar and using page up/down keys.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 
