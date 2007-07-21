@@ -201,7 +201,11 @@ public class MetalPaginationVerticalScrollbarUI extends MetalScrollBarUI impleme
 
 
     public PageArrowButton(int direction) {
-      super(direction,incrButton.getPreferredSize().width,true);
+      super(
+        direction,
+        incrButton==null?scrollBarWidth:incrButton.getPreferredSize().width,
+        true
+      );
     }
 
     public void paint(Graphics g) {

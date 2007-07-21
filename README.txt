@@ -13,10 +13,11 @@ The following files must be available to use OpenSwing framework:
 - jnlp-servlet.jar
 - log4j-1.2.7.jar
 - pooler.jar
-- srcclientos.jar
-- srcserveros.jar
+
 
 Note: hsqldb.jar is only used in demos included with the OpenSwing distribution, so that it is not part of OpenSwing framework.
+
+Note: srcclientos.jar and srcserveros.jar files contain OpenSwing source files.
 
 Note: to run the "demo17" sample you have to include in the classpath Hibernate libraries too (see runDemo17.bat/sh). "demo17" sample app has been tested with Hibernate 3.2.3
 
@@ -47,11 +48,13 @@ build		jar files
 
 docs/api	javadoc files
 
-docs		documentation files.
+docs		documentation files
 
 classes/demo*   demos
 
-srclnf          source files of OpenSwing framework specifically related to Look and Feel issues; currently it contains a UI components used for MAC O.S. to render pagination buttons inside the vertical scrollbar; to correctly compile this source you have to include in the classpath the swingall.jar file too (not included in this distribution).
+srclnf          source files of OpenSwing framework specifically related to Look and Feel issues; currently it contains a UI components used for MAC O.S. to render pagination buttons inside the vertical scrollbar; to correctly compile this source you have to include in the classpath the swingall.jar file too (not included in this distribution)
+
+pub		build.xml file used to build OpenSwing distribution jar files
 
 
 

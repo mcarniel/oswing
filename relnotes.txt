@@ -7,7 +7,10 @@ Final release 1.1.9 available
 
 Added new input control: ListControl.
 Added add(Component comp) method to GridControl to support Eclipse's Window Builder plugin.
+Fixed bug when showing/hiding columns on grid by clicking in a locked column.
 Fixed bugs related to scrolling grid using vertical scrollbar and using page up/down keys.
+Added pub/build.xml file to build clientos.jar, serveros.jar and other distribution files using Ant.
+Fixed problem with button's grid when setting MetalLookAndFeel with java 1.5 or 1.6
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

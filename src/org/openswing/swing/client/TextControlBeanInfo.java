@@ -1,7 +1,7 @@
 package org.openswing.swing.client;
 
 import java.beans.*;
-import javax.swing.beaninfo.SwingBeanInfo;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
