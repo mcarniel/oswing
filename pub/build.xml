@@ -1,0 +1,348 @@
+<project name="OpenSwing" default="allclasses" basedir=".">
+
+  <property name="src" value="${basedir}/../src"/>
+  <property name="srch" value="${basedir}/../srchibernate"/>
+  <property name="srci" value="${basedir}/../srcibatis"/>
+  <property name="srcs" value="${basedir}/../srcspring"/>
+  <property name="classes" value="${basedir}/../classes"/>
+  <property name="beaninfo" value="${basedir}/../beaninfo"/>
+  <property name="tmp" value="${basedir}/../tmp"/>
+  <property name="lib" value="${basedir}/../lib"/>
+  <property name="webapps" value="${WEBAPPS}"/>
+  <property name="keystore" value="${KEYSTORE}"/>
+
+  <target name="allclasses" depends="client,server">
+  </target>
+
+  <target name="allsrc" depends="srcclient,srcserver">
+  </target>
+
+  <target name="client">
+    <mkdir dir="${tmp}"/>
+    <copy todir="${tmp}/images" >
+      <fileset dir="${classes}/images"/>
+    </copy>
+    <copy todir="${tmp}/org/openswing/" >
+      <fileset dir="${classes}/org/openswing/">
+        <include name="**/java/*.class"/>
+        <include name="**/client/*.class"/>
+        <exclude name="demo*/**/*.class"/>
+      </fileset>
+    </copy>
+
+    <delete file="${tmp}/clientos.jar"/>
+    <jar jarfile="${tmp}/clientos.jar" basedir="${tmp}"/>
+    <copy todir="${lib}" >
+      <fileset dir="${tmp}">
+        <include name="clientos.jar"/>
+      </fileset>
+    </copy>
+    <delete dir="${tmp}"/>
+  </target>
+
+
+  <target name="server">
+    <mkdir dir="${tmp}"/>
+    <copy todir="${tmp}/org/openswing/" >
+      <fileset dir="${classes}/org/openswing/">
+        <include name="**/java/*.class"/>
+        <include name="**/server/*.class"/>
+        <include name="**/springframework/**/*.class"/>
+        <exclude name="demo*/**/*.class"/>
+      </fileset>
+    </copy>
+
+    <delete file="${tmp}/serveros.jar"/>
+    <jar jarfile="${tmp}/serveros.jar" basedir="${tmp}"/>
+    <copy todir="${lib}" >
+      <fileset dir="${tmp}">
+        <include name="serveros.jar"/>
+      </fileset>
+    </copy>
+    <delete dir="${tmp}"/>
+  </target>
+
+
+  <target name="srcclient">
+    <mkdir dir="${tmp}"/>
+    <copy todir="${tmp}/org/openswing/" >
+      <fileset dir="${src}/org/openswing/">
+        <include name="**/java/*.java"/>
+        <include name="**/client/*.java"/>
+        <exclude name="demo*/**/*.java"/>
+      </fileset>
+    </copy>
+
+    <delete file="${tmp}/srcclientos.jar"/>
+    <jar jarfile="${tmp}/srcclientos.jar" basedir="${tmp}"/>
+    <copy todir="${lib}" >
+      <fileset dir="${tmp}">
+        <include name="srcclientos.jar"/>
+      </fileset>
+    </copy>
+    <delete dir="${tmp}"/>
+  </target>
+
+
+  <target name="srcserver">
+    <mkdir dir="${tmp}"/>
+    <copy todir="${tmp}/org/openswing/" >
+      <fileset dir="${src}/org/openswing/">
+        <include name="**/java/*.java"/>
+        <include name="**/server/*.java"/>
+        <exclude name="demo*/**/*.java"/>
+      </fileset>
+      <fileset dir="${srch}/org/openswing/">
+        <include name="**/java/*.java"/>
+        <include name="**/server/*.java"/>
+        <exclude name="demo*/**/*.java"/>
+      </fileset>
+      <fileset dir="${srci}/org/openswing/">
+        <include name="**/java/*.java"/>
+        <include name="**/server/*.java"/>
+        <exclude name="demo*/**/*.java"/>
+      </fileset>
+      <fileset dir="${srcs}/org/openswing/springframework">
+        <include name="**/*.java"/>
+        <exclude name="demo*/**/*.java"/>
+      </fileset>
+    </copy>
+
+    <delete file="${tmp}/srcserveros.jar"/>
+    <jar jarfile="${tmp}/srcserveros.jar" basedir="${tmp}"/>
+    <copy todir="${lib}" >
+      <fileset dir="${tmp}">
+        <include name="srcserveros.jar"/>
+      </fileset>
+    </copy>
+    <delete dir="${tmp}"/>
+  </target>
+
+
+  <target name="demo10">
+    <mkdir dir="${tmp}"/>
+    <mkdir dir="${webapps}/demo10/"/>
+    <copy todir="${tmp}/demo10" >
+      <fileset dir="${classes}/demo10">
+        <include name="**/*.class"/>
+      </fileset>
+    </copy>
+    <jar jarfile="${classes}/demo10/demo10.jar" basedir="${tmp}"/>
+
+    <copy todir="${webapps}/demo10" >
+      <fileset dir="${lib}">
+        <include name="hsqldb.jar"/>
+        <include name="poi-2.0-RC2-20040102.jar"/>
+        <include name="itext-1.4.8.jar"/>
+      </fileset>
+    </copy>
+
+
+    <signjar jar="${classes}/demo10/demo10.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <signjar jar="${webapps}/demo10/hsqldb.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <signjar jar="${webapps}/demo10/poi-2.0-RC2-20040102.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <signjar jar="${webapps}/demo10/itext-1.4.8.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <delete dir="${tmp}"/>
+  </target>
+
+
+  <target name="demo5" depends="allclasses">
+    <mkdir dir="${tmp}"/>
+    <signjar jar="${lib}/clientos.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <copy todir="${webapps}/demo5" >
+      <fileset dir="${lib}">
+        <include name="clientos.jar"/>
+      </fileset>
+      <fileset dir="${classes}/demo5">
+        <include name="demo5.jnlp"/>
+        <include name="demo5.jsp"/>
+      </fileset>
+    </copy>
+    <copy todir="${tmp}/demo5/" >
+      <fileset dir="${classes}/demo5/">
+        <include name="**/java/*.class"/>
+        <include name="**/client/*.class"/>
+      </fileset>
+    </copy>
+    <copy todir="${tmp}/" >
+      <fileset dir="${classes}/demo5/">
+        <include name="Resources_*.xml"/>
+      </fileset>
+    </copy>
+    <jar jarfile="${tmp}/demo5client.jar" basedir="${tmp}"/>
+    <signjar jar="${tmp}/demo5client.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <copy todir="${webapps}/demo5" >
+      <fileset dir="${tmp}">
+        <include name="demo5client.jar"/>
+      </fileset>
+    </copy>
+    <signjar jar="${lib}/jcalendar.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <signjar jar="${lib}/jnlp.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <copy todir="${webapps}/demo5" >
+      <fileset dir="${lib}">
+        <include name="jcalendar.jar"/>
+        <include name="jnlp.jar"/>
+      </fileset>
+    </copy>
+
+    <delete dir="${tmp}"/>
+
+    <mkdir dir="${tmp}"/>
+    <copy todir="${webapps}/demo5/WEB-INF/lib" >
+      <fileset dir="${lib}">
+        <include name="serveros.jar"/>
+        <include name="hsqldb.jar"/>
+        <include name="pooler.jar"/>
+        <include name="log4j-1.2.7.jar"/>
+        <include name="poi-2.0-RC2-20040102.jar"/>
+        <include name="itext-1.4.8.jar"/>
+        <include name="jnlp-servlet.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="${webapps}/demo5/WEB-INF" >
+      <fileset dir="${classes}/demo5/">
+        <include name="web.xml"/>
+      </fileset>
+    </copy>
+    <copy todir="${tmp}/demo5/" >
+      <fileset dir="${classes}/demo5/">
+        <include name="**/java/*.class"/>
+        <include name="**/server/*.class"/>
+      </fileset>
+    </copy>
+    <jar jarfile="${tmp}/demo5server.jar" basedir="${tmp}"/>
+    <copy todir="${webapps}/demo5/WEB-INF/classes" >
+      <fileset dir="${classes}/demo5/">
+        <include name="Resources_*.xml"/>
+        <include name="pooler.ini"/>
+      </fileset>
+    </copy>
+    <copy todir="${webapps}/demo5/WEB-INF/lib" >
+      <fileset dir="${tmp}">
+        <include name="demo5server.jar"/>
+      </fileset>
+    </copy>
+    <delete dir="${tmp}"/>
+    <jar jarfile="${classes}/demo5/demo5.war" basedir="${webapps}/demo5/"/>
+    <delete dir="${webapps}/demo5/"/>
+    <copy todir="${webapps}" >
+      <fileset dir="${classes}/demo5/">
+        <include name="demo5.war"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <target name="beaninfo">
+    <mkdir dir="${tmp}"/>
+    <copy todir="${tmp}/" >
+      <fileset dir="${classes}/">
+        <include name="org/**/*.gif"/>
+      </fileset>
+    </copy>
+    <copy todir="${tmp}" >
+      <fileset dir="${classes}/">
+        <include name="org/openswing/swing/**/client/*.class"/>
+        <include name="org/openswing/swing/**/java/*.class"/>
+      </fileset>
+    </copy>
+
+    <delete file="${tmp}/beaninfo.jar"/>
+    <jar jarfile="${tmp}/beaninfo.jar" basedir="${tmp}" manifest="${beaninfo}/manifest.mf" />
+    <copy todir="${lib}" >
+      <fileset dir="${tmp}">
+        <include name="beaninfo.jar"/>
+      </fileset>
+    </copy>
+    <delete dir="${tmp}"/>
+  </target>
+
+
+  <target name="demo18" >
+    <mkdir dir="${tmp}"/>
+    <copy todir="${webapps}/demo18" >
+      <fileset dir="${lib}">
+        <include name="clientos.jar"/>
+      </fileset>
+      <fileset dir="${classes}/demo18">
+        <include name="demo18.jnlp"/>
+        <include name="demo18login.jnlp"/>
+      </fileset>
+    </copy>
+    <copy todir="${tmp}/demo18/" >
+      <fileset dir="${classes}/demo18/">
+        <include name="**/java/*.class"/>
+        <include name="**/client/*.class"/>
+      </fileset>
+    </copy>
+    <copy todir="${tmp}/" >
+      <fileset dir="${classes}/demo18/">
+        <include name="Resources_*.xml"/>
+      </fileset>
+    </copy>
+    <jar jarfile="${tmp}/demo18client.jar" basedir="${tmp}"/>
+    <signjar jar="${tmp}/demo18client.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <copy todir="${webapps}/demo18" >
+      <fileset dir="${tmp}">
+        <include name="demo18client.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="${webapps}/demo18" >
+      <fileset dir="${lib}">
+        <include name="jcalendar.jar"/>
+        <include name="jnlp.jar"/>
+      </fileset>
+    </copy>
+
+    <delete dir="${tmp}"/>
+
+    <mkdir dir="${tmp}"/>
+    <copy todir="${webapps}/demo18/WEB-INF/lib" >
+      <fileset dir="${lib}">
+        <include name="serveros.jar"/>
+        <include name="hsqldb.jar"/>
+        <include name="pooler.jar"/>
+        <include name="log4j-1.2.7.jar"/>
+        <include name="poi-2.0-RC2-20040102.jar"/>
+        <include name="itext-1.4.8.jar"/>
+        <include name="jnlp-servlet.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="${webapps}/demo18/WEB-INF" >
+      <fileset dir="${classes}/demo18/">
+        <include name="web.xml"/>
+        <include name="controller-servlet.xml"/>
+        <include name="applicationContext.xml"/>
+        <include name="jdbc.properties"/>
+        <include name="dataAccessContext-local.xml"/>
+      </fileset>
+    </copy>
+    <copy todir="${tmp}/demo18/" >
+      <fileset dir="${classes}/demo18/">
+        <include name="**/java/*.class"/>
+        <include name="**/server/*.class"/>
+      </fileset>
+    </copy>
+    <jar jarfile="${tmp}/demo18server.jar" basedir="${tmp}"/>
+    <copy todir="${webapps}/demo18/WEB-INF/classes" >
+      <fileset dir="${classes}/demo18/">
+        <include name="Resources_*.xml"/>
+      </fileset>
+    </copy>
+    <copy todir="${webapps}/demo18/WEB-INF/lib" >
+      <fileset dir="${tmp}">
+        <include name="demo18server.jar"/>
+      </fileset>
+    </copy>
+    <delete dir="${tmp}"/>
+    <jar jarfile="${classes}/demo18/demo18.war" basedir="${webapps}/demo18/"/>
+    <delete dir="${webapps}/demo18/"/>
+    <copy todir="${webapps}" >
+      <fileset dir="${classes}/demo18/">
+        <include name="demo18.war"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+</project>
