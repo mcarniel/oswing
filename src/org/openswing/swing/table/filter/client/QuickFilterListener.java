@@ -4,24 +4,36 @@ import org.openswing.swing.table.columns.client.Column;
 
 
 /**
- * <p>Title: Benetton - Gestione Imballi</p>
- * <p>Description: Ascoltatore di eventi, associato al filtro rapido della griglia.</p>
- * <p>Copyright: Copyright (c) 2005 Benetton spa</p>
- * <p>Company: Tecnoinformatica spa</p>
+ * <p>Title: OpenSwing Framework</p>
+ * <p>Description: Listener of the quick filter panel.</p>
+ * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+ *
+ * <p> This file is part of OpenSwing Framework.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the (LGPL) Lesser General Public
+ * License as published by the Free Software Foundation;
+ *
+ *                GNU LESSER GENERAL PUBLIC LICENSE
+ *                 Version 2.1, February 1999
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *       The author may be contacted at:
+ *           maurocarniel@tin.it</p>
+ *
  * @author Mauro Carniel
  * @version 1.0
  */
 public interface QuickFilterListener {
 
-    /**
-     * Metodo chiamato dal pannello di filtro per filtrare i dati rispetto ad una colonna
-     * @param colProps proprieta' associate alla colonna da filtrare
-     * @param value1 valore fisso o valore min
-     * @param value2 eventuale valore massimo
-     * <br>Nota: nel caso di filtro per valore value1 è valorizzato e value2 è null. Nel
-     * caso di filtro per range, value1 contiene il valore minimo, e value2 il valore massimo
-     * nel caso di filtro
-     */
+
     public void filter(Column colProps,Object value1,Object value2);
 
 }

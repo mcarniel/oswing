@@ -105,9 +105,6 @@ public class Grid extends JTable
   /** desceding order versus icon */
   private Icon descSort = new ImageIcon(ClientUtils.getImage(ClientSettings.SORT_UP));
 
-  /** vertical scrollbar event */
-  private AdjustmentEvent adjEvent = null;
-
   /** flag used inside addNotify to set column headers and the toolbar state */
   private boolean firstTime = true;
 
@@ -552,7 +549,11 @@ public class Grid extends JTable
                     });
                 }
                 else {
-                  setRowSelectionInterval(getSelectedRow()-getVisibleRect().height/getRowHeight()+1,getSelectedRow()-getVisibleRect().height/getRowHeight()+1);
+                  int calculatedPos,newPos;
+                  calculatedPos=getSelectedRow()-getVisibleRect().height/getRowHeight()+1;
+                  newPos= calculatedPos<0 ? 0 : calculatedPos;
+                  setRowSelectionInterval(newPos,newPos);
+//                  setRowSelectionInterval(getSelectedRow()-getVisibleRect().height/getRowHeight()+1,getSelectedRow()-getVisibleRect().height/getRowHeight()+1);
                   ensureRowIsVisible(getSelectedRow());
                 }
 
@@ -891,13 +892,8 @@ public class Grid extends JTable
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
     vScrollbar.setUnitIncrement(getRowHeight());
     vScrollbar.setBlockIncrement(getRowHeight());
-    vScrollbar.addAdjustmentListener(new AdjustmentListener() {
-      public void adjustmentValueChanged(AdjustmentEvent e) {
-        adjEvent = e;
-      }
-    });
     VerticalScrollBarMouseListener vsListener = new VerticalScrollBarMouseListener();
-    vScrollbar.addMouseListener(vsListener);
+//    vScrollbar.addMouseListener(vsListener);
 
     vScrollbar.getDecrButton().addMouseListener(vsListener);
 
@@ -932,23 +928,31 @@ public class Grid extends JTable
    */
   class VerticalScrollBarMouseListener extends MouseAdapter {
 
+    private int oldValue = -1;
+
+    public void mousePressed(MouseEvent e){
+    }
+
+
     public void mouseReleased(MouseEvent e){
       if (javax.swing.SwingUtilities.isLeftMouseButton(e)){
-        String button = null;
-        if (e.getSource().equals(vScrollbar.getIncrButton()))
-          button = NavigatorBar.NEXT_PG_BUTTON;
-        else if (e.getSource().equals(vScrollbar.getDecrButton()))
-          button = NavigatorBar.PREV_PG_BUTTON;
-        if (adjEvent!=null && button==null) {
-          if (e.getY()>=vScrollbar.getHeight()*3/4)
-            button = NavigatorBar.NEXT_PG_BUTTON;
-          else if (e.getY()<=vScrollbar.getHeight()/4)
-            button = NavigatorBar.PREV_PG_BUTTON;;
-        }
-
-        scrollMov((JScrollBar)adjEvent.getAdjustable(),button);
+        int row1 = getVisibleRect().y/getRowHeight();
+        int row2 = getVisibleRect().height/getRowHeight();
+        int row3 =  getSelectedRow();
+        if (row3<row1)
+          row3 = row1;
+        else if (row3>row1+row2)
+          row3 = row1+row2;
+        else if (e.getSource().equals(vScrollbar.getDecrButton()) && row3>0)
+          row3 = row3-1;
+        else if (e.getSource().equals(vScrollbar.getIncrButton()) && row3+1<getRowCount())
+          row3 = row3+1;
+        setRowSelectionInterval(row3,row3);
+        if (row3<row1 || row3>row1+row2)
+          ensureRowIsVisible(row3);
       }
     }
+
   }
 
 

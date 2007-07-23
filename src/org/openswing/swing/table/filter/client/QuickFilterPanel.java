@@ -112,10 +112,13 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
          */
         protected void processMouseEvent(MouseEvent e) {
           if (e.getID()==e.MOUSE_CLICKED) {
-            if (QuickFilterPanel.this.filterType==FILTER_TYPE_VALUE)
+            if (QuickFilterPanel.this.filterType==FILTER_TYPE_VALUE) {
               QuickFilterPanel.this.filterType=FILTER_TYPE_RANGE;
-             else
+              rangeButton.setIcon(new ImageIcon(ClientUtils.getImage("aperto.gif")));
+            } else {
               QuickFilterPanel.this.filterType=FILTER_TYPE_VALUE;
+              rangeButton.setIcon(new ImageIcon(ClientUtils.getImage("chiuso.gif")));
+            }
 
             updateComponents(); // update filter panel...
 
@@ -132,11 +135,14 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
       };
       rangeButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          if (QuickFilterPanel.this.filterType==FILTER_TYPE_VALUE)
+          if (QuickFilterPanel.this.filterType==FILTER_TYPE_VALUE) {
             QuickFilterPanel.this.filterType=FILTER_TYPE_RANGE;
-           else
+            rangeButton.setIcon(new ImageIcon(ClientUtils.getImage("aperto.gif")));
+          }
+          else {
             QuickFilterPanel.this.filterType=FILTER_TYPE_VALUE;
-
+            rangeButton.setIcon(new ImageIcon(ClientUtils.getImage("chiuso.gif")));
+          }
           updateComponents(); // update filter panel...
 
           if (parentPopup!=null) {
