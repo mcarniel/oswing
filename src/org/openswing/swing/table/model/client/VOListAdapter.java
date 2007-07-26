@@ -108,8 +108,19 @@ public class VOListAdapter {
       // retrieve all getter and setter methods defined in the specified value object...
       String attributeName = null;
       Method[] methods = classType.getMethods();
+      String aName = null;
       for(int i=0;i<methods.length;i++) {
         attributeName = methods[i].getName();
+
+        if (attributeName.startsWith("get") && methods[i].getParameterTypes().length==0 &&
+          ValueObject.class.isAssignableFrom(methods[i].getReturnType())) {
+          aName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
+          Method[] newparentMethods = new Method[parentMethods.length+1];
+          System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
+          newparentMethods[parentMethods.length] = methods[i];
+          analyzeClassFields(prefix+aName+".",newparentMethods,methods[i].getReturnType());
+        }
+
         if (attributeName.startsWith("get") && methods[i].getParameterTypes().length==0 &&
             (methods[i].getReturnType().equals(String.class) ||
              methods[i].getReturnType().equals(Long.class) ||
@@ -123,7 +134,8 @@ public class VOListAdapter {
              methods[i].getReturnType().equals(Character.class) ||
              methods[i].getReturnType().equals(Boolean.class) ||
              methods[i].getReturnType().equals(boolean.class) ||
-             methods[i].getReturnType().equals(byte[].class)
+             methods[i].getReturnType().equals(byte[].class) ||
+             ValueObject.class.isAssignableFrom( methods[i].getReturnType() )
             )) {
           attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
 //          try {
@@ -135,25 +147,17 @@ public class VOListAdapter {
 //          } catch (NoSuchMethodException ex) {
 //          }
         }
-        else if (attributeName.startsWith("get") && methods[i].getParameterTypes().length==0) {
-          if (ValueObject.class.isAssignableFrom( methods[i].getReturnType() )) {
-            attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
-            Method[] newparentMethods = new Method[parentMethods.length+1];
-            System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
-            newparentMethods[parentMethods.length] = methods[i];
-            analyzeClassFields(prefix+attributeName+".",newparentMethods,methods[i].getReturnType());
-          }
-        }
         else if (attributeName.startsWith("is") &&
                  methods[i].getParameterTypes().length==0 &&
-                 (methods[i].getReturnType().equals(Boolean.class) || methods[i].getReturnType().equals(boolean.class))) {
+                 (methods[i].getReturnType().equals(Boolean.class) ||
+                  methods[i].getReturnType().equals(boolean.class) )) {
           attributeName = attributeName.substring(2,3).toLowerCase()+(attributeName.length()>3?attributeName.substring(3):"");
           Method[] newparentMethods = new Method[parentMethods.length+1];
           System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
           newparentMethods[parentMethods.length] = methods[i];
           voGetterMethods.put(prefix+attributeName,newparentMethods);
         }
-        if (attributeName.startsWith("set") && methods[i].getParameterTypes().length==1) {
+        else if (attributeName.startsWith("set") && methods[i].getParameterTypes().length==1) {
           attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
           try {
             if (classType.getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0])!=null) {

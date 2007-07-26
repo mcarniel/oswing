@@ -63,10 +63,11 @@ public class ClientApplication {
     ClientSettings.SHOW_SORTING_ORDER = true;
 
     Domain orderStateDomain = new Domain("ORDERSTATE");
-    orderStateDomain.addDomainPair("O","opened");
-    orderStateDomain.addDomainPair("S","suspended");
-    orderStateDomain.addDomainPair("D","delivered");
-    orderStateDomain.addDomainPair("C","closed");
+    ComboVO comboVO = null;
+    comboVO = new ComboVO(); comboVO.setCode("O"); comboVO.setDescription("opened"); orderStateDomain.addDomainPair(comboVO,comboVO.getDescription());
+    comboVO = new ComboVO(); comboVO.setCode("S"); comboVO.setDescription("suspended"); orderStateDomain.addDomainPair(comboVO,comboVO.getDescription());
+    comboVO = new ComboVO(); comboVO.setCode("D"); comboVO.setDescription("delivered"); orderStateDomain.addDomainPair(comboVO,comboVO.getDescription());
+    comboVO = new ComboVO(); comboVO.setCode("C"); comboVO.setDescription("closed"); orderStateDomain.addDomainPair(comboVO,comboVO.getDescription());
     domains.put(
       orderStateDomain.getDomainId(),
       orderStateDomain

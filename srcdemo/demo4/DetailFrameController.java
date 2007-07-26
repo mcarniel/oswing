@@ -13,6 +13,7 @@ import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.lookup.client.LookupController;
 import org.openswing.swing.lookup.client.LookupDataLocator;
 import org.openswing.swing.internationalization.java.Resources;
+import org.openswing.swing.domains.java.Domain;
 
 
 /**
@@ -69,7 +70,20 @@ public class DetailFrameController extends FormController {
       if (rset.next()) {
         TestVO vo = new TestVO();
         vo.setCheckValue(rset.getObject(6)==null || !rset.getObject(6).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
-        vo.setComboValue(rset.getString(5));
+        vo.setCombo(new ComboVO());
+        vo.getCombo().setCode(rset.getString(5));
+
+        // this is a simplification: in a real situation combo v.o. will be retrieved from the database...
+        Domain d = ClientSettings.getInstance().getDomain("ORDERSTATE");
+        if (vo.getCombo().getCode().equals("O"))
+          vo.getCombo().setDescription("opened");
+        else if (vo.getCombo().getCode().equals("S"))
+          vo.getCombo().setDescription("sospended");
+        else if (vo.getCombo().getCode().equals("D"))
+          vo.getCombo().setDescription("delivered");
+        else if (vo.getCombo().getCode().equals("C"))
+          vo.getCombo().setDescription("closed");
+
         vo.setCurrencyValue(rset.getBigDecimal(3));
         vo.setDateValue(rset.getDate(4));
         vo.setNumericValue(rset.getBigDecimal(2));
@@ -113,7 +127,7 @@ public class DetailFrameController extends FormController {
       stmt = conn.prepareStatement("insert into DEMO4(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,TA,FORMATTED_TEXT,LIST) values(?,?,?,?,?,?,?,?,?,?,?)");
       TestVO vo = (TestVO)newPersistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
-      stmt.setString(5,vo.getComboValue());
+      stmt.setString(5,vo.getCombo().getCode());
       stmt.setBigDecimal(3,vo.getCurrencyValue());
       stmt.setDate(4,vo.getDateValue());
       stmt.setBigDecimal(2,vo.getNumericValue());
@@ -158,7 +172,7 @@ public class DetailFrameController extends FormController {
       TestVO vo = (TestVO)persistentObject;
       TestVO oldVO = (TestVO)oldPersistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
-      stmt.setString(5,vo.getComboValue());
+      stmt.setString(5,vo.getCombo().getCode());
       stmt.setBigDecimal(3,vo.getCurrencyValue());
       stmt.setDate(4,vo.getDateValue());
       stmt.setBigDecimal(2,vo.getNumericValue());

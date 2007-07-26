@@ -17,7 +17,7 @@ import java.sql.Date;
 public class TestVO extends ValueObjectImpl {
 
   private String stringValue;
-  private String comboValue;
+  private ComboVO combo;
   private BigDecimal numericValue;
   private BigDecimal currencyValue;
   private Boolean checkValue;
@@ -36,9 +36,6 @@ public class TestVO extends ValueObjectImpl {
 
   public Boolean getCheckValue() {
     return checkValue;
-  }
-  public String getComboValue() {
-    return comboValue;
   }
   public BigDecimal getCurrencyValue() {
     return currencyValue;
@@ -69,9 +66,6 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setCurrencyValue(BigDecimal currencyValue) {
     this.currencyValue = currencyValue;
-  }
-  public void setComboValue(String comboValue) {
-    this.comboValue = comboValue;
   }
   public void setCheckValue(Boolean checkValue) {
     this.checkValue = checkValue;
@@ -105,6 +99,12 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setListValue(String listValue) {
     this.listValue = listValue;
+  }
+  public ComboVO getCombo() {
+    return combo;
+  }
+  public void setCombo(ComboVO combo) {
+    this.combo = combo;
   }
 
 

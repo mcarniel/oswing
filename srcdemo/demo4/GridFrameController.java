@@ -11,6 +11,8 @@ import org.openswing.swing.client.GridControl;
 import org.openswing.swing.server.QueryUtil;
 import org.openswing.swing.server.UserSessionParameters;
 import org.openswing.swing.message.send.java.GridParams;
+import org.openswing.swing.util.client.ClientSettings;
+import org.openswing.swing.domains.java.Domain;
 
 
 /**
@@ -81,14 +83,14 @@ public class GridFrameController extends GridController implements GridDataLocat
       attribute2dbField.put("numericValue","DEMO4.DECNUM");
       attribute2dbField.put("currencyValue","DEMO4.CURRNUM");
       attribute2dbField.put("dateValue","DEMO4.THEDATE");
-      attribute2dbField.put("comboValue","DEMO4.COMBO");
+      attribute2dbField.put("combo.code","DEMO4.COMBO");
       attribute2dbField.put("checkValue","DEMO4.CHECK_BOX");
       attribute2dbField.put("radioButtonValue","DEMO4.RADIO");
       attribute2dbField.put("lookupValue","DEMO4.CODE");
       attribute2dbField.put("descrLookupValue","DEMO4_LOOKUP.DESCRCODE");
       GridParams gridParams = new GridParams(action,startIndex,filteredColumns,currentSortedColumns,currentSortedVersusColumns,otherGridParams);
 
-      return QueryUtil.getQuery(
+      Response res = QueryUtil.getQuery(
         conn,
         new UserSessionParameters(),
         "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE",
@@ -102,6 +104,27 @@ public class GridFrameController extends GridController implements GridDataLocat
         50,
         true
       );
+
+      if (!res.isError()) {
+        Domain d = ClientSettings.getInstance().getDomain("ORDERSTATE");
+        ArrayList list = ((VOListResponse)res).getRows();
+        // this is a simplification: in a real situation combo v.o. will be retrieved from the database...
+        TestVO vo = null;
+        for(int i=0;i<list.size();i++) {
+          vo = (TestVO)list.get(i);
+          if (vo.getCombo().getCode().equals("O"))
+            vo.getCombo().setDescription("opened");
+          else if (vo.getCombo().getCode().equals("S"))
+            vo.getCombo().setDescription("sospended");
+          else if (vo.getCombo().getCode().equals("D"))
+            vo.getCombo().setDescription("delivered");
+          else if (vo.getCombo().getCode().equals("C"))
+            vo.getCombo().setDescription("closed");
+        }
+      }
+
+
+      return res;
 //      String sql = "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE";
 //      Vector vals = new Vector();
 //      if (filteredColumns.size()>0) {

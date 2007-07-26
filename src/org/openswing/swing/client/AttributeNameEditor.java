@@ -150,11 +150,10 @@ public class AttributeNameEditor extends PropertyEditorSupport {
           if (loop<100)
             analyzeClassFields(loop+1,prefix+props[i].getName()+".",attributes,props[i].getReadMethod().getReturnType());
         }
-        else {
-          if (props[i].getReadMethod().getReturnType()!=null &&
-              isCompatible(props[i].getReadMethod().getReturnType()))
-            attributes.add(prefix+props[i].getName());
-        }
+        if (props[i].getReadMethod().getReturnType()!=null &&
+            isCompatible(props[i].getReadMethod().getReturnType()) &&
+            !props[i].getName().equals("class"))
+          attributes.add(prefix+props[i].getName());
       }
 
     }

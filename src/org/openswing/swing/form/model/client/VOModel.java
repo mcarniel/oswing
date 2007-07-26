@@ -97,17 +97,15 @@ public class VOModel {
           newparentMethods[parentMethods.length] = props[i].getReadMethod();
           analyzeClassFields(prefix+props[i].getName()+".",newparentMethods,props[i].getReadMethod().getReturnType());
         }
-        else {
-          Method[] newparentMethods = new Method[parentMethods.length+1];
-          System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
-          newparentMethods[parentMethods.length] = props[i].getReadMethod();
-          voGetterMethods.put(prefix+props[i].getName(),newparentMethods);
+        Method[] newparentMethods = new Method[parentMethods.length+1];
+        System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
+        newparentMethods[parentMethods.length] = props[i].getReadMethod();
+        voGetterMethods.put(prefix+props[i].getName(),newparentMethods);
 
-          Method[] newparentMethods2 = new Method[parentMethods.length+1];
-          System.arraycopy(parentMethods,0,newparentMethods2,0,parentMethods.length);
-          newparentMethods2[parentMethods.length] = props[i].getWriteMethod();
-          voSetterMethods.put(prefix+props[i].getName(),newparentMethods2);
-        }
+        Method[] newparentMethods2 = new Method[parentMethods.length+1];
+        System.arraycopy(parentMethods,0,newparentMethods2,0,parentMethods.length);
+        newparentMethods2[parentMethods.length] = props[i].getWriteMethod();
+        voSetterMethods.put(prefix+props[i].getName(),newparentMethods2);
       }
 
     }

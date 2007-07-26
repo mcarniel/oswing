@@ -204,7 +204,7 @@ public class DetailFrame extends JFrame {
     controlRadioButton1.setAttributeName("radioButtonValue");
     controlCurrency.setAttributeName("currencyValue");
     controlNumeric.setAttributeName("numericValue");
-    controlComboBox.setAttributeName("comboValue");
+    controlComboBox.setAttributeName("combo");
     controlDate.setDateType(Consts.TYPE_DATE_TIME);
     controlDate.setTimeFormat(Resources.H_MM_AAA);
 

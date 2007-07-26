@@ -90,9 +90,8 @@ public class GridFrame extends JFrame {
     colDate.setColumnName("dateValue");
     colDate.setColumnSortable(true);
     colCombo.setDomainId("ORDERSTATE");
-    colCombo.setColumnFilterable(true);
-    colCombo.setColumnName("comboValue");
-    colCombo.setColumnSortable(true);
+    colCombo.setColumnName("combo");
+    colCombo.setColumnSortable(false);
     colLookup.setColumnName("lookupValue");
     textColumn1.setColumnName("descrLookupValue");
     textColumn1.setPreferredWidth(150);

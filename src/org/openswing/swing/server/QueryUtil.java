@@ -474,25 +474,57 @@ public class QueryUtil {
       ArrayList cols = getColumns(baseSQL);
       Method[] setterMethods = new Method[cols.size()];
       Method getter = null;
+      Method setter = null;
+      String aName = null;
+      ArrayList[] getters = new ArrayList[cols.size()];
+      ArrayList[] setters = new ArrayList[cols.size()];
+      Class clazz = null;
       for(int i=0;i<cols.size();i++) {
         attributeName = (String)field2Attribute.get(cols.get(i));
         if (attributeName==null) {
           return new ErrorResponse("Attribute not found in 'attribute2dbField' argument for database field '"+cols.get(i)+"'");
         }
 
+        aName = attributeName;
+        getters[i] = new ArrayList(); // list of Methods objects (getters for accessing inner vos)
+        setters[i] = new ArrayList(); // list of Methods objects (setters for instantiating inner vos)
+        clazz = valueObjectClass;
+
+        // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+        while(aName.indexOf(".")!=-1) {
+          try {
+            getter = clazz.getMethod(
+              "get" +
+              aName.substring(0, 1).
+              toUpperCase() +
+              aName.substring(1,aName.indexOf(".")),
+              new Class[0]
+            );
+          }
+          catch (NoSuchMethodException ex2) {
+            getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+          }
+          setter = clazz.getMethod("set"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[]{getter.getReturnType()});
+          aName = aName.substring(aName.indexOf(".")+1);
+          clazz = getter.getReturnType();
+          getters[i].add(getter);
+          setters[i].add(setter);
+        }
+
         try {
-          getter = valueObjectClass.getMethod(
+          getter = clazz.getMethod(
             "get" +
-            attributeName.substring(0, 1).
+            aName.substring(0, 1).
             toUpperCase() +
-            attributeName.substring(1),
+            aName.substring(1),
             new Class[0]
           );
         }
         catch (NoSuchMethodException ex2) {
-          getter = valueObjectClass.getMethod("is"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]);
+          getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
         }
-        setterMethods[i] = valueObjectClass.getMethod("set"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[]{getter.getReturnType()});
+
+        setterMethods[i] = clazz.getMethod("set"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[]{getter.getReturnType()});
       }
 
       int rowCount = 0;
@@ -543,8 +575,8 @@ public class QueryUtil {
       }
 
       ArrayList list = new ArrayList();
-      Object vo = null;
       Object value = null;
+      Object vo = null;
       while (
           action==GridParams.LAST_BLOCK_ACTION && rset.previous() ||
           action==GridParams.NEXT_BLOCK_ACTION && rset.next() ||
@@ -552,7 +584,20 @@ public class QueryUtil {
         rowCount++;
 
         vo = valueObjectClass.newInstance();
+        Object currentVO = null;
+        Object innerVO = null;
         for(int i=0;i<cols.size();i++) {
+          currentVO = vo;
+          for(int j=0;j<getters[i].size();j++) {
+            if (((Method)getters[i].get(j)).invoke(currentVO,new Object[0])==null) {
+              innerVO = ((Method)getters[i].get(j)).getReturnType().newInstance();  // instantiate the inner v.o.
+              ((Method)setters[i].get(j)).invoke(currentVO,new Object[]{ innerVO });
+              currentVO = innerVO;
+            }
+            else
+              currentVO = ((Method)getters[i].get(j)).invoke(currentVO,new Object[0]);
+          }
+
           if (setterMethods[i].getParameterTypes()[0].equals(String.class))
             value = rset.getString(i+1);
           else if (setterMethods[i].getParameterTypes()[0].equals(Boolean.class) ||
@@ -592,7 +637,7 @@ public class QueryUtil {
             value = rset.getTimestamp(i+1);
           else
             value = rset.getObject(i+1);
-          setterMethods[i].invoke(vo,new Object[]{value});
+          setterMethods[i].invoke(currentVO,new Object[]{value});
         }
 
         list.add(vo);
