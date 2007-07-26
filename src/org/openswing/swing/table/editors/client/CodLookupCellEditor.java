@@ -91,8 +91,14 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
         catch (Exception ex) {
         }
       }
-      else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n')
+      else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n') {
         stopCellEditing();
+        try {
+          table.setColumnSelectionInterval(table.getSelectedColumn() + 1, table.getSelectedColumn() + 1);
+        }
+        catch (Exception ex) {
+        }
+      }
       return true;
     }
 

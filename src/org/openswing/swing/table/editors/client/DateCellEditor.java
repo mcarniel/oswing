@@ -100,8 +100,7 @@ public class DateCellEditor extends AbstractCellEditor implements TableCellEdito
                 }
                 table.requestFocus();
                 try {
-                  table.setColumnSelectionInterval(selectedCol + 1,
-                      selectedCol + 1);
+                  table.setColumnSelectionInterval(selectedCol + 1,selectedCol + 1);
                 }
                 catch (Exception ex1) {
                 }

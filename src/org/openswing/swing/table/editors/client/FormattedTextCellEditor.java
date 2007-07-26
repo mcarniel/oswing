@@ -63,18 +63,22 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
   public FormattedTextCellEditor(JFormattedTextField field,boolean required) {
     this.field = field;
     this.required = required;
-    field.addFocusListener(new FocusAdapter() {
+    field.addKeyListener(new KeyAdapter() {
 
-      public void focusLost(FocusEvent e) {
-        stopCellEditing();
-        table.requestFocus();
-        try {
-          table.setColumnSelectionInterval(col + 1, col + 1);
-        }
-        catch (Exception ex) {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode()==e.VK_TAB) {
+          stopCellEditing();
+          table.requestFocus();
+          try {
+            table.setColumnSelectionInterval(col + 1, col + 1);
+          }
+          catch (Exception ex) {
+          }
         }
       }
+
     });
+
   }
 
 

@@ -107,18 +107,23 @@ public class TextCellEditor extends AbstractCellEditor implements TableCellEdito
     field.setRpadding(rPadding);
     field.setTrimText(trimText);
     field.setUpperCase(upperCase);
-    field.addFocusListener(new FocusAdapter() {
 
-      public void focusLost(FocusEvent e) {
-        stopCellEditing();
-        table.requestFocus();
-        try {
-          table.setColumnSelectionInterval(col + 1, col + 1);
-        }
-        catch (Exception ex) {
+    field.addKeyListener(new KeyAdapter() {
+
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode()==e.VK_TAB) {
+          stopCellEditing();
+          table.requestFocus();
+          try {
+            table.setColumnSelectionInterval(col + 1, col + 1);
+          }
+          catch (Exception ex) {
+          }
         }
       }
+
     });
+
   }
 
 

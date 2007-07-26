@@ -322,6 +322,37 @@ public class TextControl extends BaseInputControl implements InputControl {
 
 
   /**
+   * Adds the specified key listener to receive
+   * action events from this field.
+   *
+   * @param l the key listener to be added
+   */
+  public final void addKeyListener(KeyListener listener) {
+    try {
+      textBox.addKeyListener(listener);
+    }
+    catch (Exception ex) {
+    }
+  }
+
+
+
+  /**
+   * Removes the specified key listener so that it no longer
+   * receives action events from this field.
+   *
+   * @param l the key listener to be removed
+   */
+  public final void removeKeyListener(KeyListener listener) {
+    try {
+      textBox.removeKeyListener(listener);
+    }
+    catch (Exception ex) {
+    }
+  }
+
+
+  /**
    * Removes the specified focus listener so that it no longer
    * receives focus events from this component. This method performs
    * no function, nor does it throw an exception, if the listener

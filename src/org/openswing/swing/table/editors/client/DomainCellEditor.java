@@ -46,6 +46,10 @@ import java.awt.event.KeyEvent;
  */
 public class DomainCellEditor extends AbstractCellEditor implements TableCellEditor {
 
+
+  /** table */
+  private JTable table = null;
+
   /** combo-box inside the editable cell */
   private JComboBox field = new JComboBox() {
 
@@ -64,8 +68,14 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
         catch (Exception ex) {
         }
       }
-      else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n')
+      else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n') {
         stopCellEditing();
+        try {
+          table.setColumnSelectionInterval(table.getSelectedColumn() + 1, table.getSelectedColumn() + 1);
+        }
+        catch (Exception ex) {
+        }
+      }
       return true;
     }
 
@@ -141,6 +151,7 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
   public final Component getTableCellEditorComponent(JTable table, Object value,
                                                boolean isSelected, int row,
                                                int column) {
+    this.table = table;
     if (required) {
       field.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_REQUIRED_CELL_BORDER));
 //      field.setBorder(new CompoundBorder(new RequiredBorder(),field.getBorder()));

@@ -106,26 +106,22 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
     this.dynamicSettings = dynamicSettings;
     field.setMinValue(minValue);
     field.setMaxValue(maxValue);
-//    field.addKeyListener(new KeyAdapter() {
-//
-//      public void keyPressed(KeyEvent e) {
-//        if (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_ENTER)
-//          stopCellEditing();
-//      }
-//
-//    });
-    field.addFocusListener(new FocusAdapter() {
+    field.addKeyListener(new KeyAdapter() {
 
-      public void focusLost(FocusEvent e) {
-        stopCellEditing();
-        table.requestFocus();
-        try {
-          table.setColumnSelectionInterval(col + 1, col + 1);
-        }
-        catch (Exception ex) {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode()==e.VK_TAB) {
+          stopCellEditing();
+          table.requestFocus();
+          try {
+            table.setColumnSelectionInterval(col + 1, col + 1);
+          }
+          catch (Exception ex) {
+          }
         }
       }
+
     });
+
   }
 
 

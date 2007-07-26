@@ -25,6 +25,7 @@ import java.awt.FlowLayout;
 import java.awt.event.FocusListener;
 import java.awt.event.ActionListener;
 import javax.swing.KeyStroke;
+import java.awt.event.KeyListener;
 
 
 /**
@@ -513,6 +514,22 @@ public class NumericControl extends BaseInputControl implements InputControl {
   }
 
 
+  /**
+   * Adds the specified key listener to receive
+   * action events from this field.
+   *
+   * @param l the key listener to be added
+   */
+  public final void addKeyListener(KeyListener listener) {
+    try {
+      numBox.addKeyListener(listener);
+    }
+    catch (Exception ex) {
+    }
+  }
+
+
+
   public void processKeyEvent(KeyEvent e) {
     numBox.processKeyEvent(e);
   }
@@ -520,13 +537,28 @@ public class NumericControl extends BaseInputControl implements InputControl {
 
   /**
    * Removes the specified action listener so that it no longer
-   * receives action events from this textfield.
+   * receives action events from this field.
    *
    * @param l the action listener to be removed
    */
   public final void removeActionListener(ActionListener listener) {
     try {
       numBox.removeActionListener(listener);
+    }
+    catch (Exception ex) {
+    }
+  }
+
+
+  /**
+   * Removes the specified key listener so that it no longer
+   * receives action events from this field.
+   *
+   * @param l the key listener to be removed
+   */
+  public final void removeKeyListener(KeyListener listener) {
+    try {
+      numBox.removeKeyListener(listener);
     }
     catch (Exception ex) {
     }
