@@ -139,7 +139,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   private QuickFilterPanel filterPanel = null;
 
   /** popup menu accessed by right mouse click on grid */
-  private JPopupMenu popup = new JPopupMenu();
+  private GridPopup popup = new GridPopup();
 
   /** menu item for removing column filtering */
   private JMenuItem removefilterItem = new JMenuItem(ClientSettings.getInstance().
@@ -2574,6 +2574,25 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       lockedGrid.setRowMargin(rowMargin);
   }
 
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: JPopupMenu overrided to set focus on grid when the popup is being closed.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class GridPopup extends JPopupMenu {
+
+
+    public final void setVisible(boolean v) {
+      super.setVisible(v);
+      if (!v && grid!=null && !grid.hasFocus())
+        grid.requestFocus();
+    }
+
+
+  }
 
 
 

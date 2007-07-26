@@ -291,6 +291,19 @@ public class Grid extends JTable
               Grid.this.grids.copy();
             else if (e.getKeyCode()==e.VK_X && e.isControlDown() && (Grid.this.grids.getExportButton()!=null) && Grid.this.grids.getExportButton().isEnabled())
               Grid.this.grids.export();
+            else if (e.getKeyCode()==e.VK_Q && e.isControlDown() && getMode()==Consts.READONLY && getRowCount()>0 && getColumnModel().getColumnCount()>0) {
+              if (getSelectedColumn()==-1)
+                setColumnSelectionInterval(0,0);
+              if (getSelectedRow()==-1)
+                setRowSelectionInterval(0,0);
+              int x = 0;
+              for(int i=0;i<getSelectedColumn();i++)
+                x += getColumnModel().getColumn(i).getWidth();
+              showPopupMenu(
+                  x+getColumnModel().getColumn(getSelectedColumn()).getWidth()/2,
+                  getSelectedRow()*getRowHeight()+getRowHeight()/2
+              );
+            }
 
             // (SHIFT) TAB pressed ...
             if (Grid.this.grids.getLockedGrid()!=null &&

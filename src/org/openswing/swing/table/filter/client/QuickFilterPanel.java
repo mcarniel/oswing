@@ -48,7 +48,7 @@ import javax.swing.event.ListSelectionEvent;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class QuickFilterPanel extends JPanel implements MenuElement, MenuContainer {
+public class QuickFilterPanel extends JPanel implements MenuElement, MenuContainer, KeyListener {
 
     private JLabel label1 = new JLabel();
     private JLabel label2 = new JLabel();
@@ -104,6 +104,9 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
       this.filterListener=filterListener;
       this.filterType=filterType;
       this.defaultQuickFilterCriteria = defaultQuickFilterCriteria;
+
+      ApplicationEventQueue.getInstance().addKeyListener(this);
+
       filterIcon = new ImageIcon(ClientUtils.getImage("filter.gif"));
       rangeButton= new JToggleButton(new ImageIcon(ClientUtils.getImage("chiuso.gif")),false) {
 
@@ -176,6 +179,31 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
       setFilterConfig(filterType,colProperties,initValue);
 
     }
+
+
+    public final void setVisible(boolean v) {
+      super.setVisible(v);
+      if (!v)
+        ApplicationEventQueue.getInstance().removeKeyListener(this);
+    }
+
+
+    public void keyPressed(KeyEvent e) {
+      if (e.getKeyCode()==e.VK_ESCAPE) {
+        parentPopup.getParent();
+        parentPopup.setVisible(false);
+      }
+    }
+
+
+    public void keyTyped(KeyEvent e) {
+    }
+
+
+    public void keyReleased(KeyEvent e) {
+    }
+
+
 
     /**
      * Listener linked to the JList object.

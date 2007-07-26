@@ -197,7 +197,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 
         ApplicationEventQueue.getInstance().addKeyListener(new KeyAdapter() {
           public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode()==e.VK_ESCAPE) {
+            if (e.getKeyCode()==e.VK_ESCAPE && e.getSource() instanceof JComponent) {
               Container c = ((JComponent)e.getSource()).getParent();
               while(c.getParent()!=null && !c.equals(menu))
                 c = c.getParent();
