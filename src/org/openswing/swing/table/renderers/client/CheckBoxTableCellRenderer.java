@@ -161,6 +161,9 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
     else
       rend.setFont(defaultFont);
 
+    if (table instanceof Grid)
+      rend.setToolTipText(gridContainer.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
+
     return rend;
   }
 

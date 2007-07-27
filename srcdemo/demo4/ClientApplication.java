@@ -49,6 +49,7 @@ public class ClientApplication {
     props.setProperty("descrLookupValue","Lookup Description");
     props.setProperty("taValue","Text Area");
     props.setProperty("formattedTextValue","Formatted Text");
+    props.setProperty("combo","Combo");
 
     ButtonsAuthorizations auth = new ButtonsAuthorizations();
     auth.addButtonAuthorization("F1",true,false,true);

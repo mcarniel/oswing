@@ -156,6 +156,9 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
     else
       rend.setFont(defaultFont);
 
+    if (table instanceof Grid)
+      rend.setToolTipText(gridController.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
+
     return rend;
   }
 

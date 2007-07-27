@@ -146,6 +146,9 @@ public class TextTableCellRenderer extends DefaultTableCellRenderer {
     else
       c.setFont(defaultFont);
 
+    if (table instanceof Grid)
+      c.setToolTipText(gridController.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
+
     return c;
   }
 

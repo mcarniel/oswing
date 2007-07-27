@@ -8,8 +8,9 @@ Final release 1.2 available
 Improved data model for GridControl and Form: now in a value object are supported also getter/setter methods related to inner value objects.
 Improved QueryUtil.getQuery method by supporting attribute filling per inner value objects too.
 Fixed bug arised in an editable grid when the focus is inside a cell and the user clicks in another cell.
-Improved GridControl by adding CTRL+Q keys combination to open quick filter panel. ESC button allows to close it.
+Improved GridControl by adding CTRL+Q keys combination to open quick filter panel. ESC button allows to close it. It is possible to press ENTER key to apply the filter value inside the filter.
 Changed pub/build.xml file.
+Added two new methods in GridController: getHeaderTooltip and getCellTooltip to set a tooltip text to the column headers and to each cell of the GridControl.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

@@ -215,5 +215,23 @@ public class GridFrameController extends GridController implements GridDataLocat
   }
 
 
+  /**
+   * @param attributeName attribute name that identify a grid column
+   * @return tooltip text to show in the column header; this text will be automatically translated according to internationalization settings
+   */
+  public String getHeaderTooltip(String attributeName) {
+    return attributeName;
+  }
+
+
+  /**
+   * @param row row index in the grid
+   * @param attributeName attribute name that identify a grid column
+   * @return tooltip text to show in the cell identified by the specified row and attribute name; this text will be automatically translated according to internationalization settings
+   */
+  public String getCellTooltip(int row,String attributeName) {
+    return attributeName+" at row "+row;
+  }
+
 
 }

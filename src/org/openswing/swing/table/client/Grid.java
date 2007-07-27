@@ -1013,6 +1013,7 @@ public class Grid extends JTable
   private void prepareHeader() {
     for(int i=0;i<tableColumnModel.length;i++) {
       tableColumnModel[i].setHeaderRenderer(new TableColumnHeaderRenderer(
+          this.colProps[i].getColumnName(),
           this.colProps[i].getHeaderTextAlignment(),
           this.colProps[i].getHeaderFont(),
           this.colProps[i].getHeaderForegroundColor()
@@ -1299,7 +1300,7 @@ public class Grid extends JTable
     private Icon sortIcon;
     private JLabel l_text, l_icon;
 
-    public TableColumnHeaderRenderer(int headerTextAlignment,Font headerFont,Color headerColor) {
+    public TableColumnHeaderRenderer(String attributeName,int headerTextAlignment,Font headerFont,Color headerColor) {
       setOpaque(false);
       setBorder(columnHeaderBorder);
       setLayout(new BorderLayout(0, 0));
@@ -1319,7 +1320,9 @@ public class Grid extends JTable
         l_icon.setForeground(headerColor);
       l_icon.setOpaque(false);
       add(l_icon, BorderLayout.EAST);
-
+      setToolTipText(ClientSettings.getInstance().getResources().getResource(
+         gridController.getHeaderTooltip(attributeName)
+      ));
     }
 
 

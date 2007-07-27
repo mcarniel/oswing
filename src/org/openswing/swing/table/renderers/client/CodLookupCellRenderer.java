@@ -63,6 +63,7 @@ public class CodLookupCellRenderer extends TextTableCellRenderer {
     JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
     if (hideCodBox)
       ((JLabel)c).setText("");
+
     return c;
   }
 

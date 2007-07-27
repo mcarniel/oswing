@@ -133,6 +133,10 @@ public class ImageTableCellRenderer extends DefaultTableCellRenderer {
           rend.setBackground(ClientSettings.GRID_NOT_EDITABLE_CELL_BACKGROUND);
       }
     }
+
+    if (table instanceof Grid)
+      rend.setToolTipText(gridController.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
+
     return rend;
   }
 
