@@ -259,6 +259,12 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
               valueKeyPressed(e);
           }
         } );
+        list.addKeyListener(new KeyAdapter() {
+          public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode()==e.VK_ENTER)
+              valueKeyPressed(e);
+          }
+        });
 
         return scrollPane;
       }

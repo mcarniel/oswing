@@ -990,6 +990,37 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 
 
   /**
+   * Adds the specified key listener to receive
+   * action events from this field.
+   *
+   * @param l the key listener to be added
+   */
+  public final void addKeyListener(KeyListener listener) {
+    try {
+      date.addKeyListener(listener);
+    }
+    catch (Exception ex) {
+    }
+  }
+
+
+
+  /**
+   * Removes the specified key listener so that it no longer
+   * receives action events from this field.
+   *
+   * @param l the key listener to be removed
+   */
+  public final void removeKeyListener(KeyListener listener) {
+    try {
+      date.removeKeyListener(listener);
+    }
+    catch (Exception ex) {
+    }
+  }
+
+
+  /**
    * Removes the specified action listener so that it no longer
    * receives action events from this textfield.
    *
