@@ -720,11 +720,6 @@ public class Grid extends JTable
       for(int i=0;i<colProps.length;i++)
         colProps[i].setAdditionalHeaderColumnSpan(0);
 
-    if (hasColSpan) {
-      setReorderingAllowed(false);
-//      for(int i=0;i<colProps.length;i++)
-//        colProps[i].setColumnSelectable(false);
-    }
   }
 
 
@@ -1731,12 +1726,6 @@ public class Grid extends JTable
    * @param reorderingAllowed flag used to set columns reordering
    */
   public final void setReorderingAllowed(boolean reorderingAllowed) {
-    if (hasColSpan) {
-      this.reorderingAllowed = false;
-      if (this.getTableHeader()!=null)
-        this.getTableHeader().setReorderingAllowed(false);
-      return;
-    }
     this.reorderingAllowed = reorderingAllowed;
     if (this.getTableHeader()!=null)
       this.getTableHeader().setReorderingAllowed(reorderingAllowed);
@@ -2311,22 +2300,65 @@ public class Grid extends JTable
 
 
 
+  /**
+   * Returns the default column model object, which is
+   * a <code>DefaultTableColumnModel</code>.  A subclass can override this
+   * method to return a different column model object.
+   *
+   * This method has been overrided to allow "moveColumn" event interception:
+   * this event is useful to avoid column moving with additional column headers.
+   *
+   * @return the default column model object
+   * @see javax.swing.table.DefaultTableColumnModel
+   */
+  protected TableColumnModel createDefaultColumnModel() {
+     return new DefaultTableColumnModel() {
 
+       /**
+        * Moves the column and heading at <code>columnIndex</code> to
+        * <code>newIndex</code>.  The old column at <code>columnIndex</code>
+        * will now be found at <code>newIndex</code>.  The column
+        * that used to be at <code>newIndex</code> is shifted
+        * left or right to make room.  This will not move any columns if
+        * <code>columnIndex</code> equals <code>newIndex</code>.  This method
+        * also posts a <code>columnMoved</code> event to its listeners.
+        *
+        * @param	index			        the index of column to be moved
+        * @param	newIndex			new index to move the column
+        * @exception IllegalArgumentException	if <code>column</code> or
+        * 						<code>newIndex</code>
+        *						are not in the valid range
+        */
+       public void moveColumn(int index, int newIndex) {
+         if (hasColSpan &&
+            (gridType==TOP_GRID ||
+             grids.getGridControl()!=null && grids.getGridControl().getTopTable()==null && gridType==MAIN_GRID ||
+             grids.getGridControl()==null)) {
+           try {
+             JPanel hp1 = (JPanel)headerToAdditionalHeader.get(new Integer(index));
+             JPanel hp2 = (JPanel)headerToAdditionalHeader.get(new Integer(newIndex));
+             if (hp1!=null && hp2!=null && hp1.equals(hp2)) {
+               super.moveColumn(index, newIndex);
+               return;
+             }
+             else
+               return;
+           }
+           catch (Exception ex) {
+             return;
+           }
+         }
+         super.moveColumn(index, newIndex);
+       }
 
-
-
-
-
-
+     };
+  }
 
 
   /**
    * Method called my JTable when moving a column.
    */
   public final void columnMoved(TableColumnModelEvent e) {
-    if (hasColSpan) {
-      return;
-    }
     super.columnMoved(e);
     if (gridType==TOP_GRID && grids.getGridControl()!=null && grids.getGridControl().getTopTable()!=null){
       if (lockedGrid)

@@ -353,7 +353,7 @@ public class BaseInputControl extends JPanel implements InputControl {
    */
   public final void setAttributeName(String attributeName) {
     this.attributeName = attributeName;
-    AttributeNameEditor.setColumnType(this.getClass());
+//    AttributeNameEditor.setColumnType(this.getClass());
   }
 
 

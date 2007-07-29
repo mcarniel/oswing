@@ -15,6 +15,7 @@ Improved ListControl by supporting a java.util.List of objects as attribute valu
 Added "textAlignment" property to input controls to define horizontal alignment.
 Added two new methods in GridController: getHeaderTooltip and getCellTooltip to set a tooltip text to the column headers and to each cell of the GridControl.
 Changed demo4 sample to show how to use the ListControl and new methods added in this release.
+Fixed problem on setting attribute name in a Form using the UI designer.
 Changed pub/build.xml file.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
