@@ -368,6 +368,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
   private void jbInit() throws Exception {
     this.setLayout(gridBagLayout1);
+
     scroll = new JScrollPane(grid);
 
     if (lockedColumns>0) {
@@ -377,13 +378,70 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       viewport.setView(lockedGrid);
       viewport.setPreferredSize(lockedGrid.getPreferredSize());
       scroll.setRowHeaderView(viewport);
-      if (lockedGrid.getTableHeader()!=null)
-        scroll.setCorner(JScrollPane.UPPER_LEFT_CORNER, lockedGrid.getTableHeader());
-      this.add(scroll,  new GridBagConstraints(0, 0, 1, 1, 0.0, 1.0
+      if (lockedGrid.getTableHeader()!=null) {
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new GridLayout(lockedGrid.hasColSpan()?2:1,1));
+
+        if (lockedGrid.hasColSpan()&&
+           (gridType==Grid.MAIN_GRID && gridControl==null ||
+            gridType==Grid.MAIN_GRID && gridControl!=null && gridControl.getTopTable()==null ||
+            gridType==Grid.TOP_GRID)) {
+          // add additional header columns...
+          JPanel additionalColHeaders = new JPanel();
+          additionalColHeaders.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+          int span = 0;
+          int w = 0;
+          int rest = 0;
+          JLabel h = null;
+          JPanel hp = null;
+          Color backcolor = new JButton().getBackground();
+          for(int i=0;i<colProps.length;i++) {
+            if (colProps[i].getAdditionalHeaderColumnSpan()>0) {
+              span = colProps[i].getAdditionalHeaderColumnSpan();
+              hp = new JPanel();
+              if (colProps[i].getHeaderTextAlignment()==SwingConstants.CENTER)
+                hp.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+              else if (colProps[i].getHeaderTextAlignment()==SwingConstants.LEFT)
+                hp.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+              else if (colProps[i].getHeaderTextAlignment()==SwingConstants.RIGHT)
+                hp.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
+              hp.setBorder(BorderFactory.createRaisedBevelBorder());
+              hp.setBackground(backcolor);
+              h = new JLabel();
+              if (colProps[i].getHeaderFont()!=null)
+                h.setFont(colProps[i].getHeaderFont());
+              if (colProps[i].getHeaderForegroundColor()!=null)
+                h.setForeground(colProps[i].getHeaderForegroundColor());
+
+              hp.add(h,null);
+              h.setText(ClientSettings.getInstance().getResources().getResource(colProps[i].getAdditionalHeaderColumnName()));
+              rest = span-1;
+              w = colProps[i].getPreferredWidth();
+              ArrayList list = new ArrayList();
+              list.add(new Integer(i));
+            }
+            else {
+              w += colProps[i].getPreferredWidth();
+              rest--;
+            }
+            if (rest==0 && h!=null) {
+              hp.setPreferredSize(new Dimension(w,ClientSettings.HEADER_HEIGHT));
+              if (i<lockedColumns) {
+                additionalColHeaders.add(hp,null);
+              }
+            }
+          }
+          headerPanel.add(additionalColHeaders);
+        } // end section on additional header columns...
+
+
+        headerPanel.add(lockedGrid.getTableHeader());
+        scroll.setCorner(JScrollPane.UPPER_LEFT_CORNER, headerPanel);
+      }
+      this.add(scroll,  new GridBagConstraints(0, 1, 1, 1, 0.0, 1.0
               ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-//      scroll.setMinimumSize(new Dimension(lockedGrid.getPreferredSize().width+5,lockedGrid.getPreferredSize().height));
     }
-    this.add(scroll,   new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0
+    this.add(scroll,   new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
   }

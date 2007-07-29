@@ -10,6 +10,8 @@
   <property name="lib" value="${basedir}/../lib"/>
   <property name="webapps" value="${WEBAPPS}"/>
   <property name="keystore" value="${KEYSTORE}"/>
+  <property name="alias" value="${ALIAS}"/>
+  <property name="storepass" value="${STOREPASS}"/>
 
   <target name="allclasses" depends="client,server">
   </target>
@@ -138,17 +140,17 @@
     </copy>
 
 
-    <signjar jar="${classes}/demo10/demo10.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
-    <signjar jar="${webapps}/demo10/hsqldb.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
-    <signjar jar="${webapps}/demo10/poi-2.0-RC2-20040102.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
-    <signjar jar="${webapps}/demo10/itext-1.4.8.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <signjar jar="${classes}/demo10/demo10.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${webapps}/demo10/hsqldb.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${webapps}/demo10/poi-2.0-RC2-20040102.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${webapps}/demo10/itext-1.4.8.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <delete dir="${tmp}"/>
   </target>
 
 
   <target name="demo5" depends="allclasses">
     <mkdir dir="${tmp}"/>
-    <signjar jar="${lib}/clientos.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <signjar jar="${lib}/clientos.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <copy todir="${webapps}/demo5" >
       <fileset dir="${lib}">
         <include name="clientos.jar"/>
@@ -170,14 +172,14 @@
       </fileset>
     </copy>
     <jar jarfile="${tmp}/demo5client.jar" basedir="${tmp}"/>
-    <signjar jar="${tmp}/demo5client.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <signjar jar="${tmp}/demo5client.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <copy todir="${webapps}/demo5" >
       <fileset dir="${tmp}">
         <include name="demo5client.jar"/>
       </fileset>
     </copy>
-    <signjar jar="${lib}/jcalendar.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
-    <signjar jar="${lib}/jnlp.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <signjar jar="${lib}/jcalendar.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${lib}/jnlp.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <copy todir="${webapps}/demo5" >
       <fileset dir="${lib}">
         <include name="jcalendar.jar"/>
@@ -281,7 +283,7 @@
       </fileset>
     </copy>
     <jar jarfile="${tmp}/demo18client.jar" basedir="${tmp}"/>
-    <signjar jar="${tmp}/demo18client.jar" alias="carniel" storepass="carniel" keystore="${keystore}" />
+    <signjar jar="${tmp}/demo18client.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <copy todir="${webapps}/demo18" >
       <fileset dir="${tmp}">
         <include name="demo18client.jar"/>

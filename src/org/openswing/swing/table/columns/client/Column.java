@@ -118,6 +118,12 @@ public class Column extends JPanel {
   /** column text horizontal alignment */
   private int textAlignment = SwingConstants.LEFT;
 
+  /** additional column header description */
+  private String additionalHeaderColumnName = null;
+
+  /** additional column header description; default value: 0 (i.e. it is not visible) */
+  private int additionalHeaderColumnSpan = 0;
+
 
   public static final int TYPE_TEXT = 0;
   public static final int TYPE_DATE = Consts.TYPE_DATE;
@@ -153,9 +159,9 @@ public class Column extends JPanel {
     colHeader.setPreferredSize(new Dimension(preferredWidth, ClientSettings.HEADER_HEIGHT));
     colHeader.setText(columnName);
     colHeader.setBorder(BorderFactory.createRaisedBevelBorder());
-    this.add(colHeader,  new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+    this.add(colHeader,  new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-    this.add(colRow,     new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0
+    this.add(colRow,     new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
   }
 
@@ -174,8 +180,10 @@ public class Column extends JPanel {
    */
   public final void setColumnName(String columnName) {
     this.columnName = columnName;
-    if (headerColumnName==null || headerColumnName.equals(""))
+    if (headerColumnName==null || headerColumnName.equals("")) {
       colHeader.setText(columnName);
+      additionalHeaderColumnName = columnName;
+    }
     AttributeNameEditor.setColumnType(this.getClass());
   }
 
@@ -200,6 +208,7 @@ public class Column extends JPanel {
    */
   public final void setPreferredWidth(int preferredWidth) {
     this.preferredWidth = preferredWidth;
+
     colHeader.setPreferredSize(new Dimension(preferredWidth,ClientSettings.HEADER_HEIGHT));
     colRow.setPreferredSize(new Dimension(preferredWidth, ClientSettings.CELL_HEIGHT));
   }
@@ -425,10 +434,14 @@ public class Column extends JPanel {
    */
   public final void setHeaderColumnName(String headerColumnName) {
     this.headerColumnName = headerColumnName;
-    if (headerColumnName!=null && !headerColumnName.equals(""))
+    if (headerColumnName!=null && !headerColumnName.equals("")) {
       colHeader.setText(headerColumnName);
-    else
+      additionalHeaderColumnName = headerColumnName;
+    }
+    else {
       colHeader.setText(columnName);
+      additionalHeaderColumnName = columnName;
+    }
   }
 
 
@@ -457,10 +470,11 @@ public class Column extends JPanel {
       else if (alignment==SwingConstants.CENTER)
         align = GridBagConstraints.NORTH;
 
-      this.add(colHeader, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+      this.add(colHeader, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
                                                  , align,
                                                  GridBagConstraints.HORIZONTAL,
                                                  new Insets(0, 0, 0, 0), 0, 0));
+
       this.revalidate();
       this.repaint();
     }
@@ -507,8 +521,9 @@ public class Column extends JPanel {
    */
   public final void setHeaderFont(Font headerFont) {
     this.headerFont = headerFont;
-    if (headerFont!=null && Beans.isDesignTime())
+    if (headerFont!=null && Beans.isDesignTime()) {
       colHeader.setFont(headerFont);
+    }
   }
 
 
@@ -525,8 +540,9 @@ public class Column extends JPanel {
    */
   public final void setHeaderForegroundColor(Color headerForegroundColor) {
     this.headerForegroundColor = headerForegroundColor;
-    if (headerForegroundColor!=null && Beans.isDesignTime())
+    if (headerForegroundColor!=null && Beans.isDesignTime()) {
       colHeader.setForeground(headerForegroundColor);
+    }
   }
 
 
@@ -552,6 +568,40 @@ public class Column extends JPanel {
    */
   public final void setTextAlignment(int alignment) {
     this.textAlignment = alignment;
+  }
+
+
+  /**
+   * @return additional column header description
+   */
+  public final String getAdditionalHeaderColumnName() {
+    return additionalHeaderColumnName;
+  }
+
+
+  /**
+   * @return additional column header description
+   */
+  public final int getAdditionalHeaderColumnSpan() {
+    return additionalHeaderColumnSpan;
+  }
+
+
+  /**
+   * Set the additional column header description.
+   * @param additionalHeaderColumnName additional column header description
+   */
+  public final void setAdditionalHeaderColumnName(String additionalHeaderColumnName) {
+    this.additionalHeaderColumnName = additionalHeaderColumnName;
+  }
+
+
+  /**
+   * Set the additional column header description.
+   * @param additionalHeaderColumnSpan additional column header description
+   */
+  public final void setAdditionalHeaderColumnSpan(int additionalHeaderColumnSpan) {
+    this.additionalHeaderColumnSpan = additionalHeaderColumnSpan;
   }
 
 

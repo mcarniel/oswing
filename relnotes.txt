@@ -9,8 +9,13 @@ Improved data model for GridControl and Form: now in a value object are supporte
 Improved QueryUtil.getQuery method by supporting attribute filling per inner value objects too.
 Fixed bug arised in an editable grid when the focus is inside a cell and the user clicks in another cell.
 Improved GridControl by adding CTRL+Q keys combination to open quick filter panel. ESC button allows to close it. It is possible to press ENTER key to apply the filter value inside the filter.
-Changed pub/build.xml file.
+Improved GridControl by adding two new column properties: "additionalHeaderColumnName" and "additionalHeaderColumnSpan", used to add an additional column header panel above the default one.
+Added demo20 to show how to use the additional column headers on the top of the GridControl.
+Improved ListControl by supporting a java.util.List of objects as attribute value, so that it is possible to use the ListControl in a FormPanel this multiple selected items.
+Added "textAlignment" property to input controls to define horizontal alignment.
 Added two new methods in GridController: getHeaderTooltip and getCellTooltip to set a tooltip text to the column headers and to each cell of the GridControl.
+Changed demo4 sample to show how to use the ListControl and new methods added in this release.
+Changed pub/build.xml file.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

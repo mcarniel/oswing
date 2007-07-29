@@ -42,6 +42,8 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _additionalHeaderColumnName = new PropertyDescriptor("additionalHeaderColumnName", beanClass, "getAdditionalHeaderColumnName", "setAdditionalHeaderColumnName");
+      PropertyDescriptor _additionalHeaderColumnSpan = new PropertyDescriptor("additionalHeaderColumnSpan", beanClass, "getAdditionalHeaderColumnSpan", "setAdditionalHeaderColumnSpan");
       PropertyDescriptor _columnDuplicable = new PropertyDescriptor("columnDuplicable", beanClass, "isColumnDuplicable", "setColumnDuplicable");
       PropertyDescriptor _columnFilterable = new PropertyDescriptor("columnFilterable", beanClass, "isColumnFilterable", "setColumnFilterable");
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
@@ -67,6 +69,8 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
       _textAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextAlignmentEditor.class);
 
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+              _additionalHeaderColumnName,
+              _additionalHeaderColumnSpan,
               _columnDuplicable,
 	      _columnFilterable,
 	      _columnName,

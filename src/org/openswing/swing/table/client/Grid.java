@@ -35,6 +35,7 @@ import org.openswing.swing.mdi.client.MDIFrame;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
+import javax.swing.plaf.UIResource;
 
 
 /**
@@ -156,6 +157,15 @@ public class Grid extends JTable
   /** flag used to store a control key pressed event (in READONLY mode) */
   private boolean controlDown = false;
 
+  /** flag used to disable column resizing, column moving and column visibility changing operations */
+  private boolean hasColSpan = false;
+
+  /** collection of pairs <column index as Integer,additional column related, as JPanel > */
+  private Hashtable headerToAdditionalHeader = new Hashtable();
+
+  /** collection of pairs <additional column related, as JPanel, java.util.List of column index as Integer, i.e. its related column headers > */
+  private Hashtable additionalHeaderToHeaders = new Hashtable();
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -205,8 +215,10 @@ public class Grid extends JTable
     try {
       this.setModel(model);
 
-      // set column headers, column types and column renderers/editors...
+      // set column types and column renderers/editors...
       prepareJTable();
+
+      checkColumnSpans();
 
       // storing of TableColumn objects to the purpouse of reuse them in setVisibleColumns method...
       TableColumnModel colsModel = this.getColumnModel();
@@ -681,8 +693,39 @@ public class Grid extends JTable
   }
 
 
+  /**
+   * Check additional column header spans.
+   */
+  private void checkColumnSpans() {
+    int rest = 0;
+    boolean disableAdditionalHeaders = false;
+    hasColSpan = false;
+    for(int i=0;i<colProps.length;i++) {
+      if (colProps[i].getAdditionalHeaderColumnSpan()>0 && rest>0) {
+        disableAdditionalHeaders = true;
+        hasColSpan = false;
+        Logger.error(this.getClass().getName(), "jbInit", "The specified attribute '"+colProps[i].getColumnName()+"' has an additional column header with col span >0 and incompatibile with previous col spans.",null);
+        break;
+      }
+      else if (colProps[i].getAdditionalHeaderColumnSpan()>0 && rest==0) {
+        rest = colProps[i].getAdditionalHeaderColumnSpan() - 1;
+        hasColSpan = true;
+      }
+      else {
+        if (rest>0)
+          rest--;
+      }
+    }
+    if (disableAdditionalHeaders)
+      for(int i=0;i<colProps.length;i++)
+        colProps[i].setAdditionalHeaderColumnSpan(0);
 
-
+    if (hasColSpan) {
+      setReorderingAllowed(false);
+//      for(int i=0;i<colProps.length;i++)
+//        colProps[i].setColumnSelectable(false);
+    }
+  }
 
 
   /**
@@ -1503,6 +1546,9 @@ public class Grid extends JTable
         grids.getGridControl().getBottomTable().getLockedGrid().setVisibleColumn(columnModelIndex,colVisible);
     }
 
+    if (hasColSpan) {
+      repaintAdditionalColumnHeaders(columnModelIndex,colVisible?colProps[columnModelIndex].getPreferredWidth():0);
+    }
   }
 
 
@@ -1685,6 +1731,12 @@ public class Grid extends JTable
    * @param reorderingAllowed flag used to set columns reordering
    */
   public final void setReorderingAllowed(boolean reorderingAllowed) {
+    if (hasColSpan) {
+      this.reorderingAllowed = false;
+      if (this.getTableHeader()!=null)
+        this.getTableHeader().setReorderingAllowed(false);
+      return;
+    }
     this.reorderingAllowed = reorderingAllowed;
     if (this.getTableHeader()!=null)
       this.getTableHeader().setReorderingAllowed(reorderingAllowed);
@@ -1716,16 +1768,104 @@ public class Grid extends JTable
    * This method override the super class mathod to add a vertical scrollbar listener and right mouse click event on the scroll bar...
    */
   protected void configureEnclosingScrollPane() {
-    super.configureEnclosingScrollPane();
     Container p = getParent();
-    if (p instanceof JViewport) {
-        Container gp = p.getParent();
-        if (gp instanceof JScrollPane) {
-          scrollPane = (JScrollPane)gp;
-          scrollPane.addMouseListener(new RightClickMouseListener());
-          createVerticalScrollBarListener(scrollPane);
 
+    // retrieve container scrollpane and add to it a vertical scrollbar listener...
+    if (p instanceof JViewport) {
+      Container gp = p.getParent();
+      if (gp instanceof JScrollPane) {
+        scrollPane = (JScrollPane)gp;
+        scrollPane.addMouseListener(new RightClickMouseListener());
+        createVerticalScrollBarListener(scrollPane);
+
+        JViewport viewport = scrollPane.getViewport();
+        if (viewport == null || viewport.getView() != this) {
+           return;
         }
+
+        // add column headers and optionally additional column headers...
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new GridBagLayout());
+        JTableHeader th = getTableHeader();
+        if (th!=null)
+          topPanel.add(th,
+                       new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0
+                                              , GridBagConstraints.WEST,
+                                              GridBagConstraints.BOTH,
+                                              new Insets(0, 0, 0, 0), 0, 0));
+
+
+        if (hasColSpan &&
+             (gridType==Grid.MAIN_GRID && grids.getGridControl()==null ||
+              gridType==Grid.MAIN_GRID && grids.getGridControl()!=null && grids.getGridControl().getTopTable()==null ||
+              gridType==Grid.TOP_GRID)) {
+          // add additional header columns...
+          JPanel additionalColHeaders = new JPanel();
+          additionalColHeaders.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+          int span = 0;
+          int w = 0;
+          int rest = 0;
+          JLabel h = null;
+          JPanel hp = null;
+          Color backcolor = new JButton().getBackground();
+          for(int i=0;i<colProps.length;i++) {
+            if (colProps[i].getAdditionalHeaderColumnSpan()>0) {
+              span = colProps[i].getAdditionalHeaderColumnSpan();
+              hp = new JPanel();
+              if (colProps[i].getHeaderTextAlignment()==SwingConstants.CENTER)
+                hp.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+              else if (colProps[i].getHeaderTextAlignment()==SwingConstants.LEFT)
+                hp.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+              else if (colProps[i].getHeaderTextAlignment()==SwingConstants.RIGHT)
+                hp.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
+              hp.setBorder(BorderFactory.createRaisedBevelBorder());
+              hp.setBackground(backcolor);
+              h = new JLabel();
+              if (colProps[i].getHeaderFont()!=null)
+                h.setFont(colProps[i].getHeaderFont());
+              if (colProps[i].getHeaderForegroundColor()!=null)
+                h.setForeground(colProps[i].getHeaderForegroundColor());
+
+              hp.add(h,null);
+              h.setText(ClientSettings.getInstance().getResources().getResource(colProps[i].getAdditionalHeaderColumnName()));
+              rest = span-1;
+              w = colProps[i].getPreferredWidth();
+              ArrayList list = new ArrayList();
+              list.add(new Integer(i));
+              additionalHeaderToHeaders.put(hp,list);
+              headerToAdditionalHeader.put(new Integer(i),hp);
+            }
+            else {
+              w += colProps[i].getPreferredWidth();
+              rest--;
+              ArrayList list = (ArrayList)additionalHeaderToHeaders.get(hp);
+              if (list!=null)
+                list.add(new Integer(i));
+              headerToAdditionalHeader.put(new Integer(i),hp);
+            }
+            if (rest==0 && h!=null) {
+              hp.setPreferredSize(new Dimension(w,ClientSettings.HEADER_HEIGHT));
+              if (i>=fromColIndex && i<toColIndex) {
+                additionalColHeaders.add(hp,null);
+              }
+            }
+          }
+
+          topPanel.add(additionalColHeaders,
+                         new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0
+                                                , GridBagConstraints.WEST,
+                                                GridBagConstraints.BOTH,
+                                                new Insets(0, 0, 0, 0), 0, 0));
+        }
+
+        scrollPane.setColumnHeaderView(topPanel);
+        //  scrollPane.getViewport().setBackingStoreEnabled(true);
+        Border border = scrollPane.getBorder();
+        if (border == null || border instanceof UIResource) {
+            scrollPane.setBorder(UIManager.getBorder("Table.scrollPaneBorder"));
+        }
+
+      }
     }
   }
 
@@ -2184,6 +2324,9 @@ public class Grid extends JTable
    * Method called my JTable when moving a column.
    */
   public final void columnMoved(TableColumnModelEvent e) {
+    if (hasColSpan) {
+      return;
+    }
     super.columnMoved(e);
     if (gridType==TOP_GRID && grids.getGridControl()!=null && grids.getGridControl().getTopTable()!=null){
       if (lockedGrid)
@@ -2211,15 +2354,74 @@ public class Grid extends JTable
 
 
   /**
+   * Repaint additional column headers, based in the specified column index.
+   * @param index column index (related to the model)
+   * @param width current column width
+   */
+  private void repaintAdditionalColumnHeaders(int index,int width) {
+    try {
+      JPanel hp = (JPanel)headerToAdditionalHeader.get(new Integer(index));
+      if (hp!=null) {
+          ArrayList list = (ArrayList)additionalHeaderToHeaders.get(hp);
+          int w = 0;
+          for(int i=0;i<list.size();i++)
+            if (i!=index)
+              w += colProps[((Integer)list.get(i)).intValue()].getPreferredWidth();
+            else
+              w += width;
+          hp.setPreferredSize(new Dimension(w,hp.getSize().height));
+          hp.revalidate();
+          hp.getParent().validate();
+      }
+    }
+    catch (Exception ex) {
+    }
+  }
+
+
+  /**
    * Method called by JTable when resizing a column.
    */
   public final void columnMarginChanged(ChangeEvent e) {
+    // check if there is an additional column header...
+    try {
+      TableColumn resizingColumn = getTableHeader().getResizingColumn();
+      if (resizingColumn != null){
+        int index = resizingColumn.getModelIndex();
+        colProps[index].setPreferredWidth(resizingColumn.getWidth());
+        repaintAdditionalColumnHeaders(index,resizingColumn.getWidth());
+      }
+    }
+    catch (Exception ex) {
+    }
+
+    try {
+      TableColumn resizingColumn = getTableHeader().getResizingColumn();
+      if (resizingColumn != null){
+        int index = resizingColumn.getModelIndex();
+        colProps[index].setPreferredWidth(resizingColumn.getWidth());
+        JPanel hp = (JPanel)headerToAdditionalHeader.get(new Integer(index));
+        if (hp!=null) {
+            ArrayList list = (ArrayList)additionalHeaderToHeaders.get(hp);
+            int w = 0;
+            for(int i=0;i<list.size();i++)
+              w += colProps[((Integer)list.get(i)).intValue()].getPreferredWidth();
+            hp.setPreferredSize(new Dimension(w,hp.getSize().height));
+            hp.revalidate();
+            hp.getParent().validate();
+        }
+      }
+    }
+    catch (Exception ex) {
+    }
+
     super.columnMarginChanged(e);
     try {
       if (gridType==TOP_GRID && grids.getGridControl()!=null && grids.getGridControl().getTopTable()!=null){
         TableColumn resizingColumn = getTableHeader().getResizingColumn();
         if (resizingColumn != null){
           int index = resizingColumn.getModelIndex();
+          colProps[index].setPreferredWidth(resizingColumn.getWidth());
           index = convertColumnIndexToView(index);
           if (lockedGrid)
             grids.getGridControl().getTable().getLockedGrid().getColumnModel().getColumn(index).setPreferredWidth(resizingColumn.getPreferredWidth());
@@ -2267,6 +2469,11 @@ public class Grid extends JTable
     }
     catch (Exception ex) {
     }
+  }
+
+
+  public boolean hasColSpan() {
+    return hasColSpan;
   }
 
 

@@ -94,7 +94,7 @@ public class DetailFrame extends JFrame {
   private void jbInit() throws Exception {
     titledBorder1 = new TitledBorder("");
     titledBorder2 = new TitledBorder("");
-    mainPanel.setVOClassName("demo4.TestVO");
+    mainPanel.setVOClassName("demo4.DetailTestVO");
     mainPanel.setLayout(gridBagLayout1);
     labelCheckBox.setText("this text will be translated");
     labelDate.setText("date");
@@ -115,9 +115,11 @@ public class DetailFrame extends JFrame {
     controlCurrency.setMaxValue(1000.0);
     controlCurrency.setMinValue(-1000.0);
     controlCurrency.setRequired(false);
+    controlCurrency.setTextAlignment(SwingConstants.RIGHT);
     controlNumeric.setCanCopy(true);
     controlNumeric.setDecimals(3);
     controlNumeric.setRequired(true);
+    controlNumeric.setTextAlignment(SwingConstants.RIGHT);
     labelRadioButton.setText("radio button");
     controlText.setFont(new java.awt.Font(controlText.getFont().getName(), Font.BOLD, controlText.getFont().getSize()));
     controlText.setMaxCharacters(7);
@@ -151,8 +153,8 @@ public class DetailFrame extends JFrame {
     titledBorder1.setTitle("title");
     titledBorder1.setTitleColor(Color.blue);
     controlRadioButton2.setText("N");
-    listControl1.setAttributeName("listValue");
-    listControl1.setDomainId("ORDERSTATE");
+    listControl1.setAttributeName("listValues");
+    listControl1.setDomainId("LISTVALUES");
     this.getContentPane().add(buttonsPanel,  BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(copyButton, null);

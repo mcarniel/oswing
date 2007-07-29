@@ -77,6 +77,9 @@ public class BaseInputControl extends JPanel implements InputControl {
   /** tooltip text */
   private String toolTipText = null;
 
+  /** column text horizontal alignment */
+  private int textAlignment = SwingConstants.LEFT;
+
 
   /**
    * Constructor.
@@ -426,6 +429,25 @@ public class BaseInputControl extends JPanel implements InputControl {
 
   public void requestFocus() {
     getBindingComponent().requestFocus();
+  }
+
+
+  /**
+   * @return column text horizontal alignment
+   */
+  public final int getTextAlignment() {
+    return this.textAlignment;
+  }
+
+
+  /**
+   * Set column text horizontal alignement.
+   * @param alignment column text horizontal alignement; possible values: "SwingConstants.LEFT", "SwingConstants.RIGHT", "SwingConstants.CENTER".
+   */
+  public final void setTextAlignment(int alignment) {
+    this.textAlignment = alignment;
+    if (!Beans.isDesignTime() && getBindingComponent()!=null && getBindingComponent() instanceof JTextField)
+      ((JTextField)getBindingComponent()).setHorizontalAlignment(alignment);
   }
 
 

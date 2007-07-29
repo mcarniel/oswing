@@ -33,6 +33,8 @@ public class FormattedTextControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _enabled = new PropertyDescriptor("enabled", beanClass, "isEnabled", "setEnabled");
       PropertyDescriptor _enabledOnInsert = new PropertyDescriptor("enabledOnInsert", beanClass, "isEnabledOnInsert", "setEnabledOnInsert");
       PropertyDescriptor _enabledOnEdit = new PropertyDescriptor("enabledOnEdit", beanClass, "isEnabledOnEdit", "setEnabledOnEdit");
+      PropertyDescriptor _textAlignment = new PropertyDescriptor("textAlignment", beanClass, "getTextAlignment", "setTextAlignment");
+      _textAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextAlignmentEditor.class);
       PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _attributeName,
@@ -44,6 +46,7 @@ public class FormattedTextControlBeanInfo extends SimpleBeanInfo {
         _enabled,
         _enabledOnInsert,
         _enabledOnEdit,
+        _textAlignment,
         _toolTipText};
       return pds;
     }

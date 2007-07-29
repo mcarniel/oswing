@@ -12,6 +12,8 @@ import org.openswing.swing.form.client.Form;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.message.receive.java.ValueObject;
 import javax.swing.event.ListSelectionListener;
+import java.util.ArrayList;
+import org.openswing.swing.logger.client.Logger;
 
 
 /**
@@ -127,17 +129,40 @@ public class ListControl extends BaseInputControl implements InputControl {
 
 
   /**
-   * Select the list item related to the specified code.
-   * @param code used to retrieve the corresponding item and to select that item in the list
+   * Select an item from the list starting from the specified code (with ListSelectionModel.SINGLE_SELECTION) or
+   * select a list of items starting from the specified java.util.List of codes (without ListSelectionModel.SINGLE_SELECTION) or
+   * @param code used to retrieve the corresponding item and to select that item in the list (with ListSelectionModel.SINGLE_SELECTION) or java.util.List of codes (without ListSelectionModel.SINGLE_SELECTION)
    */
   public final void setValue(Object code) {
-    if (code==null)
-      list.setSelectedIndex(-1);
-    if (domain==null)
-      return;
-    DomainPair pair = domain.getDomainPair(code);
-    if (pair!=null)
-      list.setSelectedValue( ClientSettings.getInstance().getResources().getResource(pair.getDescription()),true );
+    if (list.getSelectionMode()==ListSelectionModel.SINGLE_SELECTION) {
+      if (code==null)
+        list.setSelectedIndex(-1);
+      if (domain==null)
+        return;
+      DomainPair pair = domain.getDomainPair(code);
+      if (pair!=null)
+        list.setSelectedValue( ClientSettings.getInstance().getResources().getResource(pair.getDescription()),true );
+    }
+    else {
+      if (code==null || code instanceof java.util.List && ((java.util.List)code).size()==0) {
+        list.getSelectionModel().clearSelection();
+        return;
+      }
+      if (domain==null)
+        return;
+
+      if (code instanceof java.util.List) {
+        java.util.List codes = (java.util.List)code;
+        list.getSelectionModel().clearSelection();
+        for(int i=0;i<codes.size();i++)
+          for(int j=0;j<domain.getDomainPairList().length;j++) {
+            if (domain.getDomainPairList()[j].getCode().equals(codes.get(i)))
+              list.getSelectionModel().addSelectionInterval(j,j);
+        }
+      }
+      else
+        Logger.error(this.getClass().getName(), "setValue", "You must specify a java.util.List argument type", null);
+    }
   }
 
 
@@ -548,18 +573,32 @@ public class ListControl extends BaseInputControl implements InputControl {
 
 
   /**
-   * @return code related to the selected list item; it return null if no item is selected
+   * @return code or java.util.List of codes related to the selected item/items; it return null if no item is selected (with ListSelectionModel.SINGLE_SELECTION) or an empty java.util.List (without ListSelectionModel.SINGLE_SELECTION)
    */
   public final Object getValue() {
-    if (domain==null)
-      return null;
-    DomainPair[] pairs = domain.getDomainPairList();
-    for(int i=0;i<pairs.length;i++)
+    if (list.getSelectionMode()==ListSelectionModel.SINGLE_SELECTION) {
+      if (domain==null)
+        return null;
+      DomainPair[] pairs = domain.getDomainPairList();
       if (list.getSelectedIndex()==-1)
         return null;
-      else if (list.getSelectedValue().equals( ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()) ))
-        return pairs[i].getCode();
-    return null;
+      for(int i=0;i<pairs.length;i++)
+        if (list.getSelectedValue().equals( ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()) ))
+          return pairs[i].getCode();
+      return null;
+    }
+    else {
+      if (domain==null)
+        return new ArrayList();
+      DomainPair[] pairs = domain.getDomainPairList();
+      ArrayList codes = new ArrayList();
+      Object[] values = list.getSelectedValues();
+      for(int j=0;j<values.length;j++)
+        for(int i=0;i<pairs.length;i++)
+          if (values[j].equals( ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()) ))
+            codes.add(pairs[i].getCode());
+      return codes;
+    }
   }
 
 
@@ -598,8 +637,8 @@ public class ListControl extends BaseInputControl implements InputControl {
    * @return component inside this whose contains the value
    */
   protected JComponent getBindingComponent() {
-    if (list!=null && list.getSelectionMode()!=ListSelectionModel.SINGLE_SELECTION)
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//    if (list!=null && list.getSelectionMode()!=ListSelectionModel.SINGLE_SELECTION)
+//      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     return list;
   }
 

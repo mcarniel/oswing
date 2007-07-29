@@ -1,4 +1,4 @@
-package demo4;
+package demo20;
 
 import org.openswing.swing.message.receive.java.ValueObjectImpl;
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ import java.sql.Date;
 public class TestVO extends ValueObjectImpl {
 
   private String stringValue;
-  private ComboVO combo;
+  private String comboValue;
   private BigDecimal numericValue;
   private BigDecimal currencyValue;
   private Boolean checkValue;
@@ -25,8 +25,9 @@ public class TestVO extends ValueObjectImpl {
   private Date dateValue;
   private String lookupValue;
   private String descrLookupValue;
-  private String taValue;
+  private String button;
   private String formattedTextValue;
+  private Integer intValue;
 
 
   public TestVO() {
@@ -35,6 +36,9 @@ public class TestVO extends ValueObjectImpl {
 
   public Boolean getCheckValue() {
     return checkValue;
+  }
+  public String getComboValue() {
+    return comboValue;
   }
   public BigDecimal getCurrencyValue() {
     return currencyValue;
@@ -66,6 +70,9 @@ public class TestVO extends ValueObjectImpl {
   public void setCurrencyValue(BigDecimal currencyValue) {
     this.currencyValue = currencyValue;
   }
+  public void setComboValue(String comboValue) {
+    this.comboValue = comboValue;
+  }
   public void setCheckValue(Boolean checkValue) {
     this.checkValue = checkValue;
   }
@@ -81,11 +88,11 @@ public class TestVO extends ValueObjectImpl {
   public void setDescrLookupValue(String descrLookupValue) {
     this.descrLookupValue = descrLookupValue;
   }
-  public String getTaValue() {
-    return taValue;
+  public String getButton() {
+    return button;
   }
-  public void setTaValue(String taValue) {
-    this.taValue = taValue;
+  public void setButton(String button) {
+    this.button = button;
   }
   public String getFormattedTextValue() {
     return formattedTextValue;
@@ -93,12 +100,11 @@ public class TestVO extends ValueObjectImpl {
   public void setFormattedTextValue(String formattedTextValue) {
     this.formattedTextValue = formattedTextValue;
   }
-
-  public ComboVO getCombo() {
-    return combo;
+  public Integer getIntValue() {
+    return intValue;
   }
-  public void setCombo(ComboVO combo) {
-    this.combo = combo;
+  public void setIntValue(Integer intValue) {
+    this.intValue = intValue;
   }
 
 

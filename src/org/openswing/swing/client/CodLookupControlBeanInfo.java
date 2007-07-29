@@ -39,6 +39,8 @@ public class CodLookupControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _lookupController = new PropertyDescriptor("lookupController", beanClass, "getLookupController", "setLookupController");
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
       PropertyDescriptor _required = new PropertyDescriptor("required", beanClass, "isRequired", "setRequired");
+      PropertyDescriptor _textAlignment = new PropertyDescriptor("textAlignment", beanClass, "getTextAlignment", "setTextAlignment");
+      _textAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextAlignmentEditor.class);
       PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _allowOnlyNumbers,
@@ -57,6 +59,7 @@ public class CodLookupControlBeanInfo extends SimpleBeanInfo {
         _lookupController,
         _maxCharacters,
         _required,
+        _textAlignment,
         _toolTipText};
         return pds;
     }

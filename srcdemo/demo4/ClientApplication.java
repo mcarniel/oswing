@@ -50,6 +50,12 @@ public class ClientApplication {
     props.setProperty("taValue","Text Area");
     props.setProperty("formattedTextValue","Formatted Text");
     props.setProperty("combo","Combo");
+    props.setProperty("listValues","List Values");
+    props.setProperty("item0","Item0");
+    props.setProperty("item1","Item1");
+    props.setProperty("item2","Item2");
+    props.setProperty("item3","Item3");
+    props.setProperty("item4","Item4");
 
     ButtonsAuthorizations auth = new ButtonsAuthorizations();
     auth.addButtonAuthorization("F1",true,false,true);
@@ -74,6 +80,18 @@ public class ClientApplication {
       orderStateDomain
     );
 
+    Domain listValuesDomain = new Domain("LISTVALUES");
+    listValuesDomain.addDomainPair("I0","item0");
+    listValuesDomain.addDomainPair("I1","item1");
+    listValuesDomain.addDomainPair("I2","item2");
+    listValuesDomain.addDomainPair("I3","item3");
+    listValuesDomain.addDomainPair("I4","item4");
+    domains.put(
+      listValuesDomain.getDomainId(),
+      listValuesDomain
+    );
+
+
 
     createConnection();
 
@@ -96,25 +114,38 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO4(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,TA VARCHAR,LIST VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO4(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,TA VARCHAR,PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 
         stmt = conn.prepareStatement("create table DEMO4_LOOKUP(CODE VARCHAR,DESCRCODE VARCHAR,PRIMARY KEY(CODE))");
         stmt.execute();
+        stmt.close();
+
+        stmt = conn.prepareStatement("create table DEMO4_LIST_VALUES(TEXT VARCHAR,CODE VARCHAR,PRIMARY KEY(TEXT,CODE))");
+        stmt.execute();
+        stmt.close();
 
         for(int i=0;i<200;i++) {
-          stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO4 values('ABC"+getCode(3,i+1)+"',null,"+12+i+0.333+","+1234+i+0.56+",?,'C','Y','Y','A"+i+"','AAAAAA"+i+"','C')");
+          stmt = conn.prepareStatement("insert into DEMO4 values('ABC"+getCode(3,i+1)+"',null,"+12+i+0.333+","+1234+i+0.56+",?,'C','Y','Y','A"+i+"','AAAAAA"+i+"')");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
+          stmt.close();
+
+          stmt = conn.prepareStatement("insert into DEMO4_LIST_VALUES values('ABC"+getCode(3,i+1)+"','I0')");
+          stmt.execute();
+          stmt.close();
+          stmt = conn.prepareStatement("insert into DEMO4_LIST_VALUES values('ABC"+getCode(3,i+1)+"','I1')");
+          stmt.execute();
+          stmt.close();
         }
 
         for(int i=0;i<200;i++) {
-          stmt.close();
           stmt = conn.prepareStatement("insert into DEMO4_LOOKUP values('A"+i+"','ABCDEF"+i+"')");
           stmt.execute();
+          stmt.close();
         }
+
 
       }
       catch (SQLException ex1) {
@@ -124,7 +155,7 @@ public class ClientApplication {
         try {
           stmt.close();
         }
-        catch (SQLException ex2) {
+        catch (Exception ex2) {
         }
       }
 
