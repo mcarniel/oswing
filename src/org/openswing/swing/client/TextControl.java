@@ -13,6 +13,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.FlowLayout;
+import java.awt.Dimension;
 
 
 /**
@@ -78,6 +79,12 @@ public class TextControl extends BaseInputControl implements InputControl {
     textBox.setDisabledTextColor(UIManager.getColor("TextField.foreground"));
     this.setLayout(new GridBagLayout());
     this.add(textBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+
+    String s = ""; for(int i=0;i<textBox.getColumns();i++) s+= "0";
+    setMinimumSize(new Dimension(
+      textBox.getFontMetrics(textBox.getFont()).stringWidth(s),
+      textBox.getPreferredSize().height
+    ));
 
 //    setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 //    this.add(textBox);
@@ -288,6 +295,13 @@ public class TextControl extends BaseInputControl implements InputControl {
    */
   public final void setColumns(int columns) {
     textBox.setColumns(columns);
+
+    String s = ""; for(int i=0;i<textBox.getColumns();i++) s+= "0";
+    setMinimumSize(new Dimension(
+      textBox.getFontMetrics(textBox.getFont()).stringWidth(s),
+      textBox.getPreferredSize().height
+    ));
+
   }
 
 

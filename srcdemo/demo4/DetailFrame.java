@@ -98,6 +98,7 @@ public class DetailFrame extends JFrame {
     mainPanel.setLayout(gridBagLayout1);
     labelCheckBox.setText("this text will be translated");
     labelDate.setText("date");
+    labelCombo.setTextAlignment(SwingConstants.RIGHT);
     labelCombo.setText("combobox");
     controlComboBox.setCanCopy(true);
     controlComboBox.setDomainId("ORDERSTATE");
@@ -174,8 +175,8 @@ public class DetailFrame extends JFrame {
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(controlComboBox,       new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelCombo,     new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    mainPanel.add(labelCombo,         new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(controlCurrency,        new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 80, 0));
     mainPanel.add(controlNumeric,       new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0

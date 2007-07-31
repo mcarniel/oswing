@@ -193,6 +193,10 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
         date.addKeyListener(this);
         date.addFocusListener(this);
 
+        setMinimumSize(new Dimension(
+          date.getFontMetrics(date.getFont()).stringWidth("0000000000")+this.buttonChooser.getPreferredSize().width,
+          date.getPreferredSize().height
+        ));
 
 
         ApplicationEventQueue.getInstance().addKeyListener(new KeyAdapter() {

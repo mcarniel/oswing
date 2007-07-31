@@ -13,6 +13,8 @@ import org.openswing.swing.message.receive.java.ValueObjectImpl;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.beans.Beans;
+import java.util.Enumeration;
 
 
 /**
@@ -57,8 +59,18 @@ public class AttributeNameEditor extends PropertyEditorSupport {
   /** list of tags */
   private static String[] attributeNames;
 
+  /** flag used to identifity the Eclipse IDE */
+  private boolean eclipse = false;
 
   public AttributeNameEditor() {
+    if (Beans.isDesignTime()) {
+      Enumeration en = System.getProperties().elements();
+      while(en.hasMoreElements())
+        if (en.nextElement().toString().equalsIgnoreCase("eclipse")) {
+          eclipse = true;
+          break;
+        }
+    }
   }
 
 
@@ -69,6 +81,7 @@ public class AttributeNameEditor extends PropertyEditorSupport {
     if (colType!=null && columnType!=null && !columnType.equals(colType))
       attributeNames = null;
     columnType = colType;
+
   }
 
 
@@ -76,7 +89,6 @@ public class AttributeNameEditor extends PropertyEditorSupport {
 //    if (attributeNames!=null && attributeNames.length>0)
 //      return attributeNames;
     attributeNames = new String[0];
-
     try {
       if (designVOClass==null) {
         if (designVOClass==null) {
@@ -167,6 +179,8 @@ public class AttributeNameEditor extends PropertyEditorSupport {
    * @return "true" se i due tipi sono compatibili, "false" altrimenti
    */
   private boolean isCompatible(Class attrType) {
+    if (eclipse)
+      return true;
     try {
       // input controls...
       if ((attrType.equals(Integer.class) ||

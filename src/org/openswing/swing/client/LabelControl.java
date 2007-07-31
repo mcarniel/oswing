@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import org.openswing.swing.internationalization.java.*;
 import java.awt.Font;
 import java.beans.Beans;
+import javax.swing.SwingConstants;
 
 
 /**
@@ -44,7 +45,9 @@ public class LabelControl extends JLabel {
   private String toolTipText = null;
 
 
-  public LabelControl() { }
+  public LabelControl() {
+    setTextAlignment(SwingConstants.LEFT);
+  }
 
 
   /**
@@ -106,6 +109,23 @@ public class LabelControl extends JLabel {
    */
   public final String getToolTipText() {
     return toolTipText;
+  }
+
+
+  /**
+   * @return column text horizontal alignment
+   */
+  public final int getTextAlignment() {
+    return super.getHorizontalAlignment();
+  }
+
+
+  /**
+   * Set column text horizontal alignement.
+   * @param alignment column text horizontal alignement; possible values: "SwingConstants.LEFT", "SwingConstants.RIGHT", "SwingConstants.CENTER".
+   */
+  public final void setTextAlignment(int alignment) {
+    super.setHorizontalAlignment(alignment);
   }
 
 

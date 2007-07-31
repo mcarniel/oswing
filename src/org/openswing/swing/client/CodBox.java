@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import org.openswing.swing.client.*;
 import org.openswing.swing.domains.java.*;
+import java.awt.Dimension;
 
 
 /**
@@ -83,6 +84,13 @@ public class CodBox extends JTextField {
         oldValue = getText();
       }
     });
+
+    String s = ""; for(int i=0;i<getMaxCharacters();i++) s+= "0";
+    setMinimumSize(new Dimension(
+      getFontMetrics(getFont()).stringWidth(s),
+      getPreferredSize().height
+    ));
+
   }
 
 
@@ -141,6 +149,12 @@ public class CodBox extends JTextField {
    */
   public final void setMaxCharacters(int maxCharacters) {
     this.maxCharacters = maxCharacters;
+
+    String s = ""; for(int i=0;i<getMaxCharacters();i++) s+= "0";
+    setMinimumSize(new Dimension(
+      getFontMetrics(getFont()).stringWidth(s),
+      getPreferredSize().height
+    ));
   }
 
 

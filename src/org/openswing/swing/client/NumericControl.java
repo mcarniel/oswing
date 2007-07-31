@@ -26,6 +26,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.ActionListener;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyListener;
+import java.awt.Dimension;
 
 
 /**
@@ -105,6 +106,14 @@ public class NumericControl extends BaseInputControl implements InputControl {
     this.add(numBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 //    this.setLayout(new java.awt.BorderLayout(0,0));
 //    this.add(numBox, java.awt.BorderLayout.CENTER);
+
+
+    String s = ""; for(int i=0;i<numBox.getColumns();i++) s+= "0";
+    setMinimumSize(new Dimension(
+      numBox.getFontMetrics(numBox.getFont()).stringWidth(s),
+      numBox.getPreferredSize().height
+    ));
+
 
     setFormat();
     addKeyListener();
@@ -442,6 +451,12 @@ public class NumericControl extends BaseInputControl implements InputControl {
    */
   public final void setColumns(int columns) {
     numBox.setColumns(columns);
+
+    String s = ""; for(int i=0;i<numBox.getColumns();i++) s+= "0";
+    setMinimumSize(new Dimension(
+      numBox.getFontMetrics(numBox.getFont()).stringWidth(s),
+      numBox.getPreferredSize().height
+    ));
   }
 
 
