@@ -50,53 +50,23 @@ public class AttributeNameEditor extends PropertyEditorSupport {
   /** default value object */
   private static final Class DEFAULT_VO_CLASS_NAME =  ValueObjectImpl.class;
 
-  /** current editing column type */
-  private static Class columnType = null;
-
   /** v.o. class linked to this Form panel; used only in design time */
   private static Class designVOClass;
 
   /** list of tags */
-  private static String[] attributeNames;
+  private String[] attributeNames;
 
-  /** flag used to identifity the Eclipse IDE */
-  private boolean eclipse = false;
 
   public AttributeNameEditor() {
-    if (Beans.isDesignTime()) {
-      Enumeration en = System.getProperties().elements();
-      while(en.hasMoreElements())
-        if (en.nextElement().toString().equalsIgnoreCase("eclipse")) {
-          eclipse = true;
-          break;
-        }
-    }
-  }
-
-
-  /**
-   * Method called by input controls.
-   */
-  public static final synchronized void setColumnType(Class colType) {
-    if (colType!=null && columnType!=null && !columnType.equals(colType))
-      attributeNames = null;
-    columnType = colType;
-
   }
 
 
   public String[] getTags() {
-//    if (attributeNames!=null && attributeNames.length>0)
-//      return attributeNames;
     attributeNames = new String[0];
     try {
       if (designVOClass==null) {
         if (designVOClass==null) {
-//          String className = JOptionPane.showInputDialog(null,"Please enter value object class name: ","Value Object",JOptionPane.INFORMATION_MESSAGE);
-//          if (className==null || className.equals(""))
             designVOClass = DEFAULT_VO_CLASS_NAME;
-//          else
-//            designVOClass = Class.forName(className);
         }
       }
       Object o = designVOClass.newInstance();
@@ -104,30 +74,6 @@ public class AttributeNameEditor extends PropertyEditorSupport {
         try {
           ArrayList attrList = new ArrayList();
           analyzeClassFields(0,"",attrList,designVOClass);
-//          Method[] methods = designVOClass.getMethods();
-//          String attrName = null;
-//          for(int i=0;i<methods.length;i++) {
-//            if (methods[i].getName().startsWith("get")) {
-//              attrName = methods[i].getName().substring(3);
-//              if (attrName.length()==1)
-//                attrName = attrName.toLowerCase();
-//              else
-//                attrName = attrName.substring(0,1).toLowerCase()+attrName.substring(1);
-//              if (columnType==null ||
-//                  isCompatible(methods[i].getReturnType()))
-//                attrList.add(attrName);
-//            }
-//            else if (methods[i].getName().startsWith("is")) {
-//              attrName = methods[i].getName().substring(2);
-//              if (attrName.length()==1)
-//                attrName = attrName.toLowerCase();
-//              else
-//                attrName = attrName.substring(0,1).toLowerCase()+attrName.substring(1);
-//              if (columnType==null ||
-//                  isCompatible(methods[i].getReturnType()))
-//                attrList.add(attrName);
-//            }
-//          }
           attributeNames = (String[])attrList.toArray(new String[attrList.size()]);
         }
         catch (Exception ex) {
@@ -137,10 +83,7 @@ public class AttributeNameEditor extends PropertyEditorSupport {
         JOptionPane.showMessageDialog(null,designVOClass.getName()+" does not extend ValueObject class.","Error",JOptionPane.ERROR_MESSAGE);
       }
     }
-//    catch (ClassNotFoundException ex) {
-//      JOptionPane.showMessageDialog(null,"Value Object not Found","Error",JOptionPane.ERROR_MESSAGE);
-//    }
-    catch (Exception ex) {
+    catch (Throwable ex) {
       JOptionPane.showMessageDialog(null,"Error while analyzing Value Object:\n"+ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
     }
 
@@ -178,104 +121,8 @@ public class AttributeNameEditor extends PropertyEditorSupport {
    * @param attrType tipo dell'attributo
    * @return "true" se i due tipi sono compatibili, "false" altrimenti
    */
-  private boolean isCompatible(Class attrType) {
-    if (eclipse)
-      return true;
-    try {
-      // input controls...
-      if ((attrType.equals(Integer.class) ||
-           attrType.equals(Long.class) ||
-           attrType.equals(Double.class) ||
-           attrType.equals(BigDecimal.class) ||
-           attrType.equals(Float.class)) &&
-          (columnType.equals(NumericControl.class) ||
-           columnType.equals(CurrencyControl.class) )) {
-        return true;
-      }
-      else if ((attrType.equals(java.util.Date.class) ||
-                attrType.equals(java.sql.Date.class) ||
-                attrType.equals(Timestamp.class))  &&
-               (columnType.equals(DateControl.class))) {
-        return true;
-      }
-      else if (attrType.equals(byte[].class)  &&
-               (columnType.equals(ImageControl.class))) {
-        return true;
-      }
-      else if (attrType.equals(String.class) && columnType.equals(TextControl.class)) {
-        return true;
-      }
-      else if (columnType.equals(FormattedTextControl.class)) {
-        return true;
-      }
-      else if (attrType.equals(String.class) && columnType.equals(TextAreaControl.class)) {
-        return true;
-      }
-      else if (columnType.equals(CheckBoxControl.class) && (attrType.equals(Boolean.class) || attrType.equals(boolean.class))) {
-        return true;
-      }
-      else if (columnType.equals(RadioButtonControl.class) && (attrType.equals(Boolean.class) || attrType.equals(boolean.class))) {
-        return true;
-      }
-      else if (columnType.equals(ComboBoxControl.class) || ComboBoxControl.class.isAssignableFrom(columnType)) {
-        return true;
-      }
-      else if (columnType.equals(ListControl.class) || ListControl.class.isAssignableFrom(columnType)) {
-        return true;
-      }
-      else if (columnType.equals(CodLookupControl.class)) {
-        return true;
-      }
-
-      // grid columns...
-      if ((attrType.equals(Integer.class) ||
-           attrType.equals(Long.class)) &&
-          (columnType.equals(PercentageColumn.class) ||
-           columnType.equals(IntegerColumn.class))) {
-        return true;
-      }
-      else if (attrType.equals(byte[].class) &&
-               columnType.equals(ImageColumn.class)) {
-        return true;
-      }
-      else if ((attrType.equals(Double.class) ||
-                attrType.equals(BigDecimal.class) ||
-                attrType.equals(Float.class)) &&
-               (columnType.equals(DecimalColumn.class) ||
-                columnType.equals(IntegerColumn.class) ||
-                columnType.equals(CurrencyColumn.class) ||
-                columnType.equals(PercentageColumn.class))) {
-        return true;
-      }
-      else if ((attrType.equals(java.util.Date.class) ||
-                attrType.equals(java.sql.Date.class) ||
-                attrType.equals(Timestamp.class)) &&
-               (columnType.equals(DateColumn.class) ||
-                columnType.equals(DateTimeColumn.class) ||
-                columnType.equals(TimeColumn.class))) {
-        return true;
-      }
-      else if (attrType.equals(String.class) && columnType.equals(TextColumn.class)) {
-        return true;
-      }
-      else if (columnType.equals(FormattedTextColumn.class)) {
-        return true;
-      }
-      else if (columnType.equals(CheckBoxColumn.class)) {
-        return true;
-      }
-      else if (columnType.equals(ComboColumn.class)) {
-        return true;
-      }
-      else if (columnType.equals(CodLookupColumn.class)) {
-        return true;
-      }
-
-      return false;
-    }
-    catch (Throwable ex) {
-      return false;
-    }
+  protected boolean isCompatible(Class attrType) {
+    return true;
   }
 
 

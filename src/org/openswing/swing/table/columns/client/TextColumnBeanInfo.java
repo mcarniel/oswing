@@ -1,6 +1,7 @@
 package org.openswing.swing.table.columns.client;
 
 import java.beans.*;
+import org.openswing.swing.client.StringAttributeNameEditor;
 
 
 /**
@@ -43,12 +44,15 @@ public class TextColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
+      _columnName.setPropertyEditorClass(StringAttributeNameEditor.class);
       PropertyDescriptor _encryptText = new PropertyDescriptor("encryptText", beanClass, "isEncryptText", "setEncryptText");
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
       PropertyDescriptor _rpadding = new PropertyDescriptor("rpadding", beanClass, "isRpadding", "setRpadding");
       PropertyDescriptor _trimText = new PropertyDescriptor("trimText", beanClass, "isTrimText", "setTrimText");
       PropertyDescriptor _upperCase = new PropertyDescriptor("upperCase", beanClass, "isUpperCase", "setUpperCase");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _columnName,
         _encryptText,
         _maxCharacters,
         _rpadding,

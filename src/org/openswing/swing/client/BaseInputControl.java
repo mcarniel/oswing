@@ -364,7 +364,6 @@ public class BaseInputControl extends JPanel implements InputControl {
    * @param attributeName attribute name to which link the input control
    */
   public final String getAttributeName() {
-    AttributeNameEditor.setColumnType(this.getClass());
     return attributeName;
   }
 

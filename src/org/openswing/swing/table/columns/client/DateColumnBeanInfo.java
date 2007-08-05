@@ -42,10 +42,14 @@ public class DateColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
-      PropertyDescriptor _formatType = new PropertyDescriptor("formatType", beanClass, "getFormatType", "setFormatType");
-      _formatType.setPropertyEditorClass(FormatTypeEditor.class);
+      PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
+      _columnName.setPropertyEditorClass(org.openswing.swing.client.DateAttributeNameEditor.class);
+//      PropertyDescriptor _formatType = new PropertyDescriptor("formatType", beanClass, "getFormatType", "setFormatType");
+//      _formatType.setPropertyEditorClass(FormatTypeEditor.class);
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
-                                 _formatType};
+          _columnName,
+//          _formatType
+      };
       return pds;
     }
     catch (IntrospectionException ex) {

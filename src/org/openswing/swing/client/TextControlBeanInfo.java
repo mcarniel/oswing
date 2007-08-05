@@ -24,7 +24,7 @@ public class TextControlBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _attributeName = new PropertyDescriptor("attributeName", beanClass, "getAttributeName", "setAttributeName");
-      _attributeName.setPropertyEditorClass(AttributeNameEditor.class);
+      _attributeName.setPropertyEditorClass(StringAttributeNameEditor.class);
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
       PropertyDescriptor _columns = new PropertyDescriptor("columns", beanClass, "getColumns", "setColumns");
       PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");

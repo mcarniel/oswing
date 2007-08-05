@@ -44,6 +44,8 @@ public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _allowOnlyNumbers = new PropertyDescriptor("allowOnlyNumbers", beanClass, "isAllowOnlyNumbers", "setAllowOnlyNumbers");
       PropertyDescriptor _codePadding = new PropertyDescriptor("codePadding", beanClass, "isCodePadding", "setCodePadding");
+      PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
+      _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
       PropertyDescriptor _controllerClassName = new PropertyDescriptor("controllerClassName", beanClass, "getControllerClassName", "setControllerClassName");
       PropertyDescriptor _controllerMethodName = new PropertyDescriptor("controllerMethodName", beanClass, "getControllerMethodName", "setControllerMethodName");
       PropertyDescriptor _enableCodBox = new PropertyDescriptor("enableCodBox", beanClass, "isEnableCodBox", "setEnableCodBox");
@@ -55,6 +57,7 @@ public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
 	      _allowOnlyNumbers,
 	      _codePadding,
+              _columnName,
               _controllerClassName,
               _controllerMethodName,
 	      _enableCodBox,

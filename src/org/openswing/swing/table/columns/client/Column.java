@@ -184,7 +184,6 @@ public class Column extends JPanel {
       colHeader.setText(columnName);
       additionalHeaderColumnName = columnName;
     }
-    AttributeNameEditor.setColumnType(this.getClass());
   }
 
 
@@ -197,7 +196,6 @@ public class Column extends JPanel {
     }
     catch (Throwable ex) {
     }
-    AttributeNameEditor.setColumnType(this.getClass());
     return columnName;
   }
 

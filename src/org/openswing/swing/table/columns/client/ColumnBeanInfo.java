@@ -46,8 +46,6 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _additionalHeaderColumnSpan = new PropertyDescriptor("additionalHeaderColumnSpan", beanClass, "getAdditionalHeaderColumnSpan", "setAdditionalHeaderColumnSpan");
       PropertyDescriptor _columnDuplicable = new PropertyDescriptor("columnDuplicable", beanClass, "isColumnDuplicable", "setColumnDuplicable");
       PropertyDescriptor _columnFilterable = new PropertyDescriptor("columnFilterable", beanClass, "isColumnFilterable", "setColumnFilterable");
-      PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
-      _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
       PropertyDescriptor _columnRequired = new PropertyDescriptor("columnRequired", beanClass, "isColumnRequired", "setColumnRequired");
       PropertyDescriptor _columnSelectable = new PropertyDescriptor("columnSelectable", beanClass, "isColumnSelectable", "setColumnSelectable");
       PropertyDescriptor _columnSortable = new PropertyDescriptor("columnSortable", beanClass, "isColumnSortable", "setColumnSortable");
@@ -73,7 +71,6 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
               _additionalHeaderColumnSpan,
               _columnDuplicable,
 	      _columnFilterable,
-	      _columnName,
 	      _columnRequired,
 	      _columnSelectable,
 	      _columnSortable,

@@ -23,7 +23,7 @@ public class ImageControlBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _attributeName = new PropertyDescriptor("attributeName", beanClass, "getAttributeName", "setAttributeName");
-      _attributeName.setPropertyEditorClass(AttributeNameEditor.class);
+      _attributeName.setPropertyEditorClass(BytesAttributeNameEditor.class);
       PropertyDescriptor _autoResize = new PropertyDescriptor("autoResize", beanClass, "isAutoResize", "setAutoResize");
       PropertyDescriptor _fileFilter = new PropertyDescriptor("fileFilter", beanClass, "getFileFilter", "setFileFilter");
       PropertyDescriptor _height = new PropertyDescriptor("imageHeight", beanClass, "getImageHeight", "setImageHeight");

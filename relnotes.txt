@@ -7,8 +7,8 @@ Final release 1.2.1 available
 
 Added "textAlignment" property to LabelControl.
 Set a minimum size to input controls, to avoid their zero width when reducing the frame dimension.
-Changed behaviour in attribute selector of Eclipse's Window Builder plugin: now all v.o. attributes are showed in the combo selector, 
-independently from input control type (this is needed because of Window Builder behaviour on invoking bean getter methods).
+Improved usage of Eclipse's Window Builder plugin: now v.o. attribute selection is correctly viewed in the combo selector, 
+according to input control type.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

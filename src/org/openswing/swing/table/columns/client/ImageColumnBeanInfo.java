@@ -22,9 +22,12 @@ public class ImageColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
+      _columnName.setPropertyEditorClass(org.openswing.swing.client.BytesAttributeNameEditor.class);
       PropertyDescriptor _fileFilter = new PropertyDescriptor("fileFilter", beanClass, "getFileFilter", "setFileFilter");
       PropertyDescriptor _showButton = new PropertyDescriptor("showButton", beanClass, "isShowButton", "setShowButton");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _columnName,
         _fileFilter,
         _showButton};
       return pds;

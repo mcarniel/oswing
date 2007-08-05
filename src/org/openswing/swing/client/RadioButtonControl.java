@@ -239,7 +239,6 @@ public class RadioButtonControl extends JRadioButton implements InputControl {
    */
   public final void setAttributeName(String attributeName) {
     this.attributeName = attributeName;
-    AttributeNameEditor.setColumnType(this.getClass());
   }
 
 
@@ -248,7 +247,6 @@ public class RadioButtonControl extends JRadioButton implements InputControl {
    * @param attributeName attribute name to which link the input control
    */
   public final String getAttributeName() {
-    AttributeNameEditor.setColumnType(this.getClass());
     return attributeName;
   }
 

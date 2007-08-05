@@ -42,7 +42,17 @@ public class FormattedTextColumnBeanInfo extends SimpleBeanInfo {
   public FormattedTextColumnBeanInfo() {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
-    PropertyDescriptor[] pds = new PropertyDescriptor[] {};
+    PropertyDescriptor _columnName = null;
+    try {
+      _columnName = new PropertyDescriptor("columnName", beanClass,
+                                           "getColumnName", "setColumnName");
+    }
+    catch (IntrospectionException ex) {
+    }
+    _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
+    PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _columnName
+    };
     return pds;
   }
   public java.awt.Image getIcon(int iconKind) {

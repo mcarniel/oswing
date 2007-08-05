@@ -23,7 +23,7 @@ public class CheckBoxControlBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _attributeName = new PropertyDescriptor("attributeName", beanClass, "getAttributeName", "setAttributeName");
-      _attributeName.setPropertyEditorClass(AttributeNameEditor.class);
+      _attributeName.setPropertyEditorClass(BooleanAttributeNameEditor.class);
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
