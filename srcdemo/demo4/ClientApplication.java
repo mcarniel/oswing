@@ -8,6 +8,8 @@ import java.sql.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.permissions.java.ButtonsAuthorizations;
 import org.openswing.swing.internationalization.java.*;
+import javax.swing.UIManager;
+import javax.swing.*;
 
 
 /**
@@ -68,6 +70,9 @@ public class ClientApplication {
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.FILTER_PANEL_ON_GRID = true;
     ClientSettings.SHOW_SORTING_ORDER = true;
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
+//com.jgoodies.looks.plastic.PlasticLookAndFeel
+//com.jgoodies.looks.plastic.Plastic3DLookAndFeel
 
     Domain orderStateDomain = new Domain("ORDERSTATE");
     ComboVO comboVO = null;

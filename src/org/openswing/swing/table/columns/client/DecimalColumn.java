@@ -37,8 +37,8 @@ public class DecimalColumn extends Column {
   /** maximum value */
   private double maxValue = Integer.MAX_VALUE;
 
-  /** minimum value */
-  private double minValue = Integer.MIN_VALUE;
+  /** minimum value; default value: 0 */
+  private double minValue = 0;
 
   /** maximum number of decimals */
   private int decimals = 0;

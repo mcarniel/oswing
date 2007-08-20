@@ -65,8 +65,8 @@ public class NumericControl extends BaseInputControl implements InputControl {
   /** maximum value */
   private double maxValue = Integer.MAX_VALUE;
 
-  /** minimum value */
-  private double minValue = Integer.MIN_VALUE;
+  /** minimum value; default value: 0 */
+  private double minValue = 0;
 
   /** maximum number of decimals */
   private int decimals = 0;
@@ -331,6 +331,8 @@ public class NumericControl extends BaseInputControl implements InputControl {
           return;
         else if (e.getKeyChar()=='\b')
           return;
+        else if (e.getKeyChar()=='-' && minValue<0 && numBox.getCaretPosition()==0 && numBox.getText()!=null && numBox.getText().length()>0 && numBox.getText().charAt(0)!='-')
+          return;
         else if (e.getKeyChar()<'0' || e.getKeyChar()>'9')
           e.consume();
       }
@@ -399,10 +401,14 @@ public class NumericControl extends BaseInputControl implements InputControl {
           try {
             Number number = format.parse(numBox.getText());
             if (number!=null) {
-              if (number.doubleValue()>maxValue)
+              if (number.doubleValue()>maxValue) {
                 setText(String.valueOf(maxValue));
-              else if (number.doubleValue()<minValue)
+                number = new BigDecimal(maxValue);
+              }
+              else if (number.doubleValue()<minValue) {
                 setText(String.valueOf(minValue));
+                number = new BigDecimal(minValue);
+              }
               else
                 setText(String.valueOf(number));
 

@@ -119,6 +119,7 @@ public class DetailFrame extends JFrame {
     controlCurrency.setTextAlignment(SwingConstants.RIGHT);
     controlNumeric.setCanCopy(true);
     controlNumeric.setDecimals(3);
+    controlNumeric.setMinValue(-100.0);
     controlNumeric.setRequired(true);
     controlNumeric.setTextAlignment(SwingConstants.RIGHT);
     labelRadioButton.setText("radio button");

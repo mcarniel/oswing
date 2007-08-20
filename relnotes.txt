@@ -8,6 +8,9 @@ Final release 1.2.2 available
 Fixed problem when referring inner v.o. attribute in a grid or Form components.
 Added "createInnerVO" property to GridControl to define if an inner v.o. must be automatically instantiated when a setter method is invoked.
 Added new target "beaninfosign" to build.xml Ant file: it can be used to sign BeanInfo.jar file too.
+Fixed a problem in NumericControl: now "minValue" property in NumericControl and in "numeric" columns 
+correctly support negative numbers, i.e. if this property has a negative value, then the user can digit a negative number 
+in the numeric component, by pressing "-" symbol as the first character at the left of the number.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

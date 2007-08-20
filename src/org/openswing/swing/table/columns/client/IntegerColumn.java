@@ -37,8 +37,8 @@ public class IntegerColumn extends Column {
   /** maximum value */
   private int maxValue = Integer.MAX_VALUE;
 
-  /** minimum value */
-  private int minValue = Integer.MIN_VALUE;
+  /** minimum value; default value: 0 */
+  private int minValue = 0;
 
   /** flag used to set thousands symbol visibility */
   private boolean grouping = false;
