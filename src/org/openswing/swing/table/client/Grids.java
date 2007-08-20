@@ -217,7 +217,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       GridStatusPanel statusPanel,
       GridDataLocator gridDataLocator,
       Map otherGridParams,
-      int gridType) {
+      int gridType
+  ) {
     this.gridControl = gridControl;
     this.lockedColumns = lockedColumns;
     this.colProps = colProps;

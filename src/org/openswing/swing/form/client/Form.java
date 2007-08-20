@@ -141,6 +141,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   /** flag used to enable Form data reloading when pressing up/down keys onto the grid */
   private boolean reloadModelWhenPressingKey;
 
+  /** flag used to define if an inner v.o. must be automatically instantiated when a setter method is invoked; default value: <code>true</code> */
+  private boolean createInnerVO = true;
+
 
   public Form() {
   }
@@ -1472,7 +1475,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     }
 
     try {
-      this.model = new VOModel(Class.forName(voClassName));
+      this.model = new VOModel(Class.forName(voClassName),createInnerVO);
     }
     catch (Throwable ex) {
       Logger.error(this.getClass().getName(), "setVOClassName", "Error on setting Form data model:\n"+ex.toString(),null);
@@ -1870,6 +1873,24 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       reload();
   }
 
+
+  /**
+   * @return define if an inner v.o. must be automatically instantiated when a setter method is invoked
+   */
+  public final boolean isCreateInnerVO() {
+    return createInnerVO;
+  }
+
+
+  /**
+   * Define if an inner v.o. must be automatically instantiated when a setter method is invoked.
+   * @param createInnerVO define if an inner v.o. must be automatically instantiated when a setter method is invoked
+   */
+  public final void setCreateInnerVO(boolean createInnerVO) {
+    this.createInnerVO = createInnerVO;
+    if (model!=null)
+      model.setCreateInnerVO(createInnerVO);
+  }
 
 
 }

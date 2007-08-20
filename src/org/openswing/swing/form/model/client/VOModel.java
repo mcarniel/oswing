@@ -59,19 +59,34 @@ public class VOModel {
   /** collection of <attribute name,Method[] getters> */
   private Hashtable voGetterMethods = new Hashtable();
 
+  /** flag used to define if an inner v.o. must be automatically instantiated when a setter method is invoked */
+  private boolean createInnerVO = true;
+
 
   /**
    * Constructor.
    * @param valueObjectClass value object class associated to this data model
+   * @param createInnerVO flag used to define if an inner v.o. must be automatically instantiated when a setter method is invoked
    * @throws java.lang.Exception if an error occours
    */
-  public VOModel(Class valueObjectClass) throws Exception {
+  public VOModel(Class valueObjectClass,boolean createInnerVO) throws Exception {
     this.valueObjectClass = valueObjectClass;
+    this.createInnerVO = createInnerVO;
+
     // retrieve attribute properties...
     if (Beans.isDesignTime())
       return;
     analyzeClassFields("",new Method[0],valueObjectClass);
     setValueObject( (ValueObject) valueObjectClass.newInstance());
+  }
+
+
+  /**
+   * Define if an inner v.o. must be automatically instantiated when a setter method is invoked.
+   * @param createInnerVO define if an inner v.o. must be automatically instantiated when a setter method is invoked
+   */
+  public final void setCreateInnerVO(boolean createInnerVO) {
+    this.createInnerVO = createInnerVO;
   }
 
 
@@ -136,7 +151,7 @@ public class VOModel {
       this.valueObject = valueObject;
       if (valueObject==null && oldValueObject!=null ||
           valueObject!=null && oldValueObject==null ||
-        valueObject!=null && !valueObject.equals(oldValueObject)) {
+          valueObject!=null && !valueObject.equals(oldValueObject)) {
         // fire value changed events...
         PropertyDescriptor prop = null;
         Method[] readMethods = null;
@@ -152,14 +167,32 @@ public class VOModel {
             try {
               obj = oldValueObject;
               if (obj!=null)
-                for(int i=0;i<readMethods.length-1;i++)
+                for(int i=0;i<readMethods.length-1;i++) {
                   obj = readMethods[i].invoke(obj,new Object[0]);
+
+                  // check if the inner v.o. is null...
+                  if(obj == null) {
+                    if (!createInnerVO)
+                      break;
+                    else
+                      obj = (ValueObject)readMethods[i].getReturnType().newInstance();
+                  }
+                }
               oldValue = obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
 
               obj = valueObject;
               if (obj!=null)
-                for(int i=0;i<readMethods.length-1;i++)
+                for(int i=0;i<readMethods.length-1;i++) {
                   obj = readMethods[i].invoke(obj,new Object[0]);
+
+                  // check if the inner v.o. is null...
+                  if(obj == null) {
+                    if (!createInnerVO)
+                      break;
+                    else
+                      obj = (ValueObject)readMethods[i].getReturnType().newInstance();
+                  }
+                }
               newValue = obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
             }
             catch (Exception ex) {
@@ -169,7 +202,7 @@ public class VOModel {
           }
           if (newValue==null && oldValue!=null ||
               newValue!=null && oldValue==null ||
-              newValue!=null && oldValue==null && !newValue.equals(oldValue))
+              newValue!=null && oldValue!=null && !newValue.equals(oldValue))
             fireValueChanged(attrName,oldValue,newValue);
 
         }
@@ -198,8 +231,17 @@ public class VOModel {
         if (readMethods != null) {
           Object obj = getValueObject();
           if (obj!=null)
-            for(int i=0;i<readMethods.length-1;i++)
+            for(int i=0;i<readMethods.length-1;i++) {
               obj = readMethods[i].invoke(obj,new Object[0]);
+
+              // check if the inner v.o. is null...
+              if(obj == null) {
+                if (!createInnerVO)
+                  return null;
+                else
+                  obj = (ValueObject)readMethods[i].getReturnType().newInstance();
+              }
+            }
           return obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
         }
       }
@@ -224,8 +266,17 @@ public class VOModel {
         if (readMethods != null) {
           Object obj = valueobject;
           if (obj!=null)
-            for(int i=0;i<readMethods.length-1;i++)
+            for(int i=0;i<readMethods.length-1;i++) {
               obj = readMethods[i].invoke(obj,new Object[0]);
+
+              // check if the inner v.o. is null...
+              if(obj == null) {
+                if (!createInnerVO)
+                  return null;
+                else
+                  obj = (ValueObject)readMethods[i].getReturnType().newInstance();
+              }
+            }
           return obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
         }
       }
@@ -276,13 +327,23 @@ public class VOModel {
 
           Object obj = getValueObject();
           if (obj!=null)
-            for(int i=0;i<writeMethods.length-1;i++)
+            for(int i=0;i<writeMethods.length-1;i++) {
               obj = writeMethods[i].invoke(obj,new Object[0]);
+
+              // check if the inner v.o. is null...
+              if(obj == null) {
+                if (!createInnerVO)
+                  return;
+                else
+                  obj = (ValueObject)writeMethods[i].getReturnType().newInstance();
+              }
+            }
+
           writeMethods[writeMethods.length-1].invoke(obj, new Object[]{value});
 
           if (value==null && oldValue!=null ||
               value!=null && oldValue==null ||
-              value!=null && oldValue==null && !value.equals(oldValue))
+              value!=null && oldValue!=null && !value.equals(oldValue))
             fireValueChanged(attributeName,oldValue,value);
         }
       }

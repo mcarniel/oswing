@@ -220,6 +220,9 @@ public class GridControl extends JPanel {
   /** row margin; default value = ClientSettings.ROW_MARGIN */
   private int rowMargin = ClientSettings.ROW_MARGIN;
 
+  /** flag used to define if an inner v.o. must be automatically instantiated when a setter method is invoked; default value: <code>true</code> */
+  private boolean createInnerVO = true;
+
 
   /**
    * Costructor.
@@ -1641,6 +1644,23 @@ public class GridControl extends JPanel {
    */
   public final int getRowMargin() {
     return this.rowMargin;
+  }
+
+
+  /**
+   * @return define if an inner v.o. must be automatically instantiated when a setter method is invoked
+   */
+  public final boolean isCreateInnerVO() {
+    return createInnerVO;
+  }
+
+
+  /**
+   * Define if an inner v.o. must be automatically instantiated when a setter method is invoked.
+   * @param createInnerVO define if an inner v.o. must be automatically instantiated when a setter method is invoked
+   */
+  public final void setCreateInnerVO(boolean createInnerVO) {
+    this.createInnerVO = createInnerVO;
   }
 
 

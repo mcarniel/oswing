@@ -1,5 +1,16 @@
 
 
+Release Notes 1.2.2
+-------------------
+
+Final release 1.2.2 available
+
+Fixed problem when referring inner v.o. attribute in a grid or Form components.
+Added "createInnerVO" property to GridControl to define if an inner v.o. must be automatically instantiated when a setter method is invoked.
+Added new target "beaninfosign" to build.xml Ant file: it can be used to sign BeanInfo.jar file too.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
 Release Notes 1.2.1
 -------------------
 

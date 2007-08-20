@@ -235,8 +235,15 @@ public class VOListAdapter {
       if (m==null)
         Logger.error(this.getClass().getName(),"getField","No getter method for index "+colIndex+" and attribute name '"+getFieldName(colIndex)+"'.",null);
 
-      for(int i=0;i<m.length-1;i++)
+      for(int i=0;i<m.length-1;i++){
         obj = (ValueObject)m[i].invoke(obj,new Object[0]);
+        if(obj == null) {
+          if (grids.getGridControl()==null || !grids.getGridControl().isCreateInnerVO())
+            return null;
+          else
+            obj = (ValueObject)m[i].getReturnType().newInstance();
+        }
+      }
 
       return m[m.length-1].invoke(obj,new Object[0]);
     }
@@ -289,8 +296,23 @@ public class VOListAdapter {
           value = new java.sql.Timestamp(((java.util.Date)value).getTime());
       }
 
-      for(int i=0;i<setter.length-1;i++)
-        obj = (ValueObject)setter[i].invoke(obj,new Object[0]);
+
+
+
+      // retrieve inner v.o.: if not present then maybe create it, according to "createInnerVO" property...
+      Method[] m = (Method[])voGetterMethods.get(getFieldName(colIndex));
+      if (m==null)
+        Logger.error(this.getClass().getName(),"setField","No getter method for index "+colIndex+" and attribute name '"+getFieldName(colIndex)+"'.",null);
+
+      for(int i=0;i<m.length-1;i++){
+        obj = (ValueObject)m[i].invoke(obj,new Object[0]);
+        if(obj == null) {
+          if (grids.getGridControl()==null || !grids.getGridControl().isCreateInnerVO())
+            return;
+          else
+            obj = (ValueObject)m[i].getReturnType().newInstance();
+        }
+      }
 
       setter[setter.length-1].invoke(obj,new Object[]{value});
     }

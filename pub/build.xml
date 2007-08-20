@@ -260,6 +260,12 @@
   </target>
 
 
+  <target name="beaninfosign">
+    <signjar jar="${lib}/BeanInfo.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+  </target>
+
+
+
   <target name="demo18" >
     <mkdir dir="${tmp}"/>
     <copy todir="${webapps}/demo18" >
