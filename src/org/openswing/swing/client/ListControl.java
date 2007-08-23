@@ -582,21 +582,16 @@ public class ListControl extends BaseInputControl implements InputControl {
       DomainPair[] pairs = domain.getDomainPairList();
       if (list.getSelectedIndex()==-1)
         return null;
-      for(int i=0;i<pairs.length;i++)
-        if (list.getSelectedValue().equals( ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()) ))
-          return pairs[i].getCode();
-      return null;
+      return pairs[list.getSelectedIndex()].getCode();
     }
     else {
       if (domain==null)
         return new ArrayList();
       DomainPair[] pairs = domain.getDomainPairList();
       ArrayList codes = new ArrayList();
-      Object[] values = list.getSelectedValues();
+      int[] values = list.getSelectedIndices();
       for(int j=0;j<values.length;j++)
-        for(int i=0;i<pairs.length;i++)
-          if (values[j].equals( ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()) ))
-            codes.add(pairs[i].getCode());
+        codes.add(pairs[values[j]].getCode());
       return codes;
     }
   }
