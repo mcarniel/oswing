@@ -23,6 +23,7 @@ import org.openswing.swing.mdi.client.MDIFrame;
 import java.awt.event.*;
 import org.openswing.swing.util.client.*;
 import java.math.BigDecimal;
+import java.beans.Introspector;
 
 
 /**
@@ -255,20 +256,49 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
       public void codeChanged(ValueObject parentVO,Collection parentChangedAttributes) {
         if (codAttributeName==null)
           return;
-        String getter = "get"+codAttributeName.substring(0,1).toUpperCase();
-        if (codAttributeName.length()>1)
-          getter += codAttributeName.substring(1);
+
         try {
-          Object codValue = parentVO.getClass().getMethod(getter, new Class[0]).invoke(parentVO, new Object[0]);
-          if (codValue==null)
-            codBox.setText("");
-          else
-            codBox.setText(codValue.toString());
-          alreadyValidated = true;
+          String attrName;
+          Object newValue = null;
+          attrName = codAttributeName;
+          if (parentVO != null) {
+            String aux = attrName;
+            Object obj = parentVO;
+            // check if there exists a "." in the attribute name definition for the lookup code:
+            // in this case retrieve the lookup code value by extracting it from the inner vos...
+            while ( aux.indexOf(".") != -1) {
+              obj = ClientUtils.getPropertyDescriptor(obj.getClass(), aux.substring(0, aux.indexOf("."))).getReadMethod().invoke(obj, new Object[0]);
+              aux = aux.substring(aux.indexOf(".") + 1);
+            }
+            newValue = ClientUtils.getPropertyDescriptor(obj.getClass(), aux).getReadMethod().invoke(obj, new Object[0]);
+          } else {
+            newValue = null;
+          }
+
+          if (newValue == null) {
+              codBox.setText("");
+          } else {
+              codBox.setText(newValue.toString());
+          }
         }
         catch (Exception ex) {
           ex.printStackTrace();
         }
+
+//        String getter = "get"+codAttributeName.substring(0,1).toUpperCase();
+//        if (codAttributeName.length()>1)
+//          try {
+//          getter += codAttributeName.substring(1);
+//          Object codValue = parentVO.getClass().getMethod(getter, new Class[0]).invoke(parentVO, new Object[0]);
+//          if (codValue==null)
+//            codBox.setText("");
+//          else
+//            codBox.setText(codValue.toString());
+//          alreadyValidated = true;
+//        }
+//        catch (Exception ex) {
+//          ex.printStackTrace();
+//        }
       }
 
       public void codeValidated(boolean validated) {}

@@ -421,10 +421,10 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
               String aux = attrName;
               Object obj = parentVO;
               while(aux.indexOf(".")!=-1) {
-                obj = getPropertyDescriptor(obj.getClass(),aux.substring(0,aux.indexOf("."))).getReadMethod().invoke(obj,new Object[0]);
+                obj = ClientUtils.getPropertyDescriptor(obj.getClass(),aux.substring(0,aux.indexOf("."))).getReadMethod().invoke(obj,new Object[0]);
                 aux = aux.substring(aux.indexOf(".")+1);
               }
-              newValue = getPropertyDescriptor(obj.getClass(),aux).getReadMethod().invoke(obj,new Object[0]);
+              newValue = ClientUtils.getPropertyDescriptor(obj.getClass(),aux).getReadMethod().invoke(obj,new Object[0]);
             }
             else
               newValue = null;
@@ -454,31 +454,6 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
 
     });
 
-  }
-
-
-  /**
-   * Method called inside codeChanged method.
-   * @param attributeName attribute name of the value object
-   * @return property descriptor
-   */
-  private PropertyDescriptor getPropertyDescriptor(Class valueObjectClass,String attributeName) {
-    try {
-      PropertyDescriptor pd = null;
-      PropertyDescriptor[] desc = Introspector.getBeanInfo(valueObjectClass).
-          getPropertyDescriptors();
-      for (int i = 0; i < desc.length; i++) {
-        if (attributeName.equals(desc[i].getName())) {
-          pd = desc[i];
-          break;
-        }
-      }
-      return pd;
-    }
-    catch (Throwable ex) {
-      ex.printStackTrace();
-      return null;
-    }
   }
 
 

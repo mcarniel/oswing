@@ -14,6 +14,8 @@ import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.domains.java.*;
 import org.openswing.swing.logger.client.Logger;
 import org.openswing.swing.form.client.Form;
+import java.beans.PropertyDescriptor;
+import java.beans.Introspector;
 
 
 /**
@@ -414,6 +416,21 @@ public class ClientUtils extends JApplet {
     catch (Exception ex1) {
     }
   }
+
+
+  /**
+   * @param clazz Class to analyze
+   * @param attributeName attribute name defined within the clazz
+   * @return PropertyDescriptor property descriptor associated to the specified attribute name
+   */
+  public static final PropertyDescriptor getPropertyDescriptor(Class clazz,String attributeName) throws Exception {
+    PropertyDescriptor[] props = Introspector.getBeanInfo(clazz).getPropertyDescriptors();
+    for(int i=0;i<props.length;i++)
+      if (props[i].getName().equals(attributeName))
+        return props[i];
+    return null;
+  }
+
 
 
 }

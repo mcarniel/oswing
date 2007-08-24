@@ -208,20 +208,37 @@ public class LookupController {
         String attrName = null;
         while (lookupAttributes.hasMoreElements()) {
           lookupAttributeName = (String) lookupAttributes.nextElement();
-          lookupMethodName = "get" + String.valueOf(Character.toUpperCase(lookupAttributeName.charAt(0))) + lookupAttributeName.substring(1);
-          lookupMethod = lookupVO.getClass().getMethod(lookupMethodName, new Class[0]);
-          if (!lookupMapper.setParentAttribute(
+          if (lookupAttributeName.length()==0) {
+            // there has been defined a link between the whole lookup v.o. and an attribute in the container v.o.
+            // related to an inner v.o.
+            if (!lookupMapper.setParentAttribute(
                 lookupParent,
                 lookupAttributeName,
-                lookupMethod.getReturnType(),
-                lookupMethod.invoke(lookupVO, new Object[0])
-          ))
-            Logger.error(this.getClass().getName(),"updateParentModel","Error while setting lookup container value object.",null);
-          else if (form!=null) {
-            attrName = (String)lookupMapper.getParentAttributeName(lookupAttributeName);
-            if (attrName!=null && form!=null)
-              form.pull(attrName);
-          }
+                lookupVO.getClass(),
+                lookupVO))
+              Logger.error(this.getClass().getName(), "updateParentModel", "Error while setting lookup container value object.", null);
+            else if (form!=null) {
+               attrName = (String)lookupMapper.getParentAttributeName(lookupAttributeName);
+               if (attrName!=null && form!=null)
+                 form.pull(attrName);
+             }
+         }
+         else {
+           lookupMethodName = "get" + String.valueOf(Character.toUpperCase(lookupAttributeName.charAt(0))) + lookupAttributeName.substring(1);
+           lookupMethod = lookupVO.getClass().getMethod(lookupMethodName, new Class[0]);
+           if (!lookupMapper.setParentAttribute(
+                 lookupParent,
+                 lookupAttributeName,
+                 lookupMethod.getReturnType(),
+                 lookupMethod.invoke(lookupVO, new Object[0])
+           ))
+             Logger.error(this.getClass().getName(),"updateParentModel","Error while setting lookup container value object.",null);
+           else if (form!=null) {
+              attrName = (String)lookupMapper.getParentAttributeName(lookupAttributeName);
+              if (attrName!=null && form!=null)
+                form.pull(attrName);
+            }
+         }
         }
 
       }
@@ -858,6 +875,15 @@ public class LookupController {
    */
   public final void addLookup2ParentLink(String lookupAttributeName,String parentAttributeName) {
     lookupMapper.addLookup2ParentLink(lookupAttributeName,parentAttributeName);
+  }
+
+
+  /**
+   * Add a link from the whole lookup value object to an equivalent inner v.o. included in the container v.o.
+   * @param parentAttributeName attribute of the lookup container v.o., related to an inner v.o. having the same type of the lookup v.o.
+   */
+  public final void addLookup2ParentLink(String parentAttributeName) {
+    lookupMapper.addLookup2ParentLink("",parentAttributeName);
   }
 
 
