@@ -208,8 +208,10 @@ public class NumericControl extends BaseInputControl implements InputControl {
   public final String getText() {
     BigDecimal value = null;
     try {
-      if (numBox.getText().length()!=0 && !numBox.getText().equals(nullValue))
+      if (numBox.getText().length()!=0 && !numBox.getText().equals(nullValue) && !"-".equals(numBox.getText()))
         value = new BigDecimal(format.parse(numBox.getText()).doubleValue());
+      if ("-".equals(numBox.getText()))
+        value = new BigDecimal(0).negate();
     }
     catch (ParseException ex) {
       Logger.error(this.getClass().getName(),"getText","Error while creating BigDecimal object",ex);
@@ -331,7 +333,7 @@ public class NumericControl extends BaseInputControl implements InputControl {
           return;
         else if (e.getKeyChar()=='\b')
           return;
-        else if (e.getKeyChar()=='-' && minValue<0 && numBox.getCaretPosition()==0 && numBox.getText()!=null && numBox.getText().length()>0 && numBox.getText().charAt(0)!='-')
+        else if (e.getKeyChar()=='-' && minValue<0 && numBox.getCaretPosition()==0 && numBox.getText()!=null && (numBox.getText().length()==0 || numBox.getText().charAt(0)!='-'))
           return;
         else if (e.getKeyChar()<'0' || e.getKeyChar()>'9')
           e.consume();
