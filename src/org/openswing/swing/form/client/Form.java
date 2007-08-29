@@ -1255,6 +1255,20 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     ArrayList list = null;
     String attrName = null;
     InputControl comp = null;
+
+    Class clazz = model.getAttributeType(attributeName);
+    if (clazz!=null && ValueObject.class.isAssignableFrom(clazz)) {
+      // if the value just changed is an inner value object, then all its attributes are managed as changed:
+      // check if there are input controls binded to these changed attributes and for each one "pull" it...
+      Enumeration en = bindings.keys();
+      while(en.hasMoreElements()) {
+        attrName = en.nextElement().toString();
+        if(attrName.indexOf(attributeName+'.')!=-1)
+          pull(attrName);
+      }
+    }
+
+
     list = (ArrayList)bindings.get(attributeName);
     if (list!=null) {
       for(int i=0;i<list.size();i++) {

@@ -213,7 +213,7 @@ public class ImageControl extends BaseInputControl implements InputControl {
   /**
    * @return component inside this whose contains the value
    */
-  protected final JComponent getBindingComponent() {
+  public final JComponent getBindingComponent() {
     return selButton;
   }
 

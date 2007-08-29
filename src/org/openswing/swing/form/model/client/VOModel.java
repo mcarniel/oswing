@@ -220,6 +220,26 @@ public class VOModel {
 
   /**
    * @param attributeName attribute name of the value object
+   * @return type of the value associated to the specified attribute name
+   */
+  public final Class getAttributeType(String attributeName) {
+    try {
+      Method[] readMethods = (Method[])voGetterMethods.get(attributeName);
+      if (readMethods != null) {
+        return readMethods[readMethods.length-1].getReturnType();
+      }
+      else
+        return null;
+    }
+    catch (Throwable ex) {
+      Logger.error(this.getClass().getName(),"getAttributeType","Error while analyzing the value object attribute '"+attributeName+"'",ex);
+    }
+    return null;
+  }
+
+
+  /**
+   * @param attributeName attribute name of the value object
    * @return value value associated to the specified attribute name
    */
   public final Object getValue(String attributeName) {

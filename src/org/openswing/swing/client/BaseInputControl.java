@@ -141,7 +141,7 @@ public class BaseInputControl extends JPanel implements InputControl {
   /**
    * @return component inside this whose contains the value
    */
-  protected JComponent getBindingComponent() {
+  public JComponent getBindingComponent() {
     Logger.error(this.getClass().getName(), "getBindingComponent", "This method must be overridden in '"+this.getClass().getName()+"'",null);
     return null;
   }

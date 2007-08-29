@@ -222,7 +222,7 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
   /**
    * @return code input field
    */
-  protected JComponent getBindingComponent() {
+  public JComponent getBindingComponent() {
     return codBox;
   }
 

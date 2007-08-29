@@ -183,7 +183,7 @@ public class TextAreaControl extends BaseInputControl implements InputControl {
   /**
    * @return component inside this whose contains the value
    */
-  protected JComponent getBindingComponent() {
+  public JComponent getBindingComponent() {
     return textArea;
   }
 

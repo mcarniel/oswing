@@ -910,7 +910,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   /**
    * @return component inside this whose contains the value
    */
-  protected JComponent getBindingComponent() {
+  public JComponent getBindingComponent() {
     return date;
   }
 

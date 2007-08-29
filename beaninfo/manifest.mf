@@ -138,3 +138,6 @@ Java-Bean: True
 
 Name: org/openswing/swing/client/ListControl.class
 Java-Bean: True
+
+Name: org/openswing/swing/client/PropertyGridControl.class
+Java-Bean: True

@@ -172,7 +172,7 @@ public class FormattedTextControl extends BaseInputControl implements InputContr
   /**
    * @return component inside this whose contains the value
    */
-  protected final JComponent getBindingComponent() {
+  public final JComponent getBindingComponent() {
     return textBox;
   }
 

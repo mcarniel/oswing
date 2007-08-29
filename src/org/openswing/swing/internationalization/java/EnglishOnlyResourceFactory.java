@@ -214,6 +214,9 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("ok","Ok");
     dictionary.setProperty("i do not accept the terms in the licence agreement","I do not accept the terms in the licence agreement");
 
+    // property grid control
+    dictionary.setProperty("property name","Name");
+    dictionary.setProperty("property value","Value");
 
     dictionary.putAll(additionalDictionary);
 

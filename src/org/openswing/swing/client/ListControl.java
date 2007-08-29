@@ -631,7 +631,7 @@ public class ListControl extends BaseInputControl implements InputControl {
   /**
    * @return component inside this whose contains the value
    */
-  protected JComponent getBindingComponent() {
+  public JComponent getBindingComponent() {
 //    if (list!=null && list.getSelectionMode()!=ListSelectionModel.SINGLE_SELECTION)
 //      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     return list;

@@ -93,7 +93,7 @@ public interface DataController {
 
 
   /**
-   * Method called when used has clicked on filter button.
+   * Method called when the user has clicked on filter button.
    */
   public void filterSort();
 
