@@ -1,19 +1,18 @@
 package org.openswing.swing.client;
 
-import javax.swing.JTextField;
-import javax.swing.UIManager;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.Container;
 import org.openswing.swing.form.client.Form;
 import java.awt.event.*;
 import org.openswing.swing.message.receive.java.ValueObject;
-import javax.swing.JComponent;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.FlowLayout;
-import java.awt.Dimension;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.plaf.UIResource;
+import javax.swing.text.*;
+import java.awt.datatransfer.*;
+import java.awt.im.InputContext;
+import java.io.IOException;
+import java.lang.reflect.*;
 
 
 /**
@@ -59,7 +58,7 @@ public class TextControl extends BaseInputControl implements InputControl {
   private boolean rpadding = false;
 
   /** text field */
-  private TextBox textBox = new TextBox();
+  private JTextField textBox = getTextBox();
 
 
   /**
@@ -421,24 +420,26 @@ public class TextControl extends BaseInputControl implements InputControl {
 
 
   public void processKeyEvent(KeyEvent e) {
-    textBox.processKeyEvent(e);
+    try {
+      JTextField.class.getMethod("processKeyEvent", new Class[] {KeyEvent.class}).invoke(textBox, new Object[] {e});
+    }
+    catch (Throwable ex) {
+    }
   }
 
 
-}
+  /**
+   * @return text box; this method is overrided by PasswordControl
+   */
+  protected JTextField getTextBox() {
+    return new JTextField() {
 
+      public void processKeyEvent(KeyEvent e) {
+        super.processKeyEvent(e);
+      }
 
-/**
- * <p>Title: OpenSwing Framework</p>
- * <p>Description: Inner class used to redirect key event to the inner JTextField.</p>
- * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
- * @author Mauro Carniel
- * @version 1.0
- */
-class TextBox extends JTextField {
+    };
+  }
 
-    public void processKeyEvent(KeyEvent e) {
-      super.processKeyEvent(e);
-    }
 
 }

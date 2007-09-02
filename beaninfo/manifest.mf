@@ -141,3 +141,6 @@ Java-Bean: True
 
 Name: org/openswing/swing/client/PropertyGridControl.class
 Java-Bean: True
+
+Name: org/openswing/swing/client/PasswordControl.class
+Java-Bean: True

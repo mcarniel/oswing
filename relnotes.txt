@@ -1,5 +1,15 @@
 
 
+Release Notes 1.2.3
+-------------------
+
+Final release 1.2.3 available
+
+Added PasswordControl component.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.2.2
 -------------------
 
