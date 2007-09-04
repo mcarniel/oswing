@@ -1004,6 +1004,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
         // fill in the new v.o. with the duplicable attributes of the cloned v.o...
         copyInputControlValues(vo,this,this.getComponents(),true);
+        pull();
 
         resetButtonsState();
       }
