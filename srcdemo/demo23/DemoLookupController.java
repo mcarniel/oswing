@@ -82,9 +82,8 @@ public class DemoLookupController extends LookupController {
 
     });
 
-    this.setLookupValueObjectClassName("demo3.TestLookupVO");
-    this.addLookup2ParentLink("lookupValue", "lookupValue");
-    this.addLookup2ParentLink("descrLookupValue", "descrLookupValue");
+    this.setLookupValueObjectClassName("demo23.TestLookupVO");
+    this.addLookup2ParentLink("lookupValue", "propertyValue");
     this.setAllColumnVisible(true);
     this.setPreferredWidthColumn("descrLookupValue", 200);
   }

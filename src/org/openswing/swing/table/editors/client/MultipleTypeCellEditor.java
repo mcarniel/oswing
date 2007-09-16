@@ -179,8 +179,19 @@ public class MultipleTypeCellEditor extends AbstractCellEditor implements TableC
     }
 
     p.removeAll();
-    p.add(c,      new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
-          ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
+    if (c instanceof JComboBox)
+      p.add(c,      new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+            ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
+    else if (ic instanceof CodLookupControl) {
+      p.add(c,      new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+            ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
+
+      p.add(((JComponent)ic).getComponent(1),      new GridBagConstraints(1, 0, 0, 1, 1.0, 1.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0));
+    }
+    else
+        p.add((JComponent)ic,      new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+              ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
 
 
     return p;

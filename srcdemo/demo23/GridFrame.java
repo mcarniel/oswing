@@ -42,6 +42,7 @@ public class GridFrame extends JFrame {
     try {
       jbInit();
       setSize(400,300);
+      setLocation(100,100);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
 

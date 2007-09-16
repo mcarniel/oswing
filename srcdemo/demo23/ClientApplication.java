@@ -31,6 +31,10 @@ public class ClientApplication {
     Properties props = new Properties();
     props.setProperty("propertyName","Property Name");
     props.setProperty("propertyValue","Property Value");
+    props.setProperty("opened","Opened");
+    props.setProperty("suspended","Suspended");
+    props.setProperty("delivered","Delivered");
+    props.setProperty("closed","Closed");
     ClientSettings clientSettings = new ClientSettings(
         new EnglishOnlyResourceFactory("£",props,false),
         domains
