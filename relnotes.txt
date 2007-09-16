@@ -1,5 +1,19 @@
 
 
+
+Release Notes 1.2.5
+-------------------
+
+Final release 1.2.5 available
+
+Added MultiLineTextColumn to GridControl. 
+Changed "demo3" sample app, to show new MultiLineTextColumn column usage.
+Added MultipleTypeColumn to GridControl, i.e. a column to show different data types insde the same column.
+Added "demo23" sample app, to show how to use the MultipleTypeColumn.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.2.4
 -------------------
 

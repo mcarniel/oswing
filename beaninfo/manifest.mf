@@ -144,3 +144,9 @@ Java-Bean: True
 
 Name: org/openswing/swing/client/PasswordControl.class
 Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/MultiLineTextColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/MultipleTypeColumn.class
+Java-Bean: True
