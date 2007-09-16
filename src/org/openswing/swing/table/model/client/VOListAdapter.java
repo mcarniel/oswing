@@ -25,6 +25,8 @@ import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import java.util.Enumeration;
 import java.util.HashSet;
+import org.openswing.swing.table.renderers.client.MultiLineTextTableCellRenderer;
+import org.openswing.swing.table.editors.client.MultipleTypeCellEditor;
 
 
 /**
@@ -135,6 +137,7 @@ public class VOListAdapter {
              methods[i].getReturnType().equals(Boolean.class) ||
              methods[i].getReturnType().equals(boolean.class) ||
              methods[i].getReturnType().equals(byte[].class) ||
+             methods[i].getReturnType().equals(Object.class) ||
              ValueObject.class.isAssignableFrom( methods[i].getReturnType() )
             )) {
           attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
@@ -392,6 +395,20 @@ public class VOListAdapter {
             colProperties[colIndex].getTextAlignment()
         );
       }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_MULTI_LINE_TEXT) {
+        return new MultiLineTextTableCellRenderer(
+            tableContainer
+        );
+      }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_MULTIPLE_TYPE) {
+        return new MultipleTypeTableCellRenderer(
+          tableContainer,
+          ((MultipleTypeColumn)colProperties[colIndex]).getTypeController(),
+          colProperties[colIndex].getTextAlignment(),
+          colProperties[colIndex].getColumnName(),
+          grids.getGridControl()
+        );
+      }
 
 //      else if (colProperties[colIndex].getColumnType()==Column.TYPE_FORMATTED_TEXT) {
 //        return new FormattedTextTableCellRenderer(
@@ -530,6 +547,22 @@ public class VOListAdapter {
             ((TextColumn)colProperties[colIndex]).isTrimText(),
             ((TextColumn)colProperties[colIndex]).isUpperCase()
           );
+      }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_MULTI_LINE_TEXT) {
+        // multi line text
+          return new MultiLineTextCellEditor(
+            ((MultiLineTextColumn)colProperties[colIndex]).getMaxCharacters(),
+            colProperties[colIndex].isColumnRequired()
+          );
+      }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_MULTIPLE_TYPE) {
+        return new MultipleTypeCellEditor(
+          tableContainer,
+          ((MultipleTypeColumn)colProperties[colIndex]).getTypeController(),
+          colProperties[colIndex].getColumnName(),
+          grids.getGridControl(),
+          colProperties[colIndex].isColumnRequired()
+        );
       }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_FORMATTED_TEXT) {
         return new FormattedTextCellEditor(

@@ -139,6 +139,8 @@ public class Column extends JPanel {
   public static final int TYPE_BUTTON = 11;
   public static final int TYPE_IMAGE = 12;
   public static final int TYPE_FORMATTED_TEXT = 13;
+  public static final int TYPE_MULTI_LINE_TEXT = 14;
+  public static final int TYPE_MULTIPLE_TYPE = 15;
 
 
   public Column() {

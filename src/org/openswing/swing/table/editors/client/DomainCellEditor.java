@@ -71,6 +71,10 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
       else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n') {
         stopCellEditing();
         try {
+          if (!table.hasFocus())
+            table.requestFocus();
+          if (table.getSelectedRow()!=-1)
+            table.setRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
           table.setColumnSelectionInterval(table.getSelectedColumn() + 1, table.getSelectedColumn() + 1);
         }
         catch (Exception ex) {
@@ -90,6 +94,9 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
   /** flag sed to set mandatory property of the cell */
   private boolean required;
 
+  /** combo container */
+  private JPanel p = new JPanel();
+
 
   /**
    * Constructor.
@@ -106,6 +113,10 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
     field.setModel(model);
     for(int i=0;i<itemListeners.size();i++)
       field.addItemListener((ItemListener)itemListeners.get(i));
+    p.setOpaque(true);
+    p.setLayout(new GridBagLayout());
+    p.add(field,      new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+          ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
   }
 
 
@@ -144,6 +155,13 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
       field.setSelectedItem(ClientSettings.getInstance().getResources().getResource(pair.getDescription()));
     else
       field.setSelectedIndex(-1);
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        if (!field.hasFocus()) {
+          field.requestFocus();
+        }
+      }
+    });
     return field;
   }
 
@@ -156,7 +174,10 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
       field.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_REQUIRED_CELL_BORDER));
 //      field.setBorder(new CompoundBorder(new RequiredBorder(),field.getBorder()));
     }
-    return _prepareEditor(value);
+
+    _prepareEditor(value);
+
+    return p;
   }
 
 
