@@ -49,6 +49,7 @@ public class GridFrame extends JFrame {
   NavigatorBar navigatorBar1 = new NavigatorBar();
   FormattedTextColumn colFormattedText = new FormattedTextColumn();
   IntegerColumn colInt = new IntegerColumn();
+  MultiLineTextColumn colMultiLine = new MultiLineTextColumn();
 
 
   public GridFrame(Connection conn,GridFrameController controller) {
@@ -187,6 +188,7 @@ public class GridFrame extends JFrame {
     grid.setInsertButton(insertButton);
     grid.setNavBar(navigatorBar1);
     grid.setReloadButton(reloadButton);
+    grid.setRowHeight(40);
     grid.setSaveButton(saveButton);
 
 //    grid.setLockedColumns(2);
@@ -265,6 +267,10 @@ public class GridFrame extends JFrame {
     colInt.setEditableOnEdit(true);
     colInt.setEditableOnInsert(true);
 
+    colMultiLine.setColumnName("multiLineTextValue");
+    colMultiLine.setEditableOnEdit(true);
+    colMultiLine.setEditableOnInsert(true);
+    colMultiLine.setPreferredWidth(150);
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
@@ -277,6 +283,7 @@ public class GridFrame extends JFrame {
     buttonsPanel.add(navigatorBar1, null);
     grid.getColumnContainer().add(colText, null);
     grid.getColumnContainer().add(colDecimal, null);
+    grid.getColumnContainer().add(colMultiLine, null);
     grid.getColumnContainer().add(colInt, null);
     grid.getColumnContainer().add(colCurrency, null);
     grid.getColumnContainer().add(colFormattedText, null);

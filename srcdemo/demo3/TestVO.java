@@ -28,6 +28,7 @@ public class TestVO extends ValueObjectImpl {
   private String button;
   private String formattedTextValue;
   private Integer intValue;
+  private String multiLineTextValue;
 
 
   public TestVO() {
@@ -105,6 +106,12 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setIntValue(Integer intValue) {
     this.intValue = intValue;
+  }
+  public String getMultiLineTextValue() {
+    return multiLineTextValue;
+  }
+  public void setMultiLineTextValue(String multiLineTextValue) {
+    this.multiLineTextValue = multiLineTextValue;
   }
 
 
