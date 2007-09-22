@@ -74,6 +74,9 @@ public class MultipleTypeTableCellRenderer extends DefaultTableCellRenderer {
 
   private JPanel p = new JPanel();
 
+  /** used instead of a combo-box */
+  private JLabel l = new JLabel();
+
 
   /**
    * Constructor.
@@ -137,6 +140,14 @@ public class MultipleTypeTableCellRenderer extends DefaultTableCellRenderer {
         c = ((BaseInputControl)ic).getBindingComponent();
       else
         c = (JComponent)ic;
+
+      if (c instanceof JComboBox) {
+        l.setText(((JComboBox)c).getSelectedItem().toString());
+        p.removeAll();
+        p.add(l,      new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+             ,GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
+        c = p;
+      }
 
       if (defaultFont==null)
         defaultFont = table.getFont();
@@ -217,7 +228,7 @@ public class MultipleTypeTableCellRenderer extends DefaultTableCellRenderer {
       else {
         c.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
         c.setBorder(BorderFactory.createEmptyBorder());
-        if (((Grid)table).getMode()==Consts.READONLY)
+        if (((Grid)table).getMode()==Consts.READONLY || !((Grid)table).isColorsInReadOnlyMode())
           c.setBackground(gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
         else {
           if (table.isCellEditable(row,column))
@@ -236,13 +247,6 @@ public class MultipleTypeTableCellRenderer extends DefaultTableCellRenderer {
 
 //      if (table instanceof Grid)
 //        c.setToolTipText(gridController.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
-
-     if (c instanceof JComboBox) {
-       p.removeAll();
-       p.add(c,      new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
-            ,GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
-       return p;
-     }
 
       return c;
     }

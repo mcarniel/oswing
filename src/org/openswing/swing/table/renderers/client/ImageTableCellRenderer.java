@@ -124,7 +124,7 @@ public class ImageTableCellRenderer extends DefaultTableCellRenderer {
     } else {
       rend.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
       rend.setBorder(BorderFactory.createRaisedBevelBorder());
-      if (((Grid)table).getMode()==Consts.READONLY)
+      if (((Grid)table).getMode()==Consts.READONLY || !((Grid)table).isColorsInReadOnlyMode())
         rend.setBackground(gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
       else {
         if (table.isCellEditable(row,column))

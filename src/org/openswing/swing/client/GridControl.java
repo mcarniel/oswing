@@ -223,6 +223,15 @@ public class GridControl extends JPanel {
   /** flag used to define if an inner v.o. must be automatically instantiated when a setter method is invoked; default value: <code>true</code> */
   private boolean createInnerVO = true;
 
+  /** list of objects {int[],int[]} used to merge cells */
+  private ArrayList mergedCells = new ArrayList();
+
+  /** flag used to define if background and foreground colors must be setted according to GridController definition only in READONLY mode; default value: <code>true</code> */
+  private boolean colorsInReadOnlyMode = true;
+
+  /** list of ActionListener objetcs related to the event "loading data completed" */
+  private ArrayList loadDataCompletedListeners = new ArrayList();
+
 
   /**
    * Costructor.
@@ -299,6 +308,7 @@ public class GridControl extends JPanel {
           labelPanel,
           gridDataLocator,
           otherGridParams,
+          colorsInReadOnlyMode,
           Grid.MAIN_GRID
           );
       for (int i = 0; i < columnProperties.length; i++) {
@@ -364,6 +374,7 @@ public class GridControl extends JPanel {
             labelPanel,
             topGridDataLocator,
             otherGridParams,
+            colorsInReadOnlyMode,
             Grid.TOP_GRID
         );
         topTable.setReorderingAllowed(reorderingAllowed);
@@ -421,6 +432,7 @@ public class GridControl extends JPanel {
             labelPanel,
             bottomGridDataLocator,
             otherGridParams,
+            colorsInReadOnlyMode,
             Grid.BOTTOM_GRID
         );
         bottomTable.setReorderingAllowed(reorderingAllowed);
@@ -586,6 +598,20 @@ public class GridControl extends JPanel {
 
       if (mode==Consts.READONLY && autoLoadData)
         table.reload();
+
+      for(int i=0;i<loadDataCompletedListeners.size();i++)
+        table.addLoadDataCompletedListener((ActionListener)loadDataCompletedListeners.get(i));
+
+      table.addLoadDataCompletedListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          for(int i=0;i<mergedCells.size();i++)
+            table.mergeCells(
+              (int[])((Object[])mergedCells.get(i))[0],
+              (int[])((Object[])mergedCells.get(i))[1]
+            );
+        }
+      });
+
 
       table.getGrid().requestFocus();
 
@@ -1664,6 +1690,63 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * Set the cell span for the specified range of cells.
+   * @param rows row indexes that identify the cells to merge
+   * @param columns column indexes that identify the cells to merge
+   * @return <code>true</code> if merge operation is allowed, <code>false</code> if the cells range is invalid
+   */
+  public final boolean mergeCells(int[] rows,int[] columns) {
+    if (table!=null)
+      return table.mergeCells(rows,columns);
+    else {
+      mergedCells.add(new Object[]{rows,columns});
+      return true;
+    }
+  }
+
+
+  /**
+   * @return define if background and foreground colors must be setted according to GridController definition only in READONLY mode
+   */
+  public final boolean isColorsInReadOnlyMode() {
+    return colorsInReadOnlyMode;
+  }
+
+
+  /**
+   * Define if background and foreground colors must be setted according to GridController definition only in READONLY mode.
+   * @param colorsInReadOnlyMode <code>false</code> to enable background and foreground colors to be setted according to GridController definition in all grid modes; <code>true</code> to enable background and foreground colors to be setted according to GridController definition only in READONLY mode
+   */
+  public final void setColorsInReadOnlyMode(boolean colorsInReadOnlyMode) {
+    this.colorsInReadOnlyMode = colorsInReadOnlyMode;
+    if (table!=null)
+      table.setColorsInReadOnlyMode(colorsInReadOnlyMode);
+    if (topTable!=null)
+      topTable.setColorsInReadOnlyMode(colorsInReadOnlyMode);
+    if (bottomTable!=null)
+      bottomTable.setColorsInReadOnlyMode(colorsInReadOnlyMode);
+  }
+
+
+  /**
+   * Add a "load data completed" listener.
+   */
+  public final void addLoadDataCompletedListener(ActionListener listener) {
+    loadDataCompletedListeners.add(listener);
+    if (table!=null)
+      table.addLoadDataCompletedListener(listener);
+  }
+
+
+  /**
+   * Remove a "load data completed" listener.
+   */
+  public final void removeLoadDataCompletedListener(ActionListener listener) {
+    loadDataCompletedListeners.remove(listener);
+    if (table!=null)
+      table.removeLoadDataCompletedListener(listener);
+  }
 
 
 
@@ -1699,7 +1782,6 @@ public class GridControl extends JPanel {
       }
 
   }
-
 
 }
 

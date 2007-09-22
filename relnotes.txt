@@ -1,5 +1,16 @@
 
 
+Release Notes 1.2.6
+-------------------
+
+Final release 1.2.6 available
+
+Added "colorsInReadOnlyMode" property to GridControl, to allow cells coloring in insert/edit mode too.
+Added "mergeCells" method to GridControl, used to merge an interval of cells (both on contiguos rows and columns).
+Added "demo24" sample app, to show cells coloring in all grid modes and to show cells span.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
 
 Release Notes 1.2.5
 -------------------

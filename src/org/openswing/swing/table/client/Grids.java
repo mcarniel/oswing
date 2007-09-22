@@ -199,6 +199,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** maximum number of sorted columns */
   private int maxSortedColumns = 1;
 
+  /** list of ActionListener objetcs related to the event "loading data completed" */
+  private ArrayList loadDataCompletedListeners = new ArrayList();
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -206,6 +209,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @param colProps TableModel column properties (name, type, etc.)
    * @param controller grid controller, used to listen grid events
    * @param statusPanel bottom panel included into the grid; used to view selected row numbers
+   * @param colorsInReadOnlyMode flag used to define if background and foreground colors must be setted according to GridController definition only in READONLY mode
    * @param gridType type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID
    */
   public Grids(
@@ -217,6 +221,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       GridStatusPanel statusPanel,
       GridDataLocator gridDataLocator,
       Map otherGridParams,
+      boolean colorsInReadOnlyMode,
       int gridType
   ) {
     this.gridControl = gridControl;
@@ -247,6 +252,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         statusPanel,
         lockedColumns,
         colProps.length,
+        colorsInReadOnlyMode,
         model,
         modelAdapter,
         gridController,
@@ -262,6 +268,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           statusPanel,
           0,
           lockedColumns,
+          colorsInReadOnlyMode,
           model,
           modelAdapter,
           gridController,
@@ -677,6 +684,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         if (gridController!=null)
           gridController.loadDataCompleted(errorOnLoad);
 
+        for(int i=0;i<loadDataCompletedListeners.size();i++)
+          ((ActionListener)loadDataCompletedListeners.get(i)).actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"Load Data Completed"));
 
         resetButtonsState();
       }
@@ -2632,6 +2641,45 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (lockedGrid!=null)
       lockedGrid.setRowMargin(rowMargin);
   }
+
+
+  /**
+   * Set the cell span for the specified range of cells.
+   * @param rows row indexes that identify the cells to merge
+   * @param columns column indexes that identify the cells to merge
+   * @return <code>true</code> if merge operation is allowed, <code>false</code> if the cells range is invalid
+   */
+  public final boolean mergeCells(int[] rows,int[] columns) {
+    return grid.mergeCells(rows,columns);
+  }
+
+
+  /**
+   * Define if background and foreground colors must be setted according to GridController definition only in READONLY mode.
+   * @param colorsInReadOnlyMode <code>false</code> to enable background and foreground colors to be setted according to GridController definition in all grid modes; <code>true</code> to enable background and foreground colors to be setted according to GridController definition only in READONLY mode
+   */
+  public final void setColorsInReadOnlyMode(boolean colorsInReadOnlyMode) {
+    grid.setColorsInReadOnlyMode(colorsInReadOnlyMode);
+  }
+
+
+  /**
+   * Add a "load data completed" listener.
+   */
+  public final void addLoadDataCompletedListener(ActionListener listener) {
+    loadDataCompletedListeners.add(listener);
+  }
+
+
+  /**
+   * Remove a "load data completed" listener.
+   */
+  public final void removeLoadDataCompletedListener(ActionListener listener) {
+    loadDataCompletedListeners.remove(listener);
+  }
+
+
+
 
 
   /**

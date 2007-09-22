@@ -166,6 +166,12 @@ public class Grid extends JTable
   /** collection of pairs <additional column related, as JPanel, java.util.List of column index as Integer, i.e. its related column headers > */
   private Hashtable additionalHeaderToHeaders = new Hashtable();
 
+  /** collection of pairs < Pair object, Pair object >, where the former identify a cell, i.e. a [row index,column index] and the latter the cell's span width and height */
+  private Hashtable cellSpans = new Hashtable();
+
+  /** flag used to define if background and foreground colors must be setted according to GridController definition only in READONLY mode */
+  private boolean colorsInReadOnlyMode = true;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -173,6 +179,7 @@ public class Grid extends JTable
    * @param statusPanel bottom panel included into the grid; used to view selected row numbers
    * @param fromColIndex column index from which to start to add TableColumn (related to colProps list)
    * @param toColIndex final column index of TableColumn objects to add (related to colProps list), index excluded
+   * @param colorsInReadOnlyMode flag used to define if background and foreground colors must be setted according to GridController definition only in READONLY mode
    * @param model grid model
    * @param modelAdapter grid model adapter
    * @param gridController grid controller
@@ -185,6 +192,7 @@ public class Grid extends JTable
       GridStatusPanel statusPanel,
       int fromColIndex,
       int toColIndex,
+      boolean colorsInReadOnlyMode,
       VOListTableModel model,
       VOListAdapter modelAdapter,
       GridController gridController,
@@ -198,6 +206,7 @@ public class Grid extends JTable
     this.statusPanel = statusPanel;
     this.fromColIndex = fromColIndex;
     this.toColIndex = toColIndex;
+    this.colorsInReadOnlyMode = colorsInReadOnlyMode;
     this.gridController = gridController;
     this.lockedGrid = lockedGrid;
     this.setShowGrid(true);
@@ -214,6 +223,8 @@ public class Grid extends JTable
 
     try {
       this.setModel(model);
+
+      setUI(new GridUI());
 
       // set column types and column renderers/editors...
       prepareJTable();
@@ -2504,9 +2515,349 @@ public class Grid extends JTable
   }
 
 
-  public boolean hasColSpan() {
+  /**
+   * Define if background and foreground colors must be setted according to GridController definition only in READONLY mode.
+   * @param colorsInReadOnlyMode <code>false</code> to enable background and foreground colors to be setted according to GridController definition in all grid modes; <code>true</code> to enable background and foreground colors to be setted according to GridController definition only in READONLY mode
+   */
+  public final void setColorsInReadOnlyMode(boolean colorsInReadOnlyMode) {
+    this.colorsInReadOnlyMode = colorsInReadOnlyMode;
+  }
+
+
+  /**
+   * @return define if background and foreground colors must be setted according to GridController definition only in READONLY mode
+   */
+  public final boolean isColorsInReadOnlyMode() {
+    return colorsInReadOnlyMode;
+  }
+
+
+  public final boolean hasColSpan() {
     return hasColSpan;
   }
+
+
+  /**
+   * Set the cell span for the specified range of cells.
+   * @param rows row indexes that identify the cells to merge
+   * @param columns column indexes that identify the cells to merge
+   * @return <code>true</code> if merge operation is allowed, <code>false</code> if the cells range is invalid
+   */
+  public final boolean mergeCells(int[] rows,int[] columns) {
+//    if (isOutOfBounds(rows, columns))
+//      return false;
+    for (int i=0;i<rows.length;i++) {
+      for (int j=0;j<columns.length;j++) {
+        if (cellSpans.get(new Pair(
+              rows[0] + i,
+              columns[0] + j
+        ))!=null)
+          return false;
+      }
+    }
+
+    for (int i=0,ii=0;i<rows.length;i++,ii--)
+      for (int j=0,jj=0;j<columns.length;j++,jj--)
+        cellSpans.put(
+          new Pair(rows[0] + i,columns[0] + j),
+          new Pair(ii,jj)
+        );
+
+    cellSpans.put(
+      new Pair(rows[0],columns[0]),
+      new Pair(rows.length,columns.length)
+    );
+
+    return true;
+  }
+
+
+  /**
+   * Method invoked by mergeCells to check cells merging consistency.
+   */
+  private boolean isOutOfBounds(int row, int column) {
+    if (row<0 || model.getRowCount()<=row || column < 0 || model.getColumnCount()<=column)
+      return true;
+    else
+      return false;
+  }
+
+
+  /**
+   * Method invoked by mergeCells to check cells merging consistency.
+   */
+  private boolean isOutOfBounds(int[] rows, int[] columns) {
+    for (int i=0;i<rows.length;i++)
+      if (rows[i] < 0 || model.getRowCount()<=rows[i])
+        return true;
+
+    for (int i=0;i<columns.length;i++)
+      if (columns[i] < 0 || model.getColumnCount()<=columns[i])
+        return true;
+
+    return false;
+  }
+
+
+  /**
+   * @return <code>true</code> if the specified cell is visible (according to cells span settings), <code>false</code> otherwise
+   */
+
+  public final boolean isVisible(int row, int column) {
+    if (isOutOfBounds(row,column))
+      return false;
+
+    Pair p = (Pair)cellSpans.get(new Pair(row,column));
+    if (p==null)
+      return true;
+
+    if (p.getN1()<1 || p.getN2()<1)
+      return false;
+
+    return true;
+  }
+
+
+  /**
+   * @return cell span
+   */
+  public final Pair getSpan(int row, int column) {
+    if (isOutOfBounds(row, column))
+      return new Pair(1,1);
+
+    Pair p = (Pair)cellSpans.get(new Pair(row,column));
+    if (p==null)
+      return new Pair(1,1);
+
+    return p;
+  }
+
+
+  /**
+   * This method has been overrided to support cells span: it returns the cell span (width and height),
+   * according to the specified cell current visibility.
+   * Note: a cell can be invisible if it is contained inside a spanned cell.
+   */
+/*
+  public Rectangle getCellRect(int row, int column, boolean includeSpacing) {
+    Rectangle sRect = super.getCellRect(row,column,includeSpacing);
+    if (row<0 ||
+        column<0 ||
+        model.getRowCount()<=row ||
+        model.getColumnCount()<=column)
+      return sRect;
+
+    if (!isVisible(row,column)) {
+      int temp_row    = row;
+      int temp_column = column;
+      row    += getSpan(temp_row,temp_column).getN1();
+      column += getSpan(temp_row,temp_column).getN2();
+    }
+    Pair n = getSpan(row,column);
+
+    int index = 0;
+    int columnMargin = getColumnModel().getColumnMargin();
+    Rectangle cellFrame = new Rectangle();
+    int aCellHeight = rowHeight + rowMargin;
+    cellFrame.y = row * aCellHeight;
+    cellFrame.height = n.getN1()*aCellHeight;
+
+    Enumeration enumeration = getColumnModel().getColumns();
+    while (enumeration.hasMoreElements()) {
+      TableColumn aColumn = (TableColumn)enumeration.nextElement();
+      cellFrame.width = aColumn.getWidth() + columnMargin;
+      if (index == column) break;
+      cellFrame.x += cellFrame.width;
+      index++;
+    }
+    for (int i=0;i< n.getN2()-1;i++) {
+      TableColumn aColumn = (TableColumn)enumeration.nextElement();
+      cellFrame.width += aColumn.getWidth() + columnMargin;
+    }
+
+    if (!includeSpacing) {
+      Dimension spacing = getIntercellSpacing();
+      cellFrame.setBounds(cellFrame.x +      spacing.width/2,
+                          cellFrame.y +      spacing.height/2,
+                          cellFrame.width -  spacing.width,
+                          cellFrame.height - spacing.height);
+    }
+    return cellFrame;
+  }
+*/
+  public Rectangle getCellRect(int row, int column, boolean includeSpacing) {
+    Rectangle r = new Rectangle();
+    boolean valid = true;
+
+    if (row>=0 &&
+        column>=0 &&
+        row<model.getRowCount() &&
+        column<model.getColumnCount() &&
+        !isVisible(row,column)) {
+      int temp_row    = row;
+      int temp_column = column;
+      row    += getSpan(temp_row,temp_column).getN1();
+      column += getSpan(temp_row,temp_column).getN2();
+    }
+    Pair n = getSpan(row,column);
+
+
+    if (row < 0) {
+        // y = height = 0;
+        valid = false;
+    }
+    else if (row >= getRowCount()) {
+        r.y = getHeight();
+        valid = false;
+    }
+    else {
+        r.height = n.getN1()*getRowHeight(row);
+        r.y = row * getRowHeight(row);
+    }
+
+    if (column < 0) {
+        if( !getComponentOrientation().isLeftToRight() ) {
+            r.x = getWidth();
+        }
+        // otherwise, x = width = 0;
+        valid = false;
+    }
+    else if (column >= getColumnCount()) {
+        if( getComponentOrientation().isLeftToRight() ) {
+            r.x = getWidth();
+        }
+        // otherwise, x = width = 0;
+        valid = false;
+    }
+    else {
+        TableColumnModel cm = getColumnModel();
+        if( getComponentOrientation().isLeftToRight() ) {
+            for(int i = 0; i < column; i++) {
+                r.x += cm.getColumn(i).getWidth();
+            }
+        } else {
+            for(int i = cm.getColumnCount()-1; i > column; i--) {
+                r.x += cm.getColumn(i).getWidth();
+            }
+        }
+
+        r.width = 0;
+        for (int i=column;i< column+n.getN2();i++) {
+          r.width += cm.getColumn(i).getWidth();
+        }
+
+//        r.width = cm.getColumn(column).getWidth();
+    }
+
+    if (valid && !includeSpacing) {
+        int rm = getRowMargin();
+        int cm = getColumnModel().getColumnMargin();
+        // This is not the same as grow(), it rounds differently.
+        r.setBounds(r.x + cm/2, r.y + rm/2, r.width - cm, r.height - rm);
+    }
+
+
+
+    return r;
+  }
+
+
+  /**
+   * Utility method invoked by rowAtPoint.
+   */
+  private Pair rowColumnAtPoint(Point point) {
+    Pair retValue = new Pair(-1,-1);
+    int row = point.y / getRowHeight();
+    if (row<0 || model.getRowCount()<=row)
+      return retValue;
+
+    int column = getColumnModel().getColumnIndexAtX(point.x);
+
+    if (isVisible(row,column)) {
+      retValue.setN1(row);
+      retValue.setN2(column);
+      return retValue;
+    }
+    retValue.setN2(column + getSpan(row,column).getN2());
+    retValue.setN1(row + getSpan(row,column).getN1());
+    return retValue;
+  }
+
+
+  /**
+   * Method overrided to calculate row index according to the cell visibility (that is dependent from the cells span)
+   */
+  public final int rowAtPoint(Point point) {
+    return rowColumnAtPoint(point).getN1();
+  }
+
+
+  /**
+   * Method overrided to calculate column index according to the cell visibility (that is dependent from the cells span)
+   */
+  public final int columnAtPoint(Point point) {
+    return rowColumnAtPoint(point).getN2();
+  }
+
+
+
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class that represent a couple of integers.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class Pair extends Object {
+
+    private int n1;
+    private int n2;
+
+    public Pair(int n1,int n2) {
+      this.n1 = n1;
+      this.n2 = n2;
+    }
+
+
+    public int getN1() {
+      return n1;
+    }
+
+
+    public int getN2() {
+      return n2;
+    }
+
+
+    public void setN1(int n1) {
+      this.n1=n1;
+    }
+
+
+    public void setN2(int n2) {
+      this.n2=n2;
+    }
+
+
+    public final int hashCode() {
+      return n1*n2;
+    }
+
+
+    public boolean equals(Object obj) {
+      return
+          obj!=null &&
+          obj instanceof Pair &&
+          ((Pair)obj).getN1()==n1 &&
+          ((Pair)obj).getN2()==n2;
+    }
+
+
+
+  }
+
 
 
 }

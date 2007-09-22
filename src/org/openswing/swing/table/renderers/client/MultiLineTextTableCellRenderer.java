@@ -125,7 +125,7 @@ public class MultiLineTextTableCellRenderer extends JTextArea implements TableCe
     else {
       c.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
       c.setBorder(BorderFactory.createEmptyBorder());
-      if (((Grid)table).getMode()==Consts.READONLY)
+      if (((Grid)table).getMode()==Consts.READONLY || !((Grid)table).isColorsInReadOnlyMode())
         c.setBackground(gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
       else {
         if (table.isCellEditable(row,column))

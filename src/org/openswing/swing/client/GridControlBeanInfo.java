@@ -17,6 +17,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _autoLoadData = new PropertyDescriptor("autoLoadData", beanClass, "isAutoLoadData", "setAutoLoadData");
+      PropertyDescriptor _colorsInReadOnlyMode = new PropertyDescriptor("colorsInReadOnlyMode", beanClass, "isColorsInReadOnlyMode", "setColorsInReadOnlyMode");
       PropertyDescriptor _copyButton = new PropertyDescriptor("copyButton", beanClass, "getCopyButton", "setCopyButton");
       PropertyDescriptor _defaultQuickFilterCriteria = new PropertyDescriptor("defaultQuickFilterCriteria", beanClass, "getDefaultQuickFilterCriteria", "setDefaultQuickFilterCriteria");
       _defaultQuickFilterCriteria.setPropertyEditorClass(org.openswing.swing.client.QuickFilterCriteriaEditor.class);
@@ -50,6 +51,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _visibleStatusPanel = new PropertyDescriptor("visibleStatusPanel", beanClass, "isVisibleStatusPanel", "setVisibleStatusPanel");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _autoLoadData,
+        _colorsInReadOnlyMode,
         _copyButton,
         _defaultQuickFilterCriteria,
         _deleteButton,
