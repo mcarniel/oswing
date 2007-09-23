@@ -357,6 +357,7 @@ public class LookupController {
 
           },
           new HashMap(),
+          true,
           Grid.MAIN_GRID
       );
 
@@ -498,6 +499,7 @@ public class LookupController {
 
           },
           new HashMap(),
+          true,
           Grid.MAIN_GRID
       );
 
