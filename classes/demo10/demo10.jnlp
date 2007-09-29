@@ -15,7 +15,7 @@
   </security> 
     
     <resources>
-<j2se version="1.4"/> 
+<j2se version="1.4+"/> 
 <jar href="demo10.jar" />
 <jar href="clientos.jar" />
 <jar href="jcalendar.jar" />

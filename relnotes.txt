@@ -1,5 +1,17 @@
 
 
+Release Notes 1.2.7
+-------------------
+
+Final release 1.2.7 available
+
+Fixed problem with attribute editor in grid/form components: sometimes it falls in infinite recursion on ValueObject classes having 
+references to each other in a complex ways.
+Changed jnlp start file for "demo10" sample: now it can be launched for java 1.4 version of more.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.2.6
 -------------------
 

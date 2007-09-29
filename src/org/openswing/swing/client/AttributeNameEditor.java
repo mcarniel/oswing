@@ -15,6 +15,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.Beans;
 import java.util.Enumeration;
+import java.util.HashSet;
 
 
 /**
@@ -73,7 +74,7 @@ public class AttributeNameEditor extends PropertyEditorSupport {
       if (o instanceof ValueObject) {
         try {
           ArrayList attrList = new ArrayList();
-          analyzeClassFields(0,"",attrList,designVOClass);
+          analyzeClassFields(0,"",attrList,designVOClass,new HashSet());
           attributeNames = (String[])attrList.toArray(new String[attrList.size()]);
         }
         catch (Exception ex) {
@@ -91,8 +92,9 @@ public class AttributeNameEditor extends PropertyEditorSupport {
   }
 
 
-  private void analyzeClassFields(int loop,String prefix,ArrayList attributes,Class classType) {
+  private void analyzeClassFields(int loop,String prefix,ArrayList attributes,Class classType,HashSet alreadyAnalyzed) {
     try {
+      alreadyAnalyzed.add(classType);
       BeanInfo  info = Introspector.getBeanInfo(classType);
       // retrieve attribute properties...
       PropertyDescriptor[] props = info.getPropertyDescriptors();
@@ -102,12 +104,14 @@ public class AttributeNameEditor extends PropertyEditorSupport {
             props[i].getReadMethod().getParameterTypes().length==0 &&
             ValueObject.class.isAssignableFrom( props[i].getReadMethod().getReturnType() )
         ) {
-          if (loop<100)
-            analyzeClassFields(loop+1,prefix+props[i].getName()+".",attributes,props[i].getReadMethod().getReturnType());
+          if (loop<100 && !alreadyAnalyzed.contains(props[i].getReadMethod().getReturnType())) {
+            analyzeClassFields(loop+1,prefix+props[i].getName()+".",attributes,props[i].getReadMethod().getReturnType(),alreadyAnalyzed);
+          }
         }
         if (props[i].getReadMethod().getReturnType()!=null &&
             isCompatible(props[i].getReadMethod().getReturnType()) &&
-            !props[i].getName().equals("class"))
+            !props[i].getName().equals("class") &&
+            !alreadyAnalyzed.contains(props[i].getReadMethod().getReturnType()))
           attributes.add(prefix+props[i].getName());
       }
 
