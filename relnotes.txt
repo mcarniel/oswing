@@ -1,5 +1,17 @@
 
 
+Release Notes 1.2.8
+-------------------
+
+Final release 1.2.8 available
+
+Added "validateControl" method in FormController to validate input control editing: by means of this method it is possible
+to undo input control value when the focus is being lost form the input control.
+Changed "demo4" sample to show how to use validateControl method.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.2.7
 -------------------
 

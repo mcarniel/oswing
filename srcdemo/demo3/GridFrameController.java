@@ -246,6 +246,10 @@ public class GridFrameController extends GridController implements GridDataLocat
     if (attributeName.equals("currencyValue") || attributeName.equals("numericValue")) {
       grid.getGrid().getBottomTable().reload();
     }
+    if (attributeName.equals("intValue") && new Integer(0).equals(newValue)) {
+      // zero value not allowed...
+      return false;
+    }
     return true;
   }
 

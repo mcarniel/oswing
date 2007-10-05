@@ -1490,7 +1490,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     }
 
     try {
-      this.model = new VOModel(Class.forName(voClassName),createInnerVO);
+      this.model = new VOModel(Class.forName(voClassName),createInnerVO,this);
     }
     catch (Throwable ex) {
       Logger.error(this.getClass().getName(), "setVOClassName", "Error on setting Form data model:\n"+ex.toString(),null);

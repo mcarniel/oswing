@@ -9,6 +9,7 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import org.openswing.swing.form.client.Form;
 
 
 /**
@@ -62,6 +63,9 @@ public class VOModel {
   /** flag used to define if an inner v.o. must be automatically instantiated when a setter method is invoked */
   private boolean createInnerVO = true;
 
+  /** linked Form */
+  private Form form = null;
+
 
   /**
    * Constructor.
@@ -69,9 +73,10 @@ public class VOModel {
    * @param createInnerVO flag used to define if an inner v.o. must be automatically instantiated when a setter method is invoked
    * @throws java.lang.Exception if an error occours
    */
-  public VOModel(Class valueObjectClass,boolean createInnerVO) throws Exception {
+  public VOModel(Class valueObjectClass,boolean createInnerVO,Form form) throws Exception {
     this.valueObjectClass = valueObjectClass;
     this.createInnerVO = createInnerVO;
+    this.form = form;
 
     // retrieve attribute properties...
     if (Beans.isDesignTime())
@@ -359,12 +364,21 @@ public class VOModel {
               }
             }
 
-          writeMethods[writeMethods.length-1].invoke(obj, new Object[]{value});
-
           if (value==null && oldValue!=null ||
               value!=null && oldValue==null ||
-              value!=null && oldValue!=null && !value.equals(oldValue))
-            fireValueChanged(attributeName,oldValue,value);
+              value!=null && oldValue!=null && !value.equals(oldValue)) {
+            boolean isOk = form.getFormController().validateControl(
+                attributeName,
+                oldValue,
+                value);
+            if (isOk) {
+              writeMethods[writeMethods.length-1].invoke(obj, new Object[]{value});
+              fireValueChanged(attributeName,oldValue,value);
+            }
+            else {
+              form.pull(attributeName);
+            }
+          }
         }
       }
       catch (Exception ex) {

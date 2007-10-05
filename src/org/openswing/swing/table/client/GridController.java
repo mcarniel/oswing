@@ -113,7 +113,7 @@ public class GridController {
 
 
   /**
-   * Callback method invoked each time a cell is edited: this method define if the new value if valid.
+   * Callback method invoked each time a cell is edited: this method define if the new value is valid.
    * This method is invoked ONLY if:
    * - the edited value is not equals to the old value OR it has exmplicitely called setCellAt or setValueAt
    * - the cell is editable

@@ -81,7 +81,7 @@ public class VOListTableModel extends AbstractTableModel {
     this.fieldAdapter = fieldAdapter;
     data = new Vector();
     this.modelListener = modelListener;
-    // ascoltatore di eventi cambiamento modello dati: usato per registrare le righe modificate...
+
     addTableModelListener(new TableModelListener() {
       public void tableChanged(TableModelEvent e) {
         if (mode==Consts.EDIT) {

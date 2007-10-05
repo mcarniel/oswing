@@ -211,4 +211,17 @@ public class FormController {
   public void afterInsertData(Form form) {}
 
 
+  /**
+   * Callback method invoked each time an input control is edited: this method define if the new value if valid.
+   * Default behaviour: input control value is valid.
+   * @param attributeName attribute name related to the input control currently edited
+   * @param oldValue old input control value (before editing)
+   * @param newValue new input control value (just edited)
+   * @return <code>true</code> if input control value is valid, <code>false</code> otherwise
+   */
+  public boolean validateControl(String attributeName,Object oldValue,Object newValue) {
+    return true;
+  }
+
+
 }
