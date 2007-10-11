@@ -141,6 +141,7 @@ public class Column extends JPanel {
   public static final int TYPE_FORMATTED_TEXT = 13;
   public static final int TYPE_MULTI_LINE_TEXT = 14;
   public static final int TYPE_MULTIPLE_TYPE = 15;
+  public static final int TYPE_PROGRESS_BAR = 16;
 
 
   public Column() {
@@ -268,7 +269,7 @@ public class Column extends JPanel {
   /**
    * @return column editing on insert grid mode
    */
-  public final boolean isEditableOnInsert() {
+  public boolean isEditableOnInsert() {
     return editableOnInsert;
   }
 
@@ -285,7 +286,7 @@ public class Column extends JPanel {
   /**
    * @return column editing on edit grid mode
    */
-  public final boolean isEditableOnEdit() {
+  public boolean isEditableOnEdit() {
     return editableOnEdit;
   }
 

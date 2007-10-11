@@ -336,7 +336,8 @@ public class FilterPanel extends JPanel {
         row++;
 
         // (ONLY FOR date/numeric type columns) add an additional filter...
-        if (colProperties[i].getColumnType()==Column.TYPE_INT ||
+        if (colProperties[i].getColumnType()==Column.TYPE_PROGRESS_BAR ||
+            colProperties[i].getColumnType()==Column.TYPE_INT ||
             colProperties[i].getColumnType()==Column.TYPE_DEC ||
             colProperties[i].getColumnType()==Column.TYPE_PERC ||
             colProperties[i].getColumnType()==Column.TYPE_CURRENCY ||
@@ -501,6 +502,19 @@ public class FilterPanel extends JPanel {
         result=num;
       }
       ;break;
+      case Column.TYPE_PROGRESS_BAR : {
+        NumericControl num = new NumericControl();
+        if (colProperties!=null) {
+          try {
+            num.setMaxValue(((ProgressBarColumn)colProperties).getMaxValue());
+            num.setMinValue(((ProgressBarColumn)colProperties).getMinValue());
+          } catch (ClassCastException ex) {
+            Logger.error(this.getClass().getName(),"createValueComponent","Error while creating an input control for the filter",ex);
+          }
+        }
+        result=num;
+      }
+      ;break;
       case Column.TYPE_CURRENCY: {
         CurrencyControl num = new CurrencyControl();
         if (colProperties!=null) {
@@ -611,6 +625,10 @@ public class FilterPanel extends JPanel {
         ((NumericControl)result).setValue(initValue==null?null:new Double(initValue.toString()));
       }
       ;break;
+      case Column.TYPE_PROGRESS_BAR: {
+        ((NumericControl)result).setValue(initValue==null?null:new Double(initValue.toString()));
+      }
+      ;break;
       case Column.TYPE_CURRENCY: {
         ((CurrencyControl)result).setValue(initValue==null?null:new Double(initValue.toString()));
       }
@@ -663,6 +681,9 @@ public class FilterPanel extends JPanel {
       }
       case Column.TYPE_DEC :
       case Column.TYPE_PERC: {
+        return ((NumericControl)result).getValue();
+      }
+      case Column.TYPE_PROGRESS_BAR: {
         return ((NumericControl)result).getValue();
       }
       case Column.TYPE_CURRENCY: {

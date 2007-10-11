@@ -27,6 +27,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import org.openswing.swing.table.renderers.client.MultiLineTextTableCellRenderer;
 import org.openswing.swing.table.editors.client.MultipleTypeCellEditor;
+import org.openswing.swing.internationalization.java.Resources;
 
 
 /**
@@ -373,13 +374,40 @@ public class VOListAdapter {
         );
       }
       else if ( colProperties[colIndex].getColumnType()==Column.TYPE_DATE) {
-        return new DateTableCellRenderer(Column.TYPE_DATE,tableContainer,colProperties[colIndex].getTextAlignment());
+        return new DateTableCellRenderer(
+          Column.TYPE_DATE,
+          tableContainer,
+          colProperties[colIndex].getTextAlignment(),
+          ((DateColumn)colProperties[colIndex]).getSeparator(),
+          ((DateColumn)colProperties[colIndex]).getFormat(),
+          ((DateColumn)colProperties[colIndex]).getDateListeners(),
+          ((DateColumn)colProperties[colIndex]).isShowCentury(),
+          Resources.HH_MM
+        );
       }
       else if ( colProperties[colIndex].getColumnType()==Column.TYPE_DATE_TIME) {
-        return new DateTableCellRenderer(Column.TYPE_DATE_TIME,tableContainer,colProperties[colIndex].getTextAlignment());
+        return new DateTableCellRenderer(
+          Column.TYPE_DATE_TIME,
+          tableContainer,
+          colProperties[colIndex].getTextAlignment(),
+          ((DateTimeColumn)colProperties[colIndex]).getSeparator(),
+          ((DateTimeColumn)colProperties[colIndex]).getFormat(),
+          ((DateTimeColumn)colProperties[colIndex]).getDateListeners(),
+          ((DateTimeColumn)colProperties[colIndex]).isShowCentury(),
+          ((DateTimeColumn)colProperties[colIndex]).getTimeFormat()
+        );
       }
       else if ( colProperties[colIndex].getColumnType()==Column.TYPE_TIME) {
-        return new DateTableCellRenderer(Column.TYPE_TIME,tableContainer,colProperties[colIndex].getTextAlignment());
+        return new DateTableCellRenderer(
+          Column.TYPE_TIME,
+          tableContainer,
+          colProperties[colIndex].getTextAlignment(),
+          '/',
+          Resources.DMY,
+          ((TimeColumn)colProperties[colIndex]).getDateListeners(),
+          true,
+          ((TimeColumn)colProperties[colIndex]).getTimeFormat()
+        );
       }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_TEXT) {
         return new TextTableCellRenderer(
@@ -454,6 +482,16 @@ public class VOListAdapter {
         return new ImageTableCellRenderer(
           tableContainer,
           colProperties[colIndex].getTextAlignment()
+        );
+      }
+      else if ( colProperties[colIndex].getColumnType()==Column.TYPE_PROGRESS_BAR) {
+        return new ProgressBarTableCellRenderer(
+          tableContainer,
+          ((ProgressBarColumn)colProperties[colIndex]).getColoredBands(),
+          ((ProgressBarColumn)colProperties[colIndex]).getMinValue(),
+          ((ProgressBarColumn)colProperties[colIndex]).getMaxValue(),
+          ((ProgressBarColumn)colProperties[colIndex]).isShowAllBands(),
+          ((ProgressBarColumn)colProperties[colIndex]).getColor()
         );
       }
       else {
@@ -620,6 +658,13 @@ public class VOListAdapter {
           ((ImageColumn)colProperties[colIndex]).isShowButton(),
           ((ImageColumn)colProperties[colIndex]).getFileFilter(),
           ((ImageColumn)colProperties[colIndex]).getListeners()
+        );
+      }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_PROGRESS_BAR) {
+        // text
+        return new TextCellEditor(
+            0,
+            false
         );
       }
       else {

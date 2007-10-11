@@ -70,10 +70,19 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
    * @param type column type; possibile values: Column.TYPE_DATE, Column.TYPE_DATE_TIME, Column.TYPE_TIME
    * @param gridController grid controller
    */
-  public DateTableCellRenderer(int type,GridController gridController,int alignement) {
+  public DateTableCellRenderer(
+      int type,
+      GridController gridController,
+      int alignement,
+      char separator,
+      int dateFormat,
+      ArrayList dateListeners,
+      boolean showCentury,
+      String timeFormat
+  ) {
     this.type = type;
     this.gridController = gridController;
-    this.dateFormat = ClientSettings.getInstance().getResources().getDateMask(type);
+    this.dateFormat = ClientSettings.getInstance().getResources().getDateMask(type,dateFormat,separator,showCentury,timeFormat);
     this.alignement = alignement;
   }
 

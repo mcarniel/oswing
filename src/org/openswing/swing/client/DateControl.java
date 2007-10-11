@@ -77,37 +77,20 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   /** date format */
   private SimpleDateFormat sdf = null;
 
-  /** calendar button */
-  private JButton buttonChooser;
-
-  /** dialog window which contains the calendar (for Windows OS) */
-  private Container menu = null;
-
-  private JDialog menuW = new JDialog(ClientUtils.getParentFrame(this));
-
-  /** popup window which contains the calendar (for no Windows OS) */
-  private JPopupMenu menuNW = new JPopupMenu();
-
-  /** flag used to set popup menu visibility */
-  private boolean menuIsVisible = false;
-
   /** possibile values: Consts.TYPE_DATE, Consts.TYPE_TIME, Consts.TYPE_DATE_TIME */
   private int dateType;
 
   /** possibile values: Resources.HH_MM or Resources.H_MM_AAA */
   private String timeFormat = null;
 
-  /** calendar */
-  private JCalendar calendar = new JCalendar();
-
-  /** flag used to indicate that the user has selected a month from the calendar */
-  private boolean monthSelected = false;
-
   /** date changed listeners */
   private ArrayList dateListeners = new ArrayList();
 
-  /** flag used in property listener to avoid date setting when pre-set the initial value */
-  private boolean skipDateSetting = false;
+  /** calendar */
+  private JDateChooser calendar = new JDateChooser(date);
+
+  /** flag used in setDate to identify whre the date setting event has been fired */
+  private boolean eventFiredByCalendar = false;
 
 
   public DateControl() {
@@ -152,32 +135,19 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
       try {
         setOpaque(false);
 
-        // patch inserted for Linux OS where the calendar dialog is not correctly showed to front...
-        if (System.getProperty("os.name").startsWith("Windows")) {
-          menu = menuW;
-          ((JDialog)menu).setUndecorated(true);
-          ((JDialog)menu).getContentPane().setLayout(new BorderLayout());
-          ((JDialog)menu).getContentPane().add(calendar,BorderLayout.CENTER);
-        }
-        else {
-          menu = menuNW;
-          menu.add(calendar);
-        }
+        calendar.setDateFormatString(sdf.toPattern());
+        calendar.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.CALENDAR)));
+        calendar.updateUI();
+        calendar.getJCalendar().setDecorationBordersVisible(true);
+        calendar.getJCalendar().getDayChooser().setDecorationBordersVisible(true);
+        calendar.getJCalendar().getDayChooser().setDayBordersVisible(true);
 
-        Icon icon = new ImageIcon(ClientUtils.getImage(ClientSettings.CALENDAR));
-        buttonChooser = new JButton(icon);
-        buttonChooser.setPreferredSize(new Dimension(icon.getIconWidth()+6,date.getPreferredSize().height));
-        buttonChooser.setMaximumSize(new Dimension(icon.getIconWidth()+6,date.getPreferredSize().height));
-        buttonChooser.setMinimumSize(new Dimension(icon.getIconWidth()+6,date.getPreferredSize().height));
-//      add("East",buttonChooser);
 
         this.setLayout(new GridBagLayout());
-
-        if (Beans.isDesignTime())
-          this.add(new JTextField(" __ /  __ / __ "), new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        else
-          this.add(date, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        this.add(buttonChooser, new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+//        if (Beans.isDesignTime())
+//          this.add(new JTextField(" __ /  __ / __ "), new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+//        else
+          this.add(calendar, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
         if (Beans.isDesignTime())
           return;
@@ -194,102 +164,12 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
         date.addFocusListener(this);
 
         setMinimumSize(new Dimension(
-          date.getFontMetrics(date.getFont()).stringWidth("0000000000")+this.buttonChooser.getPreferredSize().width,
+          date.getFontMetrics(calendar.getFont()).stringWidth("0000000000"),
           date.getPreferredSize().height
         ));
 
 
-        ApplicationEventQueue.getInstance().addKeyListener(new KeyAdapter() {
-          public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode()==e.VK_ESCAPE && e.getSource() instanceof JComponent) {
-              Container c = ((JComponent)e.getSource()).getParent();
-              while(c.getParent()!=null && !c.equals(menu))
-                c = c.getParent();
-              if (c.equals(menu)) {
-                menuIsVisible = false;
-                menu.setVisible(false);
-              }
-            }
-          }
-        });
-
-        calendar.setBorder(BorderFactory.createLineBorder(Color.black));
-        menu.setSize(calendar.getPreferredSize().width+30,calendar.getPreferredSize().height+20);
         calendar.setLocale(new Locale(ClientSettings.getInstance().getResources().getLanguageId()));
-
-        calendar.getDayChooser().addPropertyChangeListener(new PropertyChangeListener() {
-          public void propertyChange(PropertyChangeEvent evt) {
-            if (skipDateSetting) {
-              return;
-            }
-            if (Beans.isDesignTime())
-              return;
-
-            if (menuIsVisible) {
-              menuIsVisible = false;
-              setDate(calendar.getCalendar().getTime());
-              calendar.transferFocus();
-              menu.setVisible(false);
-            }
-
-          }
-        });
-
-
-        buttonChooser.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent evt) {
-
-            if (menuIsVisible) {
-              menuIsVisible = false;
-              menu.setVisible(false);
-            }
-            else {
-              Container c = DateControl.this;
-              int x = (int)c.getLocation().getX();
-              int y = (int)c.getLocation().getY();
-              while(c.getParent()!=null) {
-                c = c.getParent();
-                x += (int)c.getLocation().getX();
-                y += (int)c.getLocation().getY();
-              }
-
-              if (currentDate != null) {
-                calendar.setCalendar(currentDate);
-              }
-
-              menu.setLocation(
-                x,
-                y+buttonChooser.getY() + buttonChooser.getHeight()
-              );
-
-              menu.setVisible(true);
-              menuIsVisible = true;
-            }
-
-            monthSelected = false;
-
-          }
-
-        });
-
-        calendar.getMonthChooser().addPropertyChangeListener(new PropertyChangeListener() {
-          public void propertyChange(PropertyChangeEvent evt) {
-            if (menuIsVisible) {
-              monthSelected = true;
-            }
-          }
-        });
-
-        buttonChooser.addFocusListener(new FocusAdapter() {
-          public void focusGained(FocusEvent e) {
-            if (menuIsVisible && !monthSelected) {
-              menu.setVisible(false);
-              menuIsVisible = false;
-            }
-            if (monthSelected)
-              monthSelected = false;
-          }
-        });
 
         initListeners();
       }
@@ -415,9 +295,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
         this.currentDate.set(Calendar.MILLISECOND,0);
       }
 
-      skipDateSetting = true;
-      this.calendar.setCalendar(currentDate);
-      skipDateSetting = false;
+      if (!eventFiredByCalendar)
+        this.calendar.setCalendar(currentDate);
     }
     this.date.setText(buildText());
 
@@ -452,6 +331,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    */
   public final void setUpperLimit(Date upperLimit) {
     this.upperLimit = upperLimit;
+    if (!eventFiredByCalendar)
+      calendar.setMaxSelectableDate(upperLimit);
     if(currentDate != null)
       refresh();
   }
@@ -471,6 +352,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    */
   public final void setLowerLimit(Date lowerLimit) {
     this.lowerLimit = lowerLimit;
+    if (!eventFiredByCalendar)
+      calendar.setMinSelectableDate(lowerLimit);
     if(currentDate != null)
       refresh();
   }
@@ -534,9 +417,9 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   public void setEnabled(boolean enabled) {
     date.setEnabled(true); // otherwise the disabled text is not selectable...
     date.setEditable(enabled);
-    buttonChooser.setEnabled(enabled);
+    calendar.setEnabled(enabled);
     date.setFocusable(enabled);
-    buttonChooser.setFocusable(enabled);
+    calendar.setFocusable(enabled);
   }
 
 
@@ -587,11 +470,6 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    * Invoked when a component gains the keyboard focus.
    */
   public void focusGained(FocusEvent e) {
-    if (menuIsVisible) {
-      menu.setVisible(false);
-      menuIsVisible = false;
-    }
-
     if (currentDate==null)
       refresh();
 //    date.select(0,date.getText().length());
@@ -1044,24 +922,95 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   }
 
 
-}
 
 
-/**
- * <p>Title: OpenSwing Framework</p>
- * <p>Description: Inner class used to redirect key event to the inner JTextField.</p>
- * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
- * @author Mauro Carniel
- * @version 1.0
- */
-class DateBox extends JTextField {
 
-  public DateBox(int cols) {
-    super(cols);
-  }
+
+
+
+
+
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used to redirect key event to the inner JTextField.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class DateBox extends JTextField implements IDateEditor {
+
+    public DateBox(int cols) {
+      super(cols);
+    }
+
 
     public void processKeyEvent(KeyEvent e) {
       super.processKeyEvent(e);
     }
+
+
+    public Date getDate() {
+      return DateControl.this.getDate();
+    }
+
+
+    public void setDate(Date date) {
+      eventFiredByCalendar = true;
+      DateControl.this.setDate(date);
+      eventFiredByCalendar = false;
+    }
+
+
+    public void setDateFormatString(String dateFormatString) {
+      if (dateFormatString!=null)
+        DateControl.this.sdf = new SimpleDateFormat(dateFormatString);
+    }
+
+
+    public String getDateFormatString() {
+      return DateControl.this.sdf.toPattern();
+    }
+
+
+    public void setSelectableDateRange(Date min, Date max) {
+      eventFiredByCalendar = true;
+      setLowerLimit(min);
+      setUpperLimit(max);
+      eventFiredByCalendar = false;
+    }
+
+
+    public Date getMaxSelectableDate() {
+      return getUpperLimit();
+    }
+
+
+    public Date getMinSelectableDate() {
+      return getLowerLimit();
+    }
+
+
+    public void setMaxSelectableDate(Date max) {
+      eventFiredByCalendar = true;
+      setUpperLimit(max);
+      eventFiredByCalendar = false;
+    }
+
+
+    public void setMinSelectableDate(Date min) {
+      eventFiredByCalendar = true;
+      setLowerLimit(min);
+      eventFiredByCalendar = false;
+    }
+
+
+    public JComponent getUiComponent() {
+      return this;
+    }
+
+  } // end inner class
+
 
 }

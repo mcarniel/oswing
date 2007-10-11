@@ -149,6 +149,14 @@ public class ProgressBar extends JPanel {
 
 
   /**
+   * @return currentValue current value (between minValue and maxValue) showed in the bar inside this panel.
+   */
+  public final double getValue() {
+    return currentValue;
+  }
+
+
+  /**
    * @return maximum value allowed in the progress bar
    */
   public final double getMaxValue() {

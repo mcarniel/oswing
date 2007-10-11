@@ -1,5 +1,19 @@
 
 
+Release Notes 1.2.9
+-------------------
+
+Final release 1.2.9 available
+
+Added a progress bar control and a progress bar column. 
+Added "demo25" sample app to show how to use these new components.
+Added several properties to DateColumn, DateTimeColumn and TimeColumn, so that it is possible to set date format and other aspects of that columns. 
+Fixed a problem on selecting the (already) selected date in the calendar.
+Fixed problem in grid control when selecting a row with the mouse after scrolling grid using the vertical scrollbar.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.2.8
 -------------------
 

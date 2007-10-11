@@ -36,6 +36,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import javax.swing.plaf.UIResource;
+import java.awt.Rectangle;
 
 
 /**
@@ -1280,7 +1281,7 @@ public class Grid extends JTable
     Integer[] aux = new Integer[colProps.length];
     for(int i=0;i<colProps.length;i++)
       if (!colProps[i].getSortVersus().equals(Consts.NO_SORTED))
-        aux[colProps[i].getSortingOrder()] = new Integer(i);
+        aux[colProps[i].getSortingOrder()>=aux.length?aux.length-1:colProps[i].getSortingOrder()] = new Integer(i);
 
     grids.getCurrentSortedColumns().clear();
     grids.getCurrentSortedVersusColumns().clear();
@@ -1695,7 +1696,22 @@ public class Grid extends JTable
    */
   public void columnSelectionChanged(ListSelectionEvent e) {
     super.columnSelectionChanged(e);
-    ensureRowIsVisible(getSelectedRow());
+
+    Rectangle r = this.getVisibleRect();
+    int row = getSelectedRow();
+    try {
+      if (this.rowAtPoint(new Point(r.x, r.y)) > row) {
+        row = this.rowAtPoint(new Point(r.x, r.y + r.height));
+        setRowSelectionInterval(row, row);
+      }
+      else if (this.rowAtPoint(new Point(r.x, r.y + r.height)) < row) {
+        row = this.rowAtPoint(new Point(r.x, r.y));
+        setRowSelectionInterval(row, row);
+      }
+    }
+    catch (Exception ex) {
+    }
+    ensureRowIsVisible(row);
 
     revalidate();
     repaint();

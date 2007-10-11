@@ -140,6 +140,7 @@
     </copy>
 
 
+    <signjar jar="${classes}/demo10/looks-2.0.1.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <signjar jar="${classes}/demo10/demo10.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <signjar jar="${webapps}/demo10/hsqldb.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <signjar jar="${webapps}/demo10/poi-2.0-RC2-20040102.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />

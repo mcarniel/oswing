@@ -1156,6 +1156,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       if (list!=null)
         for(int i=0;i<list.size();i++) {
           comp = (InputControl)list.get(i);
+          if (comp instanceof ProgressBarControl)
+            continue;
           if (comp instanceof FormattedTextControl &&
               !((FormattedTextControl)comp).isEditValid()) {
             // input control is a formatted text control and its context is invalid...
@@ -1212,6 +1214,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       if (list!=null)
         for(int i=0;i<list.size();i++) {
           comp = (InputControl)list.get(i);
+          if (comp instanceof ProgressBarControl)
+            continue;
           try {
             model.setValue(comp.getAttributeName(), comp.getValue());
           }

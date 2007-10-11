@@ -1,4 +1,4 @@
-package org.openswing.swing.client;
+package org.openswing.swing.table.columns.client;
 
 import java.beans.*;
 
@@ -11,20 +11,28 @@ import java.beans.*;
  * @version 1.0
  */
 
-public class PasswordControlBeanInfo extends SimpleBeanInfo {
-  Class beanClass = PasswordControl.class;
-  String iconColor16x16Filename = "PasswordControl16.gif";
-  String iconColor32x32Filename = "PasswordControl.gif";
-  String iconMono16x16Filename = "PasswordControl16.gif";
-  String iconMono32x32Filename = "PasswordControl.gif";
+public class ProgressBarColumnBeanInfo extends SimpleBeanInfo {
+  Class beanClass = ProgressBarColumn.class;
+  private String iconColor16x16Filename = "ProgressBarColumn16.gif";
+  private String iconColor32x32Filename = "ProgressBarColumn.gif";
+  private String iconMono16x16Filename = "ProgressBarColumn16.gif";
+  private String iconMono32x32Filename = "ProgressBarColumn.gif";
 
-  public PasswordControlBeanInfo() {
+  public ProgressBarColumnBeanInfo() {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
-      PropertyDescriptor _encryptText = new PropertyDescriptor("encryptText", beanClass, null, null);
+      PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
+      _columnName.setPropertyEditorClass(org.openswing.swing.client.NumericAttributeNameEditor.class);
+      PropertyDescriptor _color = new PropertyDescriptor("color", beanClass, "getColor", "setColor");
+      PropertyDescriptor _maxValue = new PropertyDescriptor("maxValue", beanClass, "getMaxValue", "setMaxValue");
+      PropertyDescriptor _minValue = new PropertyDescriptor("minValue", beanClass, "getMinValue", "setMinValue");
+      PropertyDescriptor _showAllBands = new PropertyDescriptor("showAllBands", beanClass, "isShowAllBands", "setShowAllBands");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
-        _encryptText};
+        _color,
+        _maxValue,
+        _minValue,
+        _showAllBands};
       return pds;
     }
     catch(IntrospectionException ex) {

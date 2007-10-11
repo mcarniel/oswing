@@ -353,6 +353,26 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
           result=num;
         }
         ;break;
+        case Column.TYPE_PROGRESS_BAR: {
+          NumericControl num = new NumericControl();
+          num.setPreferredSize(new Dimension(100, 20));
+          num.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+              valueKeyPressed(e);
+            }
+          } );
+          if (colProperties!=null) { // if there exists some column properties, then use it...
+            try {
+              num.setMaxValue(((ProgressBarColumn)colProperties).getMaxValue());
+              num.setMinValue(((ProgressBarColumn)colProperties).getMinValue());
+            } catch (ClassCastException ex) {
+              Logger.error(this.getClass().getName(),"QuickFilterPanel","Error while creating input field of type decimal",ex);
+            }
+          }
+          num.setText(initValue==null?null:initValue.toString());
+          result=num;
+        }
+        ;break;
         case Column.TYPE_CURRENCY: {
           CurrencyControl num = new CurrencyControl();
           num.addKeyListener(new KeyAdapter() {
@@ -624,6 +644,11 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         ;break;
         case Column.TYPE_DEC :
         case Column.TYPE_PERC:
+        {
+          result = (BigDecimal) ((NumericControl)value).getValue();
+        }
+        ;break;
+        case Column.TYPE_PROGRESS_BAR:
         {
           result = (BigDecimal) ((NumericControl)value).getValue();
         }

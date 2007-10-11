@@ -1,6 +1,11 @@
 package org.openswing.swing.table.columns.client;
 
 import javax.swing.SwingConstants;
+import java.util.ArrayList;
+import java.util.Date;
+import org.openswing.swing.client.DateChangedListener;
+import org.openswing.swing.internationalization.java.Resources;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -34,6 +39,24 @@ import javax.swing.SwingConstants;
  */
 public class DateColumn extends Column {
 
+  /** separator */
+  private char separator = '/';
+
+  /** date format; possible values:  Resources.YMD, Resources.DMY, Resources.MDY, Resources.YDM */
+  private int dateFormat;
+
+  /** date changed listeners */
+  private ArrayList dateListeners = new ArrayList();
+
+  /** maximum allowed date*/
+  private Date upperLimit = null;
+
+  /** minimum allowed date*/
+  private Date lowerLimit = null;
+
+  /** flag used to show century */
+  private boolean showCentury = true;
+
 
   public DateColumn() {
     setTextAlignment(SwingConstants.CENTER);
@@ -45,6 +68,117 @@ public class DateColumn extends Column {
    */
   public int getColumnType() {
     return TYPE_DATE;
+  }
+
+
+  /**
+   * Add a date changed listener.
+   */
+  public final void addDateChangedListener(DateChangedListener listener) {
+    dateListeners.add(listener);
+  }
+
+
+  /**
+   * Remove a date changed listener.
+   */
+  public final void removeDateChangedListener(DateChangedListener listener) {
+    dateListeners.remove(listener);
+  }
+
+
+  /**
+   * Set date format.
+   * @param dateFormat; possible values:  Resources.YMD, Resources.DMY, Resources.MDY, Resources.YDM
+   */
+  public final void setFormat(int dateFormat) {
+    if(dateFormat < 0 || dateFormat > 3)
+      dateFormat = Resources.YMD;
+    this.dateFormat = dateFormat;
+  }
+
+
+  /**
+   * @return date format; possible values:  YMD, DMY, MDY, YDM
+   */
+  public final int getFormat() {
+      return dateFormat;
+  }
+
+
+  /**
+   * Set maximum allowed date.
+   * @param upperLimit maximum allowed date
+   */
+  public final void setUpperLimit(Date upperLimit) {
+    this.upperLimit = upperLimit;
+  }
+
+
+  /**
+   * @return minimum allowed date
+   */
+  public final Date getUpperLimit() {
+    return upperLimit;
+  }
+
+
+  /**
+   * Set minimum allowed date.
+   * @param lowerLimit minimum allowed date
+   */
+  public final void setLowerLimit(Date lowerLimit) {
+    this.lowerLimit = lowerLimit;
+  }
+
+
+  /**
+   * @return minimum allowed date
+   */
+  public final Date getLowerLimit() {
+    return lowerLimit;
+  }
+
+
+  /**
+   * Set separator.
+   * @param separator separator character
+   */
+  public final void setSeparator(char separator) {
+    if(Character.isLetterOrDigit(separator) || separator == ' ')
+      return;
+    this.separator = separator;
+  }
+
+
+  /**
+   * @return separator
+   */
+  public final char getSeparator() {
+    return separator;
+  }
+
+
+  /**
+   * @return show century
+   */
+  public final boolean isShowCentury() {
+    return showCentury;
+  }
+
+
+  /**
+   * Used to show century.
+   * @param showCentury show century
+   */
+  public final void setShowCentury(boolean showCentury) {
+    this.showCentury = showCentury;
+    setFormat(dateFormat);
+  }
+
+
+  public final ArrayList getDateListeners() {
+    return dateListeners;
   }
 
 

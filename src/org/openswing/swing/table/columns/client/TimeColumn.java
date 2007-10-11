@@ -1,6 +1,8 @@
 package org.openswing.swing.table.columns.client;
 
 import javax.swing.SwingConstants;
+import org.openswing.swing.client.DateChangedListener;
+import java.util.ArrayList;
 
 
 /**
@@ -34,6 +36,13 @@ import javax.swing.SwingConstants;
  */
 public class TimeColumn extends Column {
 
+  /** possibile values: Resources.HH_MM or Resources.H_MM_AAA */
+  private String timeFormat = null;
+
+  /** date changed listeners */
+  private ArrayList dateListeners = new ArrayList();
+
+
   public TimeColumn() {
     setTextAlignment(SwingConstants.CENTER);
   }
@@ -46,6 +55,43 @@ public class TimeColumn extends Column {
     return TYPE_TIME;
   }
 
+
+  /**
+   * Add a date changed listener.
+   */
+  public final void addDateChangedListener(DateChangedListener listener) {
+    dateListeners.add(listener);
+  }
+
+
+  /**
+   * Remove a date changed listener.
+   */
+  public final void removeDateChangedListener(DateChangedListener listener) {
+    dateListeners.remove(listener);
+  }
+
+
+  public final ArrayList getDateListeners() {
+    return dateListeners;
+  }
+
+
+  /**
+   * @return possibile values: Resources.HH_MM or Resources.H_MM_AAA
+   */
+  public final String getTimeFormat() {
+    return timeFormat;
+  }
+
+
+  /**
+   * Set the time format.
+   * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA
+   */
+  public final void setTimeFormat(String timeFormat) {
+    this.timeFormat = timeFormat;
+  }
 
 
 }
