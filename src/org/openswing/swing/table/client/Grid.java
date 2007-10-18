@@ -1701,10 +1701,10 @@ public class Grid extends JTable
     int row = getSelectedRow();
     try {
       if (this.rowAtPoint(new Point(r.x, r.y)) > row) {
-        row = this.rowAtPoint(new Point(r.x, r.y + r.height));
+        row = this.rowAtPoint(new Point(r.x, r.y + r.height-1));
         setRowSelectionInterval(row, row);
       }
-      else if (this.rowAtPoint(new Point(r.x, r.y + r.height)) < row) {
+      else if (this.rowAtPoint(new Point(r.x, r.y + r.height-1)) < row) {
         row = this.rowAtPoint(new Point(r.x, r.y));
         setRowSelectionInterval(row, row);
       }

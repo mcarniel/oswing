@@ -156,3 +156,9 @@ Java-Bean: True
 
 Name: org/openswing/swing/client/ProgressBarControl.class
 Java-Bean: True
+
+Name: org/openswing/swing/client/ComboBoxVOControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/ComboVOColumn.class
+Java-Bean: True

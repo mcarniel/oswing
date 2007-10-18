@@ -142,6 +142,7 @@ public class Column extends JPanel {
   public static final int TYPE_MULTI_LINE_TEXT = 14;
   public static final int TYPE_MULTIPLE_TYPE = 15;
   public static final int TYPE_PROGRESS_BAR = 16;
+  public static final int TYPE_COMBO_VO = 17;
 
 
   public Column() {

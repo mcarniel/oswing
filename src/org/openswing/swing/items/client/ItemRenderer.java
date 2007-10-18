@@ -1,0 +1,175 @@
+package org.openswing.swing.items.client;
+
+import javax.swing.*;
+import java.io.Serializable;
+import javax.swing.border.*;
+import java.awt.Dimension;
+import java.awt.Component;
+import org.openswing.swing.table.columns.client.Column;
+import java.util.Hashtable;
+import java.awt.Graphics;
+import java.lang.reflect.Method;
+import java.awt.Color;
+import org.openswing.swing.table.columns.client.*;
+import java.text.SimpleDateFormat;
+import org.openswing.swing.util.client.ClientSettings;
+import org.openswing.swing.util.java.Consts;
+
+
+/**
+ * <p>Title: OpenSwing Framework</p>
+ * <p>Description: Renderer for a ComboBoxVOControl or ListVOControl.</p>
+ * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+ *
+ * <p> This file is part of OpenSwing Framework.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the (LGPL) Lesser General Public
+ * License as published by the Free Software Foundation;
+ *
+ *                GNU LESSER GENERAL PUBLIC LICENSE
+ *                 Version 2.1, February 1999
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *       The author may be contacted at:
+ *           maurocarniel@tin.it</p>
+ *
+ * @author Mauro Carniel
+ * @version 1.0
+ */
+public class ItemRenderer extends JPanel implements ListCellRenderer, Serializable {
+
+    protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
+
+    /** columns associated to lookup grid */
+    private Column[] colProperties = null;
+
+    /** collection of pairs <v.o. attribute name,Method object, related to the attribute getter method> */
+    private Hashtable getters = new Hashtable();
+
+    /** current vo */
+    private Object vo = null;
+
+    private SimpleDateFormat sdf = null;
+
+
+    public ItemRenderer() {
+      super();
+      setOpaque(true);
+      setBorder(noFocusBorder);
+      sdf = new SimpleDateFormat(ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE));
+    }
+
+
+    public void init(Hashtable getters,Column[] colProperties) {
+        this.getters = getters;
+        this.colProperties = colProperties;
+    }
+
+
+    public Component getListCellRendererComponent(
+                                                 JList list,
+                                                 Object value,
+                                                 int index,
+                                                 boolean isSelected,
+                                                 boolean cellHasFocus)
+    {
+        if (isSelected) {
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
+        }
+        else {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+        }
+
+        setFont(list.getFont());
+        this.vo = value;
+        repaint();
+        return this;
+    }
+
+
+    public Dimension getPreferredSize() {
+      Dimension size = new JLabel(" ").getPreferredSize();
+      if (colProperties!=null) {
+        int width = 0;
+        for(int i=0;i<colProperties.length;i++) {
+          if (colProperties[i].isColumnVisible())
+            width += colProperties[i].getPreferredWidth() + 6;
+        }
+        size = new Dimension(width,(int)size.getHeight());
+      }
+      return size;
+    }
+
+
+    public void paint(Graphics g) {
+      super.paint(g);
+
+      if (vo!=null && getters!=null && colProperties!=null) {
+        int x = 0;
+        Object val = null;
+        String valS = null;
+        Color col = g.getColor();
+        Color col2 = Color.gray;
+        for(int i=0;i<colProperties.length;i++) {
+          if (colProperties[i].isColumnVisible()) {
+            try {
+              val = ( (Method) getters.get(colProperties[i].getColumnName())).invoke(vo, new Object[0]);
+              if (val!=null) {
+                if (colProperties[i] instanceof DateColumn) {
+                  valS = sdf.format((java.util.Date)val);
+                }
+                else
+                  valS = val.toString();
+              }
+              else
+                valS = null;
+              if (x != 0) {
+                g.setColor(col2);
+                g.drawLine(x - 3, 0, x - 3, getHeight());
+              }
+              if (valS != null) {
+                g.setColor(col);
+                g.drawString(valS, x, getHeight()-g.getFontMetrics().getDescent());
+              }
+              x += colProperties[i].getPreferredWidth() + 6;
+            }
+            catch (Exception ex) {
+            }
+          }
+        }
+        g.setColor(col);
+      }
+
+    }
+
+
+    /**
+     * A subclass of ItemRenderer that implements UIResource.
+     * ItemRenderer doesn't implement UIResource
+     * directly so that applications can safely override the
+     * cellRenderer property with ItemRenderer subclasses.
+     * <p>
+     * <strong>Warning:</strong>
+     * Serialized objects of this class will not be compatible with
+     * future Swing releases. The current serialization support is
+     * appropriate for short term storage or RMI between applications running
+     * the same version of Swing.  As of 1.4, support for long term storage
+     * of all JavaBeans<sup><font size="-2">TM</font></sup>
+     * has been added to the <code>java.beans</code> package.
+     * Please see {@link java.beans.XMLEncoder}.
+     */
+    public static class UIResource extends ItemRenderer implements javax.swing.plaf.UIResource {
+    }
+}
+
+

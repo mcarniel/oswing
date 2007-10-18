@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import org.openswing.swing.client.DateChangedListener;
 import org.openswing.swing.internationalization.java.Resources;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -62,6 +63,12 @@ public class DateTimeColumn extends Column {
 
   public DateTimeColumn() {
     setTextAlignment(SwingConstants.CENTER);
+    try {
+      dateFormat = ClientSettings.getInstance().getResources().getDateFormat();
+      timeFormat = ClientSettings.getInstance().getResources().getTimeFormat();
+    }
+    catch (Exception ex) {
+    }
   }
 
 

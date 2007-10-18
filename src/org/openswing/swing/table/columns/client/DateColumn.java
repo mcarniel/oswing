@@ -60,7 +60,12 @@ public class DateColumn extends Column {
 
   public DateColumn() {
     setTextAlignment(SwingConstants.CENTER);
-  }
+    try {
+      dateFormat = ClientSettings.getInstance().getResources().getDateFormat();
+    }
+    catch (Exception ex) {
+    }
+ }
 
 
   /**

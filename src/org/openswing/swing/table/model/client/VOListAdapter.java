@@ -28,6 +28,8 @@ import java.util.HashSet;
 import org.openswing.swing.table.renderers.client.MultiLineTextTableCellRenderer;
 import org.openswing.swing.table.editors.client.MultipleTypeCellEditor;
 import org.openswing.swing.internationalization.java.Resources;
+import org.openswing.swing.table.renderers.client.ComboVOTableCellRenderer;
+import org.openswing.swing.table.columns.client.ComboVOColumn;
 
 
 /**
@@ -494,6 +496,18 @@ public class VOListAdapter {
           ((ProgressBarColumn)colProperties[colIndex]).getColor()
         );
       }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_COMBO_VO) {
+        return new ComboVOTableCellRenderer(
+            ((ComboVOColumn)colProperties[colIndex]).getComboDataLocator(),
+            ((ComboVOColumn)colProperties[colIndex]).getColumnName(),
+            ((ComboVOColumn)colProperties[colIndex]).getItemsVO(),
+            ((ComboVOColumn)colProperties[colIndex]).getColProperties(),
+            ((ComboVOColumn)colProperties[colIndex]).isAllColumnVisible(),
+            ((ComboVOColumn)colProperties[colIndex]).getAllColumnPreferredWidth(),
+            ((ComboVOColumn)colProperties[colIndex]).getGetters(),
+            tableContainer
+        );
+      }
       else {
           Logger.error(this.getClass().getName(),"getCellRenderer","The column type for column index "+colIndex+" is not supported.",null);
         return null;
@@ -665,6 +679,20 @@ public class VOListAdapter {
         return new TextCellEditor(
             0,
             false
+        );
+      }
+      else if (colProperties[colIndex].getColumnType()==Column.TYPE_COMBO_VO) {
+        return new ComboBoxVOCellEditor(
+            ((ComboVOColumn)colProperties[colIndex]).getItemsMapper(),
+            ((ComboVOColumn)colProperties[colIndex]).getComboDataLocator(),
+            ((ComboVOColumn)colProperties[colIndex]).getColumnName(),
+            ((ComboVOColumn)colProperties[colIndex]).getItemsVO(),
+            ((ComboVOColumn)colProperties[colIndex]).getColProperties(),
+            ((ComboVOColumn)colProperties[colIndex]).isAllColumnVisible(),
+            ((ComboVOColumn)colProperties[colIndex]).getAllColumnPreferredWidth(),
+            ((ComboVOColumn)colProperties[colIndex]).getGetters(),
+            ((ComboVOColumn)colProperties[colIndex]).isColumnRequired(),
+            ((ComboVOColumn)colProperties[colIndex]).getItemListeners()
         );
       }
       else {

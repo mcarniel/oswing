@@ -149,7 +149,9 @@ public class VOModel {
    * @param valueObject value object to store
    */
   public final void setValueObject(ValueObject valueObject) {
-      if (valueObject != null && !valueObject.getClass().equals(valueObjectClass)) {
+      if (valueObject != null &&
+          !valueObjectClass.isAssignableFrom(valueObject.getClass())) {
+//          !valueObject.getClass().equals(valueObjectClass)) {
         throw new RuntimeException("The specified value object has not type '"+valueObjectClass.toString()+"'");
       }
       Object oldValueObject = this.valueObject;

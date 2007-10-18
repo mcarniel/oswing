@@ -3,6 +3,7 @@ package org.openswing.swing.table.columns.client;
 import javax.swing.SwingConstants;
 import org.openswing.swing.client.DateChangedListener;
 import java.util.ArrayList;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -45,6 +46,11 @@ public class TimeColumn extends Column {
 
   public TimeColumn() {
     setTextAlignment(SwingConstants.CENTER);
+    try {
+      timeFormat = ClientSettings.getInstance().getResources().getTimeFormat();
+    }
+    catch (Exception ex) {
+    }
   }
 
 

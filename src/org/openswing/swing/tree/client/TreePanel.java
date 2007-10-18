@@ -284,6 +284,19 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
 
   /**
+   * Select a node in the tree.
+   * @param node tree node to select
+   */
+  public final void setSelectedNode(DefaultMutableTreeNode node) {
+    try {
+      tree.setSelectionPath(new TreePath(node.getPath()));
+    } catch (Exception ex) {
+    }
+  }
+
+
+
+  /**
    * Method called when user has double clicked.
    * @param e double click event
    * @param tree tree

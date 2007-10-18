@@ -1,5 +1,23 @@
 
 
+Release Notes 1.3
+-----------------
+
+Final release 1.3 available
+
+Fixed initialization problem, arised in the last version of OpenSwing, with DateTimeColumn and TimeColumn.
+Fixed problem arised in the last version of OpenSwing, with default date and time formats in DateColumn, DateTimeColumn and TimeColumn.
+Fixed problem arised in the last version of OpenSwing, on selecting a row in the grid.
+Added setSelectedNode method to TreePanel component, used to select a specified node in the tree.
+Changed setValueObject method of VOModel class, to allow subclasses of the ValueObject to be used as a value, 
+which in turn would allow Hibernate CLIB proxies to function properly in OpenSwing.
+Added a new combo box control and a new combo box column that manages a list of value objects, shows a list of attributes as items and, 
+as for lookup, is able to link combo's v.o. attributes to container's v.o. attributes.
+Added "demo26" and "demo27" sample appa to show how to use these two components.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.2.9
 -------------------
 
