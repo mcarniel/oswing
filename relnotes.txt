@@ -1,5 +1,17 @@
 
 
+Release Notes 1.3.1
+-------------------
+
+Final release 1.3.1 available
+
+Added a new list control that manages a list of value objects, shows a list of attributes as items and, 
+as for lookup, is able to link list's v.o. attributes to container's v.o. attributes.
+Changed "demo26" sample app to show how to use this component.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.3
 -----------------
 
@@ -13,7 +25,7 @@ Changed setValueObject method of VOModel class, to allow subclasses of the Value
 which in turn would allow Hibernate CLIB proxies to function properly in OpenSwing.
 Added a new combo box control and a new combo box column that manages a list of value objects, shows a list of attributes as items and, 
 as for lookup, is able to link combo's v.o. attributes to container's v.o. attributes.
-Added "demo26" and "demo27" sample appa to show how to use these two components.
+Added "demo26" and "demo27" sample apps to show how to use these two components.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

@@ -46,6 +46,15 @@ public class DetailFrame extends JFrame {
   LabelControl labelState = new LabelControl();
   LabelControl labelAddress = new LabelControl();
 
+  LabelControl labelPricelist = new LabelControl();
+  LabelControl labelStartDate = new LabelControl();
+  LabelControl labelEndDate = new LabelControl();
+  LabelControl labelNote = new LabelControl();
+  ListVOControl controlList = new ListVOControl();
+  DateControl controlStartDate = new DateControl();
+  DateControl controlEndDate = new DateControl();
+  TextAreaControl controlNote = new TextAreaControl();
+
   private Form mainPanel = new Form();
   InsertButton insertButton = new InsertButton();
   FlowLayout flowLayout1 = new FlowLayout();
@@ -72,10 +81,8 @@ public class DetailFrame extends JFrame {
       mainPanel.linkGrid(dataController.getGridFrame().getGrid(),pk,true,true,true,navigatorBar);
 
 
-      setSize(500,230);
+      setSize(650,430);
       setVisible(true);
-
-
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -165,6 +172,23 @@ public class DetailFrame extends JFrame {
     mainPanel.add(labelAddress,  new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
 
+    mainPanel.add(labelPricelist,  new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
+    mainPanel.add(controlList,  new GridBagConstraints(1, 5, 1, 2, 1.0, 1.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
+    mainPanel.add(labelStartDate,  new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
+    mainPanel.add(labelEndDate,  new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
+    mainPanel.add(controlStartDate,  new GridBagConstraints(3, 5, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
+    mainPanel.add(controlEndDate,  new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
+    mainPanel.add(labelNote, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
+    mainPanel.add(controlNote, new GridBagConstraints(1, 7, 3, 2, 1.0, 1.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
+
     controlSurname.setAttributeName("surname");
     controlSurname.setRequired(true);
     controlCustomerCode.setAttributeName("customerCode");
@@ -187,6 +211,35 @@ public class DetailFrame extends JFrame {
     controlCity.addCombo2ParentLink("state","state");
     controlCity.addCombo2ParentLink("zipCode","zipCode");
 
+
+    labelPricelist.setText("pricelist");
+    labelStartDate.setText("startDate");
+    labelEndDate.setText("endDate");
+    labelNote.setText("note");
+    controlStartDate.setAttributeName("startDate");
+    controlStartDate.setEnabledOnEdit(false);
+    controlStartDate.setEnabledOnInsert(false);
+    controlEndDate.setAttributeName("endDate");
+    controlEndDate.setEnabledOnEdit(false);
+    controlEndDate.setEnabledOnInsert(false);
+    controlNote.setAttributeName("note");
+    controlNote.setEnabledOnEdit(false);
+    controlNote.setEnabledOnInsert(false);
+
+    controlList.setAttributeName("pricelistCode");
+    DemoListDataLocator listLocator = new DemoListDataLocator(conn);
+    controlList.setListDataLocator(listLocator);
+    controlList.setListValueObjectClassName("demo26.TestListVO");
+    controlList.setAllColumnVisible(false);
+    controlList.setVisibleColumn("pricelistCode",true);
+    controlList.setVisibleColumn("description",true);
+    controlList.setPreferredWidthColumn("pricelistCode",30);
+    controlList.setPreferredWidthColumn("description",200);
+    controlList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    controlList.addList2ParentLink("startDate","startDate");
+    controlList.addList2ParentLink("endDate","endDate");
+    controlList.addList2ParentLink("note","note");
 
   }
 

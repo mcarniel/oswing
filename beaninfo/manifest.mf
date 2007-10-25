@@ -162,3 +162,6 @@ Java-Bean: True
 
 Name: org/openswing/swing/table/columns/client/ComboVOColumn.class
 Java-Bean: True
+
+Name: org/openswing/swing/client/ListVOControl.class
+Java-Bean: True

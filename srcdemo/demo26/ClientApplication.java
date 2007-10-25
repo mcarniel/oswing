@@ -42,6 +42,13 @@ public class ClientApplication {
     props.setProperty("name","Name");
     props.setProperty("surname","Surname");
     props.setProperty("state","State");
+    props.setProperty("pricelist","Pricelist");
+    props.setProperty("pricelistCode","Pricelist Code");
+    props.setProperty("description","Description");
+    props.setProperty("pricelist","Pricelist");
+    props.setProperty("startDate","Start Validity Date");
+    props.setProperty("endDate","End Validity Date");
+    props.setProperty("note","Pricelist Note");
 
     ButtonsAuthorizations auth = new ButtonsAuthorizations();
     auth.addButtonAuthorization("F1",true,false,true);
@@ -80,7 +87,7 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table CUSTOMERS(CUSTOMER_CODE VARCHAR,NAME VARCHAR,SURNAME VARCHAR,CITY VARCHAR,ADDRESS VARCHAR,STATE VARCHAR,ZIP_CODE VARCHAR,PRIMARY KEY(CUSTOMER_CODE))");
+        stmt = conn.prepareStatement("create table CUSTOMERS(CUSTOMER_CODE VARCHAR,NAME VARCHAR,SURNAME VARCHAR,CITY VARCHAR,ADDRESS VARCHAR,STATE VARCHAR,ZIP_CODE VARCHAR,PRICELIST_CODE VARCHAR,DESCRIPTION VARCHAR,START_DATE DATE,END_DATE DATE,NOTE VARCHAR,PRIMARY KEY(CUSTOMER_CODE))");
         stmt.execute();
         stmt.close();
 
@@ -88,18 +95,40 @@ public class ClientApplication {
         stmt.execute();
         stmt.close();
 
+        stmt = conn.prepareStatement("create table PRICELISTS(PRICELIST_CODE VARCHAR,DESCRIPTION VARCHAR,START_DATE DATE,END_DATE DATE,NOTE VARCHAR,PRIMARY KEY(PRICELIST_CODE))");
+        stmt.execute();
+        stmt.close();
+
         stmt = conn.prepareStatement("insert into CITIES(CITY,ZIP_CODE,STATE) values('Pasiano','33087','Italy')");
         stmt.execute();
+        stmt.close();
         stmt = conn.prepareStatement("insert into CITIES(CITY,ZIP_CODE,STATE) values('Pordenone','33170','Italy')");
         stmt.execute();
+        stmt.close();
         stmt = conn.prepareStatement("insert into CITIES(CITY,ZIP_CODE,STATE) values('Keilalahdentie','02150','Finland')");
         stmt.execute();
+        stmt.close();
         stmt = conn.prepareStatement("insert into CITIES(CITY,ZIP_CODE,STATE) values('Santa Clara','95054','California')");
         stmt.execute();
+        stmt.close();
+
+        stmt = conn.prepareStatement("insert into PRICELISTS(PRICELIST_CODE,DESCRIPTION,START_DATE,END_DATE,NOTE) values(?,?,?,?,?)");
+        for(int i=0;i<20;i++) {
+          stmt.setString(1,"P"+(i+1));
+          stmt.setString(2,"Description about P"+(i+1));
+          stmt.setDate(3,new java.sql.Date(System.currentTimeMillis()+i*86400000));
+          stmt.setDate(4,new java.sql.Date(System.currentTimeMillis()+i*86400000+86400000*365));
+          stmt.setString(5,"Pricelist P"+(i+1)+" starts from "+new java.sql.Date(System.currentTimeMillis()+i*86400000));
+          stmt.execute();
+        }
+        stmt.close();
+
         stmt = conn.prepareStatement("insert into CUSTOMERS(CUSTOMER_CODE,NAME,SURNAME,CITY,ADDRESS,STATE,ZIP_CODE) values('C1','Mauro','Carniel','Pasiano','xxx','Italy','33087')");
         stmt.execute();
+        stmt.close();
         stmt = conn.prepareStatement("insert into CUSTOMERS(CUSTOMER_CODE,NAME,SURNAME,CITY,ADDRESS,STATE,ZIP_CODE) values('C2','John','Doe','Santa Clara','12 Bond St.','California','95054')");
         stmt.execute();
+        stmt.close();
         stmt = conn.prepareStatement("insert into CUSTOMERS(CUSTOMER_CODE,NAME,SURNAME,CITY,ADDRESS,STATE,ZIP_CODE) values('C3','William','Smith','Santa Clara','15 Fifth Av.','California','95054')");
         stmt.execute();
         stmt.close();

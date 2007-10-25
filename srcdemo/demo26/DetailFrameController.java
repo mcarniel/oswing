@@ -78,11 +78,16 @@ public class DetailFrameController extends FormController {
       attribute2dbField.put("zipCode","CUSTOMERS.ZIP_CODE");
       attribute2dbField.put("state","CUSTOMERS.STATE");
       attribute2dbField.put("address","CUSTOMERS.ADDRESS");
+      attribute2dbField.put("pricelistCode","CUSTOMERS.PRICELIST_CODE");
+      attribute2dbField.put("description","CUSTOMERS.DESCRIPTION");
+      attribute2dbField.put("startDate","CUSTOMERS.START_DATE");
+      attribute2dbField.put("endDate","CUSTOMERS.END_DATE");
+      attribute2dbField.put("note","CUSTOMERS.NOTE");
 
       return QueryUtil.getQuery(
         conn,
         new UserSessionParameters(),
-        "select CUSTOMERS.CUSTOMER_CODE,CUSTOMERS.NAME,CUSTOMERS.SURNAME,CUSTOMERS.CITY,CUSTOMERS.ZIP_CODE,CUSTOMERS.STATE,CUSTOMERS.ADDRESS from CUSTOMERS where CUSTOMER_CODE=?",
+        "select CUSTOMERS.CUSTOMER_CODE,CUSTOMERS.NAME,CUSTOMERS.SURNAME,CUSTOMERS.CITY,CUSTOMERS.ZIP_CODE,CUSTOMERS.STATE,CUSTOMERS.ADDRESS,CUSTOMERS.PRICELIST_CODE,CUSTOMERS.DESCRIPTION,CUSTOMERS.START_DATE,CUSTOMERS.END_DATE,CUSTOMERS.NOTE from CUSTOMERS where CUSTOMER_CODE=?",
         vals,
         attribute2dbField,
         DetailTestVO.class,
@@ -117,6 +122,11 @@ public class DetailFrameController extends FormController {
       attribute2dbField.put("zipCode","CUSTOMERS.ZIP_CODE");
       attribute2dbField.put("state","CUSTOMERS.STATE");
       attribute2dbField.put("address","CUSTOMERS.ADDRESS");
+      attribute2dbField.put("pricelistCode","CUSTOMERS.PRICELIST_CODE");
+      attribute2dbField.put("description","CUSTOMERS.DESCRIPTION");
+      attribute2dbField.put("startDate","CUSTOMERS.START_DATE");
+      attribute2dbField.put("endDate","CUSTOMERS.END_DATE");
+      attribute2dbField.put("note","CUSTOMERS.NOTE");
 
       return QueryUtil.insertTable(
         conn,
@@ -160,6 +170,11 @@ public class DetailFrameController extends FormController {
       attribute2dbField.put("zipCode","CUSTOMERS.ZIP_CODE");
       attribute2dbField.put("state","CUSTOMERS.STATE");
       attribute2dbField.put("address","CUSTOMERS.ADDRESS");
+      attribute2dbField.put("pricelistCode","CUSTOMERS.PRICELIST_CODE");
+      attribute2dbField.put("description","CUSTOMERS.DESCRIPTION");
+      attribute2dbField.put("startDate","CUSTOMERS.START_DATE");
+      attribute2dbField.put("endDate","CUSTOMERS.END_DATE");
+      attribute2dbField.put("note","CUSTOMERS.NOTE");
 
       HashSet pks = new HashSet();
       pks.add("customerCode");
