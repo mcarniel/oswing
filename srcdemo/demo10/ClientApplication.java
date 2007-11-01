@@ -19,6 +19,7 @@ import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.miscellaneous.client.TipInternalFrame;
 import org.openswing.swing.miscellaneous.client.TipPanelContent;
 import java.math.BigDecimal;
+import org.openswing.swing.table.profiles.client.FileGridProfileManager;
 
 
 /**
@@ -134,6 +135,7 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.FILTER_PANEL_ON_GRID = true;
     ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
+    ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
 
     MDIFrame mdi = new MDIFrame(this);
 
@@ -341,9 +343,9 @@ public class ClientApplication implements MDIController,LoginController {
     DefaultMutableTreeNode root = new DefaultMutableTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Administration",null);
-    ApplicationFunction n11 = new ApplicationFunction("Employees","EMP","men.gif","getEmployees");
-    ApplicationFunction n12 = new ApplicationFunction("Departments","EMP","appicon.gif","getDepts");
-    ApplicationFunction n13 = new ApplicationFunction("Tasks","EMP","appicon.gif","getTasks");
+    ApplicationFunction n11 = new ApplicationFunction("Employees","getEmployees","men.gif","getEmployees");
+    ApplicationFunction n12 = new ApplicationFunction("Departments","getDepts","appicon.gif","getDepts");
+    ApplicationFunction n13 = new ApplicationFunction("Tasks","getTasks","appicon.gif","getTasks");
     n1.add(n11);
     n1.add(n12);
     n1.add(n13);

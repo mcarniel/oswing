@@ -328,7 +328,6 @@ public class VOListTableModel extends AbstractTableModel {
   }
 
 
-
   /**
    * Set the value at the specified row and column in the TableModel.
    * @param row row index
@@ -336,6 +335,20 @@ public class VOListTableModel extends AbstractTableModel {
    * @param value new object for the specified coordinates
    */
   public final void setValueAt(Object value, int row, int column) {
+    setValue(value, row, column);
+  }
+
+
+  /**
+   * Set the value at the specified row and column in the TableModel, only if:
+   * - the grid is editable and the value is valid (i.e. GridController.validateCell method returns <code>true</code>)
+   * - the grid is in read only mode
+   * @param row row index
+   * @param column column index
+   * @param value new object for the specified coordinates
+   * @return <code>true</code> if value being setted is valid, <code>false</code> otherwise
+   */
+  public final boolean setValue(Object value, int row, int column) {
     // store the original v.o. if grid mode is EDIT...
     try {
       if (mode == Consts.EDIT && !changedVOs.containsKey(new Integer(row))) {
@@ -382,12 +395,17 @@ public class VOListTableModel extends AbstractTableModel {
           fieldAdapter.setField(object, column, value);
           modified = true;
           fireTableCellUpdated(row,column);
+          return true;
+        }
+        else {
+          return false;
         }
       } else {
 //        ValueObject object = (ValueObject)data.elementAt(row);
 //        fieldAdapter.setField(object, column, value);
 //        modified = false;
 //        fireTableCellUpdated(row,column);
+        return true;
       }
     }
     else {
@@ -396,6 +414,7 @@ public class VOListTableModel extends AbstractTableModel {
       fieldAdapter.setField(object, column, value);
       modified = false;
       fireTableCellUpdated(row,column);
+      return true;
     }
 //      super.setValueAt(value, row, column);
   }

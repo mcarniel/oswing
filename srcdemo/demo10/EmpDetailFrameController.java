@@ -60,6 +60,15 @@ public class EmpDetailFrameController extends FormController {
    */
   public Response loadData(Class valueObjectClass) {
     try {
+      // since this method could be invoked also when selecting another row on the linked grid,
+      // the pk attribute must be recalculated from the grid...
+      int row = gridFrame.getGrid().getSelectedRow();
+      if (row!=-1) {
+        GridEmpVO gridVO = (GridEmpVO)gridFrame.getGrid().getVOListTableModel().getObjectForRow(row);
+        pk = gridVO.getEmpCode();
+      }
+
+
       String sql =
         "select EMP.EMP_CODE,EMP.FIRST_NAME, EMP.LAST_NAME,EMP.DEPT_CODE,DEPT.DESCRIPTION,EMP.TASK_CODE,TASKS.DESCRIPTION,EMP.SEX,EMP.HIRE_DATE,EMP.SALARY,EMP.NOTE "+
         "from EMP,DEPT,TASKS where EMP.DEPT_CODE=DEPT.DEPT_CODE and EMP.TASK_CODE=TASKS.TASK_CODE and EMP.EMP_CODE='"+pk+"'";
@@ -384,6 +393,11 @@ public class EmpDetailFrameController extends FormController {
       frame.setEnableGridButtons(true);
     }
 
+  }
+
+
+  public EmpGridFrame getGridFrame() {
+    return gridFrame;
   }
 
 

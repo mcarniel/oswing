@@ -358,6 +358,7 @@ public class LookupController {
           },
           new HashMap(),
           true,
+          new ArrayList(),
           Grid.MAIN_GRID
       );
 
@@ -500,6 +501,7 @@ public class LookupController {
           },
           new HashMap(),
           true,
+          new ArrayList(),
           Grid.MAIN_GRID
       );
 

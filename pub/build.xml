@@ -136,6 +136,11 @@
         <include name="hsqldb.jar"/>
         <include name="poi-2.0-RC2-20040102.jar"/>
         <include name="itext-1.4.8.jar"/>
+        <include name="clientos.jar"/>
+        <include name="serveros.jar"/>
+        <include name="pooler.jar"/>
+        <include name="jcalendar.jar"/>
+        <include name="jnlp.jar"/>
       </fileset>
     </copy>
 
@@ -145,7 +150,17 @@
     <signjar jar="${webapps}/demo10/hsqldb.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <signjar jar="${webapps}/demo10/poi-2.0-RC2-20040102.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <signjar jar="${webapps}/demo10/itext-1.4.8.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${webapps}/demo10/serveros.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${webapps}/demo10/pooler.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${webapps}/demo10/jnlp.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <delete dir="${tmp}"/>
+
+    <copy todir="${webapps}/demo10" >
+      <fileset dir="${classes}/demo10">
+        <include name="demo10.jar"/>
+        <include name="looks-2.0.1.jar"/>
+      </fileset>
+    </copy>
   </target>
 
 

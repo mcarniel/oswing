@@ -210,6 +210,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @param controller grid controller, used to listen grid events
    * @param statusPanel bottom panel included into the grid; used to view selected row numbers
    * @param colorsInReadOnlyMode flag used to define if background and foreground colors must be setted according to GridController definition only in READONLY mode
+   * @param popupCommands list of custom commands added to the popup menu accessed by right mouse click on grid
    * @param gridType type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID
    */
   public Grids(
@@ -222,6 +223,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       GridDataLocator gridDataLocator,
       Map otherGridParams,
       boolean colorsInReadOnlyMode,
+      ArrayList popupCommands,
       int gridType
   ) {
     this.gridControl = gridControl;
@@ -231,6 +233,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     this.statusPanel = statusPanel;
     this.gridDataLocator = gridDataLocator;
     this.otherGridParams = otherGridParams;
+    this.popupCommands = popupCommands;
     this.gridType = gridType;
 
 
@@ -1745,7 +1748,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
-   * Method called when used has clicked on filter button.
+   * Method called when user has clicked on filter button.
    */
   public final void filterSort() {
     if (getMode()==Consts.READONLY) {

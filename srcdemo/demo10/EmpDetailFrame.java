@@ -79,9 +79,10 @@ public class EmpDetailFrame extends InternalFrame {
   TimeColumn colEndMorningHour = new TimeColumn();
   TimeColumn colStartAfternoonHour = new TimeColumn();
   TimeColumn colEndAfternoonHour = new TimeColumn();
+  NavigatorBar navigatorBar = new NavigatorBar();
 
 
-  public EmpDetailFrame(Connection conn,FormController dataController) {
+  public EmpDetailFrame(Connection conn,EmpDetailFrameController dataController) {
     try {
       this.conn = conn;
       jbInit();
@@ -91,6 +92,11 @@ public class EmpDetailFrame extends InternalFrame {
       WorkingDaysController gridController = new WorkingDaysController(conn);
       grid.setGridDataLocator(gridController);
       grid.setController(gridController);
+
+      // link the parent grid to the current Form...
+      HashSet pk = new HashSet();
+      pk.add("empCode"); // pk for Form is based on one only attribute...
+      mainPanel.linkGrid(dataController.getGridFrame().getGrid(),pk,true,true,true,navigatorBar);
 
       setSize(590,600);
       setMinimumSize(new Dimension(590,600));
@@ -104,7 +110,7 @@ public class EmpDetailFrame extends InternalFrame {
 
 
   private void jbInit() throws Exception {
-
+    setTitle("Employee");
     titledBorder1 = new TitledBorder("");
     titledBorder2 = new TitledBorder("");
     titledBorder3 = new TitledBorder("");
@@ -214,6 +220,7 @@ public class EmpDetailFrame extends InternalFrame {
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(saveButton, null);
     buttonsPanel.add(deleteButton, null);
+    buttonsPanel.add(navigatorBar, null);
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);
     mainPanel.add(controlCurrency,              new GridBagConstraints(1, 2, 5, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));

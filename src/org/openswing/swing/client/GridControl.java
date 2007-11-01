@@ -29,6 +29,15 @@ import java.awt.event.FocusEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import org.openswing.swing.logger.client.Logger;
+import org.openswing.swing.table.profiles.client.GridProfile;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.AncestorEvent;
+import java.io.*;
+import org.openswing.swing.table.profiles.client.GridProfileDescription;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.table.TableColumnModel;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 
 /**
@@ -232,6 +241,21 @@ public class GridControl extends JPanel {
   /** list of ActionListener objetcs related to the event "loading data completed" */
   private ArrayList loadDataCompletedListeners = new ArrayList();
 
+  /** list of custom commands added to the popup menu accessed by right mouse click on grid */
+  private ArrayList popupCommands = new ArrayList();
+
+  /** current grid profile */
+  private GridProfile profile = null;
+
+  /** default grid profile */
+  private GridProfile defaultProfile = null;
+
+  /** profile management menu */
+  private JMenu profileMenu = new JMenu(ClientSettings.getInstance().getResources().getResource("grid profile management"));
+
+  /** profile list menu */
+  private JMenu profilesMenu = new JMenu(ClientSettings.getInstance().getResources().getResource("select grid profile"));
+
 
   /**
    * Costructor.
@@ -293,9 +317,8 @@ public class GridControl extends JPanel {
 
       gridStatusPanel.remove(designScrollPane);
 
-      Component[] c = (Component[]) components.toArray(new Component[components.
-          size()]);
-      Column[] columnProperties = new Column[c.length];
+      Component[] c = (Component[]) components.toArray(new Component[components.size()]);
+      final Column[] columnProperties = new Column[c.length];
       for (int i = 0; i < c.length; i++) {
         columnProperties[i] = (Column) c[i];
       }
@@ -309,10 +332,225 @@ public class GridControl extends JPanel {
           gridDataLocator,
           otherGridParams,
           colorsInReadOnlyMode,
+          popupCommands,
           Grid.MAIN_GRID
           );
       for (int i = 0; i < columnProperties.length; i++) {
         columnProperties[i].setTable(table);
+      }
+
+      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null) {
+        // compare current and last digests...
+        String lastDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridDigest(functionId);
+        String currentDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getCurrentGridDigest(columnProperties,functionId);
+        if (!currentDigest.equals(lastDigest)) {
+          // restore grid digest and remove all grid profiles...
+          ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridDigest(functionId,currentDigest);
+          ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteAllGridProfiles(functionId);
+          ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteAllGridProfileIds(functionId);
+        }
+
+        addPopupCommand(profileMenu);
+
+        // define default profile...
+        setDefaultProfile(columnProperties);
+
+        Object id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridProfileId(functionId);
+        if (id!=null) {
+          // retrieve a previously stored profile...
+          try {
+            profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId, id);
+          }
+          catch (IOException ex1) {
+            Logger.error(this.getClass().getName(), "commitColumnContainer", ex1.getMessage()+": "+id,ex1);
+            profile = (GridProfile)defaultProfile.clone();
+
+            ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+            ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+          }
+        }
+        else {
+          // create a new profile...
+          profile = (GridProfile)defaultProfile.clone();
+
+          ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+          ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+        }
+
+        JMenuItem restoreMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("restore default grid profile"));
+        restoreMenu.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            try {
+              for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+                ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
+
+              // remove previous default profile from the storage media...
+              profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getDefaultProfile(functionId);
+              if (profile!=null)
+                ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteUserProfile(functionId,profile.getId());
+
+              profile = (GridProfile)defaultProfile.clone();
+              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+              applyProfile(columnProperties, profile, true);
+            }
+            catch (IOException ex) {
+              Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while storing grid profile: "+ex.getMessage(),ex);
+              return;
+            }
+          }
+        });
+        profileMenu.add(restoreMenu);
+
+        JMenuItem newMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("create new grid profile"));
+        newMenu.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+
+            String desc = OptionPane.showInputDialog(
+              ClientUtils.getParentFrame(GridControl.this),
+              "profile description",
+              "create new grid profile",
+              JOptionPane.QUESTION_MESSAGE
+            );
+            if (desc==null)
+              return;
+
+            profile = (GridProfile)defaultProfile.clone();
+            profile.setId(null);
+            profile.setDefaultProfile(false);
+            profile.setDescription(desc);
+            try {
+              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+              applyProfile(columnProperties, profile, true);
+            }
+            catch (IOException ex) {
+              Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while storing grid profile: "+ex.getMessage(),ex);
+              return;
+            }
+
+            for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+              ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile.getDescription(),true);
+            item.addActionListener(new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                Object id = profile.getId();
+                try {
+                  profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
+                  applyProfile(columnProperties,profile,true);
+                }
+                catch (IOException ex) {
+                  Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profile: "+ex.getMessage(),ex);
+                }
+              }
+            });
+
+            if (profilesMenu.getComponentCount()==0) {
+              profileMenu.add(profilesMenu);
+              profileMenu.revalidate();
+            }
+            profilesMenu.add(item);
+
+          }
+        });
+        profileMenu.add(newMenu);
+
+        JMenuItem removeMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("remove current grid profile"));
+        removeMenu.addActionListener(new ActionListener() {
+
+          public void actionPerformed(ActionEvent e) {
+            try {
+              if (profile.getId().equals(defaultProfile.getId())) // this test should be unutil...
+                return;
+
+              for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+                ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
+
+              String descriptionToRemove = profile.getDescription();
+              ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteUserProfile(functionId,profile.getId());
+
+              profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getDefaultProfile(functionId);
+              if (profile==null) {
+                profile = (GridProfile)defaultProfile.clone();
+                ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+              }
+              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId,profile.getId());
+              applyProfile(columnProperties,profile,true);
+
+              for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+                if (((JMenuItem)profilesMenu.getMenuComponent(i)).getText().equals(descriptionToRemove)) {
+                  profilesMenu.remove(i);
+                  profilesMenu.revalidate();
+
+                  if (profileMenu.getComponentCount()==0)
+                    profileMenu.getParent().remove(profileMenu);
+
+                  break;
+                }
+
+            }
+            catch (IOException ex) {
+              Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while removing grid profile: "+ex.getMessage(),ex);
+            }
+          }
+        });
+        profileMenu.add(removeMenu);
+
+        profileMenu.addSeparator();
+
+        try {
+          ArrayList list = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfiles(functionId);
+          for(int i=0;i<list.size();i++) {
+            final GridProfileDescription desc = (GridProfileDescription)list.get(i);
+            if (((GridProfileDescription)list.get(i)).isDefaultProfile())
+              continue;
+            final JCheckBoxMenuItem item = new JCheckBoxMenuItem(desc.getDescription());
+            item.addActionListener(new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+                  ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
+                item.setSelected(true);
+
+                Object id = desc.getId();
+                try {
+                  maybeStoreProfile(columnProperties);
+
+                  profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
+                  ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId,id);
+                  applyProfile(columnProperties,profile,true);
+                }
+                catch (IOException ex) {
+                  Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profile: "+ex.getMessage(),ex);
+                }
+              }
+            });
+            if (profile.getId().equals(desc.getId()))
+              item.setSelected(true);
+            profilesMenu.add(item);
+          }
+          if (profilesMenu.getMenuComponentCount()>0)
+            profileMenu.add(profilesMenu);
+        }
+        catch (IOException ex) {
+          Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profiles: "+ex.getMessage(),ex);
+        }
+
+
+        // add a "dispose grid" listener...
+        this.addAncestorListener(new AncestorListener() {
+
+             public void ancestorAdded(AncestorEvent event) {
+             }
+
+             public void ancestorMoved(AncestorEvent event) {
+             }
+
+             public void ancestorRemoved(AncestorEvent event) {
+               maybeStoreProfile(columnProperties);
+             }
+        });
+
+
       }
 
       table.setReorderingAllowed(reorderingAllowed);
@@ -375,6 +613,7 @@ public class GridControl extends JPanel {
             topGridDataLocator,
             otherGridParams,
             colorsInReadOnlyMode,
+            new ArrayList(),
             Grid.TOP_GRID
         );
         topTable.setReorderingAllowed(reorderingAllowed);
@@ -433,6 +672,7 @@ public class GridControl extends JPanel {
             bottomGridDataLocator,
             otherGridParams,
             colorsInReadOnlyMode,
+            new ArrayList(),
             Grid.BOTTOM_GRID
         );
         bottomTable.setReorderingAllowed(reorderingAllowed);
@@ -648,6 +888,9 @@ public class GridControl extends JPanel {
       if (table.getLockedGrid()!=null)
         table.getLockedGrid().setOrderWithLoadData(orderWithLoadData);
 
+      // apply the profile (e.g. reorder column properties, etc)...
+      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null)
+        applyProfile(columnProperties,profile,false);
 
 
     }
@@ -1748,6 +1991,297 @@ public class GridControl extends JPanel {
       table.removeLoadDataCompletedListener(listener);
   }
 
+
+  /**
+   * Add a menu item to the popup menu accessed through the right mouse click onto the grid.
+   * @param command menu item to add
+   */
+  public final void addPopupCommand(JMenuItem command) {
+    popupCommands.add(command);
+  }
+
+
+  /**
+   * Add a menu item to the popup menu accessed through the right mouse click onto the grid.
+   * @param command menu item text (this text will be translated according to internationalization settings)
+   * @param listener ActionListener linked to this menu item
+   */
+  public final void addPopupCommand(String command,ActionListener listener,boolean enabled) {
+    JMenuItem menu = new JMenuItem(ClientSettings.getInstance().getResources().getResource(command));
+    menu.setEnabled(enabled);
+    menu.addActionListener(listener);
+    popupCommands.add(menu);
+  }
+
+
+  /**
+   * Add a menu item to the popup menu accessed through the right mouse click onto the grid.
+   * @param command menu item text (this text will be translated according to internationalization settings)
+   * @param icon icon image associated to this menu item
+   * @param listener ActionListener linked to this menu item
+   */
+  public final void addPopupCommand(String command,ActionListener listener,boolean enabled,Icon icon) {
+    JMenuItem menu = new JMenuItem(ClientSettings.getInstance().getResources().getResource(command),icon);
+    menu.setEnabled(enabled);
+    menu.addActionListener(listener);
+    popupCommands.add(menu);
+  }
+
+
+  /**
+   * Add a menu item to the popup menu accessed through the right mouse click onto the grid.
+   * @param command menu item text (this text will be translated according to internationalization settings)
+   * @param mnemonic mnemonic char associated to this menu item
+   * @param listener ActionListener linked to this menu item
+   */
+  public final void addPopupCommand(String command,ActionListener listener,boolean enabled,int mnemonic) {
+    JMenuItem menu = new JMenuItem(ClientSettings.getInstance().getResources().getResource(command),mnemonic);
+    menu.setEnabled(enabled);
+    menu.addActionListener(listener);
+    popupCommands.add(menu);
+  }
+
+
+  /**
+   * Rename a menu item added to the popup menu and accessed through the right mouse click onto the grid.
+   * @param oldCommand old menu item text (this text will be translated according to internationalization settings)
+   * @param newCommand new menu item text (this text will be translated according to internationalization settings)
+   */
+  public final void renamePopupCommand(String oldCommand,String newCommand) {
+    if (table!=null) {
+      ArrayList list =  table.getPopupCommands();
+      String text = ClientSettings.getInstance().getResources().getResource(oldCommand);
+      JMenuItem menu = null;
+      for(int i=0;i<list.size();i++) {
+        menu = (JMenuItem)list.get(i);
+        if (menu.getText().equals(text)) {
+          menu.setText(ClientSettings.getInstance().getResources().getResource(newCommand));
+          return;
+        }
+      }
+    }
+  }
+
+
+  /**
+   * Enable/disable a menu item added to the popup menu and accessed through the right mouse click onto the grid.
+   * @param command menu item text (this text will be translated according to internationalization settings)
+   * @param enabled flag used to define if enable or disable the specified menu item
+   */
+  public final void setEnablePopupCommand(String command,boolean enabled) {
+    if (table!=null) {
+      ArrayList list =  table.getPopupCommands();
+      String text = ClientSettings.getInstance().getResources().getResource(command);
+      JMenuItem menu = null;
+      for(int i=0;i<list.size();i++) {
+        menu = (JMenuItem)list.get(i);
+        if (menu.getText().equals(text)) {
+          menu.setEnabled(enabled);
+          return;
+        }
+      }
+    }
+  }
+
+
+  /**
+   * Apply the specified profile to the grid.
+   */
+  private void applyProfile(Column[] columnProperties,GridProfile profile,boolean reloadGrid) {
+    this.profile = profile;
+    labelPanel.setProfile(profile.getDescription());
+
+    for(int i=0;i<profile.getColumnsAttribute().length;i++) {
+      columnProperties[i].setColumnVisible(profile.getColumnsVisibility()[i]);
+      columnProperties[i].setPreferredWidth(profile.getColumnsWidth()[i]);
+    }
+
+    Grid g = null;
+
+    if (table.getLockedGrid()!=null) {
+      // remove all columns...
+      g = table.getLockedGrid();
+      g.resetColumns(profile);
+    }
+    // remove all columns...
+    g = table.getGrid();
+    g.resetColumns(profile);
+
+
+    if (table!=null) {
+      table.getCurrentSortedColumns().clear();
+      table.getCurrentSortedColumns().addAll(profile.getCurrentSortedColumns());
+      table.getCurrentSortedVersusColumns().clear();
+      table.getCurrentSortedVersusColumns().addAll(profile.getCurrentSortedVersusColumns());
+      table.getQuickFilterValues().clear();
+      table.getQuickFilterValues().putAll(profile.getQuickFilterValues());
+    }
+    if (topTable!=null) {
+      topTable.getCurrentSortedColumns().clear();
+      topTable.getCurrentSortedColumns().addAll(profile.getCurrentSortedColumns());
+      topTable.getCurrentSortedVersusColumns().clear();
+      topTable.getCurrentSortedVersusColumns().addAll(profile.getCurrentSortedVersusColumns());
+      topTable.getQuickFilterValues().clear();
+      topTable.getQuickFilterValues().putAll(profile.getQuickFilterValues());
+    }
+    if (bottomTable!=null) {
+      bottomTable.getCurrentSortedColumns().clear();
+      bottomTable.getCurrentSortedColumns().addAll(profile.getCurrentSortedColumns());
+      bottomTable.getCurrentSortedVersusColumns().clear();
+      bottomTable.getCurrentSortedVersusColumns().addAll(profile.getCurrentSortedVersusColumns());
+      bottomTable.getQuickFilterValues().clear();
+      bottomTable.getQuickFilterValues().putAll(profile.getQuickFilterValues());
+    }
+
+    if (reloadGrid)
+      table.reload();
+  }
+
+
+  private void setDefaultProfile(Column[] columnProperties) {
+    String[] columnsAttribute = new String[columnProperties.length];
+    boolean[] columnsVisibility = new boolean[columnProperties.length];
+    int[] columnsWidth = new int[columnProperties.length];
+    ArrayList currentSortedColumns = new ArrayList();
+    ArrayList currentSortedVersusColumns = new ArrayList();
+
+    int[] aux = new int[columnProperties.length+1];
+    for(int i=0;i<aux.length;i++)
+      aux[i] = -1;
+    for(int i=0;i<columnProperties.length;i++) {
+      columnsAttribute[i] = columnProperties[i].getColumnName();
+      columnsVisibility[i] = columnProperties[i].isColumnVisible();
+      columnsWidth[i] = columnProperties[i].getPreferredWidth();
+      if (!columnProperties[i].getSortVersus().equals(Consts.NO_SORTED)) {
+        aux[columnProperties[i].getSortingOrder()] = i;
+      }
+    }
+    for(int i=0;i<aux.length;i++)
+      if (aux[i]>=0) {
+        currentSortedColumns.add(columnProperties[aux[i]].getColumnName());
+        currentSortedVersusColumns.add(columnProperties[aux[i]].getSortVersus());
+    }
+
+    defaultProfile = new GridProfile(
+      ClientSettings.getInstance().getResources().getResource("default profile"),
+      functionId,
+      ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUsername(),
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      new HashMap(),
+      columnsAttribute,
+      columnsVisibility,
+      columnsWidth,
+      true
+    );
+  }
+
+
+  /**
+   * @return current grid profile
+   */
+  public final GridProfile getProfile() {
+    return profile;
+  }
+
+
+  /**
+   * Store profile if changed.
+   */
+  private void maybeStoreProfile(Column[] columnProperties) {
+    try {
+      boolean changed = false;
+
+      // check for changes in column reordering, visibility, width...
+      String[] attributesName = new String[profile.getColumnsAttribute().length];
+      boolean[] visibility = new boolean[profile.getColumnsVisibility().length];
+      int[] width = new int[profile.getColumnsWidth().length];
+      ArrayList sortedCols = new ArrayList();
+      ArrayList sortedColVersus = new ArrayList();
+      HashMap filters = new HashMap();
+
+      Grid g = table.getLockedGrid();
+      if (g!=null) {
+        TableColumnModel model = g.getColumnModel();
+        for(int i=0;i<model.getColumnCount();i++) {
+          attributesName[i] = columnProperties[g.convertColumnIndexToModel(i)].getColumnName();
+          visibility[g.convertColumnIndexToModel(i)] = columnProperties[g.convertColumnIndexToModel(i)].isColumnVisible();
+          width[g.convertColumnIndexToModel(i)] = model.getColumn(i).getWidth();
+        }
+      }
+      g = table.getGrid();
+      TableColumnModel model = g.getColumnModel();
+      for(int i=0;i<model.getColumnCount();i++) {
+        attributesName[i+lockedColumns] = columnProperties[g.convertColumnIndexToModel(i)].getColumnName();
+        visibility[g.convertColumnIndexToModel(i)] = columnProperties[g.convertColumnIndexToModel(i)].isColumnVisible();
+        width[g.convertColumnIndexToModel(i)] = model.getColumn(i).getWidth();
+      }
+
+      // retrieve sorting conditions and set not visible attributes...
+      int k = attributesName.length-1;
+      Hashtable sortingVersus = new Hashtable(columnProperties.length);
+      for(int i=0;i<columnProperties.length;i++) {
+        if (!columnProperties[i].isColumnVisible())
+          attributesName[k--] = columnProperties[i].getColumnName();
+        if (!columnProperties[i].getSortVersus().equals(Consts.NO_SORTED)) {
+          sortingVersus.put(new Integer(columnProperties[i].getSortingOrder()),new Integer(i));
+        }
+      }
+      Integer index = null;
+      for(int i=0;i<columnProperties.length;i++) {
+        index = (Integer)sortingVersus.get(new Integer(i));
+        if (index!=null) {
+          sortedCols.add(columnProperties[index.intValue()].getColumnName());
+          sortedColVersus.add(columnProperties[index.intValue()].getSortVersus());
+        }
+      }
+
+      // retrieve filtering conditions...
+      if (table!=null) {
+        filters.putAll( table.getQuickFilterValues() );
+      }
+      if (topTable!=null) {
+        filters.putAll( topTable.getQuickFilterValues() );
+      }
+      if (bottomTable!=null) {
+        filters.putAll( bottomTable.getQuickFilterValues() );
+      }
+
+      if (!Utils.equals(attributesName,profile.getColumnsAttribute())) {
+        profile.setColumnsAttribute(attributesName);
+        changed = true;
+      }
+      if (!Utils.equals(visibility,profile.getColumnsVisibility())) {
+        profile.setColumnsVisibility(visibility);
+        changed = true;
+      }
+      if (!Utils.equals(width,profile.getColumnsWidth())) {
+        profile.setColumnsWidth(width);
+        changed = true;
+      }
+      if (!Utils.equals(sortedCols,profile.getCurrentSortedColumns())) {
+        profile.setCurrentSortedColumns(sortedCols);
+        changed = true;
+      }
+      if (!Utils.equals(sortedColVersus,profile.getCurrentSortedVersusColumns())) {
+        profile.setCurrentSortedVersusColumns(sortedColVersus);
+        changed = true;
+      }
+      if (!Utils.equals(filters,profile.getQuickFilterValues())) {
+        profile.setQuickFilterValues(filters);
+        changed = true;
+      }
+
+
+      if (changed) {
+        ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+        ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+      }
+    }
+    catch (Exception ex) {
+      Logger.error(this.getClass().getName(), "maybeStoreProfile", "Error while saving grid profile: "+ex.getMessage(),ex);
+    }
+  }
 
 
 

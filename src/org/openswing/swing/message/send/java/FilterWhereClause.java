@@ -79,4 +79,16 @@ public class FilterWhereClause implements Serializable {
     return value;
   }
 
+
+  public final boolean equals(Object o) {
+    if (!(o instanceof FilterWhereClause))
+      return false;
+    FilterWhereClause o2 = (FilterWhereClause)o;
+    return attributeName.equals(o2.getAttributeName()) &&
+           operator.equals(o2.getOperator()) &&
+           (value==null && o2.getValue()==null || value!=null && value.equals(o2.getValue()));
+
+  }
+
+
 }

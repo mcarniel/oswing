@@ -150,6 +150,16 @@
   <object key="close" value="Close" />    
   <object key="tip of the day" value="Tip of the day" /> 
   
+  
+<!-- grid profile -->
+  <object key="grid profile management" value="Grid profile management"/> 
+  <object key="restore default grid profile" value="Restore default grid profile"/> 
+  <object key="create new grid profile" value="Create new grid profile"/> 
+  <object key="profile description" value="Profile description"/> 
+  <object key="remove current grid profile" value="Remove current grid profile"/> 
+  <object key="select grid profile" value="Select grid profile"/>       
+  <object key="default profile" value="Default profile"/>     
+      
 <!-- application translations -->
 
       <object key="this text will be translated" value="This text will be translated" />

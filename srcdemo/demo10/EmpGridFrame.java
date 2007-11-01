@@ -43,7 +43,7 @@ public class EmpGridFrame extends InternalFrame {
       setSize(750,300);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
-
+      setTitle("Employees");
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -107,6 +107,9 @@ public class EmpGridFrame extends InternalFrame {
   void insertButton_actionPerformed(ActionEvent e) {
     new EmpDetailFrameController(this,null,conn);
 
+  }
+  public GridControl getGrid() {
+    return grid;
   }
 
 

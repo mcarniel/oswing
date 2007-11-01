@@ -37,6 +37,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import javax.swing.plaf.UIResource;
 import java.awt.Rectangle;
+import org.openswing.swing.table.profiles.client.GridProfile;
 
 
 /**
@@ -1509,11 +1510,11 @@ public class Grid extends JTable
    * Set column visibility for all grid columns.
    */
   private final void setVisibleColumns() {
-    // tolgo tutte le colonne...
+    // remove all columns...
     TableColumnModel colsModel = this.getColumnModel();
     while(colsModel.getColumnCount()>0)
       colsModel.removeColumn(colsModel.getColumn(0));
-    // aggiungo le colonne dichiarate visibili...
+    // add visible columns only...
     for(int i=fromColIndex;i<toColIndex;i++) {
       if (colProps[i].isColumnVisible())
         this.addColumn(tableColumnModel[i]);
@@ -1527,6 +1528,7 @@ public class Grid extends JTable
    * @param colVisible (in)visibility state for the specified column
    */
   public final void setVisibleColumn(int columnModelIndex,boolean colVisible) {
+    colProps[columnModelIndex].setColumnVisible(colVisible);
     TableColumnModel colsModel = this.getColumnModel();
     int columnViewIndex = this.convertColumnIndexToView(columnModelIndex);
     if (!colVisible && columnViewIndex!=-1)
@@ -2816,8 +2818,68 @@ public class Grid extends JTable
   }
 
 
+  /**
+   * Invoked when editing is finished. The changes are saved and the
+   * editor is discarded.
+   * <p>
+   * Application code will not use these methods explicitly, they
+   * are used internally by JTable.
+   *
+   * @param  e  the event received
+   * @see CellEditorListener
+   *
+   * This method has been overriden to restore focus in the just edited cell when its value is not valid.
+   */
+  public void editingStopped(ChangeEvent e) {
+      // Take in the new value
+      TableCellEditor editor = getCellEditor();
+      if (editor != null) {
+          Object value = editor.getCellEditorValue();
+          boolean ok = model.setValue(value, editingRow, convertColumnIndexToModel(editingColumn));
+          final int row = editingRow;
+          final int col = editingColumn;
+          removeEditor();
+          if (!ok) {
+            SwingUtilities.invokeLater(new Runnable() {
+              public void run() {
+                editCellAt(row,col);
+              }
+            });
+          }
+      }
+  }
 
 
+  /**
+   * Method invoked by Grid.applyProfile to reset column visibility, position, width.
+   */
+  public final void resetColumns(GridProfile profile) {
+    String[] attrs = profile.getColumnsAttribute();
+    Hashtable aux = new Hashtable();
+    for(int i=0;i<attrs.length;i++)
+      aux.put(attrs[i],new Integer(i-fromColIndex));
+    Hashtable map = new Hashtable();
+    for(int i=fromColIndex;i<toColIndex;i++) {
+      map.put(
+        aux.get(colProps[i].getColumnName()),
+        new Integer(i)
+      );
+    }
+    // remove all columns...
+    TableColumnModel colsModel = this.getColumnModel();
+    while(colsModel.getColumnCount()>0)
+      colsModel.removeColumn(colsModel.getColumn(0));
+
+    // add visible columns only...
+    int index;
+    for(int i=0;i<map.size();i++) {
+      index = ((Integer)map.get(new Integer(i))).intValue();
+      if (colProps[index].isColumnVisible()) {
+        this.addColumn(tableColumnModel[index]);
+        tableColumnModel[index].setPreferredWidth(profile.getColumnsWidth()[index]);
+      }
+    }
+  }
 
   /**
    * <p>Title: OpenSwing Framework</p>

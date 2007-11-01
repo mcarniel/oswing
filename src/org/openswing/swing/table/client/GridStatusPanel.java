@@ -4,12 +4,15 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import javax.swing.border.*;
 import org.openswing.swing.client.*;
+import org.openswing.swing.util.client.ClientSettings;
+import java.awt.Dimension;
 
 
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: Grid Status Panel, viewed at the bottom of the grid (the panel is optional).</p>
+ * <p>Description: Grid Status Panel, viewed at the bottom of the grid (the panel is optional).
+ * It shows current selected rows and (optionally) the current applied grid profile.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -40,6 +43,15 @@ public class GridStatusPanel extends JPanel {
   /** text contained in the status panel */
   private JLabel statusLabel = new JLabel();
 
+  /** applied grid profile */
+  private JLabel profileLabel = new JLabel();
+
+  /** status panel */
+  private JLabel statusPanel = new JLabel();
+
+  /** applied grid profile panel */
+  private JLabel profilePanel = new JLabel();
+
 
   public GridStatusPanel() {
     try {
@@ -53,9 +65,23 @@ public class GridStatusPanel extends JPanel {
 
   private void jbInit() throws Exception {
     this.setLayout(new BorderLayout());
-    this.add(statusLabel, BorderLayout.CENTER);
     Border border = BorderFactory.createLoweredBevelBorder();
-    this.setBorder(border);
+    statusPanel.setLayout(new BorderLayout());
+    statusPanel.add(statusLabel, BorderLayout.CENTER);
+    statusPanel.setBorder(border);
+    this.add(statusPanel, BorderLayout.CENTER);
+
+    if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null) {
+      Border border2 = BorderFactory.createLoweredBevelBorder();
+      profilePanel.setLayout(new BorderLayout());
+      profilePanel.setMinimumSize(new Dimension(100,statusPanel.getHeight()));
+      profilePanel.setPreferredSize(new Dimension(100,statusPanel.getHeight()));
+      profilePanel.add(profileLabel, BorderLayout.CENTER);
+      profilePanel.setBorder(border2);
+      this.add(profilePanel, BorderLayout.EAST);
+      profileLabel.setText(" ");
+    }
+
   }
 
 
@@ -67,5 +93,17 @@ public class GridStatusPanel extends JPanel {
     statusLabel.setText(text);
   }
 
+
+  /**
+   * Set the profile description on the status panel
+   * @param description profile description
+   */
+  public final void setProfile(String description) {
+    profileLabel.setText(description);
+    profilePanel.revalidate();
+    profilePanel.repaint();
+    this.revalidate();
+    this.repaint();
+  }
 
 }

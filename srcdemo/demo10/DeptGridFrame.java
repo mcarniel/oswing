@@ -60,6 +60,7 @@ public class DeptGridFrame extends InternalFrame {
 
 
   private void jbInit() throws Exception {
+    grid.setFunctionId("getDepts");
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     grid.setCopyButton(copyButton);

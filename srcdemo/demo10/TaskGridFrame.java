@@ -60,6 +60,7 @@ public class TaskGridFrame extends InternalFrame {
 
 
   private void jbInit() throws Exception {
+    grid.setFunctionId("getTasks");
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     grid.setCopyButton(copyButton);

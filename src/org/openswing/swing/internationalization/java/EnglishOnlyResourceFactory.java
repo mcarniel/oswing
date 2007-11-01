@@ -218,6 +218,15 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("property name","Name");
     dictionary.setProperty("property value","Value");
 
+    // grid profile
+    dictionary.setProperty("grid profile management","Grid profile management");
+    dictionary.setProperty("restore default grid profile","Restore default grid profile");
+    dictionary.setProperty("create new grid profile","Create new grid profile");
+    dictionary.setProperty("profile description","Profile description");
+    dictionary.setProperty("remove current grid profile","Remove current grid profile");
+    dictionary.setProperty("select grid profile","Select grid profile");
+    dictionary.setProperty("default profile","Default profile");
+
     dictionary.putAll(additionalDictionary);
 
     resources = new Resources(

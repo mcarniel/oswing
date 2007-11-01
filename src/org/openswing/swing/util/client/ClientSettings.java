@@ -13,6 +13,7 @@ import java.lang.reflect.*;
 import org.openswing.swing.util.java.Consts;
 import java.awt.Font;
 import java.awt.Dimension;
+import org.openswing.swing.table.profiles.client.GridProfileManager;
 
 
 /**
@@ -179,6 +180,9 @@ public class ClientSettings {
 
   /** default margin between two rows in grid; default value: 1 */
   public static int ROW_MARGIN = 1;
+
+  /** grid profile manager: it manages grid profile storing and fetching */
+  public static GridProfileManager GRID_PROFILE_MANAGER = null;
 
 
 

@@ -10,6 +10,7 @@ import org.openswing.swing.permissions.java.ButtonsAuthorizations;
 import org.openswing.swing.internationalization.java.*;
 import javax.swing.UIManager;
 import javax.swing.*;
+import org.openswing.swing.table.profiles.client.FileGridProfileManager;
 
 
 /**
@@ -54,6 +55,7 @@ public class ClientApplication {
     ClientSettings.FILTER_PANEL_ON_GRID = true;
     ClientSettings.VIEW_BACKGROUND_SEL_COLOR = true;
     ClientSettings.SHOW_SORTING_ORDER = true;
+
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
 //com.jgoodies.looks.plastic.PlasticLookAndFeel
 //com.jgoodies.looks.plastic.Plastic3DLookAndFeel
