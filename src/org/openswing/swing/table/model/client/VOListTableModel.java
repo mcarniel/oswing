@@ -20,6 +20,9 @@ import org.openswing.swing.client.*;
 
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import org.openswing.swing.table.columns.client.Column;
+import org.openswing.swing.table.columns.client.ButtonColumn;
+import org.openswing.swing.table.columns.client.CheckBoxColumn;
 
 
 /**
@@ -272,25 +275,37 @@ public class VOListTableModel extends AbstractTableModel {
    * <code>false</code> otherwise. The editable state is based on FieldAdapter and on current grid edit mode.
    */
   public final boolean isCellEditable(int row, int column) {
-    if (mode==Consts.READONLY)
-      return false;
-    else if (mode==Consts.INSERT) {
-      if (row<changedRows.size())
+    try {
+      if (mode==Consts.READONLY) {
+        Column col = fieldAdapter.getFieldColumn(column);
+        if (col.getColumnType()==col.TYPE_BUTTON && ((ButtonColumn)col).isEnableInReadOnlyMode())
+          return true;
+        else if (col.getColumnType()==col.TYPE_CHECK && ((CheckBoxColumn)col).isEnableInReadOnlyMode())
+          return true;
+        return false;
+      }
+      else if (mode==Consts.INSERT) {
+        if (row<changedRows.size())
 //        return fieldAdapter.isFieldEditable(
 //          mode,
 //          row,
 //          column
 //        );
-        return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
-      else
-        return false;
-    } else
+          return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
+        else
+          return false;
+      } else
 //      return fieldAdapter.isFieldEditable(
 //          mode,
 //          row,
 //          column
 //      );
-      return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
+        return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
+    }
+    catch (Exception ex) {
+      Logger.error(this.getClass().getName(),"isCellEditable","Error defining cell editability",ex);
+      return false;
+    }
   }
 
 

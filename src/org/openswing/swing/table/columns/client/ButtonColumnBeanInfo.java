@@ -27,6 +27,7 @@ public class ButtonColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _text = new PropertyDescriptor("text", beanClass, "getText", "setText");
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
+      PropertyDescriptor _enableInReadOnlyMode = new PropertyDescriptor("enableInReadOnlyMode", beanClass, "isEnableInReadOnlyMode", "setEnableInReadOnlyMode");
       PropertyDescriptor _maxWidth = new PropertyDescriptor("maxWidth", beanClass, "getMaxWidth", "setMaxWidth");
       PropertyDescriptor _minWidth = new PropertyDescriptor("minWidth", beanClass, "getMinWidth", "setMinWidth");
       PropertyDescriptor _preferredWidth = new PropertyDescriptor("preferredWidth", beanClass, "getPreferredWidth", "setPreferredWidth");
@@ -39,6 +40,7 @@ public class ButtonColumnBeanInfo extends SimpleBeanInfo {
           _columnName,
           _editableOnEdit,
           _editableOnInsert,
+          _enableInReadOnlyMode,
           _headerColumnName,
           _maxWidth,
           _minWidth,

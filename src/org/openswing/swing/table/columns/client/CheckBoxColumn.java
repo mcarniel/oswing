@@ -44,6 +44,9 @@ public class CheckBoxColumn extends Column {
   /** list of ItemListener object linked to the check-box */
   private ArrayList itemListeners = new ArrayList();
 
+  /** flag used to indicate if the check-box is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the check-box is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties */
+  private boolean enableInReadOnlyMode = false;
+
 
   public CheckBoxColumn() {
     setTextAlignment(SwingConstants.CENTER);
@@ -106,6 +109,25 @@ public class CheckBoxColumn extends Column {
   public ArrayList getItemListeners() {
     return itemListeners;
   }
+
+
+  /**
+   * @return indicate if the check-box is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the check-box is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties
+   */
+  public final boolean isEnableInReadOnlyMode() {
+    return enableInReadOnlyMode;
+  }
+
+
+  /**
+   * Define if the check-box is enabled also when the grid is in readonly mode.
+   * @param enableInReadOnlyMode flag used to indicate if the check-box is enabled also when the grid is in readonly mode; <code>false</code> means that the check-box is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties
+   */
+  public final void setEnableInReadOnlyMode(boolean enableInReadOnlyMode) {
+    this.enableInReadOnlyMode = enableInReadOnlyMode;
+  }
+
+
 
 
 }

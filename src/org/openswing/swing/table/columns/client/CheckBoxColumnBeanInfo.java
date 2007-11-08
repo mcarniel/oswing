@@ -25,10 +25,12 @@ public class CheckBoxColumnBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(BooleanAttributeNameEditor.class);
+      PropertyDescriptor _enableInReadOnlyMode = new PropertyDescriptor("enableInReadOnlyMode", beanClass, "isEnableInReadOnlyMode", "setEnableInReadOnlyMode");
       PropertyDescriptor _negativeValue = new PropertyDescriptor("negativeValue", beanClass, "getNegativeValue", "setNegativeValue");
       PropertyDescriptor _positiveValue = new PropertyDescriptor("positiveValue", beanClass, "getPositiveValue", "setPositiveValue");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
               _columnName,
+              _enableInReadOnlyMode,
 	      _negativeValue,
 	      _positiveValue};
       return pds;

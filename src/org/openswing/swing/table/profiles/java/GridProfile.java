@@ -1,4 +1,4 @@
-package org.openswing.swing.table.profiles.client;
+package org.openswing.swing.table.profiles.java;
 
 import java.util.ArrayList;
 import java.util.Map;

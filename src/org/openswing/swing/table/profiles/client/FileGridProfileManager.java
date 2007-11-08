@@ -1,6 +1,5 @@
 package org.openswing.swing.table.profiles.client;
 
-import org.openswing.swing.client.GridControl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.io.File;
@@ -17,9 +16,10 @@ import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.Date;
-import java.security.MessageDigest;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
+import org.openswing.swing.table.profiles.java.GridProfileManager;
+import org.openswing.swing.table.profiles.java.GridProfile;
+import org.openswing.swing.table.profiles.java.GridProfileDescription;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -62,9 +62,9 @@ public class FileGridProfileManager extends GridProfileManager {
   /**
    * @param functionId identifier (functionId) associated to the grid
    * @return list of GridProfileDescription objects
-   * @throws IOException throwed if fetching operation does not correctly accomplished
+   * @throws Throwable throwed if fetching operation does not correctly accomplished
    */
-  public ArrayList getUserProfiles(final String functionId) throws IOException {
+  public ArrayList getUserProfiles(final String functionId) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";
@@ -93,9 +93,9 @@ public class FileGridProfileManager extends GridProfileManager {
 
   /**
    * @return default user profile; null if the default profile has not been yet stored
-   * @throws IOException throwed if fetching operation does not correctly accomplished
+   * @throws Throwable throwed if fetching operation does not correctly accomplished
    */
-  public final GridProfile getDefaultProfile(final String functionId) throws IOException {
+  public final GridProfile getDefaultProfile(final String functionId) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";
@@ -125,9 +125,9 @@ public class FileGridProfileManager extends GridProfileManager {
   /**
    * @param id grid profile identifier
    * @return user profile
-   * @throws IOException throwed if fetching operation does not correctly accomplished
+   * @throws Throwable throwed if fetching operation does not correctly accomplished
    */
-  public GridProfile getUserProfile(String functionId,Object id) throws IOException {
+  public GridProfile getUserProfile(String functionId,Object id) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";
@@ -248,10 +248,10 @@ public class FileGridProfileManager extends GridProfileManager {
   /**
    * Store the specified grid profile.
    * @param profile profile to store
-   * @throws IOException throwed if storing operation does not correctly accomplished
+   * @throws Throwable throwed if storing operation does not correctly accomplished
    * Note: if profile.getId() is null then this method must define id property.
    */
-  public void storeUserProfile(GridProfile profile) throws IOException {
+  public void storeUserProfile(GridProfile profile) throws Throwable {
     if (profile.getId()==null)
       profile.setId(
         profile.getFunctionId().replace(' ','_')+"_"+getUsername().replace(' ','_')+"_"+System.currentTimeMillis()+".cfg"
@@ -359,9 +359,9 @@ public class FileGridProfileManager extends GridProfileManager {
   /**
    * Delete the specified grid profile.
    * @param id grid profile identifier
-   * @throws IOException throwed if deleting operation does not correctly accomplished
+   * @throws Throwable throwed if deleting operation does not correctly accomplished
    */
-  public void deleteUserProfile(String functionId,Object id) throws IOException {
+  public void deleteUserProfile(String functionId,Object id) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";
@@ -380,9 +380,9 @@ public class FileGridProfileManager extends GridProfileManager {
    * Delete all grid profiles, independently from the current user.
    * This method is automatically invoked if "grid digest" comparison lead to discover a grid change: in this case all grid profiles must be removed.
    * @param functionId identifier (functionId) associated to the grid
-   * @throws IOException throwed if deleting operation does not correctly accomplished
+   * @throws Throwable throwed if deleting operation does not correctly accomplished
    */
-  public void deleteAllGridProfiles(final String functionId) throws IOException {
+  public void deleteAllGridProfiles(final String functionId) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";
@@ -406,9 +406,9 @@ public class FileGridProfileManager extends GridProfileManager {
 
   /**
    * Store the "grid digest", i.e. a value that globally identify the current grid configuration.
-   * @throws IOException throwed if storing operation does not correctly accomplished
+   * @throws Throwable throwed if storing operation does not correctly accomplished
    */
-  public void storeGridDigest(String functionId,String gridDigest) throws IOException {
+  public void storeGridDigest(String functionId,String gridDigest) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";
@@ -439,10 +439,10 @@ public class FileGridProfileManager extends GridProfileManager {
 
   /**
    * @return retrieve the "grid digest", i.e. a value that globally identify the current grid configuration; this digest is used to check if grid columns have been changed from last grid execution: in this case all grid profiles will be deleted
-   * @throws IOException throwed if fetching operation does not correctly accomplished
+   * @throws Throwable throwed if fetching operation does not correctly accomplished
    * Note: this method returns null if no digest has been yet stored (i.e. this is the first time the grid is being viewed)
    */
-  public String getLastGridDigest(String functionId) throws IOException {
+  public String getLastGridDigest(String functionId) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";
@@ -473,10 +473,10 @@ public class FileGridProfileManager extends GridProfileManager {
 
   /**
    * @return retrieve the last profile identifier in action
-   * @throws IOException throwed if fetching operation does not correctly accomplished
+   * @throws Throwable throwed if fetching operation does not correctly accomplished
    * Note: this method returns null if no profile identifier has been yet stored (i.e. this is the first time the grid is being viewed)
    */
-  public Object getLastGridProfileId(String functionId) throws IOException {
+  public Object getLastGridProfileId(String functionId) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";
@@ -507,9 +507,9 @@ public class FileGridProfileManager extends GridProfileManager {
 
   /**
    * Store the current profile identifier in action.
-   * @throws IOException throwed if storing operation does not correctly accomplished
+   * @throws Throwable throwed if storing operation does not correctly accomplished
    */
-  public void storeGridProfileId(String functionId,Object id) throws IOException {
+  public void storeGridProfileId(String functionId,Object id) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";
@@ -542,9 +542,9 @@ public class FileGridProfileManager extends GridProfileManager {
   /**
    * Delete all grid profiles identifiers for the current user.
    * This method is automatically invoked if "grid digest" comparison lead to discover a grid change.
-   * @throws IOException throwed if storing operation does not correctly accomplished
+   * @throws Throwable throwed if storing operation does not correctly accomplished
    */
-  public void deleteAllGridProfileIds(String functionId) throws IOException {
+  public void deleteAllGridProfileIds(String functionId) throws Throwable {
     String userHome = System.getProperty("user.home").replace('\\','/');
     if (!userHome.endsWith("/"))
       userHome += "/";

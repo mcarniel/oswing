@@ -447,7 +447,11 @@ public class VOListAdapter {
 //        );
 //      }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_CHECK) {
-        return new CheckBoxTableCellRenderer(tableContainer,colProperties[colIndex].getTextAlignment());
+        return new CheckBoxTableCellRenderer(
+          tableContainer,
+          colProperties[colIndex].getTextAlignment(),
+          ((CheckBoxColumn)colProperties[colIndex]).isEnableInReadOnlyMode()
+        );
       }
       else if (colProperties[colIndex].getColumnType()==Column.TYPE_COMBO) {
         if (((ComboColumn)colProperties[colIndex]).getDomainId()==null &&
@@ -477,7 +481,8 @@ public class VOListAdapter {
           ((ButtonColumn)colProperties[colIndex]).getText(),
           ((ButtonColumn)colProperties[colIndex]).isShowAttributeValue(),
           tableContainer,
-            colProperties[colIndex].getTextAlignment()
+          colProperties[colIndex].getTextAlignment(),
+          ((ButtonColumn)colProperties[colIndex]).isEnableInReadOnlyMode()
         );
       }
       else if ( colProperties[colIndex].getColumnType()==Column.TYPE_IMAGE) {
@@ -790,6 +795,15 @@ public class VOListAdapter {
    */
   public final int getFieldMaxWidth(int colIndex) {
     return colProperties[colIndex].getMaxWidth();
+  }
+
+
+  /**
+   * @param colIndex indice della colonna del modello dati
+   * @return column maximum width
+   */
+  public final Column getFieldColumn(int colIndex) {
+    return colProperties[colIndex];
   }
 
 

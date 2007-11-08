@@ -46,6 +46,9 @@ public class ButtonColumn extends Column {
   /** flag used to indicate that attribute value will be showed as button text; default value: <code>false</code> i.e. the button text is defined by the "text" property */
   private boolean showAttributeValue = false;
 
+  /** flag used to indicate if the button is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the button is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties */
+  private boolean enableInReadOnlyMode = false;
+
 
   public ButtonColumn() {
     setColumnRequired(false);
@@ -118,6 +121,23 @@ public class ButtonColumn extends Column {
    */
   public final void setShowAttributeValue(boolean showAttributeValue) {
     this.showAttributeValue = showAttributeValue;
+  }
+
+
+  /**
+   * @return indicate if the button is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the button is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties
+   */
+  public final boolean isEnableInReadOnlyMode() {
+    return enableInReadOnlyMode;
+  }
+
+
+  /**
+   * Define if the button is enabled also when the grid is in readonly mode.
+   * @param enableInReadOnlyMode flag used to indicate if the button is enabled also when the grid is in readonly mode; <code>false</code> means that the button is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties
+   */
+  public final void setEnableInReadOnlyMode(boolean enableInReadOnlyMode) {
+    this.enableInReadOnlyMode = enableInReadOnlyMode;
   }
 
 

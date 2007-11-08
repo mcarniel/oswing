@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 /**
  * <p>Title: OpenSwing Framework</p>
  * <p>Description: Singleton class.
- * Database Connection Manager: it manager database connections.</p>
+ * Database Connection Manager: it manages database connections.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.

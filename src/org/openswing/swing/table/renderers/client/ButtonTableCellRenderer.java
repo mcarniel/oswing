@@ -53,19 +53,23 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
   /** default font */
   private Font defaultFont = null;
 
+  /** flag used to indicate if the button is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the button is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties */
+  private boolean enableInReadOnlyMode = false;
+
 
   /**
    * Constructor.
    * @param text button text
    * @param gridController grid controller
    */
-  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController,int alignement) {
+  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController,int alignement,boolean enableInReadOnlyMode) {
     this.gridController = gridController;
     this.showAttributeValue = showAttributeValue;
     if (!showAttributeValue)
       rend.setText(ClientSettings.getInstance().getResources().getResource(text));
     rend.setBorder(BorderFactory.createRaisedBevelBorder());
     rend.setHorizontalAlignment(alignement);
+    this.enableInReadOnlyMode = enableInReadOnlyMode;
   }
 
 
@@ -129,10 +133,10 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
     } else {
       rend.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
       rend.setBorder(BorderFactory.createRaisedBevelBorder());
-      if (((Grid)table).getMode()==Consts.READONLY || !((Grid)table).isColorsInReadOnlyMode())
+      if (!enableInReadOnlyMode && (((Grid)table).getMode()==Consts.READONLY || !((Grid)table).isColorsInReadOnlyMode()))
         rend.setBackground(gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
       else {
-        if (table.isCellEditable(row,column))
+        if (enableInReadOnlyMode || table.isCellEditable(row,column))
           rend.setBackground(ClientSettings.GRID_EDITABLE_CELL_BACKGROUND);
         else
           rend.setBackground(ClientSettings.GRID_NOT_EDITABLE_CELL_BACKGROUND);

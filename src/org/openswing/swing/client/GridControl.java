@@ -29,11 +29,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.table.profiles.client.GridProfile;
+import org.openswing.swing.table.profiles.java.GridProfile;
 import javax.swing.event.AncestorListener;
 import javax.swing.event.AncestorEvent;
 import java.io.*;
-import org.openswing.swing.table.profiles.client.GridProfileDescription;
+import org.openswing.swing.table.profiles.java.GridProfileDescription;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.ItemListener;
@@ -340,218 +340,224 @@ public class GridControl extends JPanel {
       }
 
       if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null) {
-        // compare current and last digests...
-        String lastDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridDigest(functionId);
-        String currentDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getCurrentGridDigest(columnProperties,functionId);
-        if (!currentDigest.equals(lastDigest)) {
-          // restore grid digest and remove all grid profiles...
-          ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridDigest(functionId,currentDigest);
-          ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteAllGridProfiles(functionId);
-          ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteAllGridProfileIds(functionId);
-        }
-
-        addPopupCommand(profileMenu);
-
-        // define default profile...
-        setDefaultProfile(columnProperties);
-
-        Object id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridProfileId(functionId);
-        if (id!=null) {
-          // retrieve a previously stored profile...
-          try {
-            profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId, id);
+        try {
+          // compare current and last digests...
+          String lastDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridDigest(functionId);
+          String currentDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getCurrentGridDigest(columnProperties,functionId);
+          if (!currentDigest.equals(lastDigest)) {
+            // restore grid digest and remove all grid profiles...
+            ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridDigest(functionId,currentDigest);
+            ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteAllGridProfiles(functionId);
+            ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteAllGridProfileIds(functionId);
           }
-          catch (IOException ex1) {
-            Logger.error(this.getClass().getName(), "commitColumnContainer", ex1.getMessage()+": "+id,ex1);
+
+          addPopupCommand(profileMenu);
+
+          // define default profile...
+          setDefaultProfile(columnProperties);
+
+          Object id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridProfileId(functionId);
+          if (id!=null) {
+            // retrieve a previously stored profile...
+            try {
+              profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId, id);
+            }
+            catch (IOException ex1) {
+              Logger.error(this.getClass().getName(), "commitColumnContainer", ex1.getMessage()+": "+id,ex1);
+              profile = (GridProfile)defaultProfile.clone();
+
+              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+            }
+          }
+          else {
+            // create a new profile...
             profile = (GridProfile)defaultProfile.clone();
 
             ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
             ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
           }
-        }
-        else {
-          // create a new profile...
-          profile = (GridProfile)defaultProfile.clone();
 
-          ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
-          ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
-        }
-
-        JMenuItem restoreMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("restore default grid profile"));
-        restoreMenu.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            try {
-              for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
-                ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
-
-              // remove previous default profile from the storage media...
-              profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getDefaultProfile(functionId);
-              if (profile!=null)
-                ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteUserProfile(functionId,profile.getId());
-
-              profile = (GridProfile)defaultProfile.clone();
-              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
-              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
-              applyProfile(columnProperties, profile, true);
-            }
-            catch (IOException ex) {
-              Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while storing grid profile: "+ex.getMessage(),ex);
-              return;
-            }
-          }
-        });
-        profileMenu.add(restoreMenu);
-
-        JMenuItem newMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("create new grid profile"));
-        newMenu.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-
-            String desc = OptionPane.showInputDialog(
-              ClientUtils.getParentFrame(GridControl.this),
-              "profile description",
-              "create new grid profile",
-              JOptionPane.QUESTION_MESSAGE
-            );
-            if (desc==null)
-              return;
-
-            profile = (GridProfile)defaultProfile.clone();
-            profile.setId(null);
-            profile.setDefaultProfile(false);
-            profile.setDescription(desc);
-            try {
-              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
-              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
-              applyProfile(columnProperties, profile, true);
-            }
-            catch (IOException ex) {
-              Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while storing grid profile: "+ex.getMessage(),ex);
-              return;
-            }
-
-            for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
-              ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
-            JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile.getDescription(),true);
-            item.addActionListener(new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                Object id = profile.getId();
-                try {
-                  profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
-                  applyProfile(columnProperties,profile,true);
-                }
-                catch (IOException ex) {
-                  Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profile: "+ex.getMessage(),ex);
-                }
-              }
-            });
-
-            if (profilesMenu.getComponentCount()==0) {
-              profileMenu.add(profilesMenu);
-              profileMenu.revalidate();
-            }
-            profilesMenu.add(item);
-
-          }
-        });
-        profileMenu.add(newMenu);
-
-        JMenuItem removeMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("remove current grid profile"));
-        removeMenu.addActionListener(new ActionListener() {
-
-          public void actionPerformed(ActionEvent e) {
-            try {
-              if (profile.getId().equals(defaultProfile.getId())) // this test should be unutil...
-                return;
-
-              for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
-                ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
-
-              String descriptionToRemove = profile.getDescription();
-              ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteUserProfile(functionId,profile.getId());
-
-              profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getDefaultProfile(functionId);
-              if (profile==null) {
-                profile = (GridProfile)defaultProfile.clone();
-                ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
-              }
-              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId,profile.getId());
-              applyProfile(columnProperties,profile,true);
-
-              for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
-                if (((JMenuItem)profilesMenu.getMenuComponent(i)).getText().equals(descriptionToRemove)) {
-                  profilesMenu.remove(i);
-                  profilesMenu.revalidate();
-
-                  if (profileMenu.getComponentCount()==0)
-                    profileMenu.getParent().remove(profileMenu);
-
-                  break;
-                }
-
-            }
-            catch (IOException ex) {
-              Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while removing grid profile: "+ex.getMessage(),ex);
-            }
-          }
-        });
-        profileMenu.add(removeMenu);
-
-        profileMenu.addSeparator();
-
-        try {
-          ArrayList list = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfiles(functionId);
-          for(int i=0;i<list.size();i++) {
-            final GridProfileDescription desc = (GridProfileDescription)list.get(i);
-            if (((GridProfileDescription)list.get(i)).isDefaultProfile())
-              continue;
-            final JCheckBoxMenuItem item = new JCheckBoxMenuItem(desc.getDescription());
-            item.addActionListener(new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
+          JMenuItem restoreMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("restore default grid profile"));
+          restoreMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              try {
                 for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
                   ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
-                item.setSelected(true);
 
-                Object id = desc.getId();
-                try {
-                  maybeStoreProfile(columnProperties);
+                // remove previous default profile from the storage media...
+                profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getDefaultProfile(functionId);
+                if (profile!=null)
+                  ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteUserProfile(functionId,profile.getId());
 
-                  profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
-                  ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId,id);
-                  applyProfile(columnProperties,profile,true);
-                }
-                catch (IOException ex) {
-                  Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profile: "+ex.getMessage(),ex);
-                }
+                profile = (GridProfile)defaultProfile.clone();
+                ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+                ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+                applyProfile(columnProperties, profile, true);
               }
-            });
-            if (profile.getId().equals(desc.getId()))
-              item.setSelected(true);
-            profilesMenu.add(item);
+              catch (Throwable ex) {
+                Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while storing grid profile: "+ex.getMessage(),ex);
+                return;
+              }
+            }
+          });
+          profileMenu.add(restoreMenu);
+
+          JMenuItem newMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("create new grid profile"));
+          newMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+              String desc = OptionPane.showInputDialog(
+                ClientUtils.getParentFrame(GridControl.this),
+                "profile description",
+                "create new grid profile",
+                JOptionPane.QUESTION_MESSAGE
+              );
+              if (desc==null)
+                return;
+
+              profile = (GridProfile)defaultProfile.clone();
+              profile.setId(null);
+              profile.setDefaultProfile(false);
+              profile.setDescription(desc);
+              try {
+                ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+                ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+                applyProfile(columnProperties, profile, true);
+              }
+              catch (Throwable ex) {
+                Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while storing grid profile: "+ex.getMessage(),ex);
+                return;
+              }
+
+              for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+                ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
+              JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile.getDescription(),true);
+              item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                  Object id = profile.getId();
+                  try {
+                    profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
+                    applyProfile(columnProperties,profile,true);
+                  }
+                  catch (Throwable ex) {
+                    Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profile: "+ex.getMessage(),ex);
+                  }
+                }
+              });
+
+              if (profilesMenu.getComponentCount()==0) {
+                profileMenu.add(profilesMenu);
+                profileMenu.revalidate();
+              }
+              profilesMenu.add(item);
+
+            }
+          });
+          profileMenu.add(newMenu);
+
+          JMenuItem removeMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("remove current grid profile"));
+          removeMenu.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+              try {
+                if (profile.getId().equals(defaultProfile.getId())) // this test should be unutil...
+                  return;
+
+                for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+                  ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
+
+                String descriptionToRemove = profile.getDescription();
+                ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteUserProfile(functionId,profile.getId());
+
+                profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getDefaultProfile(functionId);
+                if (profile==null) {
+                  profile = (GridProfile)defaultProfile.clone();
+                  ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+                }
+                ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId,profile.getId());
+                applyProfile(columnProperties,profile,true);
+
+                for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+                  if (((JMenuItem)profilesMenu.getMenuComponent(i)).getText().equals(descriptionToRemove)) {
+                    profilesMenu.remove(i);
+                    profilesMenu.revalidate();
+
+                    if (profileMenu.getComponentCount()==0)
+                      profileMenu.getParent().remove(profileMenu);
+
+                    break;
+                  }
+
+              }
+              catch (Throwable ex) {
+                Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while removing grid profile: "+ex.getMessage(),ex);
+              }
+            }
+          });
+          profileMenu.add(removeMenu);
+
+          profileMenu.addSeparator();
+
+          try {
+            ArrayList list = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfiles(functionId);
+            for(int i=0;i<list.size();i++) {
+              final GridProfileDescription desc = (GridProfileDescription)list.get(i);
+              if (((GridProfileDescription)list.get(i)).isDefaultProfile())
+                continue;
+              final JCheckBoxMenuItem item = new JCheckBoxMenuItem(desc.getDescription());
+              item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                  for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+                    ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
+                  item.setSelected(true);
+
+                  Object id = desc.getId();
+                  try {
+                    maybeStoreProfile(columnProperties);
+
+                    profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
+                    ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId,id);
+                    applyProfile(columnProperties,profile,true);
+                  }
+                  catch (Throwable ex) {
+                    Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profile: "+ex.getMessage(),ex);
+                  }
+                }
+              });
+              if (profile.getId().equals(desc.getId()))
+                item.setSelected(true);
+              profilesMenu.add(item);
+            }
+            if (profilesMenu.getMenuComponentCount()>0)
+              profileMenu.add(profilesMenu);
           }
-          if (profilesMenu.getMenuComponentCount()>0)
-            profileMenu.add(profilesMenu);
+          catch (Throwable ex) {
+            Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profiles: "+ex.getMessage(),ex);
+          }
+
+
+          // add a "dispose grid" listener...
+          this.addAncestorListener(new AncestorListener() {
+
+               public void ancestorAdded(AncestorEvent event) {
+               }
+
+               public void ancestorMoved(AncestorEvent event) {
+               }
+
+               public void ancestorRemoved(AncestorEvent event) {
+                 maybeStoreProfile(columnProperties);
+               }
+          });
         }
-        catch (IOException ex) {
-          Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profiles: "+ex.getMessage(),ex);
+        catch (Throwable ex) {
+          ex.printStackTrace();
+          profile = null;
         }
-
-
-        // add a "dispose grid" listener...
-        this.addAncestorListener(new AncestorListener() {
-
-             public void ancestorAdded(AncestorEvent event) {
-             }
-
-             public void ancestorMoved(AncestorEvent event) {
-             }
-
-             public void ancestorRemoved(AncestorEvent event) {
-               maybeStoreProfile(columnProperties);
-             }
-        });
-
-
-      }
+      } // end if on GRID_PROFILE_MANAGER usage
+      else if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId==null)
+        Logger.warn(this.getClass().getName(), "commitColumnContainer", "Grid profile not enabled because no 'functionId' property setted on GridControl");
 
       table.setReorderingAllowed(reorderingAllowed);
       table.setSelectionMode(selectionMode);
@@ -889,12 +895,12 @@ public class GridControl extends JPanel {
         table.getLockedGrid().setOrderWithLoadData(orderWithLoadData);
 
       // apply the profile (e.g. reorder column properties, etc)...
-      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null)
+      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null && profile!=null)
         applyProfile(columnProperties,profile,false);
 
 
     }
-    catch (Exception ex) {
+    catch (Throwable ex) {
       ex.printStackTrace();
     }
 
@@ -2278,7 +2284,7 @@ public class GridControl extends JPanel {
         ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
       }
     }
-    catch (Exception ex) {
+    catch (Throwable ex) {
       Logger.error(this.getClass().getName(), "maybeStoreProfile", "Error while saving grid profile: "+ex.getMessage(),ex);
     }
   }

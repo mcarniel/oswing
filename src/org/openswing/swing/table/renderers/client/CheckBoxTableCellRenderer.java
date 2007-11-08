@@ -63,15 +63,19 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
   /** default font */
   private Font defaultFont = null;
 
+  /** flag used to indicate if the button is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the button is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties */
+  private boolean enableInReadOnlyMode = false;
+
 
   /**
    * Constructor.
    * @param gridContainer grid container
    */
-  public CheckBoxTableCellRenderer(GridController gridContainer,int alignement) {
+  public CheckBoxTableCellRenderer(GridController gridContainer,int alignement,boolean enableInReadOnlyMode) {
     this.gridContainer = gridContainer;
     rend.setOpaque(true);
     rend.setHorizontalAlignment(alignement);
+    this.enableInReadOnlyMode = enableInReadOnlyMode;
   }
 
 
@@ -135,10 +139,10 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
       ));
       paintBorder = false;
     } else {
-      if (((Grid)table).getMode()==Consts.READONLY || !((Grid)table).isColorsInReadOnlyMode())
+      if (!enableInReadOnlyMode && (((Grid)table).getMode()==Consts.READONLY || !((Grid)table).isColorsInReadOnlyMode()))
         rend.setBackground(gridContainer.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
       else {
-        if (table.isCellEditable(row,column))
+        if (enableInReadOnlyMode || table.isCellEditable(row,column))
           rend.setBackground(ClientSettings.GRID_EDITABLE_CELL_BACKGROUND);
         else
           rend.setBackground(ClientSettings.GRID_NOT_EDITABLE_CELL_BACKGROUND);

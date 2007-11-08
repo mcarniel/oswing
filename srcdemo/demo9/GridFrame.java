@@ -8,6 +8,7 @@ import org.openswing.swing.lookup.client.LookupController;
 import java.sql.*;
 import java.awt.event.*;
 import org.openswing.swing.table.java.*;
+import java.awt.event.ActionEvent;
 
 
 /**
@@ -118,6 +119,7 @@ public class GridFrame extends JFrame {
     textColumn1.setPreferredWidth(150);
     colCheck.setColumnDuplicable(true);
     colCheck.setColumnName("checkValue");
+    colCheck.setEnableInReadOnlyMode(true);
     colCheck.setColumnRequired(false);
     colCheck.setEditableOnEdit(true);
     colCheck.setEditableOnInsert(true);
@@ -127,6 +129,9 @@ public class GridFrame extends JFrame {
     colButton.setColumnName("button");
     colButton.setHeaderColumnName("button");
     colButton.setPreferredWidth(50);
+    colButton.setEditableOnEdit(true);
+    colButton.setEditableOnInsert(true);
+    colButton.setEnableInReadOnlyMode(true);
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
@@ -145,7 +150,12 @@ public class GridFrame extends JFrame {
     grid.getColumnContainer().add(colLookup, null);
     grid.getColumnContainer().add(textColumn1, null);
     grid.getColumnContainer().add(colCheck, null);
-
+    colButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        // do something...
+        System.out.println("button pressed");
+      }
+    });
 
   }
 

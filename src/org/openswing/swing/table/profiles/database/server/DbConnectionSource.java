@@ -1,10 +1,14 @@
-package org.openswing.swing.table.profiles.client;
+package org.openswing.swing.table.profiles.database.server;
+
+import java.sql.*;
+import java.util.Properties;
+import java.util.Hashtable;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: Grid profile description: it contains the profile identifier,
- * the profile description and a flag used to identify the default profile,
- * to show it in the user profiles list.</p>
+ * <p>Description: Singleton class.
+ * Database Connection Manager: it provides database connections for grid profile management.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -30,39 +34,22 @@ package org.openswing.swing.table.profiles.client;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class GridProfileDescription {
-
-  /** profile identifier */
-  private Object id = null;
-
-  /** profile description */
-  private String description = null;
-
-  /** flag used to identify the default profile */
-  private boolean defaultProfile;
+public interface DbConnectionSource {
 
 
   /**
-   * Constructor.
-   * @param id profile identifier
-   * @param description profile description
-   * @param defaultProfile flag used to identify the default profile
+   * @param context servlet context; used to retrieve database connection settings
+   * @return new database connection
    */
-  public GridProfileDescription(Object id,String description,boolean defaultProfile) {
-    this.id = id;
-    this.description = description;
-    this.defaultProfile = defaultProfile;
- }
+  public Connection getConnection() throws Exception;
 
 
-  public String getDescription() {
-    return description;
-  }
-  public Object getId() {
-    return id;
-  }
-  public boolean isDefaultProfile() {
-    return defaultProfile;
-  }
+  /**
+   * Release a database connection
+   * @param conn database connection to release
+   * @param context servlet context; used to retrieve database connection settings
+   */
+  public void releaseConnection(Connection conn);
+
 
 }

@@ -234,23 +234,5 @@ public class GridFrameController extends GridController implements GridDataLocat
   }
 
 
-  /**
-   * Callback method invoked each time a cell is edited: this method define if the new value is valid.
-   * This method is invoked ONLY if:
-   * - the edited value is not equals to the old value OR it has exmplicitely called setCellAt or setValueAt
-   * - the cell is editable
-   * Default behaviour: cell value is valid.
-   * @param rowNumber selected row index
-   * @param attributeName attribute name related to the column currently selected
-   * @param oldValue old cell value (before cell editing)
-   * @param newValue new cell value (just edited)
-   * @return <code>true</code> if cell value is valid, <code>false</code> otherwise
-   */
-  public boolean validateCell(int rowNumber,String attributeName,Object oldValue,Object newValue) {
-    if (attributeName.equals("surname"))
-        return false;
-    return true;
-  }
-
 
 }

@@ -37,7 +37,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import javax.swing.plaf.UIResource;
 import java.awt.Rectangle;
-import org.openswing.swing.table.profiles.client.GridProfile;
+import org.openswing.swing.table.profiles.java.GridProfile;
 
 
 /**
@@ -772,8 +772,22 @@ public class Grid extends JTable
    * Method redefined to store the current selected cell when user clicks directly in the cell with the mouse.
    */
     public boolean editCellAt(int row, int column, EventObject e) {
-      if (grids==null || grids!=null && grids.getMode()==Consts.READONLY)
+      if (grids==null)
         return false;
+      if (grids!=null && grids.getMode()==Consts.READONLY) {
+        boolean returnFalse = true;
+        for(int i=0;i<colProps.length;i++)
+          if (colProps[i].getColumnType()==Column.TYPE_BUTTON && ((ButtonColumn)colProps[i]).isEnableInReadOnlyMode()) {
+            returnFalse = false;
+            break;
+          }
+        else if (colProps[i].getColumnType()==Column.TYPE_CHECK && ((CheckBoxColumn)colProps[i]).isEnableInReadOnlyMode()) {
+          returnFalse = false;
+          break;
+        }
+        if (returnFalse)
+          return false;
+      }
       setRowSelectionInterval(row,row);
       setColumnSelectionInterval(column,column);
       return super.editCellAt(row, column, e);

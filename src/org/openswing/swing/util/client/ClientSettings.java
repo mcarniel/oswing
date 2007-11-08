@@ -13,7 +13,7 @@ import java.lang.reflect.*;
 import org.openswing.swing.util.java.Consts;
 import java.awt.Font;
 import java.awt.Dimension;
-import org.openswing.swing.table.profiles.client.GridProfileManager;
+import org.openswing.swing.table.profiles.java.GridProfileManager;
 
 
 /**
