@@ -43,7 +43,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _resizingAllowed = new PropertyDescriptor("resizingAllowed", beanClass, "isResizingAllowed", "setResizingAllowed");
       PropertyDescriptor _rowHeight = new PropertyDescriptor("rowHeight", beanClass, "getRowHeight", "setRowHeight");
       PropertyDescriptor _rowHeightFixed = new PropertyDescriptor("rowHeightFixed", beanClass, "isRowHeightFixed", "setRowHeightFixed");
-      PropertyDescriptor _rowMargin = new PropertyDescriptor("rowMargin", beanClass, "getRowMargin", "seRowMargin");
+      PropertyDescriptor _rowMargin = new PropertyDescriptor("rowMargin", beanClass, "getRowMargin", "setRowMargin");
       PropertyDescriptor _saveButton = new PropertyDescriptor("saveButton", beanClass, "getSaveButton", "setSaveButton");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
       PropertyDescriptor _showFilterPanelOnGrid = new PropertyDescriptor("showFilterPanelOnGrid", beanClass, "isShowFilterPanelOnGrid", "setShowFilterPanelOnGrid");

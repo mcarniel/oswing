@@ -70,7 +70,7 @@ public class ClientApplication implements MDIController,LoginController {
     props.setProperty("description","Description");
     props.setProperty("address","Address");
     props.setProperty("tasks","Tasks");
-    props.setProperty("departments","departments");
+    props.setProperty("departments","Departments");
     props.setProperty("taskCode","Task Code");
     props.setProperty("firstName","First Name");
     props.setProperty("lastName","Last Name");

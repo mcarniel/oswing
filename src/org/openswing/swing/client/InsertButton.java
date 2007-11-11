@@ -7,6 +7,7 @@ import org.openswing.swing.client.*;
 
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.internationalization.java.*;
+import java.awt.event.FocusEvent;
 
 
 /**
@@ -47,6 +48,13 @@ public class InsertButton extends GenericButton {
 
   public void setText(String t) { }
 
+
+  public void processFocusEvent(FocusEvent e) {
+    super.processFocusEvent(e);
+    if (e.getID()==e.FOCUS_GAINED) {
+      ;
+    }
+  }
 
 
   /**

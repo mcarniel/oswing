@@ -65,6 +65,7 @@ public class GenericButton extends JButton {
           }.start();
       }
     });
+    this.setFocusable(false);
   }
 
 
@@ -82,6 +83,7 @@ public class GenericButton extends JButton {
           }.start();
       }
     });
+    this.setFocusable(false);
   }
 
 

@@ -25,7 +25,6 @@ public class ComboBoxVOControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _attributeName = new PropertyDescriptor("attributeName", beanClass, "getAttributeName", "setAttributeName");
       _attributeName.setPropertyEditorClass(AttributeNameEditor.class);
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
-      PropertyDescriptor _domainId = new PropertyDescriptor("domainId", beanClass, "getDomainId", "setDomainId");
       PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _nullAsDefaultValue = new PropertyDescriptor("nullAsDefaultValue", beanClass, "isNullAsDefaultValue", "setNullAsDefaultValue");
@@ -37,7 +36,6 @@ public class ComboBoxVOControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
           _attributeName,
           _canCopy,
-          _domainId,
           _font,
           _linkLabel,
           _nullAsDefaultValue,

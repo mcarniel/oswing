@@ -84,8 +84,13 @@ public class FileGridProfileManager extends GridProfileManager {
     GridProfile profile = null;
     if (files!=null)
       for(int i=0;i<files.length;i++) {
-        profile = getUserProfile(functionId,files[i].getName());
-        profiles.add(new GridProfileDescription(files[i].getName(),profile.getDescription(),profile.isDefaultProfile()));
+        try {
+          profile = getUserProfile(functionId, files[i].getName());
+        }
+        catch (Throwable ex) {
+        }
+        if (profile!=null)
+          profiles.add(new GridProfileDescription(files[i].getName(),profile.getDescription(),profile.isDefaultProfile()));
       }
     return profiles;
   }

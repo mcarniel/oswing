@@ -706,6 +706,14 @@ public class Grid extends JTable
   }
 
 
+//  public void processFocusEvent(FocusEvent e) {
+//    super.processFocusEvent(e);
+//    if (e.getID()==e.FOCUS_LOST) {
+//      ;
+//    }
+//  }
+
+
   /**
    * Check additional column header spans.
    */

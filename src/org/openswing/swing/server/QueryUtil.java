@@ -465,8 +465,11 @@ public class QueryUtil {
       // prepare the SQL statement...
       long t1 = System.currentTimeMillis();
       pstmt = conn.prepareStatement(baseSQL);
-      for(int i=0;i<values.size();i++)
+      for(int i=0;i<values.size();i++) {
+        if (values.get(i)!=null && values.get(i).getClass().getName().equals("java.util.Date"))
+          values.set(i,new java.sql.Date(((java.util.Date)values.get(i)).getTime()));
         pstmt.setObject(i+1,values.get(i));
+      }
       ResultSet rset = pstmt.executeQuery();
       long t2 = System.currentTimeMillis();
 
@@ -841,8 +844,11 @@ public class QueryUtil {
        // esecute the SQL statement...
        long t1 = System.currentTimeMillis();
        pstmt = conn.prepareStatement(sql);
-       for(i=0;i<values.size();i++)
+       for(i=0;i<values.size();i++) {
+         if (values.get(i)!=null && values.get(i).getClass().getName().equals("java.util.Date"))
+           values.set(i,new java.sql.Date(((java.util.Date)values.get(i)).getTime()));
          pstmt.setObject(i+1,values.get(i));
+       }
        pstmt.execute();
 
        long t2 = System.currentTimeMillis();
@@ -1026,8 +1032,11 @@ public class QueryUtil {
         // esecute the SQL statement...
         long t1 = System.currentTimeMillis();
         pstmt = conn.prepareStatement(sql.toString());
-        for(i=0;i<values.size();i++)
+        for(i=0;i<values.size();i++) {
+          if (values.get(i)!=null && values.get(i).getClass().getName().equals("java.util.Date"))
+            values.set(i,new java.sql.Date(((java.util.Date)values.get(i)).getTime()));
           pstmt.setObject(i+1,values.get(i));
+        }
         pstmt.execute();
         pstmt.close();
 
@@ -1260,8 +1269,11 @@ public class QueryUtil {
       // esecute the SQL statement...
       long t1 = System.currentTimeMillis();
       pstmt = conn.prepareStatement(sql);
-      for(i=0;i<values.size();i++)
+      for(i=0;i<values.size();i++) {
+        if (values.get(i)!=null && values.get(i).getClass().getName().equals("java.util.Date"))
+          values.set(i,new java.sql.Date(((java.util.Date)values.get(i)).getTime()));
         pstmt.setObject(i+1,values.get(i));
+      }
       int rowsUpdated = pstmt.executeUpdate();
 
       long t2 = System.currentTimeMillis();

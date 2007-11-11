@@ -858,8 +858,12 @@ public class GridControl extends JPanel {
         }
       });
 
-
-      table.getGrid().requestFocus();
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          if (!table.getGrid().hasFocus())
+            table.getGrid().requestFocus();
+        }
+      });
 
       if (rowHeightFixed) {
         table.getGrid().setRowHeight(rowHeight);
