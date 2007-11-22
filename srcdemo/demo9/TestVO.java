@@ -3,6 +3,7 @@ package demo9;
 import org.openswing.swing.message.receive.java.ValueObjectImpl;
 import java.math.BigDecimal;
 import java.sql.Date;
+import javax.swing.Icon;
 
 
 /**
@@ -25,7 +26,7 @@ public class TestVO extends ValueObjectImpl {
   private Date dateValue;
   private String lookupValue;
   private String descrLookupValue;
-  private String button;
+  private Icon button;
 
   public TestVO() {
   }
@@ -85,10 +86,10 @@ public class TestVO extends ValueObjectImpl {
   public void setDescrLookupValue(String descrLookupValue) {
     this.descrLookupValue = descrLookupValue;
   }
-  public String getButton() {
+  public Icon getButton() {
     return button;
   }
-  public void setButton(String button) {
+  public void setButton(Icon button) {
     this.button = button;
   }
 

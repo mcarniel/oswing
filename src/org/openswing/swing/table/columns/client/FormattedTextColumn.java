@@ -8,6 +8,12 @@ import java.awt.event.KeyEvent;
 import javax.swing.Action;
 import javax.swing.text.Document;
 import javax.swing.InputVerifier;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.renderers.client.TextTableCellRenderer;
+import org.openswing.swing.table.editors.client.FormattedTextCellEditor;
+import org.openswing.swing.table.client.Grids;
 
 
 /**
@@ -363,6 +369,28 @@ public class FormattedTextColumn extends Column {
 
   }
 
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new TextTableCellRenderer(
+        tableContainer,
+        false,
+        getTextAlignment()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new FormattedTextCellEditor(
+      getTextBox(),
+      isColumnRequired()
+    );
+  }
 
 
 }

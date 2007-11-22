@@ -8,6 +8,12 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.util.ArrayList;
 import java.awt.event.ActionListener;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.table.renderers.client.ImageTableCellRenderer;
+import org.openswing.swing.table.editors.client.ImageCellEditor;
 
 
 /**
@@ -141,6 +147,29 @@ public class ImageColumn extends Column {
    */
   public final ArrayList getListeners() {
     return listeners;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new ImageTableCellRenderer(
+      tableContainer,
+      getTextAlignment()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new ImageCellEditor(
+      isShowButton(),
+      getFileFilter(),
+      getListeners()
+    );
   }
 
 

@@ -1,6 +1,12 @@
 package org.openswing.swing.table.columns.client;
 
 import javax.swing.SwingConstants;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.renderers.client.NumericTableCellRenderer;
+import org.openswing.swing.table.editors.client.NumericCellEditor;
+import org.openswing.swing.table.client.Grids;
 
 
 /**
@@ -47,6 +53,35 @@ public class PercentageColumn extends DecimalColumn {
    */
   public int getColumnType() {
     return TYPE_PERC;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new NumericTableCellRenderer(
+        getDecimals(),
+        isGrouping(),
+        tableContainer,
+        getDynamicSettings(),
+        getTextAlignment()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new NumericCellEditor(
+        Column.TYPE_PERC,
+        getDecimals(),
+        isColumnRequired(),
+        getMinValue(),
+        getMaxValue(),
+        getDynamicSettings()
+    );
   }
 
 

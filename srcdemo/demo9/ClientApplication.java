@@ -12,7 +12,8 @@ import org.openswing.swing.internationalization.java.*;
 /**
  * <p>Title: OpenSwing Demo</p>
  * <p>Description: Used to start application from main method:
- * it creates an editable grid frame where the user can insert more than one row at a time.</p>
+ * it creates an editable grid frame where the user can insert more than one row at a time.
+ * It shows also how to render images inside a button column.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  * <p> </p>
  * @author Mauro Carniel

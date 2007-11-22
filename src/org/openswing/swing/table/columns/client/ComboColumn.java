@@ -4,6 +4,13 @@ import org.openswing.swing.domains.java.Domain;
 import java.util.ArrayList;
 import java.awt.event.ItemListener;
 import org.openswing.swing.util.client.ClientSettings;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.table.renderers.client.DomainTableCellRenderer;
+import org.openswing.swing.logger.client.Logger;
+import org.openswing.swing.table.editors.client.DomainCellEditor;
 
 
 /**
@@ -137,5 +144,52 @@ public class ComboColumn extends Column {
   public final void setNullAsDefaultValue(boolean nullAsDefaultValue) {
     this.nullAsDefaultValue = nullAsDefaultValue;
   }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    if (getDomainId()==null &&
+        getDomain()==null) {
+      Logger.error(this.getClass().getName(),"getCellRenderer","You must set the 'domainId' property for the column '"+getColumnName()+"'.",null);
+      return null;
+    }
+    Domain domain = getDomain();
+    if (domain==null)
+      domain = ClientSettings.getInstance().getDomain( getDomainId() );
+    if (domain!=null)
+      return new DomainTableCellRenderer(domain,tableContainer,getTextAlignment());
+    else {
+      Logger.error(this.getClass().getName(),"getCellRenderer","The domainId '"+getDomainId()+"' for the column '"+getColumnName()+"' "+" doesn't exist.",null);
+      return null;
+    }
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    if (getDomainId()==null &&
+        getDomain()==null) {
+      Logger.error(this.getClass().getName(),"getCellEditor","You must set the 'domainId' property for the column '"+getColumnName()+"'.",null);
+      return null;
+    }
+    Domain domain = getDomain();
+    if (domain==null)
+      domain = ClientSettings.getInstance().getDomain( getDomainId() );
+    if (domain!=null)
+      return new DomainCellEditor(
+          domain,
+          isColumnRequired(),
+          getItemListeners()
+      );
+    else {
+      Logger.error(this.getClass().getName(),"getCellEditor","The domainId '"+getDomainId()+"' for the column '"+getColumnName()+"' doesn't exist.",null);
+      return null;
+    }
+  }
+
 
 }

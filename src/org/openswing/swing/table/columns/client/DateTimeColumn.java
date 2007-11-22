@@ -6,6 +6,12 @@ import java.util.Date;
 import org.openswing.swing.client.DateChangedListener;
 import org.openswing.swing.internationalization.java.Resources;
 import org.openswing.swing.util.client.ClientSettings;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.renderers.client.DateTableCellRenderer;
+import org.openswing.swing.table.editors.client.DateCellEditor;
+import org.openswing.swing.table.client.Grids;
 
 
 /**
@@ -205,6 +211,31 @@ public class DateTimeColumn extends Column {
    */
   public final void setTimeFormat(String timeFormat) {
     this.timeFormat = timeFormat;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new DateTableCellRenderer(
+      Column.TYPE_DATE_TIME,
+      tableContainer,
+      getTextAlignment(),
+      getSeparator(),
+      getFormat(),
+      getDateListeners(),
+      isShowCentury(),
+      getTimeFormat()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE_TIME);
   }
 
 

@@ -71,6 +71,7 @@ public class ClientApplication {
     ClientSettings.FILTER_PANEL_ON_GRID = true;
     ClientSettings.VIEW_BACKGROUND_SEL_COLOR = true;
     ClientSettings.SHOW_SORTING_ORDER = true;
+    ClientSettings.SHOW_FOCUS_BORDER_ON_FORM = false;
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
 //com.jgoodies.looks.plastic.PlasticLookAndFeel
 //com.jgoodies.looks.plastic.Plastic3DLookAndFeel

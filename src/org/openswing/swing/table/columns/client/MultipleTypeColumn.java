@@ -1,5 +1,13 @@
 package org.openswing.swing.table.columns.client;
 
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.renderers.client.MultipleTypeTableCellRenderer;
+import org.openswing.swing.table.editors.client.MultipleTypeCellEditor;
+import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.table.client.Grids;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -63,5 +71,32 @@ public class MultipleTypeColumn extends Column {
     return this.typeController;
   }
 
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new MultipleTypeTableCellRenderer(
+      tableContainer,
+      getTypeController(),
+      getTextAlignment(),
+      getColumnName(),
+      grids.getGridControl()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new MultipleTypeCellEditor(
+      tableContainer,
+      getTypeController(),
+      getColumnName(),
+      grids.getGridControl(),
+      isColumnRequired()
+    );
+  }
 
 }

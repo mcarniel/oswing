@@ -1,5 +1,12 @@
 package org.openswing.swing.table.columns.client;
 
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.renderers.client.MultiLineTextTableCellRenderer;
+import org.openswing.swing.table.editors.client.MultiLineTextCellEditor;
+import org.openswing.swing.table.client.Grids;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -64,6 +71,25 @@ public class MultiLineTextColumn extends Column {
   }
 
 
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new MultiLineTextTableCellRenderer(
+        tableContainer
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new MultiLineTextCellEditor(
+      getMaxCharacters(),
+      isColumnRequired()
+    );
+  }
 
 
 

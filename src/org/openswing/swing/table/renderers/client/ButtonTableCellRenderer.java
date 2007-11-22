@@ -62,7 +62,7 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
    * @param text button text
    * @param gridController grid controller
    */
-  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController,int alignement,boolean enableInReadOnlyMode) {
+  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController,int alignement,boolean enableInReadOnlyMode,Icon icon) {
     this.gridController = gridController;
     this.showAttributeValue = showAttributeValue;
     if (!showAttributeValue)
@@ -70,6 +70,8 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
     rend.setBorder(BorderFactory.createRaisedBevelBorder());
     rend.setHorizontalAlignment(alignement);
     this.enableInReadOnlyMode = enableInReadOnlyMode;
+    if (icon!=null)
+      rend.setIcon(icon);
   }
 
 
@@ -77,8 +79,18 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
                           boolean isSelected, boolean hasFocus, int row, int column) {
     if (defaultFont==null)
       defaultFont = rend.getFont();
-    if (showAttributeValue)
-      rend.setText((String)value);
+    if (showAttributeValue) {
+      if (value!=null && value instanceof byte[])
+        rend.setIcon(new ImageIcon((byte[])value));
+      else if (value!=null && value instanceof Icon)
+        rend.setIcon((Icon)value);
+      else if (value!=null)
+        rend.setText(value.toString());
+      else {
+        rend.setText("");
+        rend.setIcon(null);
+      }
+    }
     if (hasFocus && table instanceof Grid) {
       Color selColor = null;
       try {

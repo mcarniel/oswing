@@ -38,7 +38,7 @@ public class DemoLookupController extends LookupController {
         try {
           stmt = DemoLookupController.this.conn.createStatement();
           ResultSet rset = stmt.executeQuery(
-              "select DEMO24_LOOKUP.CODE,DEMO3_LOOKUP.DESCRCODE from DEMO3_LOOKUP where CODE='" +
+              "select DEMO24_LOOKUP.CODE,DEMO24_LOOKUP.DESCRCODE from DEMO24_LOOKUP where CODE='" +
               code + "'");
           ArrayList list = new ArrayList();
           while (rset.next()) {

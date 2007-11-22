@@ -88,7 +88,7 @@ public class LoginDialog extends JDialog {
     super(parentFrame==null?new JFrame():parentFrame,"Logon",true);
     this.parentFrame = parentFrame;
     Dimension dim = new Dimension(
-        (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-150,
+        (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-190,
         (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-90
     );
     if (parentFrame==null) {
@@ -99,7 +99,7 @@ public class LoginDialog extends JDialog {
     this.loginController = loginController;
     try {
       jbInit();
-      setSize(300,180);
+      setSize(380,180);
       setLocation(dim.width,dim.height);
       setVisible(true);
     }
@@ -115,7 +115,9 @@ public class LoginDialog extends JDialog {
     usernameLabel.setText("Username");
     passwdLabel.setText("Password");
     usernameTF.setColumns(15);
+    usernameTF.setMinimumSize(new Dimension(usernameTF.getFontMetrics(usernameTF.getFont()).stringWidth("               "),usernameTF.getHeight()));
     passwdTF.setColumns(15);
+    passwdTF.setMinimumSize(new Dimension(passwdTF.getFontMetrics(passwdTF.getFont()).stringWidth("               "),passwdTF.getHeight()));
     passwdTF.addActionListener(new LoginDialog_passwdTF_actionAdapter(this));
     mainPanel.setBorder(BorderFactory.createEtchedBorder());
     exitButton.setMnemonic('E');

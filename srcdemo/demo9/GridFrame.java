@@ -132,6 +132,13 @@ public class GridFrame extends JFrame {
     colButton.setEditableOnEdit(true);
     colButton.setEditableOnInsert(true);
     colButton.setEnableInReadOnlyMode(true);
+
+//    colButton.setIconName("chiuso.gif");
+//    colButton.setText("");
+
+    colButton.setShowAttributeValue(true);
+
+
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
@@ -157,6 +164,9 @@ public class GridFrame extends JFrame {
       }
     });
 
+  }
+  public GridControl getGrid() {
+    return grid;
   }
 
 

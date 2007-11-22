@@ -13,6 +13,12 @@ import org.openswing.swing.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import org.openswing.swing.table.client.Grids;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.DefaultCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.client.Grids;
 
 
 /**
@@ -604,6 +610,39 @@ public class Column extends JPanel {
    */
   public final void setAdditionalHeaderColumnSpan(int additionalHeaderColumnSpan) {
     this.additionalHeaderColumnSpan = additionalHeaderColumnSpan;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new DefaultTableCellRenderer();
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new DefaultTableCellEditor();
+  }
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used in getCellEditor() method.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class DefaultTableCellEditor extends DefaultCellEditor implements TableCellEditor {
+
+
+    public DefaultTableCellEditor() {
+      super(new JTextField());
+    }
+
   }
 
 

@@ -4,6 +4,13 @@ package org.openswing.swing.table.columns.client;
 import org.openswing.swing.client.CodBox;
 import org.openswing.swing.lookup.client.*;
 import org.openswing.swing.message.receive.java.ValueObject;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.table.renderers.client.CodLookupCellRenderer;
+import org.openswing.swing.table.editors.client.CodLookupCellEditor;
+import org.openswing.swing.logger.client.Logger;
 
 
 /**
@@ -304,6 +311,39 @@ public class CodLookupColumn extends Column {
     catch (Exception ex) {
       ex.printStackTrace();
     }
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new CodLookupCellRenderer(
+        tableContainer,
+        isHideCodeBox(),
+        getTextAlignment()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    if (getLookupController()==null) {
+      Logger.error(this.getClass().getName(),"getCellEditor","The column '"+getColumnName()+"' has not set the 'lookupController' property.",null);
+      return null;
+    }
+    return new CodLookupCellEditor(
+        getMaxCharacters(),
+        getLookupController(),
+        isColumnRequired(),
+        isAllowOnlyNumbers(),
+        !isHideCodeBox(),
+        isEnableCodBox(),
+        getControllerClassName(),
+        getControllerMethodName());
+
   }
 
 

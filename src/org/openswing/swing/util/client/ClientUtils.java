@@ -118,7 +118,7 @@ public class ClientUtils extends JApplet {
     Dimension dim = parentFrame.getSize();
     d.setLocation(new Point(
         parentFrame.getLocation().x+(dim.width-d.getWidth())/2,
-        parentFrame.getLocation().y+(dim.height-d.getHeight())/2)
+        Math.max(0,parentFrame.getLocation().y+(dim.height-d.getHeight())/2))
     );
   }
 
@@ -132,7 +132,7 @@ public class ClientUtils extends JApplet {
     Dimension dim = parentFrame.getSize();
     w.setLocation(new Point(
         parentFrame.getLocation().x+(dim.width-w.getWidth())/2,
-        parentFrame.getLocation().y+(dim.height-w.getHeight())/2)
+        Math.max(0,parentFrame.getLocation().y+(dim.height-w.getHeight())/2))
     );
   }
 
@@ -146,7 +146,7 @@ public class ClientUtils extends JApplet {
     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
     frame.setLocation(
       (int)screen.getWidth()/2-frame.getWidth()/2,
-      (int)screen.getHeight()/2-frame.getHeight()/2
+      Math.max(0,(int)screen.getHeight()/2-frame.getHeight()/2)
     );
   }
 

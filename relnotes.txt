@@ -1,4 +1,18 @@
 
+Release Notes 1.3.5
+-------------------
+
+Final release 1.3.5 available
+
+Improved Column base class: now it is possible to create other column types from this base class.
+Improved ButtonColumn, by adding two new properties: "icon" and "iconName" to show an icon inside the button.
+Fixed problem in rendering input fields inside the LoginDialog.
+Fixed problem on validating input controls added to linked Forms.
+Added ClientSettings.SHOW_FOCUS_BORDER_ON_FORM switcher to hide focus border around the Form panel.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.3.4
 -------------------
 

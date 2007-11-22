@@ -46,16 +46,21 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
   /** flag used to indicate that attribute value will be showed as button text; default value: <code>false</code> i.e. the button text is defined by the "text" property */
   private boolean showAttributeValue;
 
+  /** current value */
+  private Object value = null;
+
 
   /**
    * Constructor.
    * @param text button text
    * @param actionListeners list of ActionListeners linked to the button
    */
-  public ButtonCellEditor(String text,boolean showAttributeValue,ArrayList actionListeners) {
+  public ButtonCellEditor(String text,boolean showAttributeValue,ArrayList actionListeners,Icon icon) {
     this.showAttributeValue = showAttributeValue;
     if (!showAttributeValue)
       this.field.setText(ClientSettings.getInstance().getResources().getResource(text));
+    if (icon!=null)
+      field.setIcon(icon);
     for(int i=0;i<actionListeners.size();i++)
       field.addActionListener((ActionListener)actionListeners.get(i));
   }
@@ -80,7 +85,7 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
 
 
   public final Object getCellEditorValue() {
-    return field.getText();
+    return value;
   }
 
 
@@ -88,8 +93,19 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
    * Prepare the editor for a value.
    */
   private final Component _prepareEditor(Object value) {
-    if (showAttributeValue)
-      field.setText((String)value);
+    this.value = value;
+    if (showAttributeValue) {
+      if (value!=null && value instanceof byte[])
+        field.setIcon(new ImageIcon((byte[])value));
+      else if (value!=null && value instanceof Icon)
+        field.setIcon((Icon)value);
+      else if (value!=null)
+        field.setText(value.toString());
+      else {
+        field.setText("");
+        field.setIcon(null);
+      }
+    }
     return field;
   }
 

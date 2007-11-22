@@ -369,10 +369,14 @@ public class VOModel {
           if (value==null && oldValue!=null ||
               value!=null && oldValue==null ||
               value!=null && oldValue!=null && !value.equals(oldValue)) {
-            boolean isOk = form.getFormController().validateControl(
+            boolean isOk =
+              form.getFormController()==null ?
+              true :
+              form.getFormController().validateControl(
                 attributeName,
                 oldValue,
-                value);
+                value
+              );
             if (isOk) {
               writeMethods[writeMethods.length-1].invoke(obj, new Object[]{value});
               fireValueChanged(attributeName,oldValue,value);

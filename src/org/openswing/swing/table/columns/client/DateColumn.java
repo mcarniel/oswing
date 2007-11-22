@@ -6,6 +6,12 @@ import java.util.Date;
 import org.openswing.swing.client.DateChangedListener;
 import org.openswing.swing.internationalization.java.Resources;
 import org.openswing.swing.util.client.ClientSettings;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.renderers.client.DateTableCellRenderer;
+import org.openswing.swing.table.editors.client.DateCellEditor;
+import org.openswing.swing.table.client.Grids;
 
 
 /**
@@ -184,6 +190,31 @@ public class DateColumn extends Column {
 
   public final ArrayList getDateListeners() {
     return dateListeners;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new DateTableCellRenderer(
+      Column.TYPE_DATE,
+      tableContainer,
+      getTextAlignment(),
+      getSeparator(),
+      getFormat(),
+      getDateListeners(),
+      isShowCentury(),
+      Resources.HH_MM
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE);
   }
 
 

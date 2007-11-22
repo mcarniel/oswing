@@ -9,6 +9,8 @@ import org.openswing.swing.table.java.GridDataLocator;
 import org.openswing.swing.server.QueryUtil;
 import org.openswing.swing.server.UserSessionParameters;
 import org.openswing.swing.client.GridControl;
+import org.openswing.swing.util.client.ClientUtils;
+import javax.swing.ImageIcon;
 
 
 /**
@@ -86,6 +88,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         vo.setStringValue(rset.getString(1));
         vo.setLookupValue(rset.getString(8));
         vo.setDescrLookupValue(rset.getString(9));
+        vo.setButton( getButtonIcon(vo.getCheckValue()) );
         list.add(vo);
       }
       return new VOListResponse(list,false,list.size());
@@ -254,6 +257,36 @@ public class GridFrameController extends GridController implements GridDataLocat
       }
     }
 
+  }
+
+
+  private ImageIcon getButtonIcon(Boolean checkValue) {
+    if (checkValue!=null && checkValue.booleanValue())
+      return new ImageIcon(ClientUtils.getImage("chiuso.gif"));
+    else
+      return new ImageIcon(ClientUtils.getImage("aperto.gif"));
+
+  }
+
+
+  /**
+   * Callback method invoked each time a cell is edited: this method define if the new value is valid.
+   * This method is invoked ONLY if:
+   * - the edited value is not equals to the old value OR it has exmplicitely called setCellAt or setValueAt
+   * - the cell is editable
+   * Default behaviour: cell value is valid.
+   * @param rowNumber selected row index
+   * @param attributeName attribute name related to the column currently selected
+   * @param oldValue old cell value (before cell editing)
+   * @param newValue new cell value (just edited)
+   * @return <code>true</code> if cell value is valid, <code>false</code> otherwise
+   */
+  public boolean validateCell(int rowNumber,String attributeName,Object oldValue,Object newValue) {
+    if (attributeName.equals("checkValue")) {
+      TestVO vo = (TestVO)grid.getGrid().getVOListTableModel().getObjectForRow(rowNumber);
+      vo.setButton( getButtonIcon((Boolean)newValue) );
+    }
+    return true;
   }
 
 

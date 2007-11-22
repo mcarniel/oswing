@@ -14,6 +14,12 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.table.renderers.client.ComboVOTableCellRenderer;
+import org.openswing.swing.table.editors.client.ComboBoxVOCellEditor;
 
 
 /**
@@ -371,6 +377,42 @@ public class ComboVOColumn extends Column {
   }
   public ItemsMapper getItemsMapper() {
     return itemsMapper;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new ComboVOTableCellRenderer(
+        getComboDataLocator(),
+        getColumnName(),
+        getItemsVO(),
+        getColProperties(),
+        isAllColumnVisible(),
+        getAllColumnPreferredWidth(),
+        getGetters(),
+        tableContainer
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new ComboBoxVOCellEditor(
+        getItemsMapper(),
+        getComboDataLocator(),
+        getColumnName(),
+        getItemsVO(),
+        getColProperties(),
+        isAllColumnVisible(),
+        getAllColumnPreferredWidth(),
+        getGetters(),
+        isColumnRequired(),
+        getItemListeners()
+    );
   }
 
 

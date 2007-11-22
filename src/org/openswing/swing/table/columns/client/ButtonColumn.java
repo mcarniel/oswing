@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import org.openswing.swing.util.client.ClientSettings;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.table.renderers.client.ButtonTableCellRenderer;
+import org.openswing.swing.table.editors.client.ButtonCellEditor;
+import javax.swing.Icon;
+import org.openswing.swing.util.client.ClientUtils;
+import javax.swing.ImageIcon;
 
 
 /**
@@ -48,6 +57,12 @@ public class ButtonColumn extends Column {
 
   /** flag used to indicate if the button is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the button is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties */
   private boolean enableInReadOnlyMode = false;
+
+  /** icon to render within the button (optional) */
+  private Icon icon = null;
+
+  /** file name (inside "image" folder) related to the icon to render within the button (optional) */
+  private String iconName = null;
 
 
   public ButtonColumn() {
@@ -140,6 +155,70 @@ public class ButtonColumn extends Column {
     this.enableInReadOnlyMode = enableInReadOnlyMode;
   }
 
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new ButtonTableCellRenderer(
+      getText(),
+      isShowAttributeValue(),
+      tableContainer,
+      getTextAlignment(),
+      isEnableInReadOnlyMode(),
+      icon
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new ButtonCellEditor(
+      getText(),
+      isShowAttributeValue(),
+      getActionListeners(),
+      icon
+    );
+  }
+
+
+  /**
+   * @return icon to render within the button (optional)
+   */
+  public final Icon getIcon() {
+    return icon;
+  }
+
+
+  /**
+   * Set the icon to render within the button (optional).
+   * @param icon icon to render within the button (optional)
+   */
+  public final void setIcon(Icon icon) {
+    this.icon = icon;
+  }
+
+
+  /**
+   * @return file name (inside "image" folder) related to the icon to render within the button (optional)
+   */
+  public final String getIconName() {
+    return iconName;
+  }
+
+
+  /**
+   * Set the file name (inside "image" folder) related to the icon to render within the button (optional)
+   * @param iconName file name (inside "image" folder) related to the icon to render within the button (optional)
+   */
+  public final void setIconName(String iconName) {
+    this.iconName = iconName;
+    if (iconName!=null)
+      icon = new ImageIcon(ClientUtils.getImage(iconName));
+
+  }
 
 
 }

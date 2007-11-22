@@ -184,6 +184,9 @@ public class ClientSettings {
   /** grid profile manager: it manages grid profile storing and fetching */
   public static GridProfileManager GRID_PROFILE_MANAGER = null;
 
+  /** <code>true</code> to show a border around a Form panel when it has focus; <code>false</code> to do not show it; default value: <code>true</code> */
+  public static boolean SHOW_FOCUS_BORDER_ON_FORM = true;
+
 
 
   /**

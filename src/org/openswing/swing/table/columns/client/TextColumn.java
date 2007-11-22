@@ -1,5 +1,12 @@
 package org.openswing.swing.table.columns.client;
 
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.renderers.client.TextTableCellRenderer;
+import org.openswing.swing.table.editors.client.TextCellEditor;
+import org.openswing.swing.table.client.Grids;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -141,6 +148,38 @@ public class TextColumn extends Column {
    */
   public void setEncryptText(boolean encryptText) {
     this.encryptText = encryptText;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new TextTableCellRenderer(
+        tableContainer,
+        isEncryptText(),
+        getTextAlignment()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    if (isEncryptText())
+      return new TextCellEditor(
+          getMaxCharacters(),
+          isColumnRequired()
+      );
+    else
+      return new TextCellEditor(
+        getMaxCharacters(),
+        isColumnRequired(),
+        isRpadding(),
+        isTrimText(),
+        isUpperCase()
+      );
   }
 
 

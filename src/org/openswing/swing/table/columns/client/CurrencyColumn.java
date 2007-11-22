@@ -3,6 +3,12 @@ package org.openswing.swing.table.columns.client;
 import org.openswing.swing.util.client.ClientSettings;
 import org.openswing.swing.internationalization.java.*;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.renderers.client.CurrencyTableCellRenderer;
+import org.openswing.swing.table.editors.client.CurrencyCellEditor;
+import org.openswing.swing.table.client.Grids;
 
 
 /**
@@ -67,6 +73,38 @@ public class CurrencyColumn extends DecimalColumn {
    */
   public int getColumnType() {
     return TYPE_CURRENCY;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new CurrencyTableCellRenderer(
+        getDecimals(),
+        isGrouping(),
+        getCurrencySymbol(),
+        tableContainer,
+        getDynamicSettings(),
+        getTextAlignment()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new CurrencyCellEditor(
+        Column.TYPE_CURRENCY,
+        getDecimals(),
+        isColumnRequired(),
+        getMinValue(),
+        getMaxValue(),
+        getCurrencySymbol(),
+        getDynamicSettings()
+    );
+
   }
 
 

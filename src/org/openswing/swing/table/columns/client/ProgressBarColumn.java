@@ -5,6 +5,12 @@ import java.awt.event.ItemListener;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import org.openswing.swing.util.client.ClientSettings;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.table.renderers.client.ProgressBarTableCellRenderer;
+import org.openswing.swing.table.editors.client.TextCellEditor;
 
 
 /**
@@ -166,6 +172,32 @@ public class ProgressBarColumn extends Column {
    */
   public final ArrayList getColoredBands() {
     return coloredBands;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new ProgressBarTableCellRenderer(
+      tableContainer,
+      getColoredBands(),
+      getMinValue(),
+      getMaxValue(),
+      isShowAllBands(),
+      getColor()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new TextCellEditor(
+        0,
+        false
+    );
   }
 
 

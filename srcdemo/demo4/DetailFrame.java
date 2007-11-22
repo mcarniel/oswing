@@ -17,6 +17,7 @@ import org.openswing.swing.lookup.client.LookupDataLocator;
 import org.openswing.swing.internationalization.java.Resources;
 import javax.swing.border.*;
 import javax.swing.text.MaskFormatter;
+import org.openswing.swing.lookup.client.LookupListener;
 
 
 /**
@@ -218,14 +219,52 @@ public class DetailFrame extends JFrame {
     controlDate.setTimeFormat(Resources.H_MM_AAA);
 
 
-    LookupController lookupController = new DemoLookupController(conn);
-    controlLookup.setLookupController(lookupController);
+
     buttonGroup1.add(controlRadioButton1);
     buttonGroup1.add(controlRadioButton2);
     controlRadioButton1.setButtonGroup(buttonGroup1);
     controlRadioButton2.setButtonGroup(buttonGroup1);
     controlRadioButton1.setSelectedValue(Boolean.TRUE);
     controlRadioButton2.setSelectedValue(Boolean.FALSE);
+
+
+    LookupController lookupController = new DemoLookupController(conn);
+    controlLookup.setLookupController(lookupController);
+    lookupController.addLookupListener(new LookupListener() {
+      /**
+       * beforeLookupAction
+       *
+       * @param parentVO ValueObject
+       */
+      public void beforeLookupAction(ValueObject parentVO) {
+      }
+
+      /**
+       * codeChanged
+       *
+       * @param parentVO ValueObject
+       * @param parentChangedAttributes Collection
+       */
+      public void codeChanged(ValueObject parentVO,Collection parentChangedAttributes) {
+        DetailTestVO formVO = (DetailTestVO)parentVO;
+        TestLookupVO lookupVO = (TestLookupVO)controlLookup.getLookupController().getLookupVO();
+      }
+
+      /**
+       * codeValidated
+       *
+       * @param validated boolean
+       */
+      public void codeValidated(boolean validated) {
+      }
+
+      /**
+       * forceValidate
+       */
+      public void forceValidate() {
+      }
+    });
+
   }
 
 

@@ -4,6 +4,13 @@ import javax.swing.SwingConstants;
 import org.openswing.swing.client.DateChangedListener;
 import java.util.ArrayList;
 import org.openswing.swing.util.client.ClientSettings;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.renderers.client.DateTableCellRenderer;
+import org.openswing.swing.internationalization.java.Resources;
+import org.openswing.swing.table.editors.client.DateCellEditor;
+import org.openswing.swing.table.client.Grids;
 
 
 /**
@@ -97,6 +104,31 @@ public class TimeColumn extends Column {
    */
   public final void setTimeFormat(String timeFormat) {
     this.timeFormat = timeFormat;
+  }
+
+
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new DateTableCellRenderer(
+      Column.TYPE_TIME,
+      tableContainer,
+      getTextAlignment(),
+      '/',
+      Resources.DMY,
+      getDateListeners(),
+      true,
+      getTimeFormat()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_TIME);
   }
 
 

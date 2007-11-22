@@ -3,6 +3,12 @@ package org.openswing.swing.table.columns.client;
 import java.util.ArrayList;
 import java.awt.event.ItemListener;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import org.openswing.swing.table.client.GridController;
+import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.table.renderers.client.CheckBoxTableCellRenderer;
+import org.openswing.swing.table.editors.client.CheckBoxCellEditor;
 
 
 /**
@@ -128,6 +134,24 @@ public class CheckBoxColumn extends Column {
   }
 
 
+  /**
+   * @return TableCellRenderer for this column
+   */
+  public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
+    return new CheckBoxTableCellRenderer(
+      tableContainer,
+      getTextAlignment(),
+      isEnableInReadOnlyMode()
+    );
+  }
+
+
+  /**
+   * @return TableCellEditor for this column
+   */
+  public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
+    return new CheckBoxCellEditor(isColumnRequired(),getItemListeners());
+  }
 
 
 }

@@ -24,6 +24,8 @@ public class ButtonColumnBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _additionalHeaderColumnName = new PropertyDescriptor("additionalHeaderColumnName", beanClass, "getAdditionalHeaderColumnName", "setAdditionalHeaderColumnName");
       PropertyDescriptor _additionalHeaderColumnSpan = new PropertyDescriptor("additionalHeaderColumnSpan", beanClass, "getAdditionalHeaderColumnSpan", "setAdditionalHeaderColumnSpan");
+      PropertyDescriptor _icon = new PropertyDescriptor("icon", beanClass, "getIcon", "setIcon");
+      PropertyDescriptor _iconName = new PropertyDescriptor("iconName", beanClass, "getIconName", "setIconName");
       PropertyDescriptor _text = new PropertyDescriptor("text", beanClass, "getText", "setText");
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
@@ -42,6 +44,8 @@ public class ButtonColumnBeanInfo extends SimpleBeanInfo {
           _editableOnInsert,
           _enableInReadOnlyMode,
           _headerColumnName,
+          _icon,
+          _iconName,
           _maxWidth,
           _minWidth,
           _preferredWidth,
