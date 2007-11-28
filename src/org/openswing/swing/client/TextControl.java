@@ -58,7 +58,7 @@ public class TextControl extends BaseInputControl implements InputControl {
   private boolean rpadding = false;
 
   /** text field */
-  private JTextField textBox = getTextBox();
+  private TextField textBox = new TextField();
 
 
   /**
@@ -421,7 +421,7 @@ public class TextControl extends BaseInputControl implements InputControl {
 
   public void processKeyEvent(KeyEvent e) {
     try {
-      JTextField.class.getMethod("processKeyEvent", new Class[] {KeyEvent.class}).invoke(textBox, new Object[] {e});
+      textBox.processKeyEvent(e);
     }
     catch (Throwable ex) {
     }
@@ -431,14 +431,12 @@ public class TextControl extends BaseInputControl implements InputControl {
   /**
    * @return text box; this method is overrided by PasswordControl
    */
-  protected JTextField getTextBox() {
-    return new JTextField() {
+  class TextField extends JTextField {
 
-      public void processKeyEvent(KeyEvent e) {
-        super.processKeyEvent(e);
-      }
+    public void processKeyEvent(KeyEvent e) {
+      super.processKeyEvent(e);
+    }
 
-    };
   }
 
 

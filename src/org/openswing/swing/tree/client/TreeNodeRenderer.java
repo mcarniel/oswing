@@ -105,6 +105,8 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
         if (value!=null) {
           l.setText(value.toString());
         }
+        else
+          l.setText("");
       }
 
     }

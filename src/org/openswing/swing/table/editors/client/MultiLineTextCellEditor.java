@@ -42,32 +42,29 @@ import java.awt.event.*;
 public class MultiLineTextCellEditor extends AbstractCellEditor implements TableCellEditor {
 
   /** multi line text input field */
-  private TextAreaControl field = new TextAreaControl();
+  private TextAreaControl field = new TextAreaControl() {
 
-//  /** multi line text input field */
-//  private TextAreaControl field = new TextAreaControl() {
-//
-//    private KeyEvent oldEv = null;
-//
-//      public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
-//                                          int condition, boolean pressed) {
-//        if (e.getSource()!=null && e.getSource() instanceof org.openswing.swing.table.client.Grid) {
-//          try {
-//            if (oldEv==null || !e.equals(oldEv)) {
-//              oldEv = e;
-//              field.processKeyEvent(e);
-//              oldEv = null;
-//            }
-//          }
-//          catch (Exception ex) {
-//          }
-//        }
-//        else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n')
-//          stopCellEditing();
-//         return true;
-//      }
-//
-//  };
+    private KeyEvent oldEv = null;
+
+      public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
+                                          int condition, boolean pressed) {
+        if (e.getSource()!=null && e.getSource() instanceof org.openswing.swing.table.client.Grid) {
+          try {
+            if (oldEv==null || !e.equals(oldEv)) {
+              oldEv = e;
+              field.processKeyEvent(e);
+              oldEv = null;
+            }
+          }
+          catch (Exception ex) {
+          }
+        }
+        else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n')
+          stopCellEditing();
+         return true;
+      }
+
+  };
 
   /** maximum number of characters */
   private int maxCharacters = -1;

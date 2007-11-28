@@ -52,13 +52,7 @@ public class TextAreaControl extends BaseInputControl implements InputControl {
   private JScrollPane scrollPane = new JScrollPane();
 
   /** text editor */
-  private JTextArea textArea = new JTextArea() {
-
-    public void setEnabled(boolean enabled) {
-      TextAreaControl.this.setEnabled(enabled);
-    }
-
-  };
+  private TextArea textArea = new TextArea();
 
 
   /**
@@ -252,6 +246,28 @@ public class TextAreaControl extends BaseInputControl implements InputControl {
     }
   }
 
+
+
+  public void processKeyEvent(KeyEvent e) {
+    try {
+      textArea.processKeyEvent(e);
+    }
+    catch (Throwable ex) {
+    }
+  }
+
+
+  class TextArea extends JTextArea {
+
+    public void setEnabled(boolean enabled) {
+      TextAreaControl.this.setEnabled(enabled);
+    }
+
+    public void processKeyEvent(KeyEvent e) {
+      super.processKeyEvent(e);
+    }
+
+  };
 
 
 }

@@ -1,4 +1,15 @@
 
+Release Notes 1.3.6
+-------------------
+
+Final release 1.3.6 available
+
+Fixed problem when rendering root empty node in tree lookup.
+Improved grid cell editors: now they listen the first key pressed when the current cell is just selected but not yet in edit.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.3.5
 -------------------
 
