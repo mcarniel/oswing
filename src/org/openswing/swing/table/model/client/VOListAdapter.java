@@ -377,8 +377,13 @@ public class VOListAdapter {
         return colProperties[colIndex].isEditableOnInsert();
       else if (mode==Consts.EDIT)
         return colProperties[colIndex].isEditableOnEdit();
-      else
+      else {
+        if (colProperties[colIndex].getColumnType()==Column.TYPE_BUTTON && ((ButtonColumn)colProperties[colIndex]).isEnableInReadOnlyMode())
+          return true;
+        else if (colProperties[colIndex].getColumnType()==Column.TYPE_CHECK && ((CheckBoxColumn)colProperties[colIndex]).isEnableInReadOnlyMode())
+          return true;
         return false;
+      }
     }
     else if (mode==Consts.INSERT || mode==Consts.EDIT)
       // if the column index is related to an attribute not mapped with a grid column,

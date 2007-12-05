@@ -41,7 +41,9 @@ import org.openswing.swing.util.client.ClientSettings;
 public class LoginDialog extends JDialog {
 
   JPanel mainPanel = new JPanel();
+  JPanel controlsPanel = new JPanel();
   GridBagLayout gridBagLayout1 = new GridBagLayout();
+  GridBagLayout gridBagLayout3 = new GridBagLayout();
   JLabel usernameLabel = new JLabel();
   JLabel passwdLabel = new JLabel();
   JTextField usernameTF = new JTextField();
@@ -128,16 +130,19 @@ public class LoginDialog extends JDialog {
     loginButton.addActionListener(new LoginDialog_loginButton_actionAdapter(this));
     this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     this.addWindowListener(new LoginDialog_this_windowAdapter(this));
-    getContentPane().add(mainPanel,        new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0
+    getContentPane().add(mainPanel,          new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+    controlsPanel.setLayout(gridBagLayout3);
+    mainPanel.add(controlsPanel,           new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.VERTICAL, new Insets(5, 5, 5, 5), 0, 0));
+    controlsPanel.add(usernameLabel,  new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(usernameLabel,  new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+    controlsPanel.add(passwdLabel,  new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
             ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(passwdLabel,  new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
-            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(usernameTF,    new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(passwdTF,    new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+    controlsPanel.add(usernameTF,       new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 50, 0));
+    controlsPanel.add(passwdTF,      new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 50, 0));
     this.getContentPane().add(buttonsPanel,      new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0
             ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 0, 5, 5), 0, 0));
     buttonsPanel.add(loginButton, null);

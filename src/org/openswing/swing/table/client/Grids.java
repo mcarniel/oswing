@@ -262,6 +262,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         false,
         gridType
     );
+
     if (lockedColumns>0) {
       for(int i=0;i<lockedColumns;i++)
         colProps[i].setColumnSelectable(false);
@@ -1627,6 +1628,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           // fill in the table model with data fetched from the grid controller...
         for (int i = 0; i < data.size(); i++)
           model.addObject( (ValueObject) data.get(i));
+
+        grid.revalidate();
+        grid.repaint();
+
         this.revalidate();
         this.repaint();
       }

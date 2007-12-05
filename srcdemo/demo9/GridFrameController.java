@@ -290,4 +290,19 @@ public class GridFrameController extends GridController implements GridDataLocat
   }
 
 
+  /**
+   * @param grid grid
+   * @param row selected row index
+   * @param attributeName attribute name that identifies the selected grid column
+   * @return <code>true</code> if the selected cell is editable, <code>false</code> otherwise
+   */
+  public boolean isCellEditable(GridControl grid,int row,String attributeName) {
+    TestVO vo = (TestVO)grid.getVOListTableModel().getObjectForRow(row);
+    if (attributeName.equals("button") && "O".equals(vo.getComboValue())) {
+      return false;
+    }
+    return grid.isFieldEditable(row,attributeName);
+  }
+
+
 }

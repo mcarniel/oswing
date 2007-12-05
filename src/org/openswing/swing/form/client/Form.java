@@ -145,8 +145,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   private boolean createInnerVO = true;
 
 
-  public Form() {
-  }
+  public Form() { }
 
 
   /**

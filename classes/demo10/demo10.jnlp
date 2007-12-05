@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?> 
-     <!-- JNLP File for Manager Application --> 
-<jnlp spec="1.0+" codebase = "http://localhost/root"> 
-
-    <application-desc main-class="demo10.ClientApplication"/>
-
-    <information> 
-      <title>Demo10</title> 
-      <vendor>by Mauro Carniel</vendor>
-	  <description>MDI Frame web app</description>
-    </information> 
-
+<!-- JNLP File for Manager Application --> 
+<jnlp spec="1.0+" codebase = "http://localhost/demo10"> 
+  <application-desc main-class="demo10.ClientApplication"/>
+  <information> 
+  <title>Demo10</title> 
+  <vendor>by Mauro Carniel</vendor>
+  <description>MDI Frame web app</description>
+  </information> 
   <security> 
       <all-permissions/> 
   </security> 
-    
-    <resources>
-<j2se version="1.4+"/> 
-<jar href="demo10.jar" />
-<jar href="clientos.jar" />
-<jar href="jcalendar.jar" />
-<jar href="jnlp.jar" />    
-<jar href="hsqldb.jar" />       
-   
-   </resources>
+<resources>
+  <j2se version="1.4+"/> 
+  <jar href="demo10.jar" />
+  <jar href="clientos.jar" />
+  <jar href="jcalendar.jar" />
+  <jar href="jnlp.jar" />    
+  <jar href="hsqldb.jar" />       
+  <jar href="serveros.jar" />
+  <jar href="poi-2.0-RC2-20040102.jar" />
+  <jar href="pooler.jar" />
+  <jar href="looks-2.0.1.jar" />    
+  <jar href="itext-1.4.8.jar" />     
+</resources>
 
 </jnlp>

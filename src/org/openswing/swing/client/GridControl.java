@@ -860,8 +860,8 @@ public class GridControl extends JPanel {
 
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
-          if (!table.getGrid().hasFocus())
-            table.getGrid().requestFocus();
+//          if (!table.getGrid().hasFocus())
+//            table.getGrid().requestFocus();
         }
       });
 

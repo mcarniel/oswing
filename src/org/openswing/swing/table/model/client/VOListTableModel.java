@@ -279,9 +279,11 @@ public class VOListTableModel extends AbstractTableModel {
       if (mode==Consts.READONLY) {
         Column col = fieldAdapter.getFieldColumn(column);
         if (col.getColumnType()==col.TYPE_BUTTON && ((ButtonColumn)col).isEnableInReadOnlyMode())
-          return true;
+//          return true;
+          return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
         else if (col.getColumnType()==col.TYPE_CHECK && ((CheckBoxColumn)col).isEnableInReadOnlyMode())
-          return true;
+//          return true;
+          return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
         return false;
       }
       else if (mode==Consts.INSERT) {

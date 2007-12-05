@@ -8,16 +8,20 @@
   <property name="beaninfo" value="${basedir}/../beaninfo"/>
   <property name="tmp" value="${basedir}/../tmp"/>
   <property name="lib" value="${basedir}/../lib"/>
+  <property name="signedlib" value="${basedir}/../signedlib"/>
   <property name="webapps" value="${WEBAPPS}"/>
   <property name="keystore" value="${KEYSTORE}"/>
   <property name="alias" value="${ALIAS}"/>
   <property name="storepass" value="${STOREPASS}"/>
 
-  <target name="allclasses" depends="client,server">
+
+  <target name="allclasses" depends="client,server,allsrc">
   </target>
+
 
   <target name="allsrc" depends="srcclient,srcserver">
   </target>
+
 
   <target name="client">
     <mkdir dir="${tmp}"/>
@@ -35,6 +39,11 @@
     <delete file="${tmp}/clientos.jar"/>
     <jar jarfile="${tmp}/clientos.jar" basedir="${tmp}"/>
     <copy todir="${lib}" >
+      <fileset dir="${tmp}">
+        <include name="clientos.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="${signedlib}" >
       <fileset dir="${tmp}">
         <include name="clientos.jar"/>
       </fileset>
@@ -57,6 +66,11 @@
     <delete file="${tmp}/serveros.jar"/>
     <jar jarfile="${tmp}/serveros.jar" basedir="${tmp}"/>
     <copy todir="${lib}" >
+      <fileset dir="${tmp}">
+        <include name="serveros.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="${signedlib}" >
       <fileset dir="${tmp}">
         <include name="serveros.jar"/>
       </fileset>
@@ -121,6 +135,41 @@
   </target>
 
 
+  <!-- this target will invoke: client,server,srclient,srcserver -->
+  <target name="signlib" depends="allclasses">
+    <copy todir="${signedlib}" >
+      <fileset dir="${lib}">
+        <include name="looks-2.0.1.jar"/>
+        <include name="hsqldb.jar"/>
+        <include name="poi-2.0-RC2-20040102.jar"/>
+        <include name="itext-1.4.8.jar"/>
+        <include name="clientos.jar"/>
+        <include name="serveros.jar"/>
+        <include name="pooler.jar"/>
+        <include name="jcalendar.jar"/>
+        <include name="jnlp.jar"/>
+        <include name="jnlp-servlet.jar"/>
+      </fileset>
+    </copy>
+    <signjar jar="${signedlib}/looks-2.0.1.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/hsqldb.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/poi-2.0-RC2-20040102.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/itext-1.4.8.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/clientos.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/serveros.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/pooler.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/jcalendar.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/jnlp.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/jnlp-servlet.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+
+  </target>
+
+
+  <!-- this target will invoke: client,server,srclient,srcserver,signlib,demo5,demo10,demo18 -->
+  <target name="all" depends="signlib,demo5,demo10,demo18" />
+
+
+  <!-- invoke "signlib" before -->
   <target name="demo10">
     <mkdir dir="${tmp}"/>
     <mkdir dir="${webapps}/demo10/"/>
@@ -130,9 +179,17 @@
       </fileset>
     </copy>
     <jar jarfile="${classes}/demo10/demo10.jar" basedir="${tmp}"/>
-
+    <delete dir="${tmp}"/>
+    <signjar jar="${classes}/demo10/demo10.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <copy todir="${webapps}/demo10" >
-      <fileset dir="${lib}">
+      <fileset dir="${classes}/demo10">
+        <include name="demo10.jar"/>
+        <include name="demo10.jnlp"/>
+      </fileset>
+    </copy>
+    <copy todir="${webapps}/demo10" >
+      <fileset dir="${signedlib}">
+        <include name="looks-2.0.1.jar"/>
         <include name="hsqldb.jar"/>
         <include name="poi-2.0-RC2-20040102.jar"/>
         <include name="itext-1.4.8.jar"/>
@@ -143,33 +200,19 @@
         <include name="jnlp.jar"/>
       </fileset>
     </copy>
-
-
-    <signjar jar="${classes}/demo10/looks-2.0.1.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <signjar jar="${classes}/demo10/demo10.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <signjar jar="${webapps}/demo10/hsqldb.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <signjar jar="${webapps}/demo10/poi-2.0-RC2-20040102.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <signjar jar="${webapps}/demo10/itext-1.4.8.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <signjar jar="${webapps}/demo10/serveros.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <signjar jar="${webapps}/demo10/pooler.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <signjar jar="${webapps}/demo10/jnlp.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <delete dir="${tmp}"/>
-
-    <copy todir="${webapps}/demo10" >
-      <fileset dir="${classes}/demo10">
-        <include name="demo10.jar"/>
-        <include name="looks-2.0.1.jar"/>
-      </fileset>
-    </copy>
   </target>
 
 
-  <target name="demo5" depends="allclasses">
+  <!-- invoke "signlib" before -->
+  <target name="demo5" >
     <mkdir dir="${tmp}"/>
-    <signjar jar="${lib}/clientos.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <copy todir="${webapps}/demo5" >
-      <fileset dir="${lib}">
+      <fileset dir="${signedlib}">
         <include name="clientos.jar"/>
+        <include name="itext-1.4.8.jar"/>
+        <include name="clientos.jar"/>
+        <include name="jcalendar.jar"/>
+        <include name="jnlp.jar"/>
       </fileset>
       <fileset dir="${classes}/demo5">
         <include name="demo5.jnlp"/>
@@ -194,20 +237,10 @@
         <include name="demo5client.jar"/>
       </fileset>
     </copy>
-    <signjar jar="${lib}/jcalendar.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <signjar jar="${lib}/jnlp.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-    <copy todir="${webapps}/demo5" >
-      <fileset dir="${lib}">
-        <include name="jcalendar.jar"/>
-        <include name="jnlp.jar"/>
-      </fileset>
-    </copy>
-
     <delete dir="${tmp}"/>
-
     <mkdir dir="${tmp}"/>
     <copy todir="${webapps}/demo5/WEB-INF/lib" >
-      <fileset dir="${lib}">
+      <fileset dir="${signedlib}">
         <include name="serveros.jar"/>
         <include name="hsqldb.jar"/>
         <include name="pooler.jar"/>
@@ -251,42 +284,15 @@
   </target>
 
 
-  <target name="beaninfo">
-    <mkdir dir="${tmp}"/>
-    <copy todir="${tmp}/" >
-      <fileset dir="${classes}/">
-        <include name="org/**/*.gif"/>
-      </fileset>
-    </copy>
-    <copy todir="${tmp}" >
-      <fileset dir="${classes}/">
-        <include name="org/openswing/swing/**/client/*.class"/>
-        <include name="org/openswing/swing/**/java/*.class"/>
-      </fileset>
-    </copy>
-
-    <delete file="${tmp}/beaninfo.jar"/>
-    <jar jarfile="${tmp}/beaninfo.jar" basedir="${tmp}" manifest="${beaninfo}/manifest.mf" />
-    <copy todir="${lib}" >
-      <fileset dir="${tmp}">
-        <include name="beaninfo.jar"/>
-      </fileset>
-    </copy>
-    <delete dir="${tmp}"/>
-  </target>
-
-
-  <target name="beaninfosign">
-    <signjar jar="${lib}/BeanInfo.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-  </target>
-
-
-
+  <!-- invoke "signlib" before -->
   <target name="demo18" >
     <mkdir dir="${tmp}"/>
     <copy todir="${webapps}/demo18" >
-      <fileset dir="${lib}">
+      <fileset dir="${signedlib}">
+        <include name="poi-2.0-RC2-20040102.jar"/>
         <include name="clientos.jar"/>
+        <include name="jcalendar.jar"/>
+        <include name="jnlp.jar"/>
       </fileset>
       <fileset dir="${classes}/demo18">
         <include name="demo18.jnlp"/>
@@ -311,18 +317,10 @@
         <include name="demo18client.jar"/>
       </fileset>
     </copy>
-    <copy todir="${webapps}/demo18" >
-      <fileset dir="${lib}">
-        <include name="jcalendar.jar"/>
-        <include name="jnlp.jar"/>
-      </fileset>
-    </copy>
-
     <delete dir="${tmp}"/>
-
     <mkdir dir="${tmp}"/>
     <copy todir="${webapps}/demo18/WEB-INF/lib" >
-      <fileset dir="${lib}">
+      <fileset dir="${signedlib}">
         <include name="serveros.jar"/>
         <include name="hsqldb.jar"/>
         <include name="pooler.jar"/>
