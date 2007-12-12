@@ -108,6 +108,43 @@ public class VOModel {
       PropertyDescriptor[] props = info.getPropertyDescriptors();
       for (int i = 0; i < props.length; i++) {
 
+        if (props[i].getName().substring(0,1).equals(props[i].getName().substring(0,1).toUpperCase())) {
+          // fix of PropertyDescriptor bug: an attribute name "xXxxx" becomes "XXxxx" and this is not correct!
+          try {
+            Class c = classType;
+            boolean attributeFound = false;
+            while(!c.equals(Object.class)) {
+              try {
+                c.getDeclaredField(props[i].getName());
+                attributeFound = true;
+                break;
+              }
+              catch (Throwable ex2) {
+                c = c.getSuperclass();
+              }
+            }
+            if (!attributeFound) {
+              // now trying to find an attribute having the first character in lower case (e.g. "xXxxx")
+              String name = props[i].getName().substring(0,1).toLowerCase()+props[i].getName().substring(1);
+              c = classType;
+              while(!c.equals(Object.class)) {
+                try {
+                  c.getDeclaredField(name);
+                  attributeFound = true;
+                  break;
+                }
+                catch (Throwable ex2) {
+                  c = c.getSuperclass();
+                }
+              }
+              if (attributeFound)
+                props[i].setName(name);
+            }
+          }
+          catch (Throwable ex1) {
+          }
+        }
+
         if (props[i].getReadMethod()!=null &&
             props[i].getReadMethod().getParameterTypes().length==0 &&
             ValueObject.class.isAssignableFrom( props[i].getReadMethod().getReturnType() )
@@ -430,8 +467,7 @@ public class VOModel {
       ValueChangeEvent e = new ValueChangeEvent(this,attributeName,oldValue,newValue);
       if (valueChangeListeners != null) {
           for (int i = 0; i < valueChangeListeners.size(); i++) {
-              ValueChangeListener vcl = (ValueChangeListener)
-                  valueChangeListeners.get(i);
+              ValueChangeListener vcl = (ValueChangeListener)valueChangeListeners.get(i);
               vcl.valueChanged(e);
           }
       }

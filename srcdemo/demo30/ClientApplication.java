@@ -1,4 +1,4 @@
-package demo26;
+package demo30;
 
 import java.util.*;
 
@@ -16,7 +16,7 @@ import javax.swing.*;
  * <p>Title: OpenSwing Demo</p>
  * <p>Description: Used to start application from main method:
  * it creates a grid frame and a detail frame accessed by double click on the grid.
- * This demo shows how to use a ComboBoxVOControl and a ListVOControl.</p>
+ * This demo shows how to use ListVOControl that returns a list of codes (i.e. having a selection mode of type ListSelectionModel.MULTIPLE_INTERVAL_SELECTION).</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  * <p> </p>
  * @author Mauro Carniel
@@ -87,7 +87,11 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table CUSTOMERS(CUSTOMER_CODE VARCHAR,NAME VARCHAR,SURNAME VARCHAR,CITY VARCHAR,ADDRESS VARCHAR,STATE VARCHAR,ZIP_CODE VARCHAR,PRICELIST_CODE VARCHAR,DESCRIPTION VARCHAR,START_DATE DATE,END_DATE DATE,NOTE VARCHAR,PRIMARY KEY(CUSTOMER_CODE))");
+        stmt = conn.prepareStatement("create table CUSTOMERS(CUSTOMER_CODE VARCHAR,NAME VARCHAR,SURNAME VARCHAR,CITY VARCHAR,ADDRESS VARCHAR,STATE VARCHAR,ZIP_CODE VARCHAR,DESCRIPTION VARCHAR,NOTE VARCHAR,PRIMARY KEY(CUSTOMER_CODE))");
+        stmt.execute();
+        stmt.close();
+
+        stmt = conn.prepareStatement("create table CUSTOMER_PRICELISTS(CUSTOMER_CODE VARCHAR,PRICELIST_CODE VARCHAR,PRIMARY KEY(CUSTOMER_CODE,PRICELIST_CODE))");
         stmt.execute();
         stmt.close();
 

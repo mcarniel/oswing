@@ -15,7 +15,8 @@ import javax.swing.*;
 /**
  * <p>Title: OpenSwing Demo</p>
  * <p>Description: Used to start application from main method:
- * it creates a grid frame and a detail frame accessed by double click on the grid.</p>
+ * it creates a grid frame and a detail frame accessed by double click on the grid.
+ * Detail form shows also how to restore last valid code in a lookup control when code validation returns an error.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  * <p> </p>
  * @author Mauro Carniel

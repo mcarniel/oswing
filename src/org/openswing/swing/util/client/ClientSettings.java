@@ -14,6 +14,7 @@ import org.openswing.swing.util.java.Consts;
 import java.awt.Font;
 import java.awt.Dimension;
 import org.openswing.swing.table.profiles.java.GridProfileManager;
+import org.openswing.swing.lookup.client.LookupController;
 
 
 /**
@@ -186,6 +187,9 @@ public class ClientSettings {
 
   /** <code>true</code> to show a border around a Form panel when it has focus; <code>false</code> to do not show it; default value: <code>true</code> */
   public static boolean SHOW_FOCUS_BORDER_ON_FORM = true;
+
+  /** define what a lookup has to do when an invalid code has been setted; possible values: LookupController.ON_INVALID_CODE_xxx; default value: LookupController.ON_INVALID_CODE_CLEAR_CODE */
+  public static int ON_INVALID_CODE = LookupController.ON_INVALID_CODE_CLEAR_CODE;
 
 
 

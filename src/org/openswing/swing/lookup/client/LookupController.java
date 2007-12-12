@@ -41,6 +41,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.openswing.swing.tree.client.TreeDataLocator;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 
 
 /**
@@ -130,6 +132,27 @@ public class LookupController {
   /** this flag is used when codeSelectionWindow is set to TREE_FRAME: it means that user can select only leaves (by double clicking) */
   private boolean allowTreeLeafSelectionOnly = true;
 
+  /** this flag is used to define what to do in case of invalid code on validation task; possible values: ON_INVALID_CODE_xxx; default value: ClientSettings.ON_INVALID_CODE */
+  private int onInvalidCode = ClientSettings.ON_INVALID_CODE;
+
+  /** constant used in "onInvalidCode" property to clear code on validation task that returns an invalid code */
+  public static final int ON_INVALID_CODE_CLEAR_CODE = 0;
+
+  /** constant used in "onInvalidCode" property to restore the last valid code (on "" if there no exists any valid code in the past) on validation task that returns an invalid code */
+  public static final int ON_INVALID_CODE_RESTORE_LAST_VALID_CODE = 1;
+
+  /** constant used in "onInvalidCode" property to do nothing except restore focus inside the code input field on validation task that returns an invalid code */
+  public static final int ON_INVALID_CODE_RESTORE_FOCUS = 2;
+
+  /** last valid code */
+  private String lastValidCode = null;
+
+  /** last invalid code */
+  private String lastInvalidCode = "";
+
+  /** flag used by Form.save to check if lookup control is in a valid state */
+  private boolean codeValid = true;
+
 
   /**
    * Execute the code validation.
@@ -137,9 +160,20 @@ public class LookupController {
    * @param code code to validate
    * @return <code>true</code> if code is correcly validated, <code>false</code> otherwise
    */
-  public final void validateCode(JComponent parentComponent,String code, final LookupParent lookupParent) {
+  public final void validateCode(JComponent parentComponent,String code, final LookupParent lookupParent) throws RestoreFocusOnInvalidCodeException {
+    try {
+      if (lastValidCode == null) {
+        lastValidCode = lookupParent.getLookupCodeParentValue().toString();
+      }
+    }
+    catch (Exception ex1) {
+      lastValidCode = "";
+    }
+
     fireLookupActionEvent(lookupParent.getValueObject());
     if (code==null || code.trim().length()==0) {
+      codeValid = true;
+
       // clear code event: reset lookup v.o. ...
       createVoidLookupVO();
       // update lookup container aggiorno v.o. ...
@@ -153,8 +187,15 @@ public class LookupController {
       try {
         // execute code validation...
         Response r = lookupDataLocator.validateCode( code );
+        if (r==null || !(r instanceof VOListResponse || r instanceof ErrorResponse)) {
+          Logger.error(this.getClass().getName(),"validateCode","Error while validating lookup code: lookup data locator must always returns an instanceof VOListResponse.",null);
+          return;
+        }
+
         if (!r.isError() && ((VOListResponse)r).getRows().size()==1) {
           // code was correctly validated...
+          codeValid = true;
+          lastValidCode = code;
           lookupVO = (ValueObject)((VOListResponse)r).getRows().get(0);
           updateParentModel(lookupParent);
 
@@ -166,19 +207,53 @@ public class LookupController {
         }
         else {
           // code was NOT correctly validated...
-          createVoidLookupVO();
-          updateParentModel(lookupParent);
-          // fire code changed event...
-          fireCodeChangedEvent(lookupParent.getValueObject());
+          if (onInvalidCode==ON_INVALID_CODE_CLEAR_CODE) {
+            codeValid = true;
+            createVoidLookupVO();
+            updateParentModel(lookupParent);
+            // fire code changed event...
+            fireCodeChangedEvent(lookupParent.getValueObject());
 
-          fireCodeValidatedEvent(false);
-          JOptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(parentComponent),
-              ClientSettings.getInstance().getResources().getResource("Code is not correct."),
-              ClientSettings.getInstance().getResources().getResource("Code Validation"),
-              JOptionPane.ERROR_MESSAGE
-          );
+            fireCodeValidatedEvent(false);
+            JOptionPane.showMessageDialog(
+                ClientUtils.getParentFrame(parentComponent),
+                ClientSettings.getInstance().getResources().getResource("Code is not correct."),
+                ClientSettings.getInstance().getResources().getResource("Code Validation"),
+                JOptionPane.ERROR_MESSAGE
+            );
+          }
+          else if (onInvalidCode==ON_INVALID_CODE_RESTORE_LAST_VALID_CODE) {
+            JOptionPane.showMessageDialog(
+                ClientUtils.getParentFrame(parentComponent),
+                ClientSettings.getInstance().getResources().getResource("Code is not correct."),
+                ClientSettings.getInstance().getResources().getResource("Code Validation"),
+                JOptionPane.ERROR_MESSAGE
+            );
+            if (!lastValidCode.equals(code))
+              validateCode(parentComponent,lastValidCode,lookupParent);
+            else
+              validateCode(parentComponent,"",lookupParent);
+          }
+          else if (onInvalidCode==ON_INVALID_CODE_RESTORE_FOCUS) {
+            if (!lastInvalidCode.equals(code)) {
+              lastInvalidCode = code;
+              JOptionPane.showMessageDialog(
+                ClientUtils.getParentFrame(parentComponent),
+                ClientSettings.getInstance().getResources().getResource("Code is not correct."),
+                ClientSettings.getInstance().getResources().getResource("Code Validation"),
+                JOptionPane.ERROR_MESSAGE
+              );
+            }
+            codeValid = false;
+            throw new RestoreFocusOnInvalidCodeException();
+          }
+          else
+            Logger.error(this.getClass().getName(),"validateCode","Error while validating lookup code: invalid 'onInvalidCode' property value: "+onInvalidCode,null);
+
         }
+      }
+      catch (RestoreFocusOnInvalidCodeException ex) {
+        throw ex;
       }
       catch (Exception ex) {
         createVoidLookupVO();
@@ -1048,6 +1123,31 @@ public class LookupController {
   }
 
 
+  /**
+   * @return define what to do in case of invalid code on validation task; possible values: ON_INVALID_CODE_xxx; default value: ClientSettings.ON_INVALID_CODE
+   */
+  public final int getOnInvalidCode() {
+    return onInvalidCode;
+  }
+
+
+  /**
+   * Define what to do in case of invalid code on validation task: clear code on input field or restore last invalid code in the input field or restore focus in the input field
+   * @param onInvalidCode define what to do in case of invalid code on validation task; possible values: ON_INVALID_CODE_xxx
+   */
+  public final void setOnInvalidCode(int onInvalidCode) {
+    this.onInvalidCode = onInvalidCode;
+  }
+
+
+  /**
+   * @return used by Form.save to check if lookup control is in a valid state
+   */
+  public final boolean isCodeValid() {
+    return codeValid;
+  }
+
+
 }
 
 
@@ -1089,8 +1189,13 @@ class LookupGridFrame extends JDialog {
     super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
     this.table = table;
     getContentPane().setLayout(new BorderLayout());
-//    getContentPane().add(new JScrollPane(table),BorderLayout.CENTER);
-    getContentPane().add(table,BorderLayout.CENTER);
+    JPanel p = new JPanel();
+    getContentPane().add(p,BorderLayout.CENTER);
+    p.setLayout(new GridBagLayout());
+    p.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+    p.add(table,   new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+
   }
 
 

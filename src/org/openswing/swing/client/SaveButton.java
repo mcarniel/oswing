@@ -41,7 +41,6 @@ public class SaveButton extends GenericButton {
 
   public SaveButton() {
     super(new ImageIcon(ClientUtils.getImage("save.gif")));
-    setToolTipText(ClientSettings.getInstance().getResources().getResource("Save record (CTRL+S)"));
     setPreferredSize(new Dimension(32,32));
   }
 

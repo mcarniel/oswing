@@ -1,6 +1,7 @@
 package org.openswing.swing.client;
 
 import org.openswing.swing.domains.java.*;
+import org.openswing.swing.lookup.client.RestoreFocusOnInvalidCodeException;
 
 
 /**
@@ -39,7 +40,7 @@ public interface CodBoxContainer {
    * Code validation event: this method must be implemented by code containers to validate the specified code.
    * @param code code to validate
    */
-  public void validateCode(String code);
+  public void validateCode(String code) throws RestoreFocusOnInvalidCodeException;
 
 
   /**

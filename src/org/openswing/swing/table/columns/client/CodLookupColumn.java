@@ -11,6 +11,7 @@ import org.openswing.swing.table.client.Grids;
 import org.openswing.swing.table.renderers.client.CodLookupCellRenderer;
 import org.openswing.swing.table.editors.client.CodLookupCellEditor;
 import org.openswing.swing.logger.client.Logger;
+import javax.swing.SwingUtilities;
 
 
 /**
@@ -278,33 +279,57 @@ public class CodLookupColumn extends Column {
     try {
       Object codValue = getTable().getVOListTableModel().getValueAt(rowNumber,getTable().getVOListTableModel().findColumn(getColumnName()));
       if (lookupController!=null && codValue!=null)
-        lookupController.validateCode(
-          getTable(),
-          codValue.toString().toUpperCase(),
-          new LookupParent() {
+        try {
+          lookupController.validateCode(
+            getTable(),
+            codValue.toString().toUpperCase(),
+            new LookupParent() {
 
-            /**
-             * Method called by LookupController to update parent v.o.
-             * @param attributeName attribute name in the parent v.o. that must be updated
-             * @param value updated value
-             */
-            public void setValue(String attributeName,Object value) {
-              getTable().getVOListTableModel().setValueAt(
-                value,
-                rowNumber,
-                getTable().getVOListTableModel().findColumn(attributeName)
-              );
+              /**
+               * Method called by LookupController to update parent v.o.
+               * @param attributeName attribute name in the parent v.o. that must be updated
+               * @param value updated value
+               */
+              public void setValue(String attributeName,Object value) {
+                getTable().getVOListTableModel().setValueAt(
+                  value,
+                  rowNumber,
+                  getTable().getVOListTableModel().findColumn(attributeName)
+                );
+              }
+
+              /**
+               * @return parent value object
+               */
+              public ValueObject getValueObject() {
+                return getTable().getVOListTableModel().getObjectForRow(rowNumber);
+              }
+
+
+              /**
+               * @return attribute name in the parent value object related to lookup code
+               */
+              public Object getLookupCodeParentValue() {
+                return getTable().getVOListTableModel().getValueAt(
+                  rowNumber,
+                  getTable().getVOListTableModel().findColumn(getColumnName())
+                );
+              }
+
+
             }
-
-            /**
-             * @return parent value object
-             */
-            public ValueObject getValueObject() {
-              return getTable().getVOListTableModel().getObjectForRow(rowNumber);
+          );
+        } catch (RestoreFocusOnInvalidCodeException ex) {
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              try {
+                getTable().getGrid().editCellAt(rowNumber,getTable().getGrid().convertColumnIndexToView(getTable().getVOListTableModel().findColumn(getColumnName())));
+              }
+              catch (Exception ex) {
+              }
             }
-
-          }
-        );
+          });
+        }
       if (getTable()!=null)
         getTable().repaint();
     }

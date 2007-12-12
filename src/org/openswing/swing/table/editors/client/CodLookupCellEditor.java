@@ -24,6 +24,7 @@ import java.awt.event.*;
 import org.openswing.swing.util.client.*;
 import java.math.BigDecimal;
 import java.beans.Introspector;
+import javax.swing.SwingUtilities;
 
 
 /**
@@ -131,6 +132,9 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
 
   /** flag used to hide code */
   private boolean codBoxVisible = false;
+
+  /** last code value stored in the parent value object */
+  private Object lastCodeValue = null;
 
 
   /**
@@ -377,8 +381,23 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
   public final boolean validate() {
     fireEditingStopped();
 //    if (!alreadyValidated && lookupController!=null && codBox.getText()!=null && !codBox.getText().trim().equals(""))
-    if (!alreadyValidated && lookupController!=null && codBox.getText()!=null && codBox.isEnabled())
-      lookupController.validateCode(table,codBox.getText().toUpperCase(),this);
+    if (!alreadyValidated &&
+        lookupController != null &&
+        codBox.getText() != null &&
+        codBox.isEnabled())
+      try {
+        lookupController.validateCode(table, codBox.getText().toUpperCase(), this);
+      }
+      catch (RestoreFocusOnInvalidCodeException ex) {
+        final int row = selectedRow;
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            table.editCellAt(row,table.getColumnIndex(codAttributeName));
+            if (!codBox.hasFocus())
+              codBox.requestFocus();
+          }
+        });
+      }
 
     alreadyValidated = true;
 
@@ -410,8 +429,18 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
   }
 
 
+  /**
+   * @return attribute name in the parent value object related to lookup code
+   */
+  public Object getLookupCodeParentValue() {
+    return lastCodeValue;
+  }
+
+
 
   public final Object getCellEditorValue() {
+    lastCodeValue = table.getVOListTableModel().getValueAt(selectedRow,table.getColumnIndex(codAttributeName));
+
     if (numericValue) {
       if (codBox.getText().trim().length()==0)
         return null;

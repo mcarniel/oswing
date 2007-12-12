@@ -62,6 +62,8 @@ public class GridFrame extends JFrame {
       grid.mergeCells(new int[]{0,1},new int[]{0,1});
 
       LookupController lookupController = new DemoLookupController(conn);
+      lookupController.setOnInvalidCode(lookupController.ON_INVALID_CODE_RESTORE_FOCUS);
+//      lookupController.setOnInvalidCode(lookupController.ON_INVALID_CODE_RESTORE_LAST_VALID_CODE);
       colLookup.setLookupController(lookupController);
 /*
       // set top grid content, i.e. the first row...
@@ -257,6 +259,7 @@ public class GridFrame extends JFrame {
     colFormattedText.setColumnSortable(false);
     colFormattedText.setEditableOnEdit(true);
     colFormattedText.setEditableOnInsert(true);
+    colFormattedText.setColumnRequired(false);
 
     MaskFormatter mask = new MaskFormatter("###-##-####");
     mask.setValidCharacters("0123456789");

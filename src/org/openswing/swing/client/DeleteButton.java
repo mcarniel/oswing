@@ -41,7 +41,6 @@ public class DeleteButton extends GenericButton {
 
   public DeleteButton() {
     super(new ImageIcon(ClientUtils.getImage("del.gif")));
-    setToolTipText(ClientSettings.getInstance().getResources().getResource("Delete record (CTRL+D)"));
     setPreferredSize(new Dimension(32,32));
   }
 

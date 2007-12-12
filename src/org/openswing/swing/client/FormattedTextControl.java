@@ -19,6 +19,7 @@ import javax.swing.text.Document;
 import javax.swing.InputVerifier;
 import javax.swing.text.DefaultFormatter;
 import javax.swing.text.DefaultFormatterFactory;
+import java.awt.Color;
 
 
 /**
@@ -129,6 +130,8 @@ public class FormattedTextControl extends BaseInputControl implements InputContr
     if (textBox!=null) {
       textBox.setEditable(enabled);
       textBox.setFocusable(enabled);
+      if (!enabled)
+        getBindingComponent().setBackground((Color)UIManager.get("TextField.inactiveBackground"));
     }
   }
 

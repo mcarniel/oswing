@@ -1,12 +1,9 @@
 package org.openswing.swing.lookup.client;
 
-import org.openswing.swing.message.receive.java.ValueObject;
-
-
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: Interface implemented by grid model and form model to listen a "parent v.o. update" event.
- * </p>
+ * <p>Description: Exception fired by lookup controller when an code validation returns false and
+ * lookup controller property "onInvalidCode" is to LookupController.ON_INVALID_CODE_RESTORE_FOCUS.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -32,27 +29,6 @@ import org.openswing.swing.message.receive.java.ValueObject;
  * @author Mauro Carniel
  * @version 1.0
  */
-public interface LookupParent {
-
-
-  /**
-   * Method called by LookupController to update parent v.o.
-   * @param attributeName attribute name in the parent v.o. that must be updated
-   * @param value updated value
-   */
-  public void setValue(String attributeName,Object value);
-
-
-  /**
-   * @return parent value object
-   */
-  public ValueObject getValueObject();
-
-
-  /**
-   * @return value in the parent value object related to lookup code
-   */
-  public Object getLookupCodeParentValue();
-
+public class RestoreFocusOnInvalidCodeException extends Exception {
 
 }

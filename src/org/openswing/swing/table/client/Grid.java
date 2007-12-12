@@ -688,10 +688,6 @@ public class Grid extends JTable
       // set column headers...
       prepareHeader();
 
-      if (gridType==MAIN_GRID && grids.getGridControl()==null)
-        // lookup grid...
-        setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
-
       if (grids.getGridControl()!=null && !(gridType==MAIN_GRID && grids.getGridControl().getLockedRowsOnTop()==0 || gridType==TOP_GRID)) {
         if (getTableHeader()!=null) {
           getTableHeader().setVisible(false);
@@ -783,18 +779,14 @@ public class Grid extends JTable
       if (grids==null)
         return false;
       if (grids!=null && grids.getMode()==Consts.READONLY) {
-        boolean returnFalse = true;
         for(int i=0;i<colProps.length;i++)
           if (colProps[i].getColumnType()==Column.TYPE_BUTTON && ((ButtonColumn)colProps[i]).isEnableInReadOnlyMode()) {
-            returnFalse = false;
-            break;
+            return super.editCellAt(row, column, e);
           }
-        else if (colProps[i].getColumnType()==Column.TYPE_CHECK && ((CheckBoxColumn)colProps[i]).isEnableInReadOnlyMode()) {
-          returnFalse = false;
-          break;
-        }
-        if (returnFalse)
-          return false;
+          else if (colProps[i].getColumnType()==Column.TYPE_CHECK && ((CheckBoxColumn)colProps[i]).isEnableInReadOnlyMode()) {
+            return super.editCellAt(row, column, e);
+          }
+        return false;
       }
       setRowSelectionInterval(row,row);
       setColumnSelectionInterval(column,column);

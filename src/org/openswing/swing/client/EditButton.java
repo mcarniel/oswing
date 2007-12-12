@@ -42,7 +42,6 @@ public class EditButton extends GenericButton {
 
   public EditButton() {
     super(new ImageIcon(ClientUtils.getImage("edit.gif")));
-    setToolTipText(ClientSettings.getInstance().getResources().getResource("Edit record (CTRL+E)"));
     setPreferredSize(new Dimension(32,32));
   }
 

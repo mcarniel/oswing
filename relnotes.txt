@@ -1,4 +1,27 @@
 
+Release Notes 1.3.8
+-------------------
+
+Final release 1.3.8 available
+
+Improved lookup management: now it is possible to define what a lookup has to do when validating an incorrect code:
+clear code inside the code field (default value), restore the last valid code, mantain the invalid code in the code field and restore focus into it.
+This lookup behaviour can be defined through the new property "onInvalidCode" of LookupController class.
+Added ON_INVALID_CODE attribute in ClientSettings class: this property defines the default lookup behavior when validating an incorrect code.
+Updated web site by adding description about new features.
+Changed demo4 and demo24 sample applications to show how to use "onInvalidCode" property of LookupController class.
+Changed setValue/getValue methods of a VOListControl to support a list of value objects as argument, when this input control is added (and not linked) to a Form.
+Added demo30 sample application to show how to use a VOListControl for multiple selection inside a Form panel.
+Removed tooltip text from all xxxButtons and moved it to binding between button and grid.
+Fixed a problem in Form panel when its value object has an attribute having name "xXxxx".
+Improved Form panel and GridControl to support v.o. attributes having name "xXXX" or "Xxxx".
+Fixed a bug in row selection on grid arised when "enableInReadOnlyMode" property is set to "true".
+Fixed a problem when showing lookup grid frame: now the black border around the grid does not overrride the grid content.
+Fixed a background painting problem in DateControl and FormattedTextControl when disabling control.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.3.7
 -------------------
 

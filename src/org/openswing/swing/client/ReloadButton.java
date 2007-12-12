@@ -41,7 +41,6 @@ public class ReloadButton extends GenericButton {
 
   public ReloadButton() {
     super(new ImageIcon(ClientUtils.getImage("reload.gif")));
-    setToolTipText(ClientSettings.getInstance().getResources().getResource("Reload record/Cancel current operation (CTRL+Z)"));
     setPreferredSize(new Dimension(32,32));
   }
 

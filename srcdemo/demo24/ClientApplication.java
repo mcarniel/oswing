@@ -12,7 +12,8 @@ import org.openswing.swing.internationalization.java.*;
 /**
  * <p>Title: OpenSwing Demo</p>
  * <p>Description: Used to start application from main method:
- * it creates an editable grid frame with colored cells and cells span.</p>
+ * it creates an editable grid frame with colored cells and cells span.
+ * Grid control includes a lookup column having a lookup controller with "onInvalidCode" property setted to LookupControoller.ON_INVALID_CODE_RESTORE_FOCUS</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  * <p> </p>
  * @author Mauro Carniel

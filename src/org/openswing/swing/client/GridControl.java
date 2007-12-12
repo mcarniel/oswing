@@ -1,18 +1,13 @@
 package org.openswing.swing.client;
+
 import java.beans.*;
 import java.util.*;
-
 import java.awt.*;
 import java.awt.event.KeyListener;
 import javax.swing.*;
-
-import java.awt.event.MouseListener;
 import org.openswing.swing.table.columns.client.*;
-
 import org.openswing.swing.table.model.client.*;
-
 import org.openswing.swing.form.client.Form;
-
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.table.java.*;
@@ -20,10 +15,6 @@ import org.openswing.swing.util.java.*;
 import org.openswing.swing.table.filter.client.FilterPanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import org.openswing.swing.table.filter.client.FilterDialog;
-import org.openswing.swing.message.receive.java.Response;
-import org.openswing.swing.message.receive.java.VOListResponse;
 import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.ActionListener;
@@ -34,10 +25,7 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.AncestorEvent;
 import java.io.*;
 import org.openswing.swing.table.profiles.java.GridProfileDescription;
-import javax.swing.event.TableColumnModelEvent;
 import javax.swing.table.TableColumnModel;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 
 
 /**
@@ -1113,6 +1101,8 @@ public class GridControl extends JPanel {
    * @param editButton edit button
    */
   public final void setEditButton(EditButton editButton) {
+    if (editButton!=null)
+      editButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Edit record (CTRL+E)"));
     this.editButton = editButton;
     if (this.table!=null)
       this.table.setEditButton(editButton);
@@ -1124,6 +1114,8 @@ public class GridControl extends JPanel {
    * @param insertButton insert button
    */
   public final void setInsertButton(InsertButton insertButton) {
+    if (insertButton!=null)
+      insertButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("New record (CTRL+I)"));
     this.insertButton = insertButton;
     if (this.table!=null)
       this.table.setInsertButton(insertButton);
@@ -1135,6 +1127,8 @@ public class GridControl extends JPanel {
    * @param insertButton export button
    */
   public final void setExportButton(ExportButton exportButton) {
+    if (exportButton!=null)
+      exportButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Export record (CTRL+X)"));
     this.exportButton = exportButton;
     if (this.table!=null)
       this.table.setExportButton(exportButton);
@@ -1146,6 +1140,8 @@ public class GridControl extends JPanel {
    * @param copyButton insert button
    */
   public final void setCopyButton(CopyButton copyButton) {
+    if (copyButton!=null)
+      copyButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Copy record (CTRL+C)"));
     this.copyButton = copyButton;
     if (this.table!=null)
       this.table.setCopyButton(copyButton);
@@ -1165,6 +1161,8 @@ public class GridControl extends JPanel {
    * @param reloadButton reload/cancel button
    */
   public final void setReloadButton(ReloadButton reloadButton) {
+    if (reloadButton!=null)
+      reloadButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Reload record/Cancel current operation (CTRL+Z)"));
     this.reloadButton = reloadButton;
     if (this.table!=null)
       this.table.setReloadButton(reloadButton);
@@ -1184,6 +1182,8 @@ public class GridControl extends JPanel {
    * @param deleteButton delete button
    */
   public final void setDeleteButton(DeleteButton deleteButton) {
+    if (deleteButton!=null)
+      deleteButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Delete record (CTRL+D)"));
     this.deleteButton = deleteButton;
     if (this.table!=null)
       this.table.setDeleteButton(deleteButton);
@@ -1195,6 +1195,8 @@ public class GridControl extends JPanel {
    * @param filterButton filter button
    */
   public final void setFilterButton(FilterButton filterButton) {
+    if (filterButton!=null)
+      filterButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Filtering/Sorting data (CTRL+F)"));
     this.filterButton = filterButton;
     if (this.table!=null)
       this.table.setFilterButton(filterButton);
@@ -1214,6 +1216,8 @@ public class GridControl extends JPanel {
    * @param saveButton save button
    */
   public final void setSaveButton(SaveButton saveButton) {
+    if (saveButton!=null)
+      saveButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Save record (CTRL+S)"));
     this.saveButton = saveButton;
     if (this.table!=null)
       this.table.setSaveButton(saveButton);

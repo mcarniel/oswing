@@ -43,6 +43,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import org.openswing.swing.util.client.ClientUtils;
 import java.lang.reflect.*;
+import javax.swing.SwingUtilities;
 
 
 /**
@@ -314,7 +315,7 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    * Method that listen validation code event fired by the code input field: it validates the code.
    * @param code code to validate
    */
-  public final void validateCode(String code) {
+  public final void validateCode(String code) throws RestoreFocusOnInvalidCodeException {
     if (validationController!=null)
       validationController.validateCode(
           codBox,
@@ -585,6 +586,16 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    */
   public ValueObject getValueObject() {
     return validationController.getForm()==null?null:validationController.getForm().getVOModel().getValueObject();
+  }
+
+
+  /**
+   * @return attribute name in the parent value object related to lookup code
+   */
+  public Object getLookupCodeParentValue() {
+    if (validationController.getForm()!=null)
+      return validationController.getForm().getVOModel().getValue(getAttributeName());
+    return "";
   }
 
 

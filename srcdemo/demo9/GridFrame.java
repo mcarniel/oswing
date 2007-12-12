@@ -9,6 +9,7 @@ import java.sql.*;
 import java.awt.event.*;
 import org.openswing.swing.table.java.*;
 import java.awt.event.ActionEvent;
+import javax.swing.ListSelectionModel;
 
 
 /**
@@ -132,6 +133,7 @@ public class GridFrame extends JFrame {
     colButton.setEditableOnEdit(true);
     colButton.setEditableOnInsert(true);
     colButton.setEnableInReadOnlyMode(true);
+
 
 //    colButton.setIconName("chiuso.gif");
 //    colButton.setText("");

@@ -74,7 +74,7 @@ public class BaseInputControl extends JPanel implements InputControl {
   private ArrayList valueChangedListeners = new ArrayList();
 
   /** default background color of the binding component */
-  private Color defaultBackgroundColor = null;
+  protected Color defaultBackgroundColor = null;
 
   /** tooltip text */
   private String toolTipText = null;

@@ -420,6 +420,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
     calendar.setEnabled(enabled);
     date.setFocusable(enabled);
     calendar.setFocusable(enabled);
+    if (!enabled)
+      getBindingComponent().setBackground((Color)UIManager.get("TextField.inactiveBackground"));
   }
 
 

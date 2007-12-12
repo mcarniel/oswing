@@ -40,6 +40,7 @@ import org.openswing.swing.table.editors.client.ImageCellEditor;
 import org.openswing.swing.export.java.ExportToPDF;
 import org.openswing.swing.export.java.ExportToXMLFat;
 import org.openswing.swing.export.java.ExportToRTF;
+import org.openswing.swing.table.columns.client.CodLookupColumn;
 
 
 /**
@@ -2370,7 +2371,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         for (int i=0; i<rows.length; i++) {
           // all columns are validated (not only those that are editable)...
           for (int j=0; j<this.colProps.length; j++) {
-            if (this.colProps[j].isColumnRequired())
+            if (this.colProps[j].getColumnType()==colProps[j].TYPE_LOOKUP &&
+              ((CodLookupColumn)this.colProps[j]).getLookupController()!=null &&
+              !((CodLookupColumn)this.colProps[j]).getLookupController().isCodeValid())
+              return false;
+            else if (this.colProps[j].isColumnRequired())
               if ((model.getValueAt(i, j)==null) || (model.getValueAt(i, j).toString().equals(""))) {
                 JOptionPane.showMessageDialog(ClientUtils.getParentFrame(this),
                                               ClientSettings.getInstance().getResources().getResource("A mandatory column is empty."),
@@ -2384,7 +2389,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
                   grid.editCellAt(i, j - lockedColumns);
                   grid.requestFocus();
                 }
-                return (false);
+                return false;
               }
           }
         }

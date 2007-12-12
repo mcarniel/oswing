@@ -41,7 +41,6 @@ public class FilterButton extends GenericButton {
 
   public FilterButton() {
     super(new ImageIcon(ClientUtils.getImage("filter.gif")));
-    setToolTipText(ClientSettings.getInstance().getResources().getResource("Filtering/Sorting data (CTRL+F)"));
     setPreferredSize(new Dimension(32,32));
   }
 

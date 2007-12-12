@@ -42,7 +42,6 @@ public class InsertButton extends GenericButton {
 
   public InsertButton() {
     super(new ImageIcon(ClientUtils.getImage("new.gif")));
-    setToolTipText(ClientSettings.getInstance().getResources().getResource("New record (CTRL+I)"));
     setPreferredSize(new Dimension(32,32));
   }
 

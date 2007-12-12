@@ -42,7 +42,6 @@ public class CopyButton extends GenericButton {
 
   public CopyButton() {
     super(new ImageIcon(ClientUtils.getImage("copy.gif")));
-    setToolTipText(ClientSettings.getInstance().getResources().getResource("Copy record (CTRL+C)"));
     setPreferredSize(new Dimension(32,32));
   }
 

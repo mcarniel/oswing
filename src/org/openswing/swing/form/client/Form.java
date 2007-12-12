@@ -215,7 +215,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
 
   /**
-   * Set the current focused form that will receive key events..
+   * Set the current focused form that will receive key events.
    * @param form currently focused form; may be null (if no form is currently focused)
    */
   public void disableFocusedForm() {
@@ -356,9 +356,11 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (this.editButton != null)
       this.editButton.removeDataController(this);
     this.editButton = editButton;
-    if (editButton != null)
+    if (editButton != null) {
       // add a new listener...
       editButton.addDataController(this);
+      editButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Edit record (CTRL+E)"));
+    }
   }
 
 
@@ -371,9 +373,11 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (this.insertButton != null)
       this.insertButton.removeDataController(this);
     this.insertButton = insertButton;
-    if (insertButton != null)
+    if (insertButton != null) {
       // add a new listener...
       insertButton.addDataController(this);
+      insertButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("New record (CTRL+I)"));
+    }
   }
 
 
@@ -386,9 +390,11 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (this.copyButton != null)
       this.copyButton.removeDataController(this);
     this.copyButton = copyButton;
-    if (copyButton != null)
+    if (copyButton != null) {
       // add a new listener...
       copyButton.addDataController(this);
+      copyButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Copy record (CTRL+C)"));
+    }
   }
 
 
@@ -409,9 +415,11 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (this.reloadButton != null)
       this.reloadButton.removeDataController(this);
     this.reloadButton = reloadButton;
-    if (reloadButton != null)
+    if (reloadButton != null) {
       // add a new listener...
       reloadButton.addDataController(this);
+      reloadButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Reload record/Cancel current operation (CTRL+Z)"));
+    }
   }
 
 
@@ -432,9 +440,11 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (this.deleteButton != null)
       this.deleteButton.removeDataController(this);
     this.deleteButton = deleteButton;
-    if (deleteButton != null)
+    if (deleteButton != null) {
       // add a new listener...
       deleteButton.addDataController(this);
+      deleteButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Delete record (CTRL+D)"));
+    }
   }
 
   /**
@@ -454,9 +464,11 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (this.saveButton != null)
       this.saveButton.removeDataController(this);
     this.saveButton = saveButton;
-    if (saveButton != null)
+    if (saveButton != null) {
       // add a new listener...
       saveButton.addDataController(this);
+      saveButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Save record (CTRL+S)"));
+    }
   }
 
 
@@ -1178,6 +1190,12 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
               else
                 inputControlsNotValid.add( comp.getAttributeName() );
             }
+            if (comp instanceof CodLookupControl) {
+              if (((CodLookupControl)comp).getCodBox().hasFocus())
+                ((CodLookupControl)comp).getCodBox().forceValidate();
+              if (((CodLookupControl)comp).getLookupController()!=null && !((CodLookupControl)comp).getLookupController().isCodeValid())
+                inputControlsNotValid.add( comp.getAttributeName() );
+            }
           }
         }
     }
@@ -1310,6 +1328,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @return <code>true</code> if data saving is successfully completed, <code>false</code> if an error occours
    */
   public final boolean save() {
+    if (getSaveButton()!=null)
+      getSaveButton().requestFocus();
+
     int previousMode; // previous form mode (before saving data)...
     if (getMode()!=Consts.READONLY) {
       try {

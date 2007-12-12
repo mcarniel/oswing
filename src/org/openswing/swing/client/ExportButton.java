@@ -41,7 +41,6 @@ public class ExportButton extends GenericButton {
 
   public ExportButton() {
     super(new ImageIcon(ClientUtils.getImage("export.gif")));
-    setToolTipText(ClientSettings.getInstance().getResources().getResource("Export record (CTRL+X)"));
     setPreferredSize(new Dimension(32,32));
   }
 

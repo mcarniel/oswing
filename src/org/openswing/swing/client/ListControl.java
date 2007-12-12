@@ -85,6 +85,15 @@ public class ListControl extends BaseInputControl implements InputControl {
     list.setSelectionForeground((Color)UIManager.get("TextField.foreground"));
 
     initListeners();
+    getBindingComponent().addFocusListener(new FocusAdapter() {
+
+      public void focusGained(FocusEvent e) {
+        if (ClientSettings.VIEW_BACKGROUND_SEL_COLOR && isEnabled()) {
+          getBindingComponent().setBackground(defaultBackgroundColor);
+        }
+      }
+
+    });
   }
 
 

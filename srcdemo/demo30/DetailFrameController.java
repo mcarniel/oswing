@@ -1,4 +1,4 @@
-package demo26;
+package demo30;
 
 import org.openswing.swing.client.*;
 import java.util.*;
@@ -78,16 +78,13 @@ public class DetailFrameController extends FormController {
       attribute2dbField.put("zipCode","CUSTOMERS.ZIP_CODE");
       attribute2dbField.put("state","CUSTOMERS.STATE");
       attribute2dbField.put("address","CUSTOMERS.ADDRESS");
-      attribute2dbField.put("pricelistCode","CUSTOMERS.PRICELIST_CODE");
       attribute2dbField.put("description","CUSTOMERS.DESCRIPTION");
-      attribute2dbField.put("startDate","CUSTOMERS.START_DATE");
-      attribute2dbField.put("endDate","CUSTOMERS.END_DATE");
       attribute2dbField.put("note","CUSTOMERS.NOTE");
 
-      return QueryUtil.getQuery(
+      Response res = QueryUtil.getQuery(
         conn,
         new UserSessionParameters(),
-        "select CUSTOMERS.CUSTOMER_CODE,CUSTOMERS.NAME,CUSTOMERS.SURNAME,CUSTOMERS.CITY,CUSTOMERS.ZIP_CODE,CUSTOMERS.STATE,CUSTOMERS.ADDRESS,CUSTOMERS.PRICELIST_CODE,CUSTOMERS.DESCRIPTION,CUSTOMERS.START_DATE,CUSTOMERS.END_DATE,CUSTOMERS.NOTE from CUSTOMERS where CUSTOMER_CODE=?",
+        "select CUSTOMERS.CUSTOMER_CODE,CUSTOMERS.NAME,CUSTOMERS.SURNAME,CUSTOMERS.CITY,CUSTOMERS.ZIP_CODE,CUSTOMERS.STATE,CUSTOMERS.ADDRESS,CUSTOMERS.DESCRIPTION,CUSTOMERS.NOTE from CUSTOMERS where CUSTOMER_CODE=?",
         vals,
         attribute2dbField,
         DetailTestVO.class,
@@ -97,6 +94,51 @@ public class DetailFrameController extends FormController {
         true
       );
 
+      if (res.isError())
+        return res;
+
+      // retrieve pricelist codes...
+      PreparedStatement stmt = null;
+      ResultSet rset = null;
+      DetailTestVO vo = (DetailTestVO)((VOResponse)res).getVo();
+      ArrayList list = new ArrayList();
+      vo.setPricelists(list);
+      try {
+        String sql =
+            "select PRICELISTS.PRICELIST_CODE,PRICELISTS.DESCRIPTION,PRICELISTS.START_DATE,PRICELISTS.END_DATE," +
+            "PRICELISTS.NOTE FROM PRICELISTS,CUSTOMER_PRICELISTS where CUSTOMER_PRICELISTS.CUSTOMER_CODE=?" +
+            " and PRICELISTS.PRICELIST_CODE=CUSTOMER_PRICELISTS.PRICELIST_CODE";
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1,vo.getCustomerCode());
+        rset = stmt.executeQuery();
+        while(rset.next()) {
+          TestListVO pricelistVO = new TestListVO();
+          pricelistVO.setPricelistCode(rset.getString(1));
+          pricelistVO.setDescription(rset.getString(2));
+          pricelistVO.setStartDate(rset.getDate(3));
+          pricelistVO.setEndDate(rset.getDate(4));
+          pricelistVO.setNote(rset.getString(5));
+          list.add(pricelistVO);
+        }
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+        return new ErrorResponse(ex.getMessage());
+      }
+      finally {
+        try {
+          rset.close();
+        }
+        catch (Exception ex1) {
+        }
+        try {
+          stmt.close();
+        }
+        catch (Exception ex1) {
+        }
+      }
+
+      return res;
 
     }
     catch (Exception ex) {
@@ -122,13 +164,10 @@ public class DetailFrameController extends FormController {
       attribute2dbField.put("zipCode","CUSTOMERS.ZIP_CODE");
       attribute2dbField.put("state","CUSTOMERS.STATE");
       attribute2dbField.put("address","CUSTOMERS.ADDRESS");
-      attribute2dbField.put("pricelistCode","CUSTOMERS.PRICELIST_CODE");
       attribute2dbField.put("description","CUSTOMERS.DESCRIPTION");
-      attribute2dbField.put("startDate","CUSTOMERS.START_DATE");
-      attribute2dbField.put("endDate","CUSTOMERS.END_DATE");
       attribute2dbField.put("note","CUSTOMERS.NOTE");
 
-      return QueryUtil.insertTable(
+      Response res = QueryUtil.insertTable(
         conn,
         new UserSessionParameters(),
         newPersistentObject,
@@ -139,6 +178,37 @@ public class DetailFrameController extends FormController {
         null,
         true
       );
+
+      if (res.isError())
+        return res;
+
+        // save pricelist codes...
+      PreparedStatement stmt = null;
+      DetailTestVO vo = (DetailTestVO)newPersistentObject;
+      try {
+        stmt = conn.prepareStatement("insert into CUSTOMER_PRICELISTS(CUSTOMER_CODE,PRICELIST_CODE) values(?,?)");
+        if (vo.getPricelists()!=null)
+          for(int i=0;i<vo.getPricelists().size();i++) {
+            stmt.setString(1,vo.getCustomerCode());
+            stmt.setString(2,((TestListVO)vo.getPricelists().get(i)).getPricelistCode());
+            stmt.execute();
+          }
+
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+        conn.rollback();
+        return new ErrorResponse(ex.getMessage());
+      }
+      finally {
+        try {
+          stmt.close();
+        }
+        catch (Exception ex1) {
+        }
+      }
+
+      return res;
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -170,16 +240,13 @@ public class DetailFrameController extends FormController {
       attribute2dbField.put("zipCode","CUSTOMERS.ZIP_CODE");
       attribute2dbField.put("state","CUSTOMERS.STATE");
       attribute2dbField.put("address","CUSTOMERS.ADDRESS");
-      attribute2dbField.put("pricelistCode","CUSTOMERS.PRICELIST_CODE");
       attribute2dbField.put("description","CUSTOMERS.DESCRIPTION");
-      attribute2dbField.put("startDate","CUSTOMERS.START_DATE");
-      attribute2dbField.put("endDate","CUSTOMERS.END_DATE");
       attribute2dbField.put("note","CUSTOMERS.NOTE");
 
       HashSet pks = new HashSet();
       pks.add("customerCode");
 
-      return QueryUtil.updateTable(
+      Response res = QueryUtil.updateTable(
         conn,
         new UserSessionParameters(),
         pks,
@@ -192,6 +259,43 @@ public class DetailFrameController extends FormController {
         null,
         true
       );
+
+      if (res.isError())
+        return res;
+
+        // save pricelist codes...
+      PreparedStatement stmt = null;
+      DetailTestVO vo = (DetailTestVO)persistentObject;
+      try {
+        stmt = conn.prepareStatement("delete from CUSTOMER_PRICELISTS where CUSTOMER_CODE=?");
+        stmt.setString(1,vo.getCustomerCode());
+        stmt.execute();
+        stmt.close();
+
+        stmt = conn.prepareStatement("insert into CUSTOMER_PRICELISTS(CUSTOMER_CODE,PRICELIST_CODE) values(?,?)");
+        if (vo.getPricelists()!=null)
+          for(int i=0;i<vo.getPricelists().size();i++) {
+            stmt.setString(1,vo.getCustomerCode());
+            stmt.setString(2,((TestListVO)vo.getPricelists().get(i)).getPricelistCode());
+            stmt.execute();
+          }
+
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+        conn.rollback();
+        return new ErrorResponse(ex.getMessage());
+      }
+      finally {
+        try {
+          stmt.close();
+        }
+        catch (Exception ex1) {
+        }
+      }
+
+      return res;
+
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -214,8 +318,14 @@ public class DetailFrameController extends FormController {
   public Response deleteRecord(ValueObject persistentObject) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("delete from CUSTOMERS where CUSTOMER_CODE=?");
       DetailTestVO vo = (DetailTestVO)persistentObject;
+
+      stmt = conn.prepareStatement("delete from CUSTOMER_PRICELISTS where CUSTOMER_CODE=?");
+      stmt.setString(1,vo.getCustomerCode());
+      stmt.execute();
+      stmt.close();
+
+      stmt = conn.prepareStatement("delete from CUSTOMERS where CUSTOMER_CODE=?");
       stmt.setString(1,vo.getCustomerCode());
       stmt.execute();
 
@@ -265,6 +375,18 @@ public class DetailFrameController extends FormController {
     return true;
   }
 
+
+  /**
+   * Callback method called when the data loading is completed.
+   * @param error <code>true</code> if an error occours during data loading, <code>false</code> if data loading is successfully completed
+   */
+  public void loadDataCompleted(boolean error) {
+    if (!error) {
+      DetailTestVO vo = (DetailTestVO)frame.getMainPanel().getVOModel().getValueObject();
+      frame.getControlList().setValue(vo.getPricelists());
+
+    }
+  }
 
 
 

@@ -10,6 +10,8 @@ import javax.swing.UIManager;
 import org.openswing.swing.client.*;
 import org.openswing.swing.domains.java.*;
 import java.awt.Dimension;
+import javax.swing.SwingUtilities;
+import org.openswing.swing.lookup.client.RestoreFocusOnInvalidCodeException;
 
 
 /**
@@ -81,7 +83,7 @@ public class CodBox extends JTextField {
           startValidation();
       }
       public void focusGained(FocusEvent e) {
-        oldValue = getText();
+//        oldValue = getText();
       }
     });
 
@@ -111,6 +113,16 @@ public class CodBox extends JTextField {
       oldValue = getText();
       try {
         container.validateCode(getText());
+        oldValue = getText();
+      }
+      catch (RestoreFocusOnInvalidCodeException ex) {
+        oldValue = "";
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            if (!CodBox.this.hasFocus())
+              CodBox.this.requestFocus();
+          }
+        });
       }
       catch (Exception ex) {
         ex.printStackTrace();
@@ -221,7 +233,6 @@ public class CodBox extends JTextField {
     try {
       oldValue = null;
       startValidation();
-      oldValue = getText();
     }
     catch (Exception ex) {
       ex.printStackTrace();

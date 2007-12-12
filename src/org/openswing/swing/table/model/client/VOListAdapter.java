@@ -116,7 +116,7 @@ public class VOListAdapter {
 
         if (attributeName.startsWith("get") && methods[i].getParameterTypes().length==0 &&
           ValueObject.class.isAssignableFrom(methods[i].getReturnType())) {
-          aName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
+          aName = getAttributeName(attributeName,classType);
           Method[] newparentMethods = new Method[parentMethods.length+1];
           System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
           newparentMethods[parentMethods.length] = methods[i];
@@ -142,7 +142,7 @@ public class VOListAdapter {
              methods[i].getReturnType().equals(Object.class) ||
              ValueObject.class.isAssignableFrom( methods[i].getReturnType() )
             )) {
-          attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
+         attributeName = getAttributeName(attributeName,classType);
 //          try {
 //            if (classType.getMethod("set"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[]{methods[i].getReturnType()})!=null)
           Method[] newparentMethods = new Method[parentMethods.length+1];
@@ -156,14 +156,14 @@ public class VOListAdapter {
                  methods[i].getParameterTypes().length==0 &&
                  (methods[i].getReturnType().equals(Boolean.class) ||
                   methods[i].getReturnType().equals(boolean.class) )) {
-          attributeName = attributeName.substring(2,3).toLowerCase()+(attributeName.length()>3?attributeName.substring(3):"");
+          attributeName = getAttributeName(attributeName,classType);
           Method[] newparentMethods = new Method[parentMethods.length+1];
           System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
           newparentMethods[parentMethods.length] = methods[i];
           voGetterMethods.put(prefix+attributeName,newparentMethods);
         }
         else if (attributeName.startsWith("set") && methods[i].getParameterTypes().length==1) {
-          attributeName = attributeName.substring(3,4).toLowerCase()+(attributeName.length()>4?attributeName.substring(4):"");
+          attributeName = getAttributeName(attributeName,classType);
           try {
             if (classType.getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0])!=null) {
               Method[] newparentMethods = new Method[parentMethods.length+1];
@@ -206,6 +206,58 @@ public class VOListAdapter {
     catch (Exception ex) {
       ex.printStackTrace();
     }
+  }
+
+
+  /**
+   * @param methodName getter method
+   * @param clazz value object class
+   * @return attribute name related to the specified getter method
+   */
+  private String getAttributeName(String methodName,Class classType) {
+    String attributeName = null;
+    if (methodName.startsWith("is"))
+      attributeName = methodName.substring(2,3).toLowerCase()+(methodName.length()>3?methodName.substring(3):"");
+    else
+      attributeName = methodName.substring(3,4).toLowerCase()+(methodName.length()>4?methodName.substring(4):"");
+
+    // an attribute name "Xxxx" becomes "xxxx" and this is not correct!
+    try {
+      Class c = classType;
+      boolean attributeFound = false;
+      while(!c.equals(Object.class)) {
+        try {
+          c.getDeclaredField(attributeName);
+          attributeFound = true;
+          break;
+        }
+        catch (Throwable ex2) {
+          c = c.getSuperclass();
+        }
+      }
+      if (!attributeFound) {
+        // now trying to find an attribute having the first character in upper case (e.g. "Xxxx")
+        String name = attributeName.substring(0,1).toUpperCase()+attributeName.substring(1);
+        c = classType;
+        while(!c.equals(Object.class)) {
+          try {
+            c.getDeclaredField(name);
+            attributeFound = true;
+            break;
+          }
+          catch (Throwable ex2) {
+            c = c.getSuperclass();
+          }
+        }
+        if (attributeFound)
+          attributeName = name;
+      }
+    }
+    catch (Throwable ex1) {
+    }
+
+
+    return attributeName;
   }
 
 

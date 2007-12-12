@@ -230,6 +230,8 @@ public class DetailFrame extends JFrame {
 
     LookupController lookupController = new DemoLookupController(conn);
     controlLookup.setLookupController(lookupController);
+    lookupController.setOnInvalidCode(lookupController.ON_INVALID_CODE_RESTORE_LAST_VALID_CODE);
+//    lookupController.setOnInvalidCode(lookupController.ON_INVALID_CODE_RESTORE_FOCUS);
     lookupController.addLookupListener(new LookupListener() {
       /**
        * beforeLookupAction
