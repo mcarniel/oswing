@@ -24,15 +24,19 @@ public class TreePanelBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _expandAllNodes = new PropertyDescriptor("expandAllNodes", beanClass, "isExpandAllNodes", "setExpandAllNodes");
       PropertyDescriptor _folderIconName = new PropertyDescriptor("folderIconName", beanClass, "getFolderIconName", "setFolderIconName");
+      PropertyDescriptor _iconImageName = new PropertyDescriptor("iconImageName", beanClass, "getIconImageName", "setIconImageName");
       PropertyDescriptor _leavesImageName = new PropertyDescriptor("leavesImageName", beanClass, "getLeavesImageName", "setLeavesImageName");
       PropertyDescriptor _loadWhenVisibile = new PropertyDescriptor("loadWhenVisibile", beanClass, "isLoadWhenVisibile", "setLoadWhenVisibile");
+      PropertyDescriptor _tooltipAttributeName = new PropertyDescriptor("tooltipAttributeName", beanClass, "getTooltipAttributeName", "setTooltipAttributeName");
       PropertyDescriptor _treeController = new PropertyDescriptor("treeController", beanClass, "getTreeController", "setTreeController");
       PropertyDescriptor _treeDataLocator = new PropertyDescriptor("treeDataLocator", beanClass, "getTreeDataLocator", "setTreeDataLocator");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _expandAllNodes,
         _folderIconName,
+        _iconImageName,
         _leavesImageName,
         _loadWhenVisibile,
+        _tooltipAttributeName,
         _treeController,
         _treeDataLocator};
       return pds;

@@ -212,6 +212,7 @@ public class DetailFrame extends JFrame {
     controlDate.setAttributeName("dateValue");
     controlCheck.setAttributeName("checkValue");
     controlRadioButton1.setAttributeName("radioButtonValue");
+    controlRadioButton2.setAttributeName("radioButtonValue");
     controlCurrency.setAttributeName("currencyValue");
     controlNumeric.setAttributeName("numericValue");
     controlComboBox.setAttributeName("combo");

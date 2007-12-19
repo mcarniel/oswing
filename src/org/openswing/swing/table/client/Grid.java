@@ -38,6 +38,7 @@ import java.awt.datatransfer.DataFlavor;
 import javax.swing.plaf.UIResource;
 import java.awt.Rectangle;
 import org.openswing.swing.table.profiles.java.GridProfile;
+import java.awt.event.AdjustmentListener;
 
 
 /**
@@ -695,6 +696,7 @@ public class Grid extends JTable
         }
       }
 
+
     }
     catch (Throwable t) {
       Logger.error(this.getClass().getName(),"Grid","Error while constructing grid.",t);
@@ -995,9 +997,18 @@ public class Grid extends JTable
         }
       });
 
+
+    // listener added to intercept the event mouse wheel event finished and repaint grid content
+    // grid repainting is needed to ensure that all cell borders are correctly repaints after scrolling grid
+    vScrollbar.addAdjustmentListener(new AdjustmentListener() {
+      public void adjustmentValueChanged(AdjustmentEvent e) {
+        repaint();
+      }
+    });
+
+
     if (gridType==MAIN_GRID)
       scrollPane.setVerticalScrollBar(vScrollbar);
-
   }
 
 
@@ -1252,7 +1263,7 @@ public class Grid extends JTable
             continue;
           else if (val1==null && val2!=null)
             return -1*sign;
-          else if (val1==null && val2!=null)
+          else if (val1!=null && val2==null)
             return +1*sign;
           else {
             if (val1 instanceof java.util.Date) {

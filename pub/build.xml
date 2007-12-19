@@ -149,6 +149,7 @@
         <include name="jcalendar.jar"/>
         <include name="jnlp.jar"/>
         <include name="jnlp-servlet.jar"/>
+        <include name="OfficeLnFs_2.7.jar"/>
       </fileset>
     </copy>
     <signjar jar="${signedlib}/looks-2.0.1.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
@@ -161,6 +162,7 @@
     <signjar jar="${signedlib}/jcalendar.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <signjar jar="${signedlib}/jnlp.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <signjar jar="${signedlib}/jnlp-servlet.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
+    <signjar jar="${signedlib}/OfficeLnFs_2.7.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
 
   </target>
 
@@ -198,6 +200,7 @@
         <include name="pooler.jar"/>
         <include name="jcalendar.jar"/>
         <include name="jnlp.jar"/>
+        <include name="OfficeLnFs_2.7.jar"/>
       </fileset>
     </copy>
   </target>

@@ -103,6 +103,12 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   /** tree identifier, used for DnD */
   private String treeId = null;
 
+  /** attribute name that contains the icon image name; default value: null; if defined, this attribute overrides "folderIcon"/"leafIcon" values */
+  private String iconAttributeName;
+
+  /** attribute name that contains the tool tip text for the node; default value: null */
+  private String tooltipAttributeName;
+
 
   /**
    * Constructor.
@@ -225,18 +231,19 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
 
   private void recreateTree() {
+    try {
+      TreeNodeRenderer renderer = new TreeNodeRenderer(this,folderIconName,leavesImageName,iconAttributeName,tooltipAttributeName);
+      tree.setCellRenderer(renderer);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+
+    tree.setToolTipText("");
     tree.setModel(treeModel);
     tree.revalidate();
 
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     tree.setShowsRootHandles(true);
-
-    try {
-      TreeNodeRenderer renderer = new TreeNodeRenderer(this,folderIconName,leavesImageName);
-      tree.setCellRenderer(renderer);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
 
     tree.setSize(new Dimension((int)this.getPreferredSize().getWidth()/2,
                                (int)this.getPreferredSize().getHeight()));
@@ -676,6 +683,40 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     dndListener.dropActionChanged();
   }
 
+
+
+  /**
+   * Set the attribute name that contains the icon name; default value: null; if defined, this attribute overrides "folderIcon"/"leafIcon" values.
+   * @param iconAttributeName attribute name that contains the icon name
+   */
+  public final void setIconAttributeName(String iconAttributeName) {
+    this.iconAttributeName = iconAttributeName;
+  }
+
+
+  /**
+   * @return attribute name that contains the icon name (optional)
+   */
+  public final String getIconAttributeName() {
+    return iconAttributeName;
+  }
+
+
+  /**
+   * @return attribute name that contains the tool tip text for the node
+   */
+  public final String getTooltipAttributeName() {
+    return tooltipAttributeName;
+  }
+
+
+  /**
+   * Set the attribute name that contains the tool tip text for the node; default value: null.
+   * @param tooltipAttributeName attribute name that contains the tool tip text for the node
+   */
+  public final void setTooltipAttributeName(String tooltipAttributeName) {
+    this.tooltipAttributeName = tooltipAttributeName;
+  }
 
 
 

@@ -67,7 +67,7 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
     this.showAttributeValue = showAttributeValue;
     if (!showAttributeValue)
       rend.setText(ClientSettings.getInstance().getResources().getResource(text));
-    rend.setBorder(BorderFactory.createRaisedBevelBorder());
+//    rend.setBorder(BorderFactory.createRaisedBevelBorder());
     rend.setHorizontalAlignment(alignement);
     this.enableInReadOnlyMode = enableInReadOnlyMode;
     if (icon!=null)
@@ -115,7 +115,7 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
           (backColor.getGreen()+selColor.getGreen())/2,
           (backColor.getBlue()+selColor.getBlue())/2
       ));
-      rend.setBorder(BorderFactory.createLineBorder(table.getSelectionForeground()));
+//      rend.setBorder(BorderFactory.createLineBorder(table.getSelectionForeground()));
     } else if (isSelected && !hasFocus) {
       Color backColor = gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value);
       Color selColor = null;
@@ -141,10 +141,10 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
           (backColor.getBlue()+selColor.getBlue())/2
       ));
 
-      rend.setBorder(BorderFactory.createRaisedBevelBorder());
+//      rend.setBorder(BorderFactory.createRaisedBevelBorder());
     } else {
       rend.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
-      rend.setBorder(BorderFactory.createRaisedBevelBorder());
+//      rend.setBorder(BorderFactory.createRaisedBevelBorder());
       if (!enableInReadOnlyMode && (((Grid)table).getMode()==Consts.READONLY || !((Grid)table).isColorsInReadOnlyMode()))
         rend.setBackground(gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
       else {

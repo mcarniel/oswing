@@ -49,18 +49,33 @@ import org.openswing.swing.logger.client.Logger;
  */
 public class TreeNodeRenderer extends DefaultTreeCellRenderer {
 
+  /** default folder icon */
   ImageIcon folderIcon = null;
+
+  /** default leaf icon */
   ImageIcon leafIcon = null;
+
+  /** tree panel that uses this renderer */
   TreePanel treePanel;
+
+  /** attribute name that contains the icon image name; default value: null; if defined, this attribute overrides "folderIcon"/"leafIcon" values */
+  private String iconAttributeName;
+
+  /** attribute name that contains the tool tip text for the node; default value: null */
+  private String tooltipAttributeName;
+
+
 
 
   /**
    * Costructor.
    * @param tree node container
    */
-  public TreeNodeRenderer(TreePanel treePanel,String folderIconName,String leavesImageName) {
+  public TreeNodeRenderer(TreePanel treePanel,String folderIconName,String leavesImageName,String iconAttributeName,String tooltipAttributeName) {
     try {
       this.treePanel = treePanel;
+      this.iconAttributeName = iconAttributeName;
+      this.tooltipAttributeName = tooltipAttributeName;
       folderIcon = new ImageIcon(ClientUtils.getImage(folderIconName));
       leafIcon = new ImageIcon(ClientUtils.getImage(leavesImageName));
       this.setOpaque(false);
@@ -83,30 +98,73 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
                                                 boolean hasFocus) {
     try {
       super.getTreeCellRendererComponent(tree, value, sel,expanded, leaf, row,hasFocus);
-      if (leaf)
-        setIcon(leafIcon);
-      else
-        setIcon(folderIcon);
 
+      if (iconAttributeName==null) {
+        if (leaf)
+          setIcon(leafIcon);
+        else
+          setIcon(folderIcon);
+      }
     } catch (Exception ex) {
       ex.printStackTrace();
     }
     JLabel l = (JLabel)this;
 //    setBounds(0,0,350,l.getHeight());
 
+    DefaultMutableTreeNode node = null;
+    ValueObject vo = null;
     try {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-      ValueObject vo = (ValueObject) node.getUserObject();
+      node = (DefaultMutableTreeNode) value;
+    }
+    catch (ClassCastException ex1) {
+      Logger.error(this.getClass().getName(),"getTreeCellRendererComponent","Expected a node of type DefaultMutableTreeNode or some subclass",null);
+    }
+    try {
+      vo = (ValueObject) node.getUserObject();
+    }
+    catch (ClassCastException ex1) {
+      Logger.error(this.getClass().getName(),"getTreeCellRendererComponent","ValueObject expected inside the node of type DefaultMutableTreeNode",null);
+    }
+    try {
       if (vo!=null) {
         String attributeName = treePanel.getTreeDataLocator().getNodeNameAttribute();
-
-        Method getter = vo.getClass().getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]);
-        value = getter.invoke(vo,new Object[0]);
-        if (value!=null) {
-          l.setText(value.toString());
+        if (attributeName!=null) {
+          Method getter = vo.getClass().getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]);
+          value = getter.invoke(vo,new Object[0]);
+          if (value!=null) {
+            l.setText(value.toString());
+          }
+          else
+            l.setText("");
         }
-        else
-          l.setText("");
+
+        if (iconAttributeName!=null) {
+          Method getter = vo.getClass().getMethod("get"+iconAttributeName.substring(0,1).toUpperCase()+iconAttributeName.substring(1),new Class[0]);
+          value = getter.invoke(vo,new Object[0]);
+          if (value!=null) {
+            if (value instanceof byte[])
+              setIcon(new ImageIcon((byte[])value));
+            else if (value instanceof String)
+              setIcon(new ImageIcon(ClientUtils.getImage(value.toString())));
+          }
+          else if (leaf)
+            setIcon(leafIcon);
+          else
+            setIcon(folderIcon);
+
+        }
+
+
+        if (tooltipAttributeName!=null) {
+          Method getter = vo.getClass().getMethod("get"+tooltipAttributeName.substring(0,1).toUpperCase()+tooltipAttributeName.substring(1),new Class[0]);
+          value = getter.invoke(vo,new Object[0]);
+          if (value!=null && value instanceof String)
+            l.setToolTipText(value.toString());
+          else if (value==null)
+            l.setToolTipText("");
+        }
+
+
       }
 
     }

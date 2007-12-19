@@ -76,6 +76,8 @@ OpenSwing is based on these files:
 which are available in build directory.
 
 Note: hsqldb.jar is only used in demos included with the OpenSwing distribution, so that it is not part of OpenSwing framework.
+Note: OfficeLnFs_2.7.jar is only used for demo10 sample application, to show how to include the Office LnF in a OpenSwing based application.
+      OfficeLnFs is an open source project available in http://officelnfs.sourceforge.net/ and distributed with a BSD-style license.
 Moreover, srcclientos.jar and srcserveros.jar files contains OpenSwing source files, that could be included in your development environment to debug OpenSwing classes.
 
 JDK 1.4 is required.

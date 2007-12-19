@@ -134,7 +134,11 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.VIEW_BACKGROUND_SEL_COLOR = true;
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.FILTER_PANEL_ON_GRID = true;
-    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.Office2003.Office2003LookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.OfficeXP.OfficeXPLookAndFeel";
+    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.VisualStudio2005.VisualStudio2005LookAndFeel";
+
     ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
 
     MDIFrame mdi = new MDIFrame(this);

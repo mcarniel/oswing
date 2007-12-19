@@ -16,12 +16,13 @@
   <jar href="clientos.jar" />
   <jar href="jcalendar.jar" />
   <jar href="jnlp.jar" />    
-  <jar href="hsqldb.jar" />       
+  <jar href="hsqldb.jar" />       1
   <jar href="serveros.jar" />
   <jar href="poi-2.0-RC2-20040102.jar" />
   <jar href="pooler.jar" />
   <jar href="looks-2.0.1.jar" />    
-  <jar href="itext-1.4.8.jar" />     
+  <jar href="itext-1.4.8.jar" />    
+  <jar href="OfficeLnFs_2.7.jar" />    
 </resources>
 
 </jnlp>

@@ -356,6 +356,8 @@ public class RadioButtonControl extends JRadioButton implements InputControl {
       this.setSelected(false);
     else if (value.equals(selectedValue))
       this.setSelected(true);
+    else
+      this.setSelected(false);
   }
 
 

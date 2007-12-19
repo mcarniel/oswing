@@ -111,6 +111,9 @@ public class ClientApplication {
         stmt = conn.prepareStatement("insert into CITIES(CITY,ZIP_CODE,STATE) values('Santa Clara','95054','California')");
         stmt.execute();
         stmt.close();
+        stmt = conn.prepareStatement("insert into CITIES(CITY,ZIP_CODE,STATE) values('Phoenix','324','Arizona')");
+        stmt.execute();
+        stmt.close();
 
         stmt = conn.prepareStatement("insert into PRICELISTS(PRICELIST_CODE,DESCRIPTION,START_DATE,END_DATE,NOTE) values(?,?,?,?,?)");
         for(int i=0;i<20;i++) {
@@ -130,6 +133,9 @@ public class ClientApplication {
         stmt.execute();
         stmt.close();
         stmt = conn.prepareStatement("insert into CUSTOMERS(CUSTOMER_CODE,NAME,SURNAME,CITY,ADDRESS,STATE,ZIP_CODE) values('C3','William','Smith','Santa Clara','15 Fifth Av.','California','95054')");
+        stmt.execute();
+        stmt.close();
+        stmt = conn.prepareStatement("insert into CUSTOMERS(CUSTOMER_CODE,NAME,SURNAME,CITY,ADDRESS,STATE,ZIP_CODE) values('C4',null,'O Really','Phoenix','22 B. Road','Arizona','324')");
         stmt.execute();
         stmt.close();
 
