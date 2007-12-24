@@ -186,7 +186,7 @@ public class LookupController {
     else {
       try {
         // execute code validation...
-        Response r = lookupDataLocator.validateCode( code );
+        final Response r = lookupDataLocator.validateCode( code );
         if (r==null || !(r instanceof VOListResponse || r instanceof ErrorResponse)) {
           Logger.error(this.getClass().getName(),"validateCode","Error while validating lookup code: lookup data locator must always returns an instanceof VOListResponse.",null);
           return;
@@ -204,6 +204,27 @@ public class LookupController {
 //          fireCodeChangedEvent(lookupParent.getValueObject());
           // fire code validated event...
           fireCodeValidatedEvent(true);
+        }
+        else if (!r.isError() && ((VOListResponse)r).getRows().size()>1) {
+          // code was correctly validated but more than one row has been returned: a lookup grid frame will be opened...
+          if (!createLookupGrid(
+            ClientUtils.getParentFrame(parentComponent),
+            lookupParent,
+            new GridDataLocator() {
+
+              public Response loadData(
+                  int action,
+                  int startIndex,
+                  Map filteredColumns,
+                  ArrayList currentSortedColumns,
+                  ArrayList currentSortedVersusColumns,
+                  Class valueObjectType,
+                  Map otherGridParams) {
+                return r;
+              }
+
+            }))
+              fireCodeValidatedEvent(false);
         }
         else {
           // code was NOT correctly validated...
@@ -372,9 +393,46 @@ public class LookupController {
    * @param parentFrame parent frame
    * @param parentVO lookup container v.o. (which is updated when user will select a grid row)
    * @param dataLocator data source used to fetching data for lookup grid
-   * @return <code>true</code> if grid frame was correcly opend, <code>false</code> otherwise
+   * @return <code>true</code> if grid frame was correcly opened, <code>false</code> otherwise
    */
-  private boolean createLookupGrid(JFrame parentFrame,final LookupParent lookupParent) {
+  private boolean createLookupGrid(JFrame parentFrame,LookupParent lookupParent) {
+    return createLookupGrid(
+      parentFrame,
+      lookupParent,
+      new GridDataLocator() {
+
+        public Response loadData(
+            int action,
+            int startIndex,
+            Map filteredColumns,
+            ArrayList currentSortedColumns,
+            ArrayList currentSortedVersusColumns,
+            Class valueObjectType,
+            Map otherGridParams) {
+              return lookupDataLocator.loadData(
+                  action,
+                  startIndex,
+                  filteredColumns,
+                  currentSortedColumns,
+                  currentSortedVersusColumns,
+                  valueObjectType
+              );
+        }
+
+      }
+    );
+  }
+
+
+
+  /**
+   * Method called by openLookupGrid methods to open lookup grid frame.
+   * @param parentFrame parent frame
+   * @param parentVO lookup container v.o. (which is updated when user will select a grid row)
+   * @param dataLocator data source used to fetching data for lookup grid
+   * @return <code>true</code> if grid frame was correcly opened, <code>false</code> otherwise
+   */
+  private boolean createLookupGrid(JFrame parentFrame,final LookupParent lookupParent,GridDataLocator dataLocator) {
     fireLookupActionEvent(lookupParent.getValueObject());
     selectedRow = -1;
     if (lookupVO==null) {
@@ -400,6 +458,7 @@ public class LookupController {
           updateParentModel(lookupParent);
           lookupGridFrame.setVisible(false);
           lookupGridFrame.dispose();
+          codeValid = true;
         }
       };
 
@@ -410,27 +469,7 @@ public class LookupController {
           colProperties,
           container,
           new GridStatusPanel(),
-          new GridDataLocator() {
-
-            public Response loadData(
-                int action,
-                int startIndex,
-                Map filteredColumns,
-                ArrayList currentSortedColumns,
-                ArrayList currentSortedVersusColumns,
-                Class valueObjectType,
-                Map otherGridParams) {
-                  return lookupDataLocator.loadData(
-                      action,
-                      startIndex,
-                      filteredColumns,
-                      currentSortedColumns,
-                      currentSortedVersusColumns,
-                      valueObjectType
-                  );
-            }
-
-          },
+          dataLocator,
           new HashMap(),
           true,
           new ArrayList(),

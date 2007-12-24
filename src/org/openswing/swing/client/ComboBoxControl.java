@@ -42,7 +42,7 @@ import org.openswing.swing.message.receive.java.ValueObject;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ComboBoxControl extends BaseInputControl implements InputControl {
+public class ComboBoxControl extends BaseInputControl implements InputControl,SearchControl {
 
   static {
     UIManager.put("ComboBox.disabledForeground", UIManager.get("ComboBox.foreground"));
@@ -86,6 +86,15 @@ public class ComboBoxControl extends BaseInputControl implements InputControl {
           combo.setSelectedIndex(-1);
       }
     });
+
+    // intercepts key events listened by combo box...1
+    combo.setKeySelectionManager(new JComboBox.KeySelectionManager() {
+        public int selectionForKey(char aKey, ComboBoxModel aModel) {
+            return -1;
+        }
+    });
+
+    new SearchWindowManager(this);
 
     initListeners();
   }
@@ -322,5 +331,55 @@ public class ComboBoxControl extends BaseInputControl implements InputControl {
   public final Domain getDomain() {
     return domain;
   }
+
+
+  /**
+   * @return the selected index in the input control
+   */
+  public final int getSelectedIndex() {
+    return combo.getSelectedIndex();
+  }
+
+
+  /**
+   * Set the selected index.
+   */
+  public final void setSelectedIndex(int index) {
+    combo.setSelectedIndex(index);
+  }
+
+
+  /**
+   * @return total rows count in the input control
+   */
+  public final int getRowCount() {
+    return combo.getItemCount();
+  }
+
+
+  /**
+   * @return the element at the specified index, converted in String format
+   */
+  public final String getValueAt(int index) {
+    return combo.getItemAt(index)==null?"":combo.getItemAt(index).toString();
+  }
+
+
+  /**
+   * @return combo control
+   */
+  public final JComponent getComponent() {
+    return combo;
+  }
+
+
+  /**
+   * @return <code>true</code> if the input control is in read only mode (so search is enabled), <code>false</code> otherwise
+   */
+  public final boolean isReadOnly() {
+    return !isEnabled();
+  }
+
+
 
 }

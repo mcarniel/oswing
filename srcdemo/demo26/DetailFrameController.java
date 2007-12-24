@@ -115,18 +115,18 @@ public class DetailFrameController extends FormController {
   public Response insertRecord(ValueObject newPersistentObject) throws Exception {
     try {
       Map attribute2dbField = new HashMap();
-      attribute2dbField.put("customerCode","CUSTOMERS.CUSTOMER_CODE");
-      attribute2dbField.put("name","CUSTOMERS.NAME");
-      attribute2dbField.put("surname","CUSTOMERS.SURNAME");
-      attribute2dbField.put("city","CUSTOMERS.CITY");
-      attribute2dbField.put("zipCode","CUSTOMERS.ZIP_CODE");
-      attribute2dbField.put("state","CUSTOMERS.STATE");
-      attribute2dbField.put("address","CUSTOMERS.ADDRESS");
-      attribute2dbField.put("pricelistCode","CUSTOMERS.PRICELIST_CODE");
-      attribute2dbField.put("description","CUSTOMERS.DESCRIPTION");
-      attribute2dbField.put("startDate","CUSTOMERS.START_DATE");
-      attribute2dbField.put("endDate","CUSTOMERS.END_DATE");
-      attribute2dbField.put("note","CUSTOMERS.NOTE");
+      attribute2dbField.put("customerCode","CUSTOMER_CODE");
+      attribute2dbField.put("name","NAME");
+      attribute2dbField.put("surname","SURNAME");
+      attribute2dbField.put("city","CITY");
+      attribute2dbField.put("zipCode","ZIP_CODE");
+      attribute2dbField.put("state","STATE");
+      attribute2dbField.put("address","ADDRESS");
+      attribute2dbField.put("pricelistCode","PRICELIST_CODE");
+      attribute2dbField.put("description","DESCRIPTION");
+      attribute2dbField.put("startDate","START_DATE");
+      attribute2dbField.put("endDate","END_DATE");
+      attribute2dbField.put("note","NOTE");
 
       return QueryUtil.insertTable(
         conn,
@@ -163,18 +163,18 @@ public class DetailFrameController extends FormController {
   public Response updateRecord(ValueObject oldPersistentObject,ValueObject persistentObject) throws Exception {
     try {
       Map attribute2dbField = new HashMap();
-      attribute2dbField.put("customerCode","CUSTOMERS.CUSTOMER_CODE");
-      attribute2dbField.put("name","CUSTOMERS.NAME");
-      attribute2dbField.put("surname","CUSTOMERS.SURNAME");
-      attribute2dbField.put("city","CUSTOMERS.CITY");
-      attribute2dbField.put("zipCode","CUSTOMERS.ZIP_CODE");
-      attribute2dbField.put("state","CUSTOMERS.STATE");
-      attribute2dbField.put("address","CUSTOMERS.ADDRESS");
-      attribute2dbField.put("pricelistCode","CUSTOMERS.PRICELIST_CODE");
-      attribute2dbField.put("description","CUSTOMERS.DESCRIPTION");
-      attribute2dbField.put("startDate","CUSTOMERS.START_DATE");
-      attribute2dbField.put("endDate","CUSTOMERS.END_DATE");
-      attribute2dbField.put("note","CUSTOMERS.NOTE");
+      attribute2dbField.put("customerCode","CUSTOMER_CODE");
+      attribute2dbField.put("name","NAME");
+      attribute2dbField.put("surname","SURNAME");
+      attribute2dbField.put("city","CITY");
+      attribute2dbField.put("zipCode","ZIP_CODE");
+      attribute2dbField.put("state","STATE");
+      attribute2dbField.put("address","ADDRESS");
+      attribute2dbField.put("pricelistCode","PRICELIST_CODE");
+      attribute2dbField.put("description","DESCRIPTION");
+      attribute2dbField.put("startDate","START_DATE");
+      attribute2dbField.put("endDate","END_DATE");
+      attribute2dbField.put("note","NOTE");
 
       HashSet pks = new HashSet();
       pks.add("customerCode");

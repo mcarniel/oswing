@@ -49,7 +49,7 @@ import org.openswing.swing.logger.client.Logger;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ListControl extends BaseInputControl implements InputControl {
+public class ListControl extends BaseInputControl implements InputControl,SearchControl {
 
 
   /** list */
@@ -94,6 +94,8 @@ public class ListControl extends BaseInputControl implements InputControl {
       }
 
     });
+
+    new SearchWindowManager(this);
   }
 
 
@@ -746,5 +748,46 @@ public class ListControl extends BaseInputControl implements InputControl {
   public final Domain getDomain() {
     return domain;
   }
+
+
+  /**
+   * @return the selected index in the input control
+   */
+  public final int getSelectedIndex() {
+    return list.getSelectedIndex();
+  }
+
+
+  /**
+   * @return total rows count in the input control
+   */
+  public final int getRowCount() {
+    return list.getModel().getSize();
+  }
+
+
+  /**
+   * @return the element at the specified index, converted in String format
+   */
+  public final String getValueAt(int index) {
+    return list.getModel().getElementAt(index)==null?"":list.getModel().getElementAt(index).toString();
+  }
+
+
+  /**
+   * @return combo control
+   */
+  public final JComponent getComponent() {
+    return list;
+  }
+
+
+  /**
+   * @return <code>true</code> if the input control is in read only mode (so search is enabled), <code>false</code> otherwise
+   */
+  public final boolean isReadOnly() {
+    return !isEnabled();
+  }
+
 
 }

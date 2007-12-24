@@ -419,6 +419,7 @@ public class RadioButtonControl extends JRadioButton implements InputControl {
    */
   public final void setButtonGroup(ButtonGroup buttonGroup) {
     this.buttonGroup = buttonGroup;
+    buttonGroup.add(this);
   }
 
 

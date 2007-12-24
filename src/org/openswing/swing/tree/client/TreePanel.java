@@ -19,6 +19,8 @@ import java.awt.dnd.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
+import org.openswing.swing.util.client.SearchWindowManager;
+import org.openswing.swing.util.client.SearchControl;
 
 
 /**
@@ -50,7 +52,7 @@ import java.awt.datatransfer.DataFlavor;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class TreePanel extends JPanel implements DragSourceListener, DropTargetListener {
+public class TreePanel extends JPanel implements DragSourceListener, DropTargetListener, SearchControl {
 
   /** expandable tree */
   private JTree tree = new JTree(new DefaultMutableTreeNode());
@@ -108,6 +110,10 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
   /** attribute name that contains the tool tip text for the node; default value: null */
   private String tooltipAttributeName;
+
+  /** search manager */
+  private SearchWindowManager searchWindowManager;
+
 
 
   /**
@@ -188,6 +194,9 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     TreePath selPath = tree.getSelectionPath();
     treePane.getViewport().remove(tree);
     tree = new JTree(treeModel);
+
+    searchWindowManager = new SearchWindowManager(this);
+
     if (treeId!=null && dndListener!=null)
         enableDrag(treeId,dndListener);
 
@@ -241,6 +250,9 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     tree.setToolTipText("");
     tree.setModel(treeModel);
     tree.revalidate();
+
+    if (searchWindowManager==null)
+      searchWindowManager = new SearchWindowManager(this);
 
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     tree.setShowsRootHandles(true);
@@ -719,6 +731,76 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   }
 
 
+
+
+
+
+  /**
+   * @return the selected index in the input control
+   */
+  public final int getSelectedIndex() {
+    if (tree.getSelectionRows()==null)
+      return -1;
+    if (tree.getSelectionRows().length>0)
+      return tree.getSelectionRows()[0];
+    else
+      return -1;
+  }
+
+
+  /**
+   * Set the selected index.
+   */
+  public final void setSelectedIndex(int index) {
+    tree.setSelectionRow(index);
+  }
+
+
+  /**
+   * @return total rows count in the input control
+   */
+  public final int getRowCount() {
+    return tree.getRowCount();
+  }
+
+
+  /**
+   * @return the element at the specified index, converted in String format
+   */
+  public final String getValueAt(int index) {
+    try {
+      JLabel l = (JLabel)tree.getCellRenderer().getTreeCellRendererComponent(
+          tree,
+          tree.getPathForRow(index).getLastPathComponent(),
+          false,
+          false,
+          tree.getModel().isLeaf(tree.getPathForRow(index).getLastPathComponent()),
+          index,
+          false
+      );
+      return l.getText();
+    }
+    catch (Exception ex) {
+      Object obj = tree.getPathForRow(index).getLastPathComponent();
+      return obj==null?"":obj.toString();
+    }
+  }
+
+
+  /**
+   * @return combo control
+   */
+  public final JComponent getComponent() {
+    return tree;
+  }
+
+
+  /**1
+   * @return <code>true</code> if the input control is in read only mode (so search is enabled), <code>false</code> otherwise
+   */
+  public final boolean isReadOnly() {
+    return true;
+  }
 
 
 }

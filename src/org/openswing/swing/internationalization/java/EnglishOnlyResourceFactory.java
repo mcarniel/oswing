@@ -227,6 +227,10 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("select grid profile","Select grid profile");
     dictionary.setProperty("default profile","Default profile");
 
+    // search box
+    dictionary.setProperty("search","Search");
+    dictionary.setProperty("not found","Not found");
+
     dictionary.putAll(additionalDictionary);
 
     resources = new Resources(

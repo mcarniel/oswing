@@ -28,6 +28,7 @@ public class TestVO extends ValueObjectImpl {
   private String button;
   private String formattedTextValue;
   private Integer intValue;
+  private Integer progressive;
 
 
   public TestVO() {
@@ -105,6 +106,12 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setIntValue(Integer intValue) {
     this.intValue = intValue;
+  }
+  public Integer getProgressive() {
+    return progressive;
+  }
+  public void setProgressive(Integer progressive) {
+    this.progressive = progressive;
   }
 
 

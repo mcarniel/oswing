@@ -104,7 +104,7 @@ public class ClientApplication {
 
         for(int i=0;i<900;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO3_LOOKUP values('A"+i+"','ABCDEF"+String.valueOf((char)(i+78))+"')");
+          stmt = conn.prepareStatement("insert into DEMO3_LOOKUP values('A"+i+"','ABCDEF"+String.valueOf(i)+"')");
           stmt.execute();
         }
 

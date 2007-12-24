@@ -168,7 +168,11 @@
   <object key="next tip" value="Tip successivo" />
   <object key="close" value="Chiudi" />    
   <object key="tip of the day" value="Tip of the day" /> 
-  
+
+<!-- search box -->
+  <object key="search" value="Trova"/> 
+  <object key="not found" value="Non trovato"/> 
+        
   
 <!-- grid profile -->
   <object key="grid profile management" value="Gestione profilo in griglia"/> 

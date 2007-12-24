@@ -221,8 +221,6 @@ public class DetailFrame extends JFrame {
 
 
 
-    buttonGroup1.add(controlRadioButton1);
-    buttonGroup1.add(controlRadioButton2);
     controlRadioButton1.setButtonGroup(buttonGroup1);
     controlRadioButton2.setButtonGroup(buttonGroup1);
     controlRadioButton1.setSelectedValue(Boolean.TRUE);

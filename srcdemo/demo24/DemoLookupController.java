@@ -38,13 +38,14 @@ public class DemoLookupController extends LookupController {
         try {
           stmt = DemoLookupController.this.conn.createStatement();
           ResultSet rset = stmt.executeQuery(
-              "select DEMO24_LOOKUP.CODE,DEMO24_LOOKUP.DESCRCODE from DEMO24_LOOKUP where CODE='" +
+              "select DEMO24_LOOKUP.PROGRESSIVE,DEMO24_LOOKUP.CODE,DEMO24_LOOKUP.DESCRCODE from DEMO24_LOOKUP where CODE='" +
               code + "'");
           ArrayList list = new ArrayList();
           while (rset.next()) {
             TestLookupVO vo = new TestLookupVO();
-            vo.setLookupValue(rset.getString(1));
-            vo.setDescrLookupValue(rset.getString(2));
+            vo.setProgressive(new Integer(rset.getInt(1)));
+            vo.setLookupValue(rset.getString(2));
+            vo.setDescrLookupValue(rset.getString(3));
             list.add(vo);
           }
           if (list.size() > 0)
@@ -87,12 +88,13 @@ public class DemoLookupController extends LookupController {
         try {
           stmt = DemoLookupController.this.conn.createStatement();
           ResultSet rset = stmt.executeQuery(
-              "select DEMO24_LOOKUP.CODE,DEMO24_LOOKUP.DESCRCODE from DEMO24_LOOKUP");
+              "select DEMO24_LOOKUP.PROGRESSIVE,DEMO24_LOOKUP.CODE,DEMO24_LOOKUP.DESCRCODE from DEMO24_LOOKUP");
           ArrayList list = new ArrayList();
           while (rset.next()) {
             TestLookupVO vo = new TestLookupVO();
-            vo.setLookupValue(rset.getString(1));
-            vo.setDescrLookupValue(rset.getString(2));
+            vo.setProgressive(new Integer(rset.getInt(1)));
+            vo.setLookupValue(rset.getString(2));
+            vo.setDescrLookupValue(rset.getString(3));
             list.add(vo);
           }
           return new VOListResponse(list, false, list.size());
@@ -124,9 +126,11 @@ public class DemoLookupController extends LookupController {
     });
 
     this.setLookupValueObjectClassName("demo24.TestLookupVO");
+    this.addLookup2ParentLink("progressive","progressive");
     this.addLookup2ParentLink("lookupValue", "lookupValue");
     this.addLookup2ParentLink("descrLookupValue", "descrLookupValue");
     this.setAllColumnVisible(true);
+    this.setVisibleColumn("progressive",false);
     this.setPreferredWidthColumn("descrLookupValue", 200);
   }
 

@@ -13,7 +13,7 @@ import org.openswing.swing.internationalization.java.*;
  * <p>Title: OpenSwing Demo</p>
  * <p>Description: Used to start application from main method:
  * it creates an editable grid frame with colored cells and cells span.
- * Grid control includes a lookup column having a lookup controller with "onInvalidCode" property setted to LookupControoller.ON_INVALID_CODE_RESTORE_FOCUS</p>
+ * Grid control includes a lookup column having a lookup controller with "onInvalidCode" property setted to LookupControoller.ON_INVALID_CODE_RESTORE_FOCUS.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  * <p> </p>
  * @author Mauro Carniel
@@ -89,23 +89,29 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO24(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,INT_VALUE NUMERIC(6),PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO24(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,PROGRESSIVE DECIMAL(5,0),INT_VALUE NUMERIC(6),PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 
-        stmt = conn.prepareStatement("create table DEMO24_LOOKUP(CODE VARCHAR,DESCRCODE VARCHAR,PRIMARY KEY(CODE))");
+        stmt = conn.prepareStatement("create table DEMO24_LOOKUP(PROGRESSIVE DECIMAL(15,0),CODE VARCHAR,DESCRCODE VARCHAR,PRIMARY KEY(PROGRESSIVE))");
         stmt.execute();
 
-        for(int i=0;i<900;i++) {
+        for(int i=0;i<50;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO24 values('ABC"+i+"',null,"+12+i+0.33+","+1234+i+0.560+",?,'ABC','Y','Y','A"+i+"',"+i+")");
+          stmt = conn.prepareStatement("insert into DEMO24 values('ABC"+i+"',null,"+12+i+0.33+","+1234+i+0.560+",?,'ABC','Y','Y','A"+i+"',"+i+","+i+")");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }
 
-        for(int i=0;i<900;i++) {
+        for(int i=0;i<900;i=i+1) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO24_LOOKUP values('A"+i+"','ABCDEF"+String.valueOf((char)(i+78))+"')");
+          stmt = conn.prepareStatement("insert into DEMO24_LOOKUP values("+i+",'A"+i+"','ABCDEF"+String.valueOf(i)+"')");
+          stmt.execute();
+          stmt.close();
+          if (i%2==0) {
+            stmt = conn.prepareStatement("insert into DEMO24_LOOKUP values("+(i+1)+",'A"+i+"','ABCDEF"+String.valueOf(i+1)+"')");
+            i++;
+          }
           stmt.execute();
         }
 

@@ -57,7 +57,7 @@ import org.openswing.swing.util.java.Consts;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ComboBoxVOControl extends BaseInputControl implements InputControl,ItemsParent {
+public class ComboBoxVOControl extends BaseInputControl implements InputControl,ItemsParent,SearchControl {
 
   static {
     UIManager.put("ComboBox.disabledForeground", UIManager.get("ComboBox.foreground"));
@@ -124,6 +124,15 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
     });
 
     initListeners();
+
+    // intercepts key events listened by combo box...1
+    combo.setKeySelectionManager(new JComboBox.KeySelectionManager() {
+        public int selectionForKey(char aKey, ComboBoxModel aModel) {
+            return -1;
+        }
+    });
+
+    new SearchWindowManager(this);
   }
 
 
@@ -280,7 +289,6 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
   public final void addCombo2ParentLink(String comboAttributeName,String parentAttributeName) {
     itemsMapper.addItem2ParentLink(comboAttributeName,parentAttributeName);
   }
-
 
   /**
    * Add a link from the whole combo box value object to an equivalent inner v.o. included in the container v.o.
@@ -681,6 +689,54 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
    */
   public ValueObject getValueObject() {
     return form==null?null:form.getVOModel().getValueObject();
+  }
+
+
+  /**
+   * @return the selected index in the input control
+   */
+  public final int getSelectedIndex() {
+    return combo.getSelectedIndex();
+  }
+
+
+  /**
+   * Set the selected index.
+   */
+  public final void setSelectedIndex(int index) {
+    combo.setSelectedIndex(index);
+  }
+
+
+  /**
+   * @return total rows count in the input control
+   */
+  public final int getRowCount() {
+    return combo.getItemCount();
+  }
+
+
+  /**
+   * @return the element at the specified index, converted in String format
+   */
+  public final String getValueAt(int index) {
+    return combo.getItemAt(index)==null?"":combo.getItemAt(index).toString();
+  }
+
+
+  /**
+   * @return combo control
+   */
+  public final JComponent getComponent() {
+    return combo;
+  }
+
+
+  /**
+   * @return <code>true</code> if the input control is in read only mode (so search is enabled), <code>false</code> otherwise
+   */
+  public final boolean isReadOnly() {
+    return !isEnabled();
   }
 
 

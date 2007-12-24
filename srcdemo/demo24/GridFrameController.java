@@ -52,7 +52,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       Map otherGridParams) {
     PreparedStatement stmt = null;
     try {
-      String sql = "select DEMO24.TEXT,DEMO24.DECNUM,DEMO24.CURRNUM,DEMO24.THEDATE,DEMO24.COMBO,DEMO24.CHECK_BOX,DEMO24.RADIO,DEMO24.CODE,DEMO24_LOOKUP.DESCRCODE,DEMO24.FORMATTED_TEXT,DEMO24.INT_VALUE from DEMO24,DEMO24_LOOKUP where DEMO24.CODE=DEMO24_LOOKUP.CODE";
+      String sql = "select DEMO24.TEXT,DEMO24.DECNUM,DEMO24.CURRNUM,DEMO24.THEDATE,DEMO24.COMBO,DEMO24.CHECK_BOX,DEMO24.RADIO,DEMO24.CODE,DEMO24_LOOKUP.DESCRCODE,DEMO24.FORMATTED_TEXT,DEMO24.INT_VALUE,DEMO24.PROGRESSIVE from DEMO24,DEMO24_LOOKUP where DEMO24.CODE=DEMO24_LOOKUP.CODE";
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
         FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("dateValue");
@@ -89,6 +89,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         vo.setDescrLookupValue(rset.getString(9));
         vo.setFormattedTextValue(rset.getString(10));
         vo.setIntValue(rset.getBigDecimal(11)==null?null:new Integer(rset.getBigDecimal(11).intValue()));
+        vo.setProgressive(new Integer(rset.getInt(12)));
         list.add(vo);
       }
       return new VOListResponse(list,false,list.size());
@@ -118,7 +119,7 @@ public class GridFrameController extends GridController implements GridDataLocat
 
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("insert into DEMO24(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,FORMATTED_TEXT,INT_VALUE) values(?,?,?,?,?,?,?,?,?,?)");
+      stmt = conn.prepareStatement("insert into DEMO24(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,FORMATTED_TEXT,INT_VALUE,PROGRESSIVE) values(?,?,?,?,?,?,?,?,?,?,?)");
       TestVO vo = (TestVO)newValueObjects.get(0);
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setString(5,vo.getComboValue());
@@ -130,6 +131,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       stmt.setString(8,vo.getLookupValue());
       stmt.setString(9,vo.getFormattedTextValue());
       stmt.setBigDecimal(10,vo.getIntValue()==null?null:new BigDecimal(vo.getIntValue().intValue()));
+      stmt.setInt(11,vo.getProgressive().intValue());
       stmt.execute();
       return new VOListResponse(newValueObjects,false,newValueObjects.size());
     }
@@ -159,7 +161,7 @@ public class GridFrameController extends GridController implements GridDataLocat
   public Response updateRecords(int[] rowNumbers,ArrayList oldPersistentObjects,ArrayList persistentObjects) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("update DEMO24 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,FORMATTED_TEXT=?,INT_VALUE=? where TEXT=?");
+      stmt = conn.prepareStatement("update DEMO24 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,FORMATTED_TEXT=?,INT_VALUE=?,PROGRESSIVE=? where TEXT=?");
       TestVO vo = null;
       for(int i=0;i<persistentObjects.size();i++) {
         vo = (TestVO)persistentObjects.get(i);
@@ -173,7 +175,8 @@ public class GridFrameController extends GridController implements GridDataLocat
         stmt.setString(8,vo.getLookupValue());
         stmt.setString(9,vo.getFormattedTextValue());
         stmt.setBigDecimal(10,vo.getIntValue()==null?null:new BigDecimal(vo.getIntValue().intValue()));
-        stmt.setString(11,vo.getStringValue());
+        stmt.setInt(11,vo.getProgressive().intValue());
+        stmt.setString(12,vo.getStringValue());
         stmt.execute();
       }
       return new VOListResponse(persistentObjects,false,persistentObjects.size());

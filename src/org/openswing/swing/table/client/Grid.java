@@ -71,7 +71,7 @@ import java.awt.event.AdjustmentListener;
  * @version 1.0
  */
 public class Grid extends JTable
-    implements QuickFilterListener, DragSourceListener, DropTargetListener {
+    implements QuickFilterListener, DragSourceListener, DropTargetListener, SearchControl {
 
 
   /** TableModel adapter, used to link ValueObjects to TableModel */
@@ -695,7 +695,6 @@ public class Grid extends JTable
           setTableHeader(null);
         }
       }
-
 
     }
     catch (Throwable t) {
@@ -1909,6 +1908,10 @@ public class Grid extends JTable
         }
 
       }
+
+      if (gridType==MAIN_GRID)
+         new SearchWindowManager(this);
+
     }
   }
 
@@ -2905,6 +2908,87 @@ public class Grid extends JTable
       }
     }
   }
+
+
+  /**
+   * @return the selected index in the input control
+   */
+  public final int getSelectedIndex() {
+    return getSelectedRow();
+  }
+
+
+  /**
+   * Set the selected index.
+   */
+  public final void setSelectedIndex(int index) {
+    setRowSelectionInterval(index,index);
+  }
+
+
+  /**
+   * @return total rows count in the input control
+   */
+  public final int getRowCount() {
+    return model==null?0:model.getRowCount();
+  }
+
+
+  /**
+   * @return the element at the specified index, converted in String format
+   */
+  public final String getValueAt(int index) {
+      if (getSelectedColumn() == -1) {
+        return "";
+      }
+    try {
+      Object obj = getValueAt(index,getSelectedColumn());
+      if (obj!=null && obj instanceof Number)
+        return obj.toString();
+      JLabel l = (JLabel)getCellRenderer(index,getSelectedColumn()).getTableCellRendererComponent(
+        this,
+        getValueAt(index,getSelectedColumn()),
+        false,
+        false,
+        index,
+        getSelectedColumn()
+      );
+      return l.getText();
+    }
+    catch (Exception ex) {
+    }
+    return getValueAt(index,getSelectedColumn())==null?"":getValueAt(index,getSelectedColumn()).toString();
+  }
+
+
+  /**
+   * @return combo control
+   */
+  public final JComponent getComponent() {
+    return this;
+  }
+
+
+  /**
+   * @return <code>true</code> if the input control is in read only mode (so search is enabled), <code>false</code> otherwise
+   */
+  public final boolean isReadOnly() {
+    return getMode()==Consts.READONLY;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   /**
    * <p>Title: OpenSwing Framework</p>

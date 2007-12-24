@@ -157,6 +157,10 @@
   <object key="select grid profile" value="Selezione profilo"/>   
   <object key="default profile" value="Profilo predefinito"/>     
   
+<!-- search box -->
+  <object key="search" value="Trova"/> 
+  <object key="not found" value="Non trovato"/> 
+        
 <!-- application translations -->
       <object key="this text will be translated" value="Questo testo &#232; stato tradotto" />
       <object key="date" value="Data" />

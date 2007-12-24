@@ -16,8 +16,10 @@ import java.sql.Date;
 
 public class TestLookupVO extends ValueObjectImpl {
 
+  private Integer progressive;
   private String lookupValue;
   private String descrLookupValue;
+
 
   public TestLookupVO() {
   }
@@ -34,6 +36,12 @@ public class TestLookupVO extends ValueObjectImpl {
   }
   public void setDescrLookupValue(String descrLookupValue) {
     this.descrLookupValue = descrLookupValue;
+  }
+  public Integer getProgressive() {
+    return progressive;
+  }
+  public void setProgressive(Integer progressive) {
+    this.progressive = progressive;
   }
 
 

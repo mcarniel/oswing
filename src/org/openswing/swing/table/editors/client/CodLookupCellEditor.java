@@ -386,7 +386,8 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
         codBox.getText() != null &&
         codBox.isEnabled())
       try {
-        lookupController.validateCode(table, codBox.getText().toUpperCase(), this);
+        if (lastCodeValue==null || lastCodeValue!=null && !lastCodeValue.toString().toUpperCase().equals(codBox.getText().toUpperCase()))
+          lookupController.validateCode(table, codBox.getText().toUpperCase(), this);
       }
       catch (RestoreFocusOnInvalidCodeException ex) {
         final int row = selectedRow;
