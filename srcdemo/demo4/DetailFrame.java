@@ -41,7 +41,7 @@ public class DetailFrame extends JFrame {
   NumericControl controlNumeric = new NumericControl();
   RadioButtonControl controlRadioButton1 = new RadioButtonControl();
   TextControl controlText = new TextControl();
-  LabelControl labelCheckBox = new LabelControl();
+  MultiLineLabelControl labelCheckBox = new MultiLineLabelControl();
   LabelControl labelRadioButton = new LabelControl();
 
   private Form mainPanel = new Form();
@@ -98,7 +98,7 @@ public class DetailFrame extends JFrame {
     titledBorder2 = new TitledBorder("");
     mainPanel.setVOClassName("demo4.DetailTestVO");
     mainPanel.setLayout(gridBagLayout1);
-    labelCheckBox.setText("this text will be translated");
+    labelCheckBox.setText("this text will\nbe translated");
     labelDate.setText("date");
     labelCombo.setTextAlignment(SwingConstants.RIGHT);
     labelCombo.setText("combobox");
@@ -192,7 +192,7 @@ public class DetailFrame extends JFrame {
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
     mainPanel.add(controlText,        new GridBagConstraints(1, 6, 3, 1, 1.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 5), 0, 0));
-    mainPanel.add(controlLookup,        new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0
+    mainPanel.add(controlLookup,           new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
     mainPanel.add(descrLookupControl,      new GridBagConstraints(1, 8, 3, 1, 1.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 5), 0, 0));

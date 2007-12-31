@@ -165,3 +165,9 @@ Java-Bean: True
 
 Name: org/openswing/swing/client/ListVOControl.class
 Java-Bean: True
+
+Name: org/openswing/swing/client/MultiLineLabelControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/miscellaneous/client/AlertWindow.class
+Java-Bean: True

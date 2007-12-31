@@ -37,6 +37,7 @@ public class ClientApplication {
     props.setProperty("customer","Customer");
     props.setProperty("customerCode","Customer Code");
     props.setProperty("address","Address");
+    props.setProperty("customerCity","City");
     props.setProperty("city","City");
     props.setProperty("zipCode","Zip Code");
     props.setProperty("name","Name");

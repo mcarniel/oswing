@@ -1,4 +1,19 @@
 
+Release Notes 1.4.1
+-------------------
+
+Final release 1.4.1 available
+
+Added multi-line label control.
+Added alert window.
+Added new property "foreignKeyAttributeName" to ComboBoxVoControl and ListVOControl, to the purpose of distinguish between
+the name of the attribute in the combo/list v.o. and in the container v.o. 
+Updated "demo26" sample application, to show how to use "foreignKeyAttributeName" property.
+Updated web site by adding description about new features.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.4
 -----------------
 

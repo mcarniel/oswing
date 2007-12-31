@@ -105,6 +105,9 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
   /** Form container (optional) */
   private Form form = null;
 
+  /** attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container; as default value this attribute is null; null means that "attributeName" property will be used to identify the v.o. in the combo-box, i.e. the attribute names in the combo-box v.o. and in the container v.o. must have the same name */
+  private String foreignKeyAttributeName;
+
 
   /**
    * Contructor.
@@ -474,18 +477,29 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
 
 
   /**
+   * @return attribute name in the combo-box v.o. that identify the combo-box item
+   */
+  private String getFKAttributeName() {
+    return
+        foreignKeyAttributeName==null || foreignKeyAttributeName.equals("") ?
+        getAttributeName() :
+        foreignKeyAttributeName;
+  }
+
+
+  /**
    * Select the combo item related to the specified code.
    * @param code used to retrieve the corresponding item and to select that item in the combo
    */
   public final void setValue(Object code) {
     if (code==null)
       combo.setSelectedIndex(-1);
-    if (getAttributeName()==null)
+    if (getFKAttributeName()==null)
       return;
     Object obj = null;
     try {
       for (int i = 0; i < model.getSize(); i++) {
-        obj = ( (Method) getters.get(getAttributeName())).invoke(
+        obj = ( (Method) getters.get(getFKAttributeName())).invoke(
             model.getElementAt(i),
             new Object[0]
         );
@@ -507,7 +521,7 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
    */
   public final Object getValue() {
     try {
-      return ( (Method) getters.get(getAttributeName())).invoke(
+      return ( (Method) getters.get(getFKAttributeName())).invoke(
         model.getElementAt(combo.getSelectedIndex()),
         new Object[0]
       );
@@ -737,6 +751,25 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
    */
   public final boolean isReadOnly() {
     return !isEnabled();
+  }
+
+
+  /**
+   * @return attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container
+   */
+  public final String getForeignKeyAttributeName() {
+    return foreignKeyAttributeName;
+  }
+
+
+  /**
+   * Set the attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container.
+   * As default value this attribute is null.
+   * Null means that "attributeName" property will be used to identify the v.o. in the combo-box, i.e. the attribute names in the combo-box v.o. and in the container v.o. must have the same name.
+   * @param foreignKeyAttributeName String
+   */
+  public final void setForeignKeyAttributeName(String foreignKeyAttributeName) {
+    this.foreignKeyAttributeName = foreignKeyAttributeName;
   }
 
 

@@ -82,7 +82,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       attribute2dbField.put("customerCode","CUSTOMERS.CUSTOMER_CODE");
       attribute2dbField.put("name","CUSTOMERS.NAME");
       attribute2dbField.put("surname","CUSTOMERS.SURNAME");
-      attribute2dbField.put("city","CUSTOMERS.CITY");
+      attribute2dbField.put("customerCity","CUSTOMERS.CITY");
       GridParams gridParams = new GridParams(action,startIndex,filteredColumns,currentSortedColumns,currentSortedVersusColumns,otherGridParams);
 
       return QueryUtil.getQuery(

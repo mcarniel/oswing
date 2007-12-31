@@ -33,7 +33,7 @@ public class ClientApplication {
 
     Hashtable domains = new Hashtable();
     Properties props = new Properties();
-    props.setProperty("this text will be translated","This text will be translated");
+    props.setProperty("this text will\nbe translated","This text will\nbe translated");
     props.setProperty("date","Date");
     props.setProperty("combobox","Combobox");
     props.setProperty("opened","Opened");

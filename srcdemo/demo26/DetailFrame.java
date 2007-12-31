@@ -196,8 +196,8 @@ public class DetailFrame extends JFrame {
     controlAddress.setAttributeName("address");
     controlZipCode.setAttributeName("zipCode");
     controlState.setAttributeName("state");
-    controlCity.setAttributeName("city");
-
+    controlCity.setAttributeName("customerCity");
+    controlCity.setForeignKeyAttributeName("city");
 
     DemoComboDataLocator comboLocator = new DemoComboDataLocator(conn);
     controlCity.setComboDataLocator(comboLocator);
@@ -208,6 +208,7 @@ public class DetailFrame extends JFrame {
     controlCity.setPreferredWidthColumn("city",200);
     controlCity.setPreferredWidthColumn("state",120);
 
+//    controlCity.addCombo2ParentLink("city","customerCity");
     controlCity.addCombo2ParentLink("state","state");
     controlCity.addCombo2ParentLink("zipCode","zipCode");
 

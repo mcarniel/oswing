@@ -81,7 +81,7 @@ public class GridFrame extends JFrame {
     colName.setSortVersus(org.openswing.swing.util.java.Consts.ASC_SORTED);
     colName.setSortingOrder(1);
     colSurname.setColumnName("surname");
-    colCity.setColumnName("city");
+    colCity.setColumnName("customerCity");
     colCity.setPreferredWidth(150);
     colCity.setSortVersus(org.openswing.swing.util.java.Consts.ASC_SORTED);
     colCity.setSortingOrder(2);

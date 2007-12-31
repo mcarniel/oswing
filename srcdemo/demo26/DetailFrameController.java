@@ -74,7 +74,7 @@ public class DetailFrameController extends FormController {
       attribute2dbField.put("customerCode","CUSTOMERS.CUSTOMER_CODE");
       attribute2dbField.put("name","CUSTOMERS.NAME");
       attribute2dbField.put("surname","CUSTOMERS.SURNAME");
-      attribute2dbField.put("city","CUSTOMERS.CITY");
+      attribute2dbField.put("customerCity","CUSTOMERS.CITY");
       attribute2dbField.put("zipCode","CUSTOMERS.ZIP_CODE");
       attribute2dbField.put("state","CUSTOMERS.STATE");
       attribute2dbField.put("address","CUSTOMERS.ADDRESS");
@@ -118,7 +118,7 @@ public class DetailFrameController extends FormController {
       attribute2dbField.put("customerCode","CUSTOMER_CODE");
       attribute2dbField.put("name","NAME");
       attribute2dbField.put("surname","SURNAME");
-      attribute2dbField.put("city","CITY");
+      attribute2dbField.put("customerCity","CITY");
       attribute2dbField.put("zipCode","ZIP_CODE");
       attribute2dbField.put("state","STATE");
       attribute2dbField.put("address","ADDRESS");
@@ -166,7 +166,7 @@ public class DetailFrameController extends FormController {
       attribute2dbField.put("customerCode","CUSTOMER_CODE");
       attribute2dbField.put("name","NAME");
       attribute2dbField.put("surname","SURNAME");
-      attribute2dbField.put("city","CITY");
+      attribute2dbField.put("customerCity","CITY");
       attribute2dbField.put("zipCode","ZIP_CODE");
       attribute2dbField.put("state","STATE");
       attribute2dbField.put("address","ADDRESS");

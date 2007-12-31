@@ -11,14 +11,14 @@ import java.beans.*;
  * @version 1.0
  */
 
-public class ComboBoxVOControlBeanInfo extends SimpleBeanInfo {
-  Class beanClass = ComboBoxVOControl.class;
-  String iconColor16x16Filename = "ComboBoxControl16.gif";
-  String iconColor32x32Filename = "ComboBoxControl.gif";
-  String iconMono16x16Filename = "ComboBoxControl16.gif";
-  String iconMono32x32Filename = "ComboBoxControl.gif";
+public class ListVOControlBeanInfo extends SimpleBeanInfo {
+  Class beanClass = ListVOControl.class;
+  String iconColor16x16Filename = "ListControl16.gif";
+  String iconColor32x32Filename = "ListControl.gif";
+  String iconMono16x16Filename = "ListControl16.gif";
+  String iconMono32x32Filename = "ListControl.gif";
 
-  public ComboBoxVOControlBeanInfo() {
+  public ListVOControlBeanInfo() {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
@@ -37,8 +37,8 @@ public class ComboBoxVOControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
           _attributeName,
           _canCopy,
-          _foreignKeyAttributeName,
           _font,
+          _foreignKeyAttributeName,
           _linkLabel,
           _nullAsDefaultValue,
           _required,

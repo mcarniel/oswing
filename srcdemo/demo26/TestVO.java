@@ -19,18 +19,18 @@ public class TestVO extends ValueObjectImpl {
   private String surname;
   private String customerCode;
   private String name;
-  private String city;
+  private String customerCity;
 
 
   public TestVO() {
   }
 
 
-  public String getCity() {
-    return city;
+  public String getCustomerCity() {
+    return customerCity;
   }
-  public void setCity(String city) {
-    this.city = city;
+  public void setCustomerCity(String customerCity) {
+    this.customerCity = customerCity;
   }
   public String getSurname() {
     return surname;

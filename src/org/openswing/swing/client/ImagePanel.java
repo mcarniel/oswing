@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.beans.Beans;
 import org.openswing.swing.util.client.ClientSettings;
+import java.awt.event.MouseListener;
 
 
 /**
@@ -64,6 +65,7 @@ public class ImagePanel extends JPanel {
 
   public ImagePanel() {
     try {
+      imagePanel.setOpaque(false);
       jbInit();
     }
     catch(Exception e) {
@@ -184,6 +186,8 @@ public class ImagePanel extends JPanel {
     this.setLayout(borderLayout1);
     this.add(sp,BorderLayout.CENTER);
     sp.getViewport().add(imagePanel);
+    sp.getViewport().setOpaque(false);
+    sp.setOpaque(false);
   }
 
 
@@ -219,8 +223,6 @@ public class ImagePanel extends JPanel {
   public final int getScrollBarsPolicy() {
     return sp.getVerticalScrollBarPolicy();
   }
-
-
 
 
   /**
@@ -259,6 +261,16 @@ public class ImagePanel extends JPanel {
     }
 
 
+  }
+
+
+  public void addMouseListener(MouseListener listener) {
+    imagePanel.addMouseListener(listener);
+  }
+
+
+  public void removeMouseListener(MouseListener listener) {
+    imagePanel.removeMouseListener(listener);
   }
 
 
