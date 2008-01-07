@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
  * As default settings, this panel has a dimension of 300 x 150 pixels.
  * Window location can be defined in several ways:
  * - using absolute location, by using this.setLocation method
- * - by anchoring the window to the Window.TOP/Window.BOTTOM of another component, through setAnchorWindow() method.</p>
+ * - by anchoring the window to the TOP/BOTTOM/INSIDE_BOTTOM/INSIDE_TOP of another component, through setAnchorWindow() method.</p>
  * Several events fired by this window can be listened, through the method: addIconifableWindowListener.
  * </p>
  * <p>As default behavior, the main panel contains two optional graphics components:
@@ -88,10 +88,11 @@ public class AlertWindow extends IconifableWindow {
 
 
   public AlertWindow() {
+    setAllowsCloseWindow(true);
     body.addMouseListener(new MouseAdapter() {
 
       public void mouseClicked(MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e) && !isShowCloseButton()) {
+        if (SwingUtilities.isLeftMouseButton(e) && !isShowCloseButton() && isAllowsCloseWindow()) {
           hideWindow();
         }
       }
@@ -227,13 +228,13 @@ public class AlertWindow extends IconifableWindow {
       }
 
       body.setPreferredSize(new Dimension(
-        dim.width-(imageName!=null && !imageName.equals("")?imagePanel.getPreferredSize().width+8:0),
-        dim.height
+        getWindow().getWidth()-(imageName!=null && !imageName.equals("")?imagePanel.getPreferredSize().width+8:0),
+        getWindow().getHeight()
       ));
       body.setSize(body.getPreferredSize());
       body.setMaximumSize(new Dimension(
-        dim.width-(imageName!=null && !imageName.equals("")?imagePanel.getPreferredSize().width+8:0),
-        dim.height
+        getWindow().getWidth()-(imageName!=null && !imageName.equals("")?imagePanel.getPreferredSize().width+8:0),
+        getWindow().getHeight()
       ));
       getWindow().getContentPane().remove(this);
       getWindow().getContentPane().add(defaultComponentsPanel,BorderLayout.CENTER);
@@ -244,8 +245,8 @@ public class AlertWindow extends IconifableWindow {
       final double h = getWindow().getHeight();
       final int finalYLocation = getWindow().getLocation().y;
       getWindow().setSize(getWindow().getWidth(),0);
-      getWindow().setLocation(getWindow().getLocation().x,getWindow().getLocation().y+(int)h);
-      final int startingYLocation = getWindow().getLocation().y;
+      getWindow().setLocation(getWindow().getLocation().x,getWindow().getLocation().y);
+      final int startingYLocation = getWindow().getLocation().y+(int)h;
 //      getWindow().setVisible(true);
       new Thread() {
         public void run() {

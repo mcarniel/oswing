@@ -555,6 +555,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
           DnDConstants.ACTION_MOVE,
           new DragGestureAdapter(this)
       );
+
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -607,7 +608,9 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   /**
    * This message goes to DragSourceListener, informing it that the dragging is currently ocurring over the DropSite.
    */
-  public final void dragOver (DragSourceDragEvent event) {
+  public final void dragOver (DragSourceDragEvent e) {
+    tree.scrollPathToVisible(tree.getPathForLocation(e.getX(),Math.max(0,e.getY()-tree.getRowHeight()*2)));
+    tree.scrollPathToVisible(tree.getPathForLocation(e.getX(),Math.min(tree.getHeight(),e.getY()+tree.getRowHeight()*2)));
     dndListener.dragOver();
   }
 

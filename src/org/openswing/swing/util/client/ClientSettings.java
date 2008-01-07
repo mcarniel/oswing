@@ -47,7 +47,7 @@ import org.openswing.swing.lookup.client.LookupController;
  */
 public class ClientSettings {
 
-  /** image name for tree menu icons */
+  /** image name for the MDI Frame */
   public static String ICON_FILENAME = "appicon.gif";
 
   /** image name for tree menu background */

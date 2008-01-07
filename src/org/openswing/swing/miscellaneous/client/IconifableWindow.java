@@ -15,6 +15,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.beans.Beans;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import org.openswing.swing.mdi.client.MDIFrame;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -27,7 +30,7 @@ import java.beans.Beans;
  * As default settings, this panel has a dimension of 300 x 150 pixels.
  * Window location can be defined in several ways:
  * - using absolute location, by using this.setLocation method
- * - by anchoring the window to the Window.TOP/Window.BOTTOM of another component, through setAnchorWindow() method.</p>
+ * - by anchoring the window to the TOP/BOTTOM/INSIDE_BOTTOM/INSIDE_TOP of another component, through setAnchorWindow() method.</p>
  * Several events fired by this window can be listened, through the method: addIconifableWindowListener.
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
@@ -68,23 +71,39 @@ public class IconifableWindow extends JPanel {
   /** anchor the window to the bottom of the specified component */
   public static final int BOTTOM = 1;
 
+  /** anchor the window inside the specified component at the bottom */
+  public static final int INSIDE_BOTTOM = 2;
+
+  /** anchor the window inside the specified component at the top */
+  public static final int INSIDE_TOP = 3;
+
   /** component to anchor to */
   private JComponent anchorComponent;
 
-  /** anchor type: TOP or BOTTOM */
+  /** anchor type: TOP or BOTTOM or INSIDE_BOTTOM or INSIDE_TOP */
   protected int constraint;
 
-  /** window dimension */
-  protected Dimension dim;
-
-  /** define if a close button must be showed (<code>false</code> = window will be closed by simply click inside it); default value: <code>false</code> */
+  /** define if a close button must be showed (<code>false</code> = window will be closed by simply click the mouse inside it); default value: <code>false</code> */
   private boolean showCloseButton;
 
   /** define if a reduce to icon button must be showed (<code>true</code> means that the iconified window will be enlarged by clicking on it); default value: <code>false</code> */
   private boolean showReduceToIconButton;
 
   /** panel that contains the title and "close" and "reduce to icon" buttons */
-  private JPanel topPanel = new JPanel();
+  private JPanel topPanel = new JPanel() {
+
+    public void paint(Graphics g) {
+      super.paint(g);
+      if (showCloseButton ||
+          showReduceToIconButton ||
+          title.getLabel()!=null && !title.getLabel().equals("") ||
+          titleImageName!=null && !titleImageName.equals("")) {
+        g.setColor(Color.lightGray);
+        g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
+      }
+    }
+
+  };
 
   /** close window button */
   private ImagePanel closeButton = new ImagePanel();
@@ -99,7 +118,7 @@ public class IconifableWindow extends JPanel {
   private Dimension lastWindowDimension = null;
 
   /** window height, when it is iconified */
-  private int iconHeight = 20;
+  private int iconHeight = 21;
 
   /** listeners of type IconifableWindowListener */
   private ArrayList iconifableWindowListeners = new ArrayList();
@@ -110,10 +129,16 @@ public class IconifableWindow extends JPanel {
   /** title image */
   private ImagePanel titleImage = new ImagePanel();
 
+  /** flag used to define if the window can be closed (when the close button is hidden and user has clicked with the mouse inside it); default value: false */
+  private boolean allowsCloseWindow = false;
+
 
   public IconifableWindow() {
+    setBackground(new Color(240,240,240));
+
     title.setFont(new Font(title.getFont().getName(),Font.BOLD,title.getFont().getSize()));
     titleImage.setOpaque(false);
+    titleImage.setScrollBarsPolicy(closeButton.SCROLLBAR_NEVER);
     titleImage.setBorder(BorderFactory.createEmptyBorder());
     topPanel.setOpaque(false);
     topPanel.setLayout(new GridBagLayout());
@@ -137,9 +162,7 @@ public class IconifableWindow extends JPanel {
     restoreButton.addMouseListener(new MouseAdapter() {
 
       public void mouseClicked(MouseEvent e) {
-        setupTopPanel(false);
-        window.setLocation(window.getLocation().x,window.getLocation().y-lastWindowDimension.height+iconHeight);
-        window.setSize(lastWindowDimension);
+        restoreWindow();
       }
 
     });
@@ -151,23 +174,49 @@ public class IconifableWindow extends JPanel {
     reduceToIconButton.addMouseListener(new MouseAdapter() {
 
       public void mouseClicked(MouseEvent e) {
-        window.setSize(lastWindowDimension.width,iconHeight);
-        window.setLocation(window.getLocation().x,window.getLocation().y+lastWindowDimension.height-iconHeight);
-        setupTopPanel(true);
+        reduceToIcon();
       }
 
     });
 
-    super.setSize(300,150);
+    lastWindowDimension = new Dimension(300,150);
+    super.setSize(lastWindowDimension);
     super.setFocusable(false);
-    dim = new Dimension(300,150);
     setBackground(UIManager.getColor("Label.background"));
     super.setPreferredSize(new Dimension(300,150));
     addMouseListener(new MouseAdapter() {
 
       public void mouseClicked(MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e) && !showCloseButton) {
+        if (SwingUtilities.isLeftMouseButton(e) && !showCloseButton && allowsCloseWindow) {
           hideWindow();
+        }
+      }
+
+    });
+    title.addMouseListener(new MouseAdapter() {
+
+      public void mouseClicked(MouseEvent e) {
+        if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount()==2 && !showReduceToIconButton) {
+          if (window.getSize().height!=iconHeight) {
+            reduceToIcon();
+          }
+          else {
+            restoreWindow();
+          }
+        }
+      }
+
+    });
+    topPanel.addMouseListener(new MouseAdapter() {
+
+      public void mouseClicked(MouseEvent e) {
+        if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount()==2 && !showReduceToIconButton) {
+          if (window.getSize().height!=iconHeight) {
+            reduceToIcon();
+          }
+          else {
+            restoreWindow();
+          }
         }
       }
 
@@ -206,6 +255,7 @@ public class IconifableWindow extends JPanel {
              ,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2,2,2,2), 0, 0));
     }
 
+    topPanel.setSize(window.getSize().width,topPanel.getHeight());
     topPanel.revalidate();
     topPanel.repaint();
   }
@@ -220,13 +270,16 @@ public class IconifableWindow extends JPanel {
     restoreButton.setBackground(this.getBackground());
 
     if (window!=null) {
-      window.getContentPane().removeAll();
-      window.setVisible(false);
-      window.dispose();
+      hideWindow();
     }
 
-    if (anchorComponent!=null) {
-      Component topLevelAncestor = getTopLevelAncestor(anchorComponent);
+    Component topLevelAncestor = null;
+    if (anchorComponent!=null)
+      topLevelAncestor = getTopLevelAncestor(anchorComponent);
+    else
+      topLevelAncestor = getTopLevelAncestor(getParent());
+
+    if (topLevelAncestor!=null) {
       if (topLevelAncestor instanceof Frame) {
         window = new JWindow((Frame)topLevelAncestor);
       }
@@ -237,6 +290,81 @@ public class IconifableWindow extends JPanel {
         Frame frame = ClientUtils.getParentFrame((JComponent)topLevelAncestor);
         window = new JWindow((Frame)frame);
       }
+
+
+      // move window if ancestor component has been resized/moved...
+      topLevelAncestor.addComponentListener(new ComponentAdapter() {
+
+        /**
+         * Invoked when the component's size changes.
+         */
+        public void componentResized(ComponentEvent e) {
+          if (lastWindowDimension!=null)
+            lastWindowDimension = new Dimension(
+              anchorComponent.getSize().width,
+              lastWindowDimension.height
+            );
+
+          // update size for all window's content pane containers...
+          if (window!=null) {
+            Container c = window.getContentPane();
+            while(c!=null && !(c.equals(window))) {
+              c.setSize(window.getWidth(),c.getHeight());
+              c = c.getParent();
+            }
+          }
+
+          // update size of content pane children...
+          for(int j=0;j<window.getContentPane().getComponentCount();j++) {
+            window.getContentPane().getComponents()[j].setSize(
+              new Dimension(
+                window.getWidth(),
+                window.getContentPane().getComponents()[j].getHeight()
+              )
+            );
+            ((JComponent)window.getContentPane().getComponents()[j]).revalidate();
+          }
+
+          locateWindow();
+        }
+
+        /**
+         * Invoked when the component's position changes.
+         */
+        public void componentMoved(ComponentEvent e) {
+
+          if (lastWindowDimension!=null)
+            lastWindowDimension = new Dimension(
+              anchorComponent.getSize().width,
+              lastWindowDimension.height
+            );
+
+          // update size for all window's content pane containers...
+          if (window!=null) {
+            Container c = window.getContentPane();
+            while(c!=null && !(c.equals(window))) {
+              c.setSize(window.getWidth(),c.getHeight());
+              c = c.getParent();
+            }
+          }
+
+          // update size of content pane children...
+          for(int j=0;j<window.getContentPane().getComponentCount();j++) {
+            window.getContentPane().getComponents()[j].setSize(
+              new Dimension(
+                window.getWidth(),
+                window.getContentPane().getComponents()[j].getHeight()
+              )
+            );
+            ((JComponent)window.getContentPane().getComponents()[j]).revalidate();
+          }
+
+          locateWindow();
+        }
+
+      });
+
+
     }
     else
       window = new JWindow();
@@ -244,31 +372,69 @@ public class IconifableWindow extends JPanel {
     window.addMouseListener(new MouseAdapter() {
 
       public void mouseClicked(MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e) && !showCloseButton) {
+        if (SwingUtilities.isLeftMouseButton(e) && !showCloseButton && allowsCloseWindow) {
           hideWindow();
         }
       }
 
     });
 
-    if (dim!=null) {
-      window.setSize(dim);
-    }
+    // set window current size...
+    if (lastWindowDimension!=null)
+      window.setSize(lastWindowDimension);
 
-    if (anchorComponent!=null && (constraint==TOP || constraint==BOTTOM)) {
-      Point location = anchorComponent.getLocationOnScreen();
-      if (constraint==TOP)
-        location.y = location.y-dim.height-1;
-      else
-        location.y = location.y+dim.height+1;
-      if (location.x<0)
-        location.x = 0;
-      if (location.y<0)
-        location.y = 0;
-      setLocation(location);
+    // set window location...
+    if (anchorComponent!=null &&
+        (constraint==TOP || constraint==BOTTOM || constraint==INSIDE_TOP || constraint==INSIDE_BOTTOM)) {
+
+      locateWindow();
+
+      // move window if parent component has been resized/moved...
+      anchorComponent.addComponentListener(new ComponentAdapter() {
+
+        /**
+         * Invoked when the component's size changes.
+         */
+        public void componentResized(ComponentEvent e) {
+          if (lastWindowDimension!=null)
+            lastWindowDimension = new Dimension(
+              anchorComponent.getSize().width,
+              lastWindowDimension.height
+            );
+
+          // update size for all window's content pane containers...
+          if (window!=null) {
+            Container c = window.getContentPane();
+            while(c!=null && !(c.equals(window))) {
+              c.setSize(window.getWidth(),c.getHeight());
+              c = c.getParent();
+            }
+          }
+
+          // update size of content pane children...
+          for(int j=0;j<window.getContentPane().getComponentCount();j++) {
+            window.getContentPane().getComponents()[j].setSize(
+              new Dimension(
+                window.getWidth(),
+                window.getContentPane().getComponents()[j].getHeight()
+              )
+            );
+            ((JComponent)window.getContentPane().getComponents()[j]).revalidate();
+          }
+
+          locateWindow();
+        }
+
+        /**
+         * Invoked when the component's position changes.
+         */
+        public void componentMoved(ComponentEvent e) {
+          locateWindow();
+        }
+
+      });
+
     }
-    if (this.getLocation()!=null)
-      window.setLocation(this.getLocation());
 
     // set window content...
     ((JComponent)window.getContentPane()).setBorder(BorderFactory.createLineBorder(Color.lightGray));
@@ -280,12 +446,50 @@ public class IconifableWindow extends JPanel {
     setupTopPanel(false);
     window.getContentPane().add(topPanel, BorderLayout.NORTH);
 
-    lastWindowDimension = getWindow().getSize();
-
     fireWindowEvent(IconifableWindowListener.WINDOW_CREATED);
     showWindowInternally();
 
     window.toFront();
+  }
+
+
+  /**
+   * Set window location, according to window current size (lastWindowDimension) and anchored component position and constraint.
+   */
+  private void locateWindow() {
+    Component topLevelAncestor = getTopLevelAncestor(anchorComponent);
+    Point location = null;
+    if (topLevelAncestor!=null && topLevelAncestor instanceof JWindow)
+      location = topLevelAncestor.getLocationOnScreen();
+    else if (topLevelAncestor!=null && topLevelAncestor instanceof MDIFrame) {
+      int x = topLevelAncestor.getLocation().x;
+      int y = topLevelAncestor.getLocation().y;
+      Container c = anchorComponent;
+      while(!(c.equals(topLevelAncestor))) {
+        x += c.getLocation().x;
+        y += c.getLocation().y;
+        c = c.getParent();
+      }
+      location = new Point(x,y);
+    }
+    else
+      location = anchorComponent.getLocationOnScreen();
+    if (constraint==TOP)
+      location.y = location.y-window.getHeight();
+    else if (constraint==BOTTOM)
+      location.y = location.y+anchorComponent.getSize().height+1;
+    else if (constraint==INSIDE_BOTTOM) {
+      location.y = location.y+anchorComponent.getSize().height-window.getHeight();
+    }
+    else if (constraint==INSIDE_TOP) {
+      location.y = location.y+1;
+    }
+    if (location.x<0)
+      location.x = 0;
+    if (location.y<0)
+      location.y = 0;
+
+    window.setLocation(location);
   }
 
 
@@ -315,7 +519,7 @@ public class IconifableWindow extends JPanel {
   /**
    * Anchor the window to the specified component.
    * @param component component used to calculate window location
-   * @param constraint
+   * @param constraint anchor type: TOP or BOTTOM or INSIDE_BOTTOM or INSIDE_TOP
    */
   public final void anchorWindow(JComponent anchorComponent,int constraint) {
     this.anchorComponent = anchorComponent;
@@ -324,49 +528,28 @@ public class IconifableWindow extends JPanel {
 
 
   /**
-   * Sets the preferred size of this component.
-   * If <code>preferredSize</code> is <code>null</code>, the UI will
-   * be asked for the preferred size.
-   * @beaninfo
-   *   preferred: true
-   *       bound: true
-   * description: The preferred size of the component.
+   * Sets the size of the window, when it is maximized.
    */
-  public final void setPreferredSize(Dimension preferredSize) {
-    this.dim = preferredSize;
+  public final void setWindowMaximumSize(Dimension lastWindowDimension) {
+    this.lastWindowDimension = lastWindowDimension;
+//    if (window!=null && window.isVisible()) {
+//      window.setSize(lastWindowDimension);
+//      this.revalidate();
+//      ((JComponent)window.getContentPane()).revalidate();
+//    }
   }
 
 
   /**
-   * Resizes this component so that it has width <code>d.width</code>
-   * and height <code>d.height</code>.
-   * @param d the dimension specifying the new size
-   * 		of this component
-   * @see #setSize
-   * @see #setBounds
-   * @since JDK1.1
+   * @return size of the window, when it is maximized
    */
-  public final void setSize(Dimension d) {
-    this.dim = d;
+  public final Dimension getWindowMaximumSize() {
+    return lastWindowDimension;
   }
 
 
   /**
-   * Resizes this component so that it has width <code>d.width</code>
-   * and height <code>d.height</code>.
-   * @param d the dimension specifying the new size
-   * 		of this component
-   * @see #setSize
-   * @see #setBounds
-   * @since JDK1.1
-   */
-  public final void setSize(int width,int height) {
-    this.dim = new Dimension(width,height);
-  }
-
-
-  /**
-   * @return define if a close button must be showed (<code>false</code> = window will be closed by simply click inside it)
+   * @return define if a close button must be showed (<code>false</code> = window will be closed by simply click mouse inside it)
    */
   public final boolean isShowCloseButton() {
     return showCloseButton;
@@ -374,8 +557,8 @@ public class IconifableWindow extends JPanel {
 
 
   /**
-   * Define if a close button must be showed (<code>false</code> = window will be closed by simply click inside it); default value: <code>false</code>.
-   * @param showCloseButton define if a close button must be showed (<code>false</code> = window will be closed by simply click inside it)
+   * Define if a close button must be showed (<code>false</code> = window will be closed by simply click mouse inside it); default value: <code>false</code>.
+   * @param showCloseButton define if a close button must be showed (<code>false</code> = window will be closed by simply mouse click inside it)
    */
   public final void setShowCloseButton(boolean showCloseButton) {
     this.showCloseButton = showCloseButton;
@@ -492,7 +675,7 @@ public class IconifableWindow extends JPanel {
    */
   protected final void fireWindowEvent(int event) {
     for(int i=0;i<iconifableWindowListeners.size();i++)
-      ((IconifableWindowListener)iconifableWindowListeners.get(i)).windowEvent(event);
+      ((IconifableWindowListener)iconifableWindowListeners.get(i)).windowEvent(this,event);
   }
 
 
@@ -503,6 +686,86 @@ public class IconifableWindow extends JPanel {
     return window;
   }
 
+
+  /**
+   * Set top panel background color.
+   * @param color top panel background color
+   */
+  public final void setTopPanelBackground(Color color) {
+    topPanel.setBackground(color);
+    topPanel.setOpaque(color!=null);
+  }
+
+
+  /**
+   * @return top panel background color
+   */
+  public final Color getTopPanelBackground() {
+    return topPanel.getBackground();
+  }
+
+
+  /**
+   * Reduce the window to icon.
+   * Note that the window must already be visible ("showWindow" method must be invoked before).
+   */
+  public final void reduceToIcon() {
+    if (window!=null) {
+      if (window.getSize().height!=iconHeight) {
+        window.setSize(lastWindowDimension.width,iconHeight);
+        setupTopPanel(true);
+        locateWindow(); // set window location, according to window current size (lastWindowDimension) and anchored component position and constraint
+//        window.setLocation(window.getLocation().x,window.getLocation().y+lastWindowDimension.height-iconHeight);
+        this.revalidate();
+        ((JComponent)window.getContentPane()).revalidate();
+        fireWindowEvent(IconifableWindowListener.WINDOW_REDUCED_TO_ICON);
+      }
+    }
+  }
+
+
+  /**
+   * Restore window to its original dimension.
+   */
+  public final void restoreWindow() {
+    if (window!=null) {
+      if (lastWindowDimension!=null && lastWindowDimension.height!=iconHeight) {
+//        window.setLocation(window.getLocation().x,window.getLocation().y-lastWindowDimension.height+iconHeight);
+//        this.dim = lastWindowDimension;
+        window.setSize(lastWindowDimension);
+        setupTopPanel(false);
+        locateWindow(); // set window location, according to window current size (lastWindowDimension) and anchored component position and constraint
+        this.revalidate();
+        ((JComponent)window.getContentPane()).revalidate();
+        fireWindowEvent(IconifableWindowListener.WINDOW_RESTORED);
+      }
+    }
+  }
+
+
+  /**
+   * @return define if the window can be closed (when the close button is hidden and user has clicked with the mouse inside it)
+   */
+  public final boolean isAllowsCloseWindow() {
+    return allowsCloseWindow;
+  }
+
+
+  /**
+   * Define if the window can be closed (when the close button is hidden and user has clicked with the mouse inside it).
+   * @param allowsCloseWindow boolean define if the window can be closed
+   */
+  public final void setAllowsCloseWindow(boolean allowsCloseWindow) {
+    this.allowsCloseWindow = allowsCloseWindow;
+  }
+
+
+  /**
+   * @return constraint applied between window and anchored component; possible values: TOP, BOTTOM, INSIDE_BOTTOM, INSIDE_TOP
+   */
+  public final int getConstraint() {
+    return constraint;
+  }
 
 
 }

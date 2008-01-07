@@ -18,6 +18,7 @@ public class AlertWindowBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _allowsCloseWindow = new PropertyDescriptor("allowsCloseWindow", beanClass, "isAllowsCloseWindow", "setAllowsCloseWindow");
       PropertyDescriptor _fadeInTime = new PropertyDescriptor("fadeInTime", beanClass, "getFadeInTime", "setFadeInTime");
       PropertyDescriptor _fadeOutTime = new PropertyDescriptor("fadeOutTime", beanClass, "getFadeOutTime", "setFadeOutTime");
       PropertyDescriptor _mainText = new PropertyDescriptor("mainText", beanClass, "getMainText", "setMainText");
@@ -28,7 +29,9 @@ public class AlertWindowBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _showCloseButton = new PropertyDescriptor("showCloseButton", beanClass, "isShowCloseButton", "setShowCloseButton");
       PropertyDescriptor _showReduceToIconButton = new PropertyDescriptor("showReduceToIconButton", beanClass, "isShowReduceToIconButton", "setShowReduceToIconButton");
       PropertyDescriptor _timeout = new PropertyDescriptor("timeout", beanClass, "getTimeout", "setTimeout");
+      PropertyDescriptor _windowMaximumSize = new PropertyDescriptor("windowMaximumSize", beanClass, "getWindowMaximumSize", "setWindowMaximumSize");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _allowsCloseWindow,
         _fadeInTime,
         _fadeOutTime,
         _iconHeight,
@@ -38,7 +41,8 @@ public class AlertWindowBeanInfo extends SimpleBeanInfo {
         _showCloseButton,
         _showReduceToIconButton,
         _timeout,
-        _title
+        _title,
+        _windowMaximumSize
       };
       return pds;
     }

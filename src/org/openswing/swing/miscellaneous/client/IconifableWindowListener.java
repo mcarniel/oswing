@@ -55,9 +55,10 @@ public interface IconifableWindowListener {
 
   /**
    * Event fired by the IconifableWindow
+   * @param source IconifableWindow that fires the event
    * @param event event type; supported values: WINDOW_CREATED, WINDOW_SHOWED, WINDOW_CLOSED, WINDOW_REDUCED_TO_ICON, WINDOW_RESTORED
    */
-  public void windowEvent(int event);
+  public void windowEvent(IconifableWindow source,int event);
 
 
 }
