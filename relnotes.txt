@@ -9,6 +9,8 @@ Added an iconifable window (IconifableWindow class) that can contains any type o
 Moreover, a set of iconifable windows can be grouped together to realize an "Outlook like" set of panes through IconifableWindowContainer class.
 Added "demo32" sample application to show how to use a set of iconifable windows can be grouped together.
 Improved TreePanel: now tree automatically scrolls when dragging nodes inside it.
+Added "getMenuHelp" method to MDIFrame class; this getter allows to define additional menu items to "Help" menu of the MDIFrame menubar.
+Fixed problem on sorting grid content when there are the number of currently sorted columns is exactly equals to the maximum number of sorted columns.
 Updated web site by adding description about new features.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
 

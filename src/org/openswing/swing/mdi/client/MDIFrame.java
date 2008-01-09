@@ -628,6 +628,14 @@ public class MDIFrame extends JFrame implements BusyListener {
   }
 
 
+  /**
+   * @return JMenu object related to "Help" menu in the menu bar. This hook can be used to add other menu items to "Help" menu; new menu items can be added within MDIFrameController.afterMDIcreation() method
+   */
+  public final JMenu getMenuHelp() {
+    return menuHelp;
+  }
+
+
 
 
 
