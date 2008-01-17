@@ -1303,11 +1303,12 @@ public class Grid extends JTable
    * Method called when the grid will be view, to correctly initialize columns which are declared sorted.
    */
   private void setOrderList() {
-    Integer[] aux = new Integer[colProps.length];
+    Integer[] aux = new Integer[colProps.length+1];
     for(int i=0;i<colProps.length;i++)
-      if (!colProps[i].getSortVersus().equals(Consts.NO_SORTED))
-//        aux[colProps[i].getSortingOrder()>=aux.length?aux.length-1:colProps[i].getSortingOrder()] = new Integer(i);
-        aux[colProps[i].getSortingOrder()>aux.length?aux.length-1:colProps[i].getSortingOrder()] = new Integer(i);
+      if (!colProps[i].getSortVersus().equals(Consts.NO_SORTED) &&
+          colProps[i].getSortingOrder()<aux.length)
+        aux[colProps[i].getSortingOrder()] = new Integer(i);
+//        aux[colProps[i].getSortingOrder()>aux.length?aux.length-1:colProps[i].getSortingOrder()] = new Integer(i);
 
     grids.getCurrentSortedColumns().clear();
     grids.getCurrentSortedVersusColumns().clear();

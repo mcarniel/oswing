@@ -171,3 +171,9 @@ Java-Bean: True
 
 Name: org/openswing/swing/miscellaneous/client/AlertWindow.class
 Java-Bean: True
+
+Name: org/openswing/swing/miscellaneous/client/IconifableWindow.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/LinkButton.class
+Java-Bean: True

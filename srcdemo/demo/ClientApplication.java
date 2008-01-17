@@ -116,10 +116,10 @@ public class ClientApplication implements MDIController,LoginController {
    */
   public String getAboutText() {
     return
-        "This is an MDI Frame demo application\n"+
-        "\n"+
-        "Copyright: Copyright (C) 2006 Mauro Carniel\n"+
-        "Author: Mauro Carniel";
+        "<html><body><p style='font-family: Arial,sans-serif;font-size:12'>This is an MDI Frame demo application<br>"+
+        "<br>"+
+        "Copyright: Copyright (C) 2006 Mauro Carniel<br>"+
+        "Author: Mauro Carniel</body></html>";
   }
 
 

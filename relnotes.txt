@@ -1,5 +1,21 @@
 
 
+Release Notes 1.4.3
+-------------------
+
+Final release 1.4.3 available
+
+Fixed problem on sorting grid content when there are the number of currently sorted columns is exactly equals to the maximum number of sorted columns.
+Added LinkButton component, used to show a link with an ActionListener binded.
+Added setImage(Image image) method to ImagePanel.
+Change ClientUtils.getImage() method by allowing tif format reading when used in combination with JAI Sun library.
+Added support for tif image format to TreePanel/ImagePanel/ClientUtils.getImage(), when combined with JAI Sun library.
+Added support for tif/ico image format to TreePanel/ImagePanel/ClientUtils.getImage(), when combined with JIMI Sun library.
+Updated web site by adding description about new features.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.4.2
 -------------------
 

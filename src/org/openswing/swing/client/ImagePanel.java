@@ -104,6 +104,18 @@ public class ImagePanel extends JPanel {
 
 
   /**
+   * Set the image.
+   * @param image image to set
+   */
+  public final void setImage(Image image) {
+    if (image!=null)
+      imagePanel.setImage(image);
+    else
+      imagePanel.setImage(null);
+  }
+
+
+  /**
    * Set the image from an InputStream.
    * The InputStream will be automatically close after reading it.
    * @param in image to set, expressed as an InputStream

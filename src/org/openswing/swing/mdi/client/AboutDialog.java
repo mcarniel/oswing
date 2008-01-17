@@ -72,6 +72,8 @@ public class AboutDialog extends JDialog {
         setSize(400,300);
       }
       setMem();
+      if (aboutText.toLowerCase().trim().startsWith("<html>"))
+        text.setContentType("text/html");
       text.setText(aboutText);
       ClientUtils.centerDialog(frame,this);
       setVisible(true);

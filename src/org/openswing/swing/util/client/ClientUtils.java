@@ -16,6 +16,7 @@ import org.openswing.swing.logger.client.Logger;
 import org.openswing.swing.form.client.Form;
 import java.beans.PropertyDescriptor;
 import java.beans.Introspector;
+import javax.imageio.ImageIO;
 
 
 /**
@@ -97,11 +98,35 @@ public class ClientUtils extends JApplet {
    */
   public static Image getImage(String imageName) {
     try {
-      Image i = new ImageIcon(MDIFrame.class.getResource("/images/"+imageName)).getImage();
+      Image i = null;
+
+      Class jimi = null;
+      try {
+        jimi = Class.forName("com.sun.jimi.core.Jimi");
+      }
+      catch (ClassNotFoundException ex1) {
+      }
+      if (jimi!=null &&
+          (imageName.toLowerCase().endsWith(".ico") ||
+           imageName.toLowerCase().endsWith(".bmp") ||
+           imageName.toLowerCase().endsWith(".png") ||
+           imageName.toLowerCase().endsWith(".pic") ||
+           imageName.toLowerCase().endsWith(".pcx") ||
+           imageName.toLowerCase().endsWith(".tif") ||
+           imageName.toLowerCase().endsWith(".tiff"))) {
+        i = (Image)jimi.getMethod("getImage",new Class[]{URL.class}).invoke(null,new Object[]{MDIFrame.class.getResource("/images/"+imageName)});
+      }
+      else if (imageName.toLowerCase().endsWith(".tif") ||
+               imageName.toLowerCase().endsWith(".tiff") ||
+               imageName.toLowerCase().endsWith(".bmp") ||
+               imageName.toLowerCase().endsWith(".png"))
+        i = ImageIO.read(MDIFrame.class.getResource("/images/"+imageName));
+      else
+        i = new ImageIcon(MDIFrame.class.getResource("/images/"+imageName)).getImage();
       if (i!=null)
         return i;
     }
-    catch (Exception ex) {
+    catch (Throwable ex) {
       ex.printStackTrace();
       return null;
     }
