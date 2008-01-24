@@ -92,10 +92,10 @@ public class GridFrame extends JFrame {
     colCombo.setDomainId("ORDERSTATE");
     colCombo.setColumnName("combo");
     colCombo.setColumnSortable(false);
+    colCombo.setColumnFilterable(true);
     colLookup.setColumnName("lookupValue");
     textColumn1.setColumnName("descrLookupValue");
     textColumn1.setPreferredWidth(150);
-    colCheck.setColumnFilterable(true);
     colCheck.setColumnName("checkValue");
     insertButton.setText("insertButton1");
     this.getContentPane().add(grid, BorderLayout.CENTER);

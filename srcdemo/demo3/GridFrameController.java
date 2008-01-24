@@ -55,11 +55,40 @@ public class GridFrameController extends GridController implements GridDataLocat
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
         FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("dateValue");
-        sql += " and DEMO3.THEDATE "+ filter[0].getOperator()+"?";
-        vals.add(new java.sql.Date(((java.util.Date)filter[0].getValue()).getTime()));
-        if (filter[1]!=null) {
-          sql += " and DEMO3.THEDATE "+ filter[1].getOperator()+"?";
-          vals.add(new java.sql.Date(((java.util.Date)filter[1].getValue()).getTime()));
+        if (filter!=null) {
+          if (filter[0].getValue()!=null) {
+            sql += " and DEMO3.THEDATE "+ filter[0].getOperator()+"?";
+            vals.add(new java.sql.Date(((java.util.Date)filter[0].getValue()).getTime()));
+          }
+          else
+            sql += " and DEMO3.THEDATE "+ filter[0].getOperator();
+
+          if (filter[1]!=null) {
+            if (filter[1].getValue()!=null) {
+              sql += " and DEMO3.THEDATE "+ filter[1].getOperator()+"?";
+              vals.add(new java.sql.Date(((java.util.Date)filter[1].getValue()).getTime()));
+            }
+            else
+              sql += " and DEMO3.THEDATE "+ filter[1].getOperator();
+          }
+        }
+        filter = (FilterWhereClause[])filteredColumns.get("comboValue");
+        if (filter!=null) {
+          if (filter[0].getValue()!=null) {
+            sql += " and DEMO3.COMBO "+ filter[0].getOperator()+"?";
+            vals.add(filter[0].getValue());
+          }
+          else
+            sql += " and DEMO3.COMBO "+ filter[0].getOperator();
+
+          if (filter[1]!=null) {
+            if (filter[1].getValue()!=null) {
+              sql += " and DEMO3.COMBO "+ filter[1].getOperator()+"?";
+              vals.add(filter[1]);
+            }
+            else
+              sql += " and DEMO3.COMBO "+ filter[1].getOperator();
+          }
         }
       }
       if (currentSortedColumns.size()>0) {
@@ -78,7 +107,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       while (rset.next()) {
         vo = new TestVO();
         vo.setCheckValue(rset.getObject(6)==null || !rset.getObject(6).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
-        vo.setComboValue(rset.getString(5));
+        vo.setComboValue(rset.getBigDecimal(5)==null?null:new Integer(rset.getBigDecimal(5).intValue()));
         vo.setCurrencyValue(rset.getBigDecimal(3));
         vo.setDateValue(rset.getDate(4));
         vo.setNumericValue(rset.getBigDecimal(2));
@@ -121,7 +150,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       stmt = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,FORMATTED_TEXT,INT_VALUE,ML_TEXT) values(?,?,?,?,?,?,?,?,?,?,?)");
       TestVO vo = (TestVO)newValueObjects.get(0);
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
-      stmt.setString(5,vo.getComboValue());
+      stmt.setBigDecimal(5,vo.getComboValue()==null?null:new BigDecimal(vo.getComboValue().intValue()));
       stmt.setBigDecimal(3,vo.getCurrencyValue());
       stmt.setDate(4,vo.getDateValue());
       stmt.setBigDecimal(2,vo.getNumericValue());
@@ -165,7 +194,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       for(int i=0;i<persistentObjects.size();i++) {
         vo = (TestVO)persistentObjects.get(i);
         stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
-        stmt.setString(5,vo.getComboValue());
+        stmt.setBigDecimal(5,vo.getComboValue()==null?null:new BigDecimal(vo.getComboValue().intValue()));
         stmt.setBigDecimal(3,vo.getCurrencyValue());
         stmt.setDate(4,vo.getDateValue());
         stmt.setBigDecimal(2,vo.getNumericValue());

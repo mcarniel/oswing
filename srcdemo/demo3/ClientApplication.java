@@ -55,12 +55,13 @@ public class ClientApplication {
         new EnglishOnlyResourceFactory("£",props,true),
         domains
     );
+    ClientSettings.FILTER_PANEL_ON_GRID = true;
 
     Domain orderStateDomain = new Domain("ORDERSTATE");
-    orderStateDomain.addDomainPair("O","opened");
-    orderStateDomain.addDomainPair("S","suspended");
-    orderStateDomain.addDomainPair("D","delivered");
-    orderStateDomain.addDomainPair("ABC","closed");
+    orderStateDomain.addDomainPair(new Integer(0),"opened");
+    orderStateDomain.addDomainPair(new Integer(1),"suspended");
+    orderStateDomain.addDomainPair(new Integer(2),"delivered");
+    orderStateDomain.addDomainPair(new Integer(3),"closed");
     domains.put(
       orderStateDomain.getDomainId(),
       orderStateDomain
@@ -88,7 +89,7 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,INT_VALUE NUMERIC(6),ML_TEXT VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO NUMERIC(1),CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,INT_VALUE NUMERIC(6),ML_TEXT VARCHAR,PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 
@@ -97,7 +98,7 @@ public class ClientApplication {
 
         for(int i=0;i<900;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',null,"+12+i+0.33+","+1234+i+0.560+",?,'ABC','Y','Y','A"+i+"',"+i+",'ABC"+i+"\nDEF"+i+"')");
+          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',null,"+12+i+0.33+","+1234+i+0.560+",?,3,'Y','Y','A"+i+"',"+i+",'ABC"+i+"\nDEF"+i+"')");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }

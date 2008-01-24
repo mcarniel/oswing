@@ -116,7 +116,14 @@ public class ChangeLanguageDialog extends JDialog {
     setVisible(false);
     frame.setVisible(false);
     frame.dispose();
-    ClientUtils.getData("changeLanguage",lang.getLanguageId());
+    try {
+      if (ClientUtils.getServerURL() != null) {
+        // if this parameter is setted, then this is a three-tier application that uses "org.openswing.swing.server.Controller" class on server-side
+        ClientUtils.getData("changeLanguage", lang.getLanguageId());
+      }
+    }
+    catch (Exception ex) {
+    }
     new MDIFrame(controller);
   }
 

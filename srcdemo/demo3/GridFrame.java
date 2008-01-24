@@ -230,6 +230,7 @@ public class GridFrame extends JFrame {
     colCombo.setColumnRequired(false);
     colCombo.setEditableOnEdit(true);
     colCombo.setEditableOnInsert(true);
+    colCombo.setColumnFilterable(true);
     colLookup.setColumnDuplicable(true);
     colLookup.setColumnName("lookupValue");
     colLookup.setEditableOnEdit(true);
@@ -248,6 +249,7 @@ public class GridFrame extends JFrame {
     editButton.setText("editButton1");
     saveButton.setText("saveButton1");
     colButton.setColumnName("button");
+    colButton.setEditableOnEdit(true);
     colButton.setHeaderColumnName("button");
     colButton.setPreferredWidth(50);
     colFormattedText.setColumnFilterable(false);
@@ -293,6 +295,12 @@ public class GridFrame extends JFrame {
     grid.getColumnContainer().add(colLookup, null);
     grid.getColumnContainer().add(textColumn1, null);
     grid.getColumnContainer().add(colCheck, null);
+
+    colButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+
+      }
+    });
 
 
   }

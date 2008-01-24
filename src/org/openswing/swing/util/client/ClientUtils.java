@@ -180,7 +180,7 @@ public class ClientUtils extends JApplet {
    * @return server URL, retrieved by "SERVERURL" parameter in the HTML/JNLP starting app file.
    * </ul>
    */
-  private static String getServerURL() throws Exception {
+  public static String getServerURL() throws Exception {
     if (serverUrl!=null)
       return serverUrl;
     try {

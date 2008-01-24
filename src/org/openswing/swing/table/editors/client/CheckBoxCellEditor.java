@@ -69,6 +69,7 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
   public CheckBoxCellEditor(boolean required,ArrayList itemListenerList) {
     this.required = required;
     this.itemListenerList = itemListenerList;
+    label.setFocusable(true);
     label.addKeyListener(new KeyAdapter() {
       public void keyTyped(KeyEvent e) {
         selected = !selected;
@@ -111,10 +112,16 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
    * Prepare the editor for a value.
    */
   private final Component _prepareEditor(Object value) {
+//    if (value!=null)
+//      selected = value.equals(new Boolean(true));
+//    else
+//      selected = false;
+//    label.repaint();
+//    return label;
     if (value!=null)
-      selected = value.equals(new Boolean(true));
+      selected = !value.equals(new Boolean(true));
     else
-      selected = false;
+      selected = true;
     label.repaint();
     return label;
   }

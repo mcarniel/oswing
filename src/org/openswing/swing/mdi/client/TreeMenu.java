@@ -63,9 +63,9 @@ public class TreeMenu extends JPanel {
   private JPanel titlePanel = new JPanel();
   private JLabel titleLabel = new JLabel();
 
-  private JButton lockPanel;
-  private Icon lockImage;
-  private Icon unlockImage;
+  private ImagePanel lockPanel;
+  private Image lockImage;
+  private Image unlockImage;
   private boolean locked;
   private GridBagLayout gridBagLayout1 = new GridBagLayout();
   JLabel findLabel = new JLabel();
@@ -116,11 +116,13 @@ public class TreeMenu extends JPanel {
 
 
   private void jbInit() throws Exception {
-    lockImage = new ImageIcon(ClientUtils.getImage(ClientSettings.LOCK_ON));
-    unlockImage = new ImageIcon(ClientUtils.getImage(ClientSettings.LOCK_OFF));
+    lockImage = ClientUtils.getImage(ClientSettings.LOCK_ON);
+    unlockImage = ClientUtils.getImage(ClientSettings.LOCK_OFF);
 
-    lockPanel = new JButton(lockImage);
-    lockPanel.setBorder(BorderFactory.createEmptyBorder());
+    lockPanel = new ImagePanel();
+    lockPanel.setImage(lockImage);
+    lockPanel.setMinimumSize(new Dimension(25,25));
+    lockPanel.setScrollBarsPolicy(lockPanel.SCROLLBAR_NEVER);
     lockPanel.addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
         lockPanel_mouseClicked(e);
@@ -176,9 +178,9 @@ public class TreeMenu extends JPanel {
   public void setLocked(boolean value) {
     this.locked = value;
     if (locked)
-      lockPanel.setIcon(lockImage);
+      lockPanel.setImage(lockImage);
     else
-      lockPanel.setIcon(unlockImage);
+      lockPanel.setImage(unlockImage);
   }
 
 

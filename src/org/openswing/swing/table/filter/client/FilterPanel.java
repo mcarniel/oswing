@@ -213,57 +213,60 @@ public class FilterPanel extends JPanel {
     ComboModel colNamesComboModel = null;
     DefaultComboBoxModel orderVersusComboModel = null;
 
+    for(int i=0;i<grid.getMaxSortedColumns();i++) {
+      // prepare combo model having column names, one combo for each sortable column...
+      colNamesComboModel = new ComboModel();
+      colNamesComboModel.addItem("",""); // first combo item is always equals to "" (no sort condition defined)...
+      for(int j=0;j<colProperties.length;j++)
+        if (colProperties[j].isColumnSortable())
+          colNamesComboModel.addItem(colProperties[j].getColumnName(),ClientSettings.getInstance().getResources().getResource(colProperties[j].getHeaderColumnName()));
+
+      // prepare combo model related to sorting versus, one for each sortable column...
+      orderVersusComboModel = new DefaultComboBoxModel();
+      orderVersusComboModel.addElement("");
+      orderVersusComboModel.addElement(Consts.ASC_SORTED);
+      orderVersusComboModel.addElement(Consts.DESC_SORTED);
+
+      JComboBox colNameComboBox = new JComboBox(colNamesComboModel);
+      JComboBox orderVersusComboBox = new JComboBox(orderVersusComboModel);
+
+      oPanel.add(colNameComboBox,    new GridBagConstraints(0, row, 1, 1, 1.0, 0.0
+              ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+      oPanel.add(orderVersusComboBox,    new GridBagConstraints(1, row, 1, 1, 0.0, 0.0
+              ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+
+      sortColNames.add(colNameComboBox);
+      sortVersus.add(orderVersusComboBox);
+
+      row++;
+    }
+
     for(int i=0;i<colProperties.length;i++)
-      if (colProperties[i].isColumnSortable()) {
-        // prepare combo model having column names, one combo for each sortable column...
-        colNamesComboModel = new ComboModel();
-        colNamesComboModel.addItem("",""); // first combo item is always equals to "" (no sort condition defined)...
-        for(int j=0;j<colProperties.length;j++)
-          if (colProperties[j].isColumnSortable())
-            colNamesComboModel.addItem(colProperties[j].getColumnName(),ClientSettings.getInstance().getResources().getResource(colProperties[j].getHeaderColumnName()));
-
-        // prepare combo model related to sorting versus, one for each sortable column...
-        orderVersusComboModel = new DefaultComboBoxModel();
-        orderVersusComboModel.addElement("");
-        orderVersusComboModel.addElement(Consts.ASC_SORTED);
-        orderVersusComboModel.addElement(Consts.DESC_SORTED);
-
-        JComboBox colNameComboBox = new JComboBox(colNamesComboModel);
-        JComboBox orderVersusComboBox = new JComboBox(orderVersusComboModel);
-
-        oPanel.add(colNameComboBox,    new GridBagConstraints(0, row, 1, 1, 1.0, 0.0
-                ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-        oPanel.add(orderVersusComboBox,    new GridBagConstraints(1, row, 1, 1, 0.0, 0.0
-                ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-
-        sortColNames.add(colNameComboBox);
-        sortVersus.add(orderVersusComboBox);
-
+      if (colProperties[i].isColumnSortable())
         if (!colProperties[i].getSortVersus().equals(Consts.NO_SORTED))
           colOrdered.set(colProperties[i].getSortingOrder(),new Integer(i));
+
+    oPanel.add(new JLabel(""),    new GridBagConstraints(0, row, 1, 1, 1.0, 1.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+
+    // set initial item in combos, for each pre-sorted column...
+    int colIndex = -1;
+    row = 0;
+    for(int i=0;i<colOrdered.size();i++)
+      if (colOrdered.get(i)!=null) {
+        colIndex = ((Integer)colOrdered.get(i)).intValue();
+        ((JComboBox)sortColNames.get(row)).setSelectedItem(
+          ClientSettings.getInstance().getResources().getResource(colProperties[colIndex].getHeaderColumnName())
+        );
+
+        if (colProperties[colIndex].getSortVersus().equals(Consts.ASC_SORTED))
+          ((JComboBox)sortVersus.get(row)).setSelectedIndex(1);
+        else if (colProperties[colIndex].getSortVersus().equals(Consts.DESC_SORTED))
+          ((JComboBox)sortVersus.get(row)).setSelectedIndex(2);
+
         row++;
       }
-      oPanel.add(new JLabel(""),    new GridBagConstraints(0, row, 1, 1, 1.0, 1.0
-              ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-
-      // set initial item in combos, for each pre-sorted column...
-      int colIndex = -1;
-      row = 0;
-      for(int i=0;i<colOrdered.size();i++)
-        if (colOrdered.get(i)!=null) {
-          colIndex = ((Integer)colOrdered.get(i)).intValue();
-          ((JComboBox)sortColNames.get(row)).setSelectedItem(
-            ClientSettings.getInstance().getResources().getResource(colProperties[colIndex].getHeaderColumnName())
-          );
-
-          if (colProperties[colIndex].getSortVersus().equals(Consts.ASC_SORTED))
-            ((JComboBox)sortVersus.get(row)).setSelectedIndex(1);
-          else if (colProperties[colIndex].getSortVersus().equals(Consts.DESC_SORTED))
-            ((JComboBox)sortVersus.get(row)).setSelectedIndex(2);
-
-          row++;
-        }
-     oPanel.revalidate();
+    oPanel.revalidate();
   }
 
 
@@ -302,7 +305,12 @@ public class FilterPanel extends JPanel {
         colOpsComboModel.addElement("");
         colOpsComboModel.addElement(Consts.EQ);
         colOpsComboModel.addElement(Consts.NEQ);
-        colOpsComboModel.addElement(Consts.LIKE);
+        if (colProperties[i].getColumnType()==Column.TYPE_BUTTON ||
+            colProperties[i].getColumnType()==Column.TYPE_FORMATTED_TEXT ||
+            colProperties[i].getColumnType()==Column.TYPE_LOOKUP ||
+            colProperties[i].getColumnType()==Column.TYPE_MULTI_LINE_TEXT ||
+            colProperties[i].getColumnType()==Column.TYPE_TEXT)
+          colOpsComboModel.addElement(Consts.LIKE);
         colOpsComboModel.addElement(Consts.IS_NOT_NULL);
         colOpsComboModel.addElement(Consts.IS_NULL);
         colOpsComboModel.addElement(Consts.GE);
@@ -327,7 +335,7 @@ public class FilterPanel extends JPanel {
                    new GridBagConstraints(2, row, 1, 1, 1.0, 0.0
                 ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 
-        colOpsComboBox.addItemListener(new ComboItemListener(i,colOpsComboBox,c));
+        colOpsComboBox.addItemListener(new ComboItemListener(i,colOpsComboBox,c instanceof JPanel ? (JComponent)c.getComponent(0):c));
 
         filterColNames.add(colProperties[i]);
         filterColOps.add(colOpsComboBox);
@@ -362,6 +370,11 @@ public class FilterPanel extends JPanel {
           colOpsComboModel2.addElement(Consts.IS_NOT_NULL);
           colOpsComboModel2.addElement(Consts.IS_NULL);
           colOpsComboModel2.addElement(Consts.LE);
+          if (colProperties[i].getColumnType()==Column.TYPE_BUTTON ||
+              colProperties[i].getColumnType()==Column.TYPE_FORMATTED_TEXT ||
+              colProperties[i].getColumnType()==Column.TYPE_LOOKUP ||
+              colProperties[i].getColumnType()==Column.TYPE_MULTI_LINE_TEXT ||
+              colProperties[i].getColumnType()==Column.TYPE_TEXT)
           colOpsComboModel2.addElement(Consts.LIKE);
           colOpsComboModel2.addElement(Consts.LT);
           colOpsComboModel2.addElement(Consts.NEQ);

@@ -1,5 +1,22 @@
 
 
+Release Notes 1.4.4
+-------------------
+
+Final release 1.4.4 available
+
+Improved AboutDialog by supporting HTML based text. 
+Changed "demo" sample application by defining an about dialog content based on HTML format.
+Fixed bug in filtering/sorting panel of grid control: now in sorting folder there are "maxSortedColumns" combos to sort grid.
+Fixed bug in filtering/sorting panel of grid control: now in filtering folder "like" operator is applyable only to text based columns.
+Fixed bug in filtering/sorting panel of grid control: now in filtering folder when selecting "in (not) null" operator for combo type columns will disable filtering value field.
+Fixed problem with check-box column and button column: now these cell editors listen click events at the first click.
+Changed lock button in tree menu of MDI frame: now it has not any border.
+Updated web site by adding description about new features.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.4.3
 -------------------
 
