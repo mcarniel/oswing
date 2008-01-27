@@ -11,6 +11,7 @@ import org.openswing.swing.server.UserSessionParameters;
 import org.openswing.swing.client.GridControl;
 import org.openswing.swing.util.client.ClientUtils;
 import javax.swing.ImageIcon;
+import java.awt.Color;
 
 
 /**
@@ -303,6 +304,21 @@ public class GridFrameController extends GridController implements GridDataLocat
     }
     return grid.isFieldEditable(row,attributeName);
   }
+
+
+  /**
+   * Method used to define the background color for each cell of the grid.
+   * @param rowNumber selected row index
+   * @param attributeName attribute name related to the column currently selected
+   * @param value object contained in the selected cell
+   * @return background color of the selected cell
+   */
+  public Color getBackgroundColor(int row,String attributeName,Object value) {
+    if (attributeName.equals("button"))
+      return Color.orange;
+    return super.getBackgroundColor(row,attributeName,value);
+  }
+
 
 
 }

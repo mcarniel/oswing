@@ -26,6 +26,8 @@ import javax.swing.tree.TreeNode;
 import org.openswing.swing.logger.client.Logger;
 import java.util.HashSet;
 import org.openswing.swing.internationalization.java.*;
+import javax.swing.JToolBar;
+import java.util.Hashtable;
 
 
 /**
@@ -91,6 +93,15 @@ public class MDIFrame extends JFrame implements BusyListener {
 
   /** last tree menu width */
   private int lastTreeMenuWidth = 0;
+
+  /** toolbar (optional); it will be showed only if there is at least one button added to it (through "addToolbarButton" method) */
+  private JToolBar toolbar = new JToolBar();
+
+  /** flag used to check if toolbar has been added to main panel */
+  private boolean toolbarAdded = false;
+
+  /** collection of pairs <functionId,related JMenu> */
+  private Hashtable functionsHooks = new Hashtable();
 
 
   static {
@@ -344,6 +355,8 @@ public class MDIFrame extends JFrame implements BusyListener {
             executeFunction(function);
           }
         });
+        if (function.getFunctionId()!=null&& !function.getFunctionId().trim().equals(""))
+          functionsHooks.put(function.getFunctionId(),menu);
       } else {
         menu = new JMenu(function.toString());
       }
@@ -636,7 +649,148 @@ public class MDIFrame extends JFrame implements BusyListener {
   }
 
 
+  /**
+   * @return JMenu object related to "File" menu in the menu bar. This hook can be used to add other menu items to "File" menu; new menu items can be added within MDIFrameController.afterMDIcreation() method
+   */
+  public final JMenu getMenuFile() {
+    return menuFile;
+  }
 
+
+  /**
+   * @param functionId menu item identifier
+   * @return JMenuItem object, related to the specified functionId; null if there is not any JMenuItem having the specified functionId
+   */
+  public final JMenuItem getMenuItem(String functionId) {
+    return (JMenuItem)functionsHooks.get(functionId);
+  }
+
+
+  /**
+   * Add a button to the toolbar (and show toolbar if not already done).
+   * @param button button to add to the toolbar
+   */
+  public final void addButtonToToolBar(JButton button) {
+    toolbar.add(button);
+    if (!toolbarAdded) {
+      toolbarAdded = true;
+      contentPane.add(toolbar,BorderLayout.NORTH);
+    }
+  }
+
+
+  /**
+   * Appends a separator of default size to the end of the tool bar.
+   * The default size is determined by the current look and feel.
+   */
+  public final void addSeparatorToToolBar() {
+    toolbar.addSeparator();
+    if (!toolbarAdded) {
+      toolbarAdded = true;
+      contentPane.add(toolbar,BorderLayout.NORTH);
+    }
+  }
+
+
+  /**
+   * Appends a separator of a specified size to the end
+   * of the tool bar.
+   *
+   * @param size the <code>Dimension</code> of the separator
+   */
+  public final void addSeparatorOnToolBar(Dimension dim) {
+    toolbar.addSeparator(dim);
+    if (!toolbarAdded) {
+      toolbarAdded = true;
+      contentPane.add(toolbar,BorderLayout.NORTH);
+    }
+  }
+
+
+
+  /**
+   * Sets the <code>borderPainted</code> property, which is
+   * <code>true</code> if the border should be painted.
+   * The default value for this property is <code>true</code>.
+   * Some look and feels might not implement painted borders;
+   * they will ignore this property.
+   *
+   * @param b if true, the border is painted
+   * @see #isBorderPainted
+   * @beaninfo
+   * description: Does the tool bar paint its borders?
+   *       bound: true
+   *      expert: true
+   */
+  public final void setBorderPainterOnToolBar(boolean borderPainted) {
+    toolbar.setBorderPainted(borderPainted);
+  }
+
+
+  /**
+   * Sets the <code>floatable</code> property,
+   * which must be <code>true</code> for the user to move the tool bar.
+   * Typically, a floatable tool bar can be
+   * dragged into a different position within the same container
+   * or out into its own window.
+   * The default value of this property is <code>true</code>.
+   * Some look and feels might not implement floatable tool bars;
+   * they will ignore this property.
+   *
+   * @param b if <code>true</code>, the tool bar can be moved;
+   *          <code>false</code> otherwise
+   * @see #isFloatable
+   * @beaninfo
+   * description: Can the tool bar be made to float by the user?
+   *       bound: true
+   *   preferred: true
+   */
+  public final void setFloatableOnToolBar(boolean floatable) {
+    toolbar.setFloatable(floatable);
+  }
+
+
+  /**
+   * Sets the orientation of the tool bar.  The orientation must have
+   * either the value <code>HORIZONTAL</code> or <code>VERTICAL</code>.
+   * If <code>orientation</code> is
+   * an invalid value, an exception will be thrown.
+   *
+   * @param o  the new orientation -- either <code>HORIZONTAL</code> or
+   *			</code>VERTICAL</code>
+   * @exception IllegalArgumentException if orientation is neither
+   *		<code>HORIZONTAL</code> nor <code>VERTICAL</code>
+   * @see #getOrientation
+   * @beaninfo
+   * description: The current orientation of the tool bar
+   *       bound: true
+   *   preferred: true
+   */
+  public final void setOrientationOnToolBar(int orientation) {
+    toolbar.setOrientation(orientation);
+  }
+
+
+  /**
+   * Sets the rollover state of this toolbar. If the rollover state is true
+   * then the border of the toolbar buttons will be drawn only when the
+   * mouse pointer hovers over them. The default value of this property
+   * is false.
+   * <p>
+   * The implementation of a look and feel may choose to ignore this
+   * property.
+   *
+   * @param rollover true for rollover toolbar buttons; otherwise false
+   * @since 1.4
+   * @beaninfo
+   *        bound: true
+   *    preferred: true
+   *    attribute: visualUpdate true
+   *  description: Will draw rollover button borders in the toolbar.
+   */
+  public final void setRolloverOnToolBar(boolean rollover) {
+    toolbar.setRollover(rollover);
+  }
 
 
 

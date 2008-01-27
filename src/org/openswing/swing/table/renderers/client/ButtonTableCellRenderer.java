@@ -148,8 +148,10 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
       if (!enableInReadOnlyMode && (((Grid)table).getMode()==Consts.READONLY || !((Grid)table).isColorsInReadOnlyMode()))
         rend.setBackground(gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
       else {
-        if (enableInReadOnlyMode || table.isCellEditable(row,column))
-          rend.setBackground(ClientSettings.GRID_EDITABLE_CELL_BACKGROUND);
+        if (enableInReadOnlyMode || table.isCellEditable(row,column)) {
+//          rend.setBackground(ClientSettings.GRID_EDITABLE_CELL_BACKGROUND);
+          rend.setBackground(gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+        }
         else
           rend.setBackground(ClientSettings.GRID_NOT_EDITABLE_CELL_BACKGROUND);
       }
