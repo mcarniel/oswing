@@ -680,6 +680,70 @@ public class MDIFrame extends JFrame implements BusyListener {
 
 
   /**
+   * Add a button to the toolbar (and show toolbar if not already done).
+   * @param imageName name of the image to show within the button
+   * @param tooltipText tooltip text (it will be translated according to internationalization settings)
+   * @return button just created
+   */
+  public final JButton addButtonToToolBar(String imageName,String tooltipText) {
+    return addButtonToToolBar(ClientUtils.getImage(imageName),tooltipText);
+  }
+
+
+  /**
+   * Add a button to the toolbar (and show toolbar if not already done).
+   * @param image image to show within the button
+   * @param tooltipText tooltip text (it will be translated according to internationalization settings)
+   * @return button just created
+   */
+  public final JButton addButtonToToolBar(Image image,String tooltipText) {
+    JButton button = new JButton(new ImageIcon(image));
+    button.setToolTipText(ClientSettings.getInstance().getResources().getResource(tooltipText));
+    toolbar.add(button);
+    if (!toolbarAdded) {
+      toolbarAdded = true;
+      contentPane.add(toolbar,BorderLayout.NORTH);
+    }
+    return button;
+  }
+
+
+  /**
+   * Add a button to the toolbar (and show toolbar if not already done).
+   * @param imageName name of the image to show within the button
+   * @param tooltipText tooltip text (it will be translated according to internationalization settings)
+   * @param buttonText button text to show within the button (it will be translated according to internationalization settings)
+   * @return button just created
+   */
+  public final JButton addButtonToToolBar(String imageName,String tooltipText,String buttonText) {
+    return addButtonToToolBar(ClientUtils.getImage(imageName),tooltipText,buttonText);
+  }
+
+
+  /**
+   * Add a button to the toolbar (and show toolbar if not already done).
+   * @param image image to show within the button
+   * @param tooltipText tooltip text (it will be translated according to internationalization settings)
+   * @param buttonText button text to show within the button (it will be translated according to internationalization settings)
+   * @return button just created
+   */
+  public final JButton addButtonToToolBar(Image image,String tooltipText,String buttonText) {
+    JButton button = new JButton(
+      ClientSettings.getInstance().getResources().getResource(buttonText),
+      new ImageIcon(image)
+    );
+    button.setToolTipText(ClientSettings.getInstance().getResources().getResource(tooltipText));
+    toolbar.add(button);
+    if (!toolbarAdded) {
+      toolbarAdded = true;
+      contentPane.add(toolbar,BorderLayout.NORTH);
+    }
+    return button;
+  }
+
+
+
+  /**
    * Appends a separator of default size to the end of the tool bar.
    * The default size is determined by the current look and feel.
    */

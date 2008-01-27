@@ -49,6 +49,14 @@ public class ClientApplication implements MDIController,LoginController {
    * Method called after MDI creation.
    */
   public void afterMDIcreation(MDIFrame frame) {
+    frame.addButtonToToolBar("new.gif","New Record");
+    frame.addButtonToToolBar("edit.gif","Edit Record");
+    frame.addButtonToToolBar("reload.gif","Undo/Refresh Record");
+    frame.addButtonToToolBar("save.gif","Save Record");
+    frame.addButtonToToolBar("del.gif","Delete Record");
+    frame.setBorderPainterOnToolBar(false);
+    frame.setFloatableOnToolBar(false);
+    frame.setRolloverOnToolBar(false);
     new SplashScreen(frame,"about.jpg",getMDIFrameTitle(),5);
   }
 
