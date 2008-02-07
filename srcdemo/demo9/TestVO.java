@@ -73,6 +73,7 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setCheckValue(Boolean checkValue) {
     this.checkValue = checkValue;
+    System.out.println(checkValue.booleanValue());
   }
   public String getLookupValue() {
     return lookupValue;

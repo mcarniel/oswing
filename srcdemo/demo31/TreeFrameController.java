@@ -141,6 +141,16 @@ public class TreeFrameController extends TreeDataLocator implements TreeControll
     DefaultMutableTreeNode n3 = new DefaultMutableTreeNode(vo3);
     n1.add(n3);
 
+    for(int i=0;i<30;i++) {
+      TestVO von = new TestVO();
+      von.setFolderCode("C"+(i+4));
+      von.setCode("C"+(i+4));
+      von.setDescription("Node"+(i+4));
+      DefaultMutableTreeNode nn = new DefaultMutableTreeNode(von);
+      n1.add(nn);
+    }
+
+
     return new VOResponse(model);
   }
 

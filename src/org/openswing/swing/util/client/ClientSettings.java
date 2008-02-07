@@ -191,6 +191,11 @@ public class ClientSettings {
   /** define what a lookup has to do when an invalid code has been setted; possible values: LookupController.ON_INVALID_CODE_xxx; default value: LookupController.ON_INVALID_CODE_CLEAR_CODE */
   public static int ON_INVALID_CODE = LookupController.ON_INVALID_CODE_CLEAR_CODE;
 
+  /** background color of tree selected row */
+  public static Color TREE_SELECTION_BACKGROUND = new Color(185,219,243);
+
+  /** foreground color of tree selected row */
+  public static Color TREE_SELECTION_FOREGROUND = Color.black;
 
 
   /**

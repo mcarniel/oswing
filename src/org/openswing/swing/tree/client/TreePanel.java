@@ -54,6 +54,17 @@ import org.openswing.swing.util.client.SearchControl;
  */
 public class TreePanel extends JPanel implements DragSourceListener, DropTargetListener, SearchControl {
 
+  static {
+    UIManager.getDefaults().put("Tree.selectionBackground",new javax.swing.plaf.ColorUIResource(ClientSettings.TREE_SELECTION_BACKGROUND));
+    UIManager.getDefaults().put("Tree.selectionForeground",new javax.swing.plaf.ColorUIResource(ClientSettings.TREE_SELECTION_FOREGROUND));
+  }
+
+  /** tree selection background color */
+  private Color selectionBackground = ClientSettings.TREE_SELECTION_BACKGROUND;
+
+  /** tree selection foreground color */
+  private Color selectionForeground = ClientSettings.TREE_SELECTION_FOREGROUND;
+
   /** expandable tree */
   private JTree tree = new JTree(new DefaultMutableTreeNode());
 
@@ -61,7 +72,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   private JTable table = new JTable();
 
   /** tree model */
-  private DefaultTreeModel treeModel;
+  private DefaultTreeModel treeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
 
   /** tree container */
   private JScrollPane treePane = new JScrollPane();
@@ -82,7 +93,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   private boolean firstTime = true;
 
   /** image icon used for leaves; default value: as for folders */
-  private String leavesImageName = ClientSettings.getInstance().PERC_TREE_FOLDER;
+  private String leavesImageName = ClientSettings.getInstance().
+      PERC_TREE_FOLDER;
 
   /** define if tree will be filled on viewing this panel; default value: true */
   private boolean loadWhenVisibile = true;
@@ -114,6 +126,23 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   /** search manager */
   private SearchWindowManager searchWindowManager;
 
+  /**  Determines whether or not the root node from the <code>TreeModel</code> is visible; default value: <code>true</code> */
+  private boolean rootVisible = true;
+
+  /** tree selection mode; allowed values: <code>TreeSelectionModel.SINGLE_TREE_SELECTION</code>,<code>TreeSelectionModel.CONTIGUOUS_TREE_SELECTION</code> or <code>TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION</code>. Default value:  <code>TreeSelectionModel.SINGLE_TREE_SELECTION </code> */
+  private int selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION;
+
+  /** tree row height */
+  private int rowHeight = tree.getRowHeight();
+
+  /** specifies whether the node handles should be displayed; default value: <code>true</code> */
+  private boolean showsRootHandles = true;
+
+  /** list of KeyListener objects added to the tree */
+  private ArrayList keyListeners = new ArrayList();
+
+  /** list of MouseListener objects added to the tree */
+  private ArrayList mouseListeners = new ArrayList();
 
 
   /**
@@ -121,13 +150,13 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    */
   public TreePanel() {
     try {
+      tree.setRootVisible(false);
       jbInit();
     }
-    catch(Exception ex) {
+    catch (Exception ex) {
       ex.printStackTrace();
     }
   }
-
 
   public void addNotify() {
     super.addNotify();
@@ -137,10 +166,13 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
         public void run() {
           createTree();
         }
-      }.start();
-    }
-  }
+      }
 
+      .start();
+    }
+    else
+      recreateTree();
+  }
 
   /**
    * Force tree reloading.
@@ -159,33 +191,44 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
           if (response.isError())
             treeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
           else
-            treeModel = (DefaultTreeModel)((VOResponse)response).getVo();
+            treeModel = (DefaultTreeModel) ( (VOResponse) response).getVo();
           tree.setModel(treeModel);
           tree.revalidate();
           if (expandAllNodes)
             expandAllNodes();
         }
       }
-    }.start();
+    }
+
+    .start();
   }
 
 
   /**
    * Expand all tree nodes.
    */
-  private final void expandAllNodes() {
-    int i=0;
-    while(i<tree.getRowCount())
+  public final void expandAllNodes() {
+    int i = 0;
+    while (i < tree.getRowCount())
       tree.expandRow(i++);
+  }
+
+
+  /**
+   * Collapse all tree nodes.
+   */
+  public final void collapseAllNodes() {
+    int i = tree.getRowCount()-1;
+    while (i >0)
+      tree.collapseRow(i--);
   }
 
 
   void jbInit() throws Exception {
     this.setLayout(new java.awt.BorderLayout());
-    treePane.getViewport().add(tree,null);
-    this.add(treePane,BorderLayout.CENTER);
+    treePane.getViewport().add(tree, null);
+    this.add(treePane, BorderLayout.CENTER);
   }
-
 
   /**
    * Redraw the tree. Used when the tree model has been modified.
@@ -197,8 +240,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
     searchWindowManager = new SearchWindowManager(this);
 
-    if (treeId!=null && dndListener!=null)
-        enableDrag(treeId,dndListener);
+    if (treeId != null && dndListener != null)
+      enableDrag(treeId, dndListener);
 
     recreateTree();
     tree.repaint();
@@ -214,7 +257,6 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     }
   }
 
-
   /**
    * Remove all nodes (expept the root node) from the tree.
    */
@@ -222,7 +264,6 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     treeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
     repaintTree();
   }
-
 
   /**
    * Fill in the tree.
@@ -232,58 +273,60 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     if (response.isError())
       treeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
     else
-      treeModel = (DefaultTreeModel)((VOResponse)response).getVo();
+      treeModel = (DefaultTreeModel) ( (VOResponse) response).getVo();
     recreateTree();
     if (expandAllNodes)
       expandAllNodes();
   }
 
-
   private void recreateTree() {
     try {
-      TreeNodeRenderer renderer = new TreeNodeRenderer(this,folderIconName,leavesImageName,iconAttributeName,tooltipAttributeName);
+      TreeNodeRenderer renderer = new TreeNodeRenderer(this, folderIconName,
+          leavesImageName, iconAttributeName, tooltipAttributeName);
       tree.setCellRenderer(renderer);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
       ex.printStackTrace();
     }
 
+    tree.setRootVisible(rootVisible);
     tree.setToolTipText("");
     tree.setModel(treeModel);
     tree.revalidate();
 
-    if (searchWindowManager==null)
+    if (searchWindowManager == null)
       searchWindowManager = new SearchWindowManager(this);
 
-    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-    tree.setShowsRootHandles(true);
+    tree.getSelectionModel().setSelectionMode(selectionMode);
+    tree.setRowHeight(rowHeight);
+    tree.setShowsRootHandles(showsRootHandles);
 
-    tree.setSize(new Dimension((int)this.getPreferredSize().getWidth()/2,
+    tree.setSize(new Dimension( (int)this.getPreferredSize().getWidth() / 2,
                                (int)this.getPreferredSize().getHeight()));
 
     treePane.getViewport().add(tree);
     treePane.setBorder(BorderFactory.createCompoundBorder(
-                         BorderFactory.createRaisedBevelBorder(),
-                         BorderFactory.createLoweredBevelBorder()
-                        ));
+        BorderFactory.createRaisedBevelBorder(),
+        BorderFactory.createLoweredBevelBorder()
+        ));
     treePane.setAutoscrolls(true);
 
-    tree.setMinimumSize(new Dimension(0,200));
+    tree.setMinimumSize(new Dimension(0, 200));
 
     dropTarget = new DropTarget(tree, this);
 
     MouseListener ml = new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
-        if(e.getClickCount() == 1 && SwingUtilities.isLeftMouseButton(e))
+        if (e.getClickCount() == 1 && SwingUtilities.isLeftMouseButton(e))
           treeLeftClick(e, tree);
-        else if(e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e))
+        else if (e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e))
           treeRightClick(e, tree);
-        if(e.getClickCount() == 2)
+        if (e.getClickCount() == 2)
           treeDoubleClick(e, tree);
       }
     };
     tree.addMouseListener(ml);
   }
-
 
   /**
    * @return selected node or null if no node is selected
@@ -292,15 +335,16 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     try {
       javax.swing.tree.TreePath selPath = tree.getSelectionPath();
       if (selPath != null)
-        return (DefaultMutableTreeNode)(selPath.getPathComponent(selPath.getPathCount()-1));
+        return (DefaultMutableTreeNode) (selPath.getPathComponent(selPath.
+            getPathCount() - 1));
       else
         return null;
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
       ex.printStackTrace();
       return null;
     }
   }
-
 
   /**
    * Select a node in the tree.
@@ -309,77 +353,82 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   public final void setSelectedNode(DefaultMutableTreeNode node) {
     try {
       tree.setSelectionPath(new TreePath(node.getPath()));
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
     }
   }
-
-
 
   /**
    * Method called when user has double clicked.
    * @param e double click event
    * @param tree tree
    */
-  public final void treeDoubleClick(MouseEvent e,JTree tree) {
+  public final void treeDoubleClick(MouseEvent e, JTree tree) {
     try {
       int selRow = tree.getRowForLocation(e.getX(), e.getY());
-      javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
+      javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(),
+          e.getY());
       if (selPath != null) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)(selPath.getPathComponent(selPath.getPathCount()-1));
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) (selPath.
+            getPathComponent(selPath.getPathCount() - 1));
         treeController.doubleClick(node);
 
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
       ex.printStackTrace();
     }
   }
-
 
   /**
    * Method called when user has clicked on the left mouse button.
    * @param e left mouse button click event
    * @param tree tree
    */
-  public final void treeLeftClick(MouseEvent e,JTree tree) {
+  public final void treeLeftClick(MouseEvent e, JTree tree) {
     try {
       int selRow = tree.getRowForLocation(e.getX(), e.getY());
-      javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
+      javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(),
+          e.getY());
       if (selPath != null) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)(selPath.getPathComponent(selPath.getPathCount()-1));
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) (selPath.
+            getPathComponent(selPath.getPathCount() - 1));
         treeController.leftClick(node);
 
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
       ex.printStackTrace();
     }
   }
-
 
   public void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
     treePane.setEnabled(enabled);
   }
 
-
   /**
    * Method called when user has clicked on the right mouse button.
    * @param e right mouse button click event
    * @param tree tree
    */
-  public final void treeRightClick(MouseEvent e,JTree tree) {
+  public final void treeRightClick(MouseEvent e, JTree tree) {
     try {
       int selRow = tree.getRowForLocation(e.getX(), e.getY());
-      javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
+      javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(),e.getY());
+      tree.setSelectionPath(selPath);
       if (selPath != null) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)(selPath.getPathComponent(selPath.getPathCount()-1));
-        if (treeController.rightClick(node) && popup.getComponentCount()>0 && treePane.isEnabled()) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) (selPath.getPathComponent(selPath.getPathCount() - 1));
+        if (treeController.rightClick(node) && popup.getComponentCount() > 0 &&
+            treePane.isEnabled()) {
           // visualizzazione del menu' a pop-up associato al nodo dell'albero,
           // SOLO se il metodo rightClick ha ritornato valore "true" e c'e almeno un elemento nel menu' a pop-up
           popup.show(e.getComponent(), e.getX(), e.getY());
         }
 
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
       ex.printStackTrace();
     }
   }
@@ -392,13 +441,24 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * @param enabled flag used to set menu item abilitation
    * @param menuListener listener used to capture menu item selection
    */
-  public final void addPopupMenuItem(String menuName, char mnemonic,boolean enabled,ActionListener menuListener) {
-    JMenuItem cbMenuItem = new JMenuItem(ClientSettings.getInstance().getResources().getResource(menuName));
+  public final void addPopupMenuItem(String menuName, char mnemonic,
+                                     boolean enabled,
+                                     ActionListener menuListener) {
+    JMenuItem cbMenuItem = new JMenuItem(ClientSettings.getInstance().
+                                         getResources().getResource(menuName));
     cbMenuItem.setMnemonic(mnemonic);
     cbMenuItem.setEnabled(enabled);
     cbMenuItem.addActionListener(menuListener);
     popup.add(cbMenuItem);
-    menuItems.put(menuName,cbMenuItem);
+    menuItems.put(menuName, cbMenuItem);
+  }
+
+
+  /**
+   * Add a separator to the  pop-up menu.
+   */
+  public final void addPopupSeparator() {
+    popup.add(new JSeparator());
   }
 
 
@@ -407,10 +467,22 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * @param menuName menu item description (not yet translated)
    * @param enabled flag used to enable the menu item
    */
-  public final void setMenuItemEnabled(String menuName,boolean enabled) {
-    JMenuItem menu = (JMenuItem)menuItems.get(menuName);
-    if (menu!=null)
+  public final void setMenuItemEnabled(String menuName, boolean enabled) {
+    JMenuItem menu = (JMenuItem) menuItems.get(menuName);
+    if (menu != null)
       menu.setEnabled(enabled);
+  }
+
+
+  /**
+   * Set menu item visibility.
+   * @param menuName menu item description (not yet translated)
+   * @param visible flag used to hide/show the menu item
+   */
+  public final void setMenuItemVisible(String menuName, boolean visible) {
+    JMenuItem menu = (JMenuItem) menuItems.get(menuName);
+    if (menu != null)
+      menu.setVisible(visible);
   }
 
 
@@ -421,14 +493,12 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     return treeController;
   }
 
-
   /**
    * @return data source used to fill in the tree
    */
   public final TreeDataLocator getTreeDataLocator() {
     return treeDataLocator;
   }
-
 
   /**
    * Set the data source used to fill in the tree
@@ -438,7 +508,6 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     this.treeDataLocator = treeDataLocator;
   }
 
-
   /**
    * Set the tree controller: it manages tree events.
    * @param treeController tree controller: it manages tree events.
@@ -447,14 +516,12 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     this.treeController = treeController;
   }
 
-
   /**
    * @return image icon used for leaves
    */
   public final String getLeavesImageName() {
     return leavesImageName;
   }
-
 
   /**
    * Set image icon used for leaves.
@@ -464,14 +531,12 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     this.leavesImageName = leavesImageName;
   }
 
-
   /**
    * @return define if tree will be filled on viewing this panel
    */
   public final boolean isLoadWhenVisibile() {
     return loadWhenVisibile;
   }
-
 
   /**
    * Define if tree will be filled on viewing this panel.
@@ -481,14 +546,12 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     this.loadWhenVisibile = loadWhenVisibile;
   }
 
-
   /**
    * @return boolean define if all tree nodes must be expanded after loading
    */
   public final boolean isExpandAllNodes() {
     return expandAllNodes;
   }
-
 
   /**
    * Define if all tree nodes must be expanded after loading.
@@ -498,14 +561,12 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     this.expandAllNodes = expandAllNodes;
   }
 
-
   /**
    * @return folder icon name
    */
   public final String getFolderIconName() {
     return folderIconName;
   }
-
 
   /**
    * Set the folder icon name.
@@ -515,19 +576,12 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     this.folderIconName = folderIconName;
   }
 
-
   /**
    * @return tree
    */
   public final JTree getTree() {
     return tree;
   }
-
-
-
-
-
-
 
   /********************************************************************
    *
@@ -547,14 +601,14 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * Enable drag onto the grid.
    * @param gridId grid identifier
    */
-  public final void enableDrag(String treeId,TreeDragNDropListener dndListener) {
+  public final void enableDrag(String treeId, TreeDragNDropListener dndListener) {
     try {
       dragSource = new DragSource();
       dragSource.createDefaultDragGestureRecognizer(
           tree,
           DnDConstants.ACTION_MOVE,
           new DragGestureAdapter(this)
-      );
+          );
 
     }
     catch (Exception ex) {
@@ -564,8 +618,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     this.dndListener = dndListener;
   }
 
-
-  class DragGestureAdapter implements DragGestureListener {
+  class DragGestureAdapter
+      implements DragGestureListener {
 
     private DragSourceListener dragListener = null;
 
@@ -573,62 +627,63 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
       this.dragListener = dragListener;
     }
 
-
     /**
      * A drag gesture has been initiated.
      */
     public final void dragGestureRecognized(DragGestureEvent event) {
       if (dndListener.dragEnabled()) {
-        dragSource.startDrag (event, DragSource.DefaultMoveDrop, new StringSelection(treeId), dragListener);
+        dragSource.startDrag(event, DragSource.DefaultMoveDrop,
+                             new StringSelection(treeId), dragListener);
       }
       else
+
         // drag interrupted...
         event.getSourceAsDragGestureRecognizer().resetRecognizer();
     }
 
   }
 
-
   /**
    * This message goes to DragSourceListener, informing it that the dragging has entered the DropSite
    */
-  public final void dragEnter (DragSourceDragEvent event) {
+  public final void dragEnter(DragSourceDragEvent event) {
     dndListener.dragEnter();
   }
-
 
   /**
    * This message goes to DragSourceListener, informing it that the dragging has exited the DropSite.
    */
-  public final void dragExit (DragSourceEvent event) {
+  public final void dragExit(DragSourceEvent event) {
     dndListener.dragExit();
   }
-
 
   /**
    * This message goes to DragSourceListener, informing it that the dragging is currently ocurring over the DropSite.
    */
-  public final void dragOver (DragSourceDragEvent e) {
-    tree.scrollPathToVisible(tree.getPathForLocation(e.getX(),Math.max(0,e.getY()-tree.getRowHeight()*2)));
-    tree.scrollPathToVisible(tree.getPathForLocation(e.getX(),Math.min(tree.getHeight(),e.getY()+tree.getRowHeight()*2)));
+  public final void dragOver(DragSourceDragEvent e) {
+    Point loc = tree.getLocationOnScreen();
+    int row = (e.getY()-loc.y)/tree.getRowHeight();
+    int firstVisibleRow = tree.getVisibleRect().y/tree.getRowHeight();
+    int lastVisibleRow = (tree.getVisibleRect().y+tree.getVisibleRect().height)/tree.getRowHeight();
+    if (row<=firstVisibleRow+1)
+      tree.scrollRowToVisible(row-1);
+    else if (row>=lastVisibleRow-1)
+      tree.scrollRowToVisible(row+1);
+
     dndListener.dragOver();
   }
-
 
   /**
    * This method is invoked when the user changes the dropAction.
    */
-  public final void dropActionChanged ( DragSourceDragEvent event) { }
-
+  public final void dropActionChanged(DragSourceDragEvent event) {}
 
   /**
    * This message goes to DragSourceListener, informing it that the dragging has ended.
    */
-  public final void dragDropEnd (DragSourceDropEvent event) {
+  public final void dragDropEnd(DragSourceDropEvent event) {
     dndListener.dragDropEnd();
   }
-
-
 
   /************************************************************
    * DROP MANAGEMENT
@@ -637,16 +692,15 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   /**
    * This method is invoked when you are dragging over the DropSite.
    */
-  public final void dragEnter (DropTargetDragEvent event) {
-    event.acceptDrag (DnDConstants.ACTION_MOVE);
+  public final void dragEnter(DropTargetDragEvent event) {
+    event.acceptDrag(DnDConstants.ACTION_MOVE);
     dndListener.dropEnter();
   }
-
 
   /**
    * This method is invoked when you are exit the DropSite without dropping.
    */
-  public final void dragExit (DropTargetEvent event) {
+  public final void dragExit(DropTargetEvent event) {
     try {
       dndListener.dropExit();
     }
@@ -659,10 +713,9 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   /**
    * This method is invoked when a drag operation is going on.
    */
-  public final void dragOver (DropTargetDragEvent event) {
+  public final void dragOver(DropTargetDragEvent event) {
     dndListener.dropOver();
   }
-
 
   /**
    * This method is invoked when a drop event has occurred.
@@ -670,33 +723,46 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   public final void drop(DropTargetDropEvent event) {
     try {
       Transferable transferable = event.getTransferable();
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getClosestPathForLocation(event.getLocation().x,event.getLocation().y).getLastPathComponent();
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.
+          getClosestPathForLocation(event.getLocation().x,
+                                    event.getLocation().y).getLastPathComponent();
 
-      if (node!=null && transferable.isDataFlavorSupported (DataFlavor.stringFlavor)){
-        if (dndListener.dropEnabled(node,(String)transferable.getTransferData ( DataFlavor.stringFlavor))) {
+      if (node != null &&
+          transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+        if (dndListener.dropEnabled(node,
+                                    (String) transferable.getTransferData(DataFlavor.
+            stringFlavor))) {
           event.acceptDrop(DnDConstants.ACTION_MOVE);
           event.getDropTargetContext().dropComplete(true);
         }
         else
           event.rejectDrop();
 
-      } else{
+      }
+      else {
         event.rejectDrop();
       }
     }
     catch (Exception ex) {
       ex.printStackTrace();
       event.rejectDrop();
-    } finally {
+    }
+    finally {
     }
   }
 
   /**
    * This method is invoked if the use modifies the current drop gesture.
    */
-  public final void dropActionChanged ( DropTargetDragEvent event ) {
+  public final void dropActionChanged(DropTargetDragEvent event) {
     dndListener.dropActionChanged();
   }
+
+
+  /************************************************************
+   * END DROP MANAGEMENT
+   ************************************************************/
+
 
 
 
@@ -708,7 +774,6 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     this.iconAttributeName = iconAttributeName;
   }
 
-
   /**
    * @return attribute name that contains the icon name (optional)
    */
@@ -716,14 +781,12 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     return iconAttributeName;
   }
 
-
   /**
    * @return attribute name that contains the tool tip text for the node
    */
   public final String getTooltipAttributeName() {
     return tooltipAttributeName;
   }
-
 
   /**
    * Set the attribute name that contains the tool tip text for the node; default value: null.
@@ -733,23 +796,17 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     this.tooltipAttributeName = tooltipAttributeName;
   }
 
-
-
-
-
-
   /**
    * @return the selected index in the input control
    */
   public final int getSelectedIndex() {
-    if (tree.getSelectionRows()==null)
+    if (tree.getSelectionRows() == null)
       return -1;
-    if (tree.getSelectionRows().length>0)
+    if (tree.getSelectionRows().length > 0)
       return tree.getSelectionRows()[0];
     else
       return -1;
   }
-
 
   /**
    * Set the selected index.
@@ -758,7 +815,6 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     tree.setSelectionRow(index);
   }
 
-
   /**
    * @return total rows count in the input control
    */
@@ -766,13 +822,12 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     return tree.getRowCount();
   }
 
-
   /**
    * @return the element at the specified index, converted in String format
    */
   public final String getValueAt(int index) {
     try {
-      JLabel l = (JLabel)tree.getCellRenderer().getTreeCellRendererComponent(
+      JLabel l = (JLabel) tree.getCellRenderer().getTreeCellRendererComponent(
           tree,
           tree.getPathForRow(index).getLastPathComponent(),
           false,
@@ -780,15 +835,14 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
           tree.getModel().isLeaf(tree.getPathForRow(index).getLastPathComponent()),
           index,
           false
-      );
+          );
       return l.getText();
     }
     catch (Exception ex) {
       Object obj = tree.getPathForRow(index).getLastPathComponent();
-      return obj==null?"":obj.toString();
+      return obj == null ? "" : obj.toString();
     }
   }
-
 
   /**
    * @return combo control
@@ -797,12 +851,319 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     return tree;
   }
 
-
   /**1
    * @return <code>true</code> if the input control is in read only mode (so search is enabled), <code>false</code> otherwise
    */
   public final boolean isReadOnly() {
     return true;
+  }
+
+  /**
+   * Returns true if the root node of the tree is displayed.
+   *
+   * @return true if the root node of the tree is displayed
+   * @see #rootVisible
+   */
+  public final boolean isRootVisible() {
+    return rootVisible;
+  }
+
+  /**
+   * Determines whether or not the root node from
+   * the <code>TreeModel</code> is visible.
+   *
+   * @param rootVisible true if the root node of the tree is to be displayed
+   * @see #rootVisible
+   * @beaninfo
+   *        bound: true
+   *  description: Whether or not the root node
+   *               from the TreeModel is visible.
+   */
+  public final void setRootVisible(boolean rootVisible) {
+    this.rootVisible = rootVisible;
+    tree.setRootVisible(rootVisible);
+  }
+
+  /**
+   * Sets the selection model, which must be one of TreeSelectionModel.SINGLE_TREE_SELECTION,
+   * TreeSelectionModel.CONTIGUOUS_TREE_SELECTION or TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION.
+   * <p>
+   * This may change the selection if the current selection is not valid
+   * for the new mode. For example, if three TreePaths are
+   * selected when the mode is changed to <code>TreeSelectionModel.SINGLE_TREE_SELECTION</code>,
+   * only one TreePath will remain selected. It is up to the particular
+   * implementation to decide what TreePath remains selected.
+   */
+  public final void setSelectionMode(int mode) {
+    this.selectionMode = selectionMode;
+    tree.getSelectionModel().setSelectionMode(selectionMode);
+    tree.setRowHeight(0);
+  }
+
+  /**
+   * Returns the current selection mode, one of
+   * <code>TreeSelectionModel.SINGLE_TREE_SELECTION</code>,
+   * <code>TreeSelectionModel.CONTIGUOUS_TREE_SELECTION</code> or
+   * <code>TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION</code>.
+   */
+  public final int getSelectionMode() {
+    return selectionMode;
+  }
+
+  /**
+   * Sets the height of each cell, in pixels.  If the specified value
+   * is less than or equal to zero the current cell renderer is
+   * queried for each row's height.
+   *
+   * @param rowHeight the height of each cell, in pixels
+   * @beaninfo
+   *        bound: true
+   *  description: The height of each cell.
+   */
+  public final void setRowHeight(int rowHeight) {
+    this.rowHeight = rowHeight;
+    tree.setRowHeight(rowHeight);
+  }
+
+  /**
+   * Returns the height of each row.  If the returned value is less than
+   * or equal to 0 the height for each row is determined by the
+   * renderer.
+   *
+   */
+  public final int getRowHeight() {
+    return rowHeight;
+  }
+
+  /**
+   * Sets the value of the <code>showsRootHandles</code> property,
+   * which specifies whether the node handles should be displayed.
+   * The default value of this property depends on the constructor
+   * used to create the <code>JTree</code>.
+   * Some look and feels might not support handles;
+   * they will ignore this property.
+   * @param newValue <code>true</code> if root handles should be displayed;
+   *                 otherwise, <code>false</code>
+   * @see #showsRootHandles
+   * @see #getShowsRootHandles
+   * @beaninfo bound: true
+   *  description: Whether the node handles are to be displayed.
+   */
+  public final void setShowsRootHandles(boolean showsRootHandles) {
+    this.showsRootHandles = showsRootHandles;
+    tree.setShowsRootHandles(showsRootHandles);
+  }
+
+  /**
+   * Returns the value of the <code>showsRootHandles</code> property.
+   * @return the value of the <code>showsRootHandles</code> property
+   * @see #showsRootHandles
+   */
+  public final boolean getShowsRootHandles() {
+    return showsRootHandles;
+  }
+
+  /**
+   * Scrolls the item identified by row until it is displayed. The minimum
+   * of amount of scrolling necessary to bring the row into view
+   * is performed. Only works when this <code>JTree</code> is contained in a
+   * <code>JScrollPane</code>.
+   *
+   * @param row  an integer specifying the row to scroll, where 0 is the
+   *             first row in the display
+   */
+  public final void scrollRowToVisible(int row) {
+    tree.scrollRowToVisible(row);
+  }
+
+
+  /**
+   * Selects the node at the specified row in the display.
+   *
+   * @param row  the row to select, where 0 is the first row in
+   *             the display
+   */
+  public final void setSelectionRow(int row) {
+    tree.setSelectionRow(row);
+  }
+
+
+  /**
+   * Selects the nodes corresponding to each of the specified rows
+   * in the display. If a particular element of <code>rows</code> is
+   * < 0 or >= <code>getRowCount</code>, it will be ignored.
+   * If none of the elements
+   * in <code>rows</code> are valid rows, the selection will
+   * be cleared. That is it will be as if <code>clearSelection</code>
+   * was invoked.
+   *
+   * @param rows  an array of ints specifying the rows to select,
+   *              where 0 indicates the first row in the display
+   */
+  public final void setSelectionRows(int[] rows) {
+    tree.setSelectionRows(rows);
+  }
+
+  /**
+   * Selects the node identified by the specified path. If any
+   * component of the path is hidden (under a collapsed node), and
+   * <code>getExpandsSelectedPaths</code> is true it is
+   * exposed (made viewable).
+   *
+   * @param path the <code>TreePath</code> specifying the node to select
+   */
+  public final void setSelectionPath(TreePath path) {
+    tree.setSelectionPath(path);
+  }
+
+  /**
+   * Selects the nodes identified by the specified array of paths.
+   * If any component in any of the paths is hidden (under a collapsed
+   * node), and <code>getExpandsSelectedPaths</code> is true
+   * it is exposed (made viewable).
+   *
+   * @param paths an array of <code>TreePath</code> objects that specifies
+   *		the nodes to select
+   */
+  public final void setSelectionPaths(TreePath[] paths) {
+    tree.setSelectionPaths(paths);
+  }
+
+
+  /**
+   * Makes sure all the path components in path are expanded (except
+   * for the last path component) and scrolls so that the
+   * node identified by the path is displayed. Only works when this
+   * <code>JTree</code> is contained in a <code>JScrollPane</code>.
+   *
+   * @param path  the <code>TreePath</code> identifying the node to
+   * 		bring into view
+   */
+  public final void scrollPathToVisible(TreePath path) {
+    tree.scrollPathToVisible(path);
+  }
+
+
+  /**
+   * Returns the path to the first selected node.
+   *
+   * @return the <code>TreePath</code> for the first selected node,
+   *		or <code>null</code> if nothing is currently selected
+   */
+  public final TreePath getSelectionPath() {
+      return tree.getSelectionPath();
+  }
+
+
+  /**
+   * Returns the paths of all selected values.
+   *
+   * @return an array of <code>TreePath</code> objects indicating the selected
+   *         nodes, or <code>null</code> if nothing is currently selected
+   */
+  public final TreePath[] getSelectionPaths() {
+    return tree.getSelectionPaths();
+  }
+
+
+  /**
+   * Returns all of the currently selected rows. This method is simply
+   * forwarded to the <code>TreeSelectionModel</code>.
+   * If nothing is selected <code>null</code> or an empty array will
+   * be returned, based on the <code>TreeSelectionModel</code>
+   * implementation.
+   *
+   * @return an array of integers that identifies all currently selected rows
+   *         where 0 is the first row in the display
+   */
+  public final int[] getSelectionRows() {
+    return tree.getSelectionRows();
+  }
+
+
+  /**
+   * Set tree selection background color
+   * @param selectionBackground tree selection background color
+   */
+  public final void setSelectionBackground(Color selectionBackground) {
+    this.selectionBackground = selectionBackground;
+    UIManager.getDefaults().put("Tree.selectionBackground",new javax.swing.plaf.ColorUIResource(selectionBackground));
+    tree.revalidate();
+  }
+
+
+  /**
+   * Set tree selection foreground color
+   * @param selectionForeground tree selection foreground color
+   */
+  public final void setSelectionForeground(Color selectionForeground) {
+    this.selectionForeground = selectionForeground;
+    UIManager.getDefaults().put("Tree.selectionForeground",new javax.swing.plaf.ColorUIResource(selectionForeground));
+    tree.revalidate();
+  }
+
+
+  /**
+   * @return tree selection background color
+   */
+  public final Color getSelectionBackground() {
+    return selectionBackground;
+  }
+
+
+  /**
+   * @return tree selection foreground color
+   */
+  public final Color getSelectionForeground() {
+    return selectionForeground;
+  }
+
+
+  /**
+   * Revalidate tree content.
+   */
+  public final void revalidateTree() {
+    TreePath[] paths = tree.getSelectionPaths();
+    treeModel = new DefaultTreeModel((DefaultMutableTreeNode)tree.getModel().getRoot());
+    tree.setModel(treeModel);
+    if (paths!=null)
+      tree.setSelectionPaths(paths);
+  }
+
+
+  /**
+   * Add a key listener to the tree.
+   * @param listener KeyListener to add
+   */
+  public final void addKeyListener(KeyListener listener) {
+    keyListeners.add(listener);
+  }
+
+
+  /**
+   * Remove a key listener from the tree.
+   * @param listener KeyListener to remove
+   */
+  public final void removeKeyListener(KeyListener listener) {
+    keyListeners.remove(listener);
+  }
+
+
+  /**
+   * Add a mouse listener to the tree.
+   * @param listener MouseListener to add
+   */
+  public final void addMouseListener(MouseListener listener) {
+    mouseListeners.add(listener);
+  }
+
+
+  /**
+   * Remove a mouse listener from the tree.
+   * @param listener MouseListener to remove
+   */
+  public final void removeMouseListener(MouseListener listener) {
+    mouseListeners.remove(listener);
   }
 
 

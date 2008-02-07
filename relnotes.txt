@@ -1,4 +1,35 @@
 
+Release Notes 1.4.6
+-------------------
+
+Final release 1.4.6 available
+
+Added some utility methods to TreePanel:
+- expandAllNodes() and collapseAllNodes() to expand/collapse all tree nodes
+- get/setSelectionMode(int mode), to set the selection model (which must be single/contiguous/discontiguous)
+- get/setRowHeight(int rowHeight), to sets the height of each cell, in pixels
+- get/setShowsRootHandles(boolean showsRootHandles), to specify whether the node handles should be displayed
+- scrollRowToVisible(int row), to scroll the item identified by row until it is displayed
+- scrollPathToVisible(TreePath path), to sure all the path components in path are expanded (except for the last path component) and scrolls so that the node identified by the path is displayed
+- setSelectionRow(int row), to select the node at the specified row in the display
+- get/setSelectionRows(int[] rows), to selects the nodes corresponding to each of the specified rows in the display
+- get/setSelectionPath(TreePath path), to select the node identified by the specified path
+- get/setSelectionPaths(TreePath[] paths), to select the nodes identified by the specified array of paths
+- get/selectionBackground(Color color), to set tree selection background color
+- get/selectionForeground(Color color), to set tree selection foreground color
+- addPopupSeparator(), to add a separator to the popup menu
+- setMenuItemVisible(String menuName,boolean visible), used to show/hide a menu item in the popup
+- revalidateTree(), to update tree content, useful after deleting/renaming operations on nodes
+- addKeyListener/removeKeyListener(KeyListener listener), to add/remove key listeners to the tree
+- addMouseListener/removeMouseListener(MouseListener listener), to add/remove mouse listeners to the tree
+Updated "demo12" and "demo31" to show new features.
+Added new properties to ClientSettings class: TREE_SELECTION_BACKGROUND and TREE_SELECTION_FOREGROUND to set background and foreground colors for node selections in TreePanel.
+Fixed scrolling problem when dragging nodes in TreePanel.
+Fixed problem with check-box columns in grid: now when selecting check-box with mouse or space key, the value object attribute is automatically updated, without having to lost focus on the cell. 
+Moreover, ItemListener events are correctly fired. 
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
 
 Release Notes 1.4.5
 -------------------

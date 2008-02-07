@@ -27,18 +27,31 @@ public class TreePanelBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _iconImageName = new PropertyDescriptor("iconImageName", beanClass, "getIconImageName", "setIconImageName");
       PropertyDescriptor _leavesImageName = new PropertyDescriptor("leavesImageName", beanClass, "getLeavesImageName", "setLeavesImageName");
       PropertyDescriptor _loadWhenVisibile = new PropertyDescriptor("loadWhenVisibile", beanClass, "isLoadWhenVisibile", "setLoadWhenVisibile");
+      PropertyDescriptor _rootVisibile = new PropertyDescriptor("rootVisibile", beanClass, "isRootVisibile", "setRootVisibile");
+      PropertyDescriptor _rowHeight = new PropertyDescriptor("rowHeight", beanClass, "getRowHeight", "setRowHeight");
+      PropertyDescriptor _selectionBackground = new PropertyDescriptor("selectionBackground", beanClass, "getSelectionBackground", "setSelectionBackground");
+      PropertyDescriptor _selectionForeground = new PropertyDescriptor("selectionForeground", beanClass, "getSelectionForeground", "setSelectionForeground");
+      PropertyDescriptor _showsRootHandles = new PropertyDescriptor("showsRootHandles", beanClass, "getShowsRootHandles", "setShowsRootHandles");
       PropertyDescriptor _tooltipAttributeName = new PropertyDescriptor("tooltipAttributeName", beanClass, "getTooltipAttributeName", "setTooltipAttributeName");
       PropertyDescriptor _treeController = new PropertyDescriptor("treeController", beanClass, "getTreeController", "setTreeController");
       PropertyDescriptor _treeDataLocator = new PropertyDescriptor("treeDataLocator", beanClass, "getTreeDataLocator", "setTreeDataLocator");
+      PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _expandAllNodes,
         _folderIconName,
         _iconImageName,
         _leavesImageName,
         _loadWhenVisibile,
+        _rootVisibile,
+        _rowHeight,
+        _selectionBackground,
+        _selectionForeground,
+        _showsRootHandles,
         _tooltipAttributeName,
         _treeController,
-        _treeDataLocator};
+        _treeDataLocator,
+        _selectionMode
+      };
       return pds;
     }
     catch(IntrospectionException ex) {

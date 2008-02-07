@@ -60,6 +60,9 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
   /** current model column index */
   private int column = -1;
 
+  /** table hook */
+  private JTable table = null;
+
 
   /**
    * Construtor.
@@ -70,22 +73,6 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
     this.required = required;
     this.itemListenerList = itemListenerList;
     label.setFocusable(true);
-    label.addKeyListener(new KeyAdapter() {
-      public void keyTyped(KeyEvent e) {
-        selected = !selected;
-        label.repaint();
-        for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
-          ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
-      }
-    });
-    label.addMouseListener(new MouseAdapter() {
-      public void mouseClicked(MouseEvent e) {
-        selected = !selected;
-        label.repaint();
-        for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
-          ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
-      }
-    });
   }
 
 
@@ -123,6 +110,14 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
     else
       selected = true;
     label.repaint();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        table.editingStopped(null);
+        table.setColumnSelectionInterval(column,column);
+      }
+    });
+    for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
+      ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
     return label;
   }
 
@@ -130,6 +125,7 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
   public final Component getTableCellEditorComponent(JTable table, Object value,
                                                boolean isSelected, int row,
                                                int column) {
+    this.table = table;
     this.column = table.convertColumnIndexToModel(column);
     table.setRowSelectionInterval(row,row);
     label.setPreferredSize(new Dimension(table.getColumnModel().getColumn(column).getWidth(),table.getHeight()));
@@ -166,6 +162,28 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
         g.drawLine(6,7,9,4);
         g.drawLine(6,8,9,5);
       }
+    }
+
+
+    public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
+                                        int condition, boolean pressed) {
+      if (e.getSource()!=null && e.getSource() instanceof org.openswing.swing.table.client.Grid) {
+        if (e.getKeyChar()==' ' && pressed)
+        try {
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              if (!table.hasFocus())
+                table.requestFocus();
+                selected = !selected;
+                table.setValueAt(new Boolean(selected),table.getSelectedRow(),column);
+                table.editCellAt(table.getSelectedRow(),column);
+            }
+          });
+        }
+        catch (Exception ex) {
+        }
+      }
+      return true;
     }
 
 

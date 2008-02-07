@@ -50,6 +50,38 @@ public class TreeFrame extends JFrame {
         }
 
       });
+      tree.addPopupSeparator();
+      tree.addPopupMenuItem("remove node",'E',true,new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+          DefaultMutableTreeNode node = tree.getSelectedNode();
+          ((DefaultMutableTreeNode)node.getParent()).remove(node);
+          tree.revalidateTree();
+        }
+
+      });
+
+
+      tree.addPopupMenuItem("show remove command",'S',true,new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+          tree.setMenuItemVisible("remove node",true);
+          tree.setMenuItemEnabled("show remove command",false);
+          tree.setMenuItemEnabled("hide remove command",true);
+        }
+
+      });
+      tree.addPopupMenuItem("hide remove command",'H',true,new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+          tree.setMenuItemVisible("remove node",false);
+          tree.setMenuItemEnabled("show remove command",true);
+          tree.setMenuItemEnabled("hide remove command",false);
+        }
+
+      });
+
+
 
 
       // enable drag 'n drop onto the tree...

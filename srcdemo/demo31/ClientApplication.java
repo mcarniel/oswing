@@ -25,6 +25,9 @@ public class ClientApplication {
     Hashtable domains = new Hashtable();
     Properties props = new Properties();
     props.put("rename node","Rename node");
+    props.put("remove node","Remove node");
+    props.put("show remove command","Show remove command");
+    props.put("hide remove command","Hide remove command");
     props.put("new description:","New description:");
     props.put("move node","Move node");
     props.put("copy node","Copy node");

@@ -29,7 +29,7 @@ public class TreeFrame extends JFrame {
     try {
       jbInit();
       setTitle("Draggable Tree");
-      setSize(600,400);
+      setSize(600,300);
       tree.setTreeController(controller);
       tree.setTreeDataLocator(controller);
       tree.setLeavesImageName("node.gif");
@@ -124,6 +124,8 @@ public class TreeFrame extends JFrame {
 
 
   private void jbInit() throws Exception {
+    tree.setSelectionBackground(Color.orange);
+    tree.setSelectionForeground(SystemColor.textHighlight);
     this.getContentPane().add(tree, BorderLayout.CENTER);
   }
 
