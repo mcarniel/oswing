@@ -103,6 +103,9 @@ public class MDIFrame extends JFrame implements BusyListener {
   /** collection of pairs <functionId,related JMenu> */
   private Hashtable functionsHooks = new Hashtable();
 
+  /** collection of pairs <component name,JComponent added to the status bar> */
+  private static Hashtable componentsHooks = new Hashtable();
+
 
   static {
     try {
@@ -124,6 +127,7 @@ public class MDIFrame extends JFrame implements BusyListener {
       this.client = client;
       ClientUtils.addBusyListener(this);
       statusBar.removeAll();
+      componentsHooks.clear();
       menuWindow.init();
       menuWindow.menuWindowCloseAll_actionPerformed(null);
       enableEvents(AWTEvent.WINDOW_EVENT_MASK);
@@ -634,10 +638,32 @@ public class MDIFrame extends JFrame implements BusyListener {
 
   /**
    * Add a new component to the status bar, from left to right.
+   * The component just added can be identitied by its "name" property (if specified).
    * @param c component to add
    */
   public static final void addStatusComponent(JComponent c) {
+    addStatusComponent(c.getName(),c);
+  }
+
+
+  /**
+   * Add a new component to the status bar, from left to right and identify it with the specified component name.
+   * @param name component name, used to identify it
+   * @param c component to add
+   */
+  public static final void addStatusComponent(String name,JComponent c) {
+    if (name!=null)
+      componentsHooks.put(name,c);
     statusBar.addStatusComponent(c);
+  }
+
+
+  /**
+   * @param name component name, used to identify it
+   * @return component identified by its name
+   */
+  public static final JComponent getStatusComponent(String name) {
+    return (JComponent)componentsHooks.get(name);
   }
 
 

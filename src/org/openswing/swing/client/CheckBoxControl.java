@@ -17,11 +17,22 @@ import org.openswing.swing.logger.client.Logger;
 import javax.swing.UIManager;
 import java.beans.Beans;
 import java.awt.Font;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.ActionMapUIResource;
+import java.awt.event.*;
+import javax.swing.ButtonModel;
+import javax.swing.ButtonGroup;
+import javax.swing.ActionMap;
+import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
+import javax.swing.plaf.basic.BasicButtonListener;
 
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: check-box whose text is translated according to internalization settings.</p>
+ * <p>Description: check-box whose text is translated according to internalization settings.
+ * As default behavior, check-box supports two states: Boolean.TRUE (selected) and Boolean.FALSE (deselected).
+ * Optionally (when "allowNullValue" property has been set to <code>true</code>), check-box supports three states: Boolean.TRUE (selected) and Boolean.FALSE (deselected) and null (not selected and gray).</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -79,6 +90,12 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
 
   /** tooltip text */
   private String toolTipText = null;
+
+  /** define if null value is alloed (i.e. distinct from Boolean.FALSE value); default value: <code>false</code> */
+  private boolean allowNullValue = false;
+
+  /** ButtonModel associated to the check-box when "allowNullValue" property is set to <code>true</code> */
+  private CheckBoxButtonModel model = null;
 
 
   public CheckBoxControl() {
@@ -324,7 +341,11 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
    * @return value related to the input control
    */
   public final Object getValue() {
-    return new Boolean(this.isSelected());
+    if (allowNullValue) {
+      return model.getCurrentValue();
+    }
+    else
+      return new Boolean(this.isSelected());
   }
 
 
@@ -333,12 +354,22 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
    * @param value value to set into the input control
    */
   public final void setValue(Object value) {
-    if (value==null)
-      this.setSelected(false);
-    else if (value instanceof Boolean)
-      this.setSelected(((Boolean)value).booleanValue());
+    if (allowNullValue) {
+      try {
+        model.setCurrentValue( (Boolean) value);
+      }
+      catch (ClassCastException ex) {
+        Logger.error(this.getClass().getName(), "setValue", "Value is not of type Boolean: "+value.getClass().getName(),null);
+      }
+    }
     else {
-      Logger.error(this.getClass().getName(), "setValue", "Value is not of type Boolean: "+value.getClass().getName(),null);
+      if (value==null)
+        this.setSelected(false);
+      else if (value instanceof Boolean)
+        this.setSelected(((Boolean)value).booleanValue());
+      else {
+        Logger.error(this.getClass().getName(), "setValue", "Value is not of type Boolean: "+value.getClass().getName(),null);
+      }
     }
   }
 
@@ -379,6 +410,205 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
       super.setText(text);
     else
       super.setText(ClientSettings.getInstance().getResources().getResource(text));
+  }
+
+
+  /**
+   * @return define if null value is alloed (i.e. distinct from Boolean.FALSE value)
+   */
+  public final boolean isAllowNullValue() {
+    return allowNullValue;
+  }
+
+
+  /**
+   * Define if null value is alloed (i.e. distinct from Boolean.FALSE value)
+   * @param allowNullValue define if null value is alloed (i.e. distinct from Boolean.FALSE value)
+   */
+  public final void setAllowNullValue(boolean allowNullValue) {
+    this.allowNullValue = allowNullValue;
+
+    if (allowNullValue) {
+      MouseListener[] ll = this.getMouseListeners();
+      for(int i=0;i<ll.length;i++)
+        if (ll[i] instanceof BasicButtonListener)
+          this.removeMouseListener(ll[i]);
+
+      super.addMouseListener(new MouseAdapter() {
+          public void mousePressed(MouseEvent e) {
+            grabFocus();
+            if (model.getCurrentValue()==null)
+              model.setCurrentValue(Boolean.FALSE);
+            else if (Boolean.TRUE.equals(model.getCurrentValue()))
+              model.setCurrentValue(null);
+            else if (Boolean.FALSE.equals(model.getCurrentValue()))
+              model.setCurrentValue(Boolean.TRUE);
+          }
+      });
+      ActionMap map = new ActionMapUIResource();
+      map.put("pressed", new AbstractAction() {
+          public void actionPerformed(ActionEvent e) {
+              grabFocus();
+              if (model.getCurrentValue()==null)
+                model.setCurrentValue(Boolean.FALSE);
+              else if (Boolean.TRUE.equals(model.getCurrentValue()))
+                model.setCurrentValue(null);
+              else if (Boolean.FALSE.equals(model.getCurrentValue()))
+                model.setCurrentValue(Boolean.TRUE);
+          }
+      });
+      map.put("released", null);
+      SwingUtilities.replaceUIActionMap(this, map);
+      model = new CheckBoxButtonModel(getModel());
+      setModel(model);
+    }
+  }
+
+
+  public final void setSelected(boolean selected) {
+    if (allowNullValue) {
+      model.setCurrentValue(new Boolean(selected));
+    }
+    else
+      super.setSelected(selected);
+  }
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used to support three states: Boolean.TRUE, Boolean.FALSE and null</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class CheckBoxButtonModel implements ButtonModel {
+
+      private final ButtonModel model;
+
+
+      public CheckBoxButtonModel(ButtonModel model) {
+          this.model = model;
+      }
+
+
+      public void setCurrentValue(Boolean value) {
+        if (value==null) {
+          model.setArmed(true);
+          setPressed(true);
+          setSelected(false);
+        } else if (Boolean.FALSE.equals(value)) {
+          model.setArmed(false);
+          setPressed(false);
+          setSelected(false);
+        }
+        else if (Boolean.TRUE.equals(value)) {
+          model.setArmed(false);
+          setPressed(false);
+          setSelected(true);
+        }
+      }
+
+
+      public Boolean getCurrentValue() {
+        if (isSelected()) {
+          return Boolean.TRUE;
+        }
+        else if (!isSelected() && isArmed()) {
+          return null;
+        }
+        else {
+          return Boolean.FALSE;
+        }
+      }
+
+
+      public final void setEnabled(boolean b) {
+        setFocusable(b);
+        model.setEnabled(b);
+      }
+
+      public boolean isSelected() {
+        return model.isSelected();
+      }
+
+      public boolean isEnabled() {
+        return model.isEnabled();
+      }
+
+      public boolean isPressed() {
+        return model.isPressed();
+      }
+
+      public boolean isRollover() {
+        return model.isRollover();
+      }
+
+      public void setSelected(boolean selected) {
+        model.setSelected(selected);
+      }
+
+      public void setPressed(boolean pressed) {
+        model.setPressed(pressed);
+      }
+
+      public void setRollover(boolean rollover) {
+        model.setRollover(rollover);
+      }
+
+      public void setMnemonic(int mnemonic) {
+        model.setMnemonic(mnemonic);
+      }
+
+      public int getMnemonic() {
+        return model.getMnemonic();
+      }
+
+      public void setActionCommand(String command) {
+        model.setActionCommand(command);
+      }
+
+      public String getActionCommand() {
+        return model.getActionCommand();
+      }
+
+      public void setGroup(ButtonGroup group) {
+        model.setGroup(group);
+      }
+
+      public void addActionListener(ActionListener listener) {
+        model.addActionListener(listener);
+      }
+
+      public void removeActionListener(ActionListener listener) {
+        model.removeActionListener(listener);
+      }
+
+      public void addItemListener(ItemListener listener) {
+        model.addItemListener(listener);
+      }
+
+      public void removeItemListener(ItemListener listener) {
+        model.removeItemListener(listener);
+      }
+
+      public void addChangeListener(ChangeListener listener) {
+        model.addChangeListener(listener);
+      }
+
+      public void removeChangeListener(ChangeListener listener) {
+        model.removeChangeListener(listener);
+      }
+
+      public Object[] getSelectedObjects() {
+        return model.getSelectedObjects();
+      }
+
+      public void setArmed(boolean armed) { }
+
+      public boolean isArmed() {
+        return model.isArmed();
+      }
+
   }
 
 

@@ -17,7 +17,13 @@ import org.openswing.swing.util.client.ClientSettings;
 import javax.swing.tree.TreeNode;
 import org.openswing.swing.message.receive.java.ValueObject;
 import org.openswing.swing.logger.client.Logger;
-
+import java.awt.BorderLayout;
+import javax.swing.tree.TreeCellEditor;
+import java.util.EventObject;
+import javax.swing.event.CellEditorListener;
+import java.awt.Color;
+import java.awt.Graphics;
+import javax.swing.plaf.basic.BasicGraphicsUtils;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -50,13 +56,13 @@ import org.openswing.swing.logger.client.Logger;
 public class TreeNodeRenderer extends DefaultTreeCellRenderer {
 
   /** default folder icon */
-  ImageIcon folderIcon = null;
+  private ImageIcon folderIcon = null;
 
   /** default leaf icon */
-  ImageIcon leafIcon = null;
+  private ImageIcon leafIcon = null;
 
   /** tree panel that uses this renderer */
-  TreePanel treePanel;
+  private TreePanel treePanel;
 
   /** attribute name that contains the icon image name; default value: null; if defined, this attribute overrides "folderIcon"/"leafIcon" values */
   private String iconAttributeName;
@@ -64,7 +70,11 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
   /** attribute name that contains the tool tip text for the node; default value: null */
   private String tooltipAttributeName;
 
+  /** check-box showed when treePanel.isShowCheckBoxes is true */
+  private CheckBoxLabel checkBox = new CheckBoxLabel();
 
+  /** panel that contains check-box, image and description */
+  private JPanel panel = new JPanel();
 
 
   /**
@@ -78,7 +88,37 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
       this.tooltipAttributeName = tooltipAttributeName;
       folderIcon = new ImageIcon(ClientUtils.getImage(folderIconName));
       leafIcon = new ImageIcon(ClientUtils.getImage(leavesImageName));
+      panel.setOpaque(false);
       this.setOpaque(false);
+      checkBox.setOpaque(false);
+
+      panel.setLayout(new BorderLayout(0, 0));
+      panel.add(this, BorderLayout.CENTER);
+      if (treePanel.isShowCheckBoxes()) {
+        checkBox.setSize(14,14);
+        checkBox.setPreferredSize(new Dimension(14,14));
+        panel.add(checkBox, BorderLayout.BEFORE_LINE_BEGINS);
+
+        treePanel.getTree().addKeyListener(new KeyAdapter() {
+          public void keyReleased(KeyEvent e) {
+            if (e.getKeyChar()==' ' && TreeNodeRenderer.this.treePanel.getSelectedNode()!=null) {
+              checkChanged(TreeNodeRenderer.this.treePanel.getSelectedNode());
+            }
+          }
+        });
+        treePanel.getTree().addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+            if (checkBox.isEnabled()) {
+              try {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeNodeRenderer.this.treePanel.getTree().getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
+                checkChanged(node);
+              }
+              catch (Exception ex) {
+              }
+            }
+          }
+        });
+      }
       this.setBackgroundNonSelectionColor(new java.awt.Color(0,0,0,0));
 
     } catch (Exception ex) {
@@ -86,6 +126,61 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
     }
   }
 
+
+  private boolean isGrayCheckBox(TreeNode node) {
+    boolean gray = false;
+    if (treePanel.getCheckedNodes().contains(node))
+      for(int i=0;i<node.getChildCount();i++) {
+        if (!treePanel.getCheckedNodes().contains(node.getChildAt(i)) && treePanel.isShowCheckBoxes() ||
+            !treePanel.getCheckedNodes().contains(node.getChildAt(i)) && !node.getChildAt(i).isLeaf() && !treePanel.isShowCheckBoxes())
+          return true;
+        if (!node.getChildAt(i).isLeaf() || treePanel.isShowCheckBoxes())
+          gray = isGrayCheckBox(node.getChildAt(i));
+        if (gray)
+          return true;
+      }
+    return gray;
+  }
+
+
+  private boolean areAllDeselectedCheckBox(TreeNode node) {
+    for(int i=0;i<node.getChildCount();i++) {
+      if (treePanel.getCheckedNodes().contains(node.getChildAt(i)) ||
+          node.getChildAt(i).isLeaf() && !treePanel.isShowCheckBoxes())
+        return false;
+    }
+    return true;
+  }
+
+
+  /**
+   * Changed check-box selection value.
+   * @param node node that contains the check-box
+   */
+  private void checkChanged(DefaultMutableTreeNode node) {
+    if (TreeNodeRenderer.this.treePanel.getCheckedNodes().contains(node)) {
+      TreeNodeRenderer.this.treePanel.getCheckedNodes().remove(node);
+      updateCheckboxesOnSubTree(node,false);
+      while((node=(DefaultMutableTreeNode)node.getParent())!=null)
+        if (areAllDeselectedCheckBox(node))
+          TreeNodeRenderer.this.treePanel.getCheckedNodes().remove(node);
+    }
+    else {
+      TreeNodeRenderer.this.treePanel.getCheckedNodes().add(node);
+      updateCheckboxesOnSubTree(node,true);
+    }
+    TreeNodeRenderer.this.treePanel.getTree().repaint();
+  }
+
+
+  private void updateCheckboxesOnSubTree(TreeNode node,boolean sel) {
+    if (sel)
+      treePanel.getCheckedNodes().add(node);
+    else
+      treePanel.getCheckedNodes().remove(node);
+    for(int i=0;i<node.getChildCount();i++)
+      updateCheckboxesOnSubTree(node.getChildAt(i),sel);
+  }
 
 
 
@@ -98,6 +193,7 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
                                                 boolean hasFocus) {
     try {
       super.getTreeCellRendererComponent(tree, value, sel,expanded, leaf, row,hasFocus);
+      checkBox.setEnabled(treePanel.isEnabled());
 
       if (iconAttributeName==null) {
         if (leaf)
@@ -115,6 +211,16 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
     ValueObject vo = null;
     try {
       node = (DefaultMutableTreeNode) value;
+
+      if (treePanel.isShowCheckBoxes()) {
+        checkBox.setSelected(treePanel.getCheckedNodes().contains(node));
+        if (leaf && !treePanel.isShowCheckBoxesOnLeaves())
+          checkBox.setVisible(false);
+        else {
+          checkBox.setVisible(true);
+          checkBox.setGray( isGrayCheckBox(node) );
+        }
+      }
     }
     catch (ClassCastException ex1) {
       Logger.error(this.getClass().getName(),"getTreeCellRendererComponent","Expected a node of type DefaultMutableTreeNode or some subclass",null);
@@ -158,10 +264,14 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
         if (tooltipAttributeName!=null) {
           Method getter = vo.getClass().getMethod("get"+tooltipAttributeName.substring(0,1).toUpperCase()+tooltipAttributeName.substring(1),new Class[0]);
           value = getter.invoke(vo,new Object[0]);
-          if (value!=null && value instanceof String)
+          if (value!=null && value instanceof String) {
             l.setToolTipText(value.toString());
-          else if (value==null)
+            panel.setToolTipText(value.toString());
+          }
+          else if (value==null) {
             l.setToolTipText("");
+            panel.setToolTipText("");
+          }
         }
 
 
@@ -172,7 +282,55 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
       Logger.error(this.getClass().getName(),"getTreeCellRendererComponent","ValueObject expected inside the node of type DefaultMutableTreeNode",ex1);
     }
 
-    return l;
+    return panel;
   }
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used to render the check-box.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   * <p> </p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class CheckBoxLabel extends JLabel {
+
+    private boolean sel;
+
+    private boolean gray;
+
+    public void setSelected(boolean sel) {
+      this.sel = sel;
+      repaint();
+    }
+
+    public void setGray(boolean gray) {
+      this.gray = gray;
+      repaint();
+    }
+
+    public void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      g.translate((int)this.getWidth()/2-6,this.getHeight()/2-5);
+      BasicGraphicsUtils.drawLoweredBezel(g,0,0,12,12,Color.darkGray,Color.black,Color.white,Color.gray);
+      if (gray) {
+        g.setColor(Color.lightGray);
+        g.fillRect(1,1,10,10);
+      }
+      if (sel) {
+        g.setColor(Color.black);
+        g.drawLine(3,5,5,7);
+        g.drawLine(3,6,5,8);
+        g.drawLine(3,7,5,9);
+        g.drawLine(6,6,9,3);
+        g.drawLine(6,7,9,4);
+        g.drawLine(6,8,9,5);
+      }
+    }
+
+  }
+
+
 
 }

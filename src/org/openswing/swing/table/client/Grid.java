@@ -175,6 +175,9 @@ public class Grid extends JTable
   /** flag used to define if background and foreground colors must be setted according to GridController definition only in READONLY mode */
   private boolean colorsInReadOnlyMode = true;
 
+  /** cursor to show on dragging */
+  private Cursor dragCursor = null;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -228,6 +231,12 @@ public class Grid extends JTable
       this.setModel(model);
 
       setUI(new GridUI());
+
+      dragCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+        ClientUtils.getImage("drag.gif"),
+        new Point(15, 10),
+        ClientSettings.getInstance().getResources().getResource("drag")
+      );
 
       // set column types and column renderers/editors...
       prepareJTable();
@@ -2226,6 +2235,7 @@ public class Grid extends JTable
      */
     public final void dragGestureRecognized( DragGestureEvent event) {
       if (gridController.dragEnabled()) {
+        setCursor(dragCursor);
         int[] selIndexes = Grid.this.getSelectedRows();
         if ( selIndexes.length>0 ){
           try {
@@ -2248,6 +2258,7 @@ public class Grid extends JTable
    * This message goes to DragSourceListener, informing it that the dragging has entered the DropSite
    */
   public final void dragEnter (DragSourceDragEvent event) {
+    setCursor(Cursor.getDefaultCursor());
     gridController.dragEnter();
   }
 
@@ -2256,6 +2267,7 @@ public class Grid extends JTable
    * This message goes to DragSourceListener, informing it that the dragging has exited the DropSite.
    */
   public final void dragExit (DragSourceEvent event) {
+    setCursor(Cursor.getDefaultCursor());
     gridController.dragExit();
   }
 
@@ -2264,6 +2276,7 @@ public class Grid extends JTable
    * This message goes to DragSourceListener, informing it that the dragging is currently ocurring over the DropSite.
    */
   public final void dragOver (DragSourceDragEvent event) {
+    setCursor(dragCursor);
     gridController.dragOver();
   }
 
@@ -2323,6 +2336,7 @@ public class Grid extends JTable
    */
   public final void drop(DropTargetDropEvent event) {
     try {
+      setCursor(Cursor.getDefaultCursor());
       Transferable transferable = event.getTransferable();
       if (transferable.isDataFlavorSupported (DataFlavor.stringFlavor)){
 

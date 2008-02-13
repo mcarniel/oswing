@@ -53,6 +53,9 @@ public class CheckBoxColumn extends Column {
   /** flag used to indicate if the check-box is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the check-box is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties */
   private boolean enableInReadOnlyMode = false;
 
+  /** define if null value is alloed (i.e. distinct from Boolean.FALSE value); default value: <code>false</code> */
+  private boolean allowNullValue = false;
+
 
   public CheckBoxColumn() {
     setTextAlignment(SwingConstants.CENTER);
@@ -141,7 +144,8 @@ public class CheckBoxColumn extends Column {
     return new CheckBoxTableCellRenderer(
       tableContainer,
       getTextAlignment(),
-      isEnableInReadOnlyMode()
+      isEnableInReadOnlyMode(),
+      isAllowNullValue()
     );
   }
 
@@ -150,7 +154,24 @@ public class CheckBoxColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new CheckBoxCellEditor(isColumnRequired(),getItemListeners());
+    return new CheckBoxCellEditor(isColumnRequired(),getItemListeners(),isAllowNullValue());
+  }
+
+
+  /**
+   * @return define if null value is alloed (i.e. distinct from Boolean.FALSE value)
+   */
+  public final boolean isAllowNullValue() {
+    return allowNullValue;
+  }
+
+
+  /**
+   * Define if null value is alloed (i.e. distinct from Boolean.FALSE value)
+   * @param allowNullValue define if null value is alloed (i.e. distinct from Boolean.FALSE value)
+   */
+  public final void setAllowNullValue(boolean allowNullValue) {
+    this.allowNullValue = allowNullValue;
   }
 
 

@@ -22,6 +22,7 @@ public class CheckBoxControlBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _allowNullValue = new PropertyDescriptor("allowNullValue", beanClass, "isAllowNullValue", "setAllowNullValue");
       PropertyDescriptor _attributeName = new PropertyDescriptor("attributeName", beanClass, "getAttributeName", "setAttributeName");
       _attributeName.setPropertyEditorClass(BooleanAttributeNameEditor.class);
       PropertyDescriptor _canCopy = new PropertyDescriptor("canCopy", beanClass, "isCanCopy", "setCanCopy");
@@ -32,6 +33,7 @@ public class CheckBoxControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _enabledOnEdit = new PropertyDescriptor("enabledOnEdit", beanClass, "isEnabledOnEdit", "setEnabledOnEdit");
       PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _allowNullValue,
         _attributeName,
         _canCopy,
         _font,

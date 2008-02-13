@@ -21,6 +21,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import org.openswing.swing.util.client.SearchWindowManager;
 import org.openswing.swing.util.client.SearchControl;
+import org.openswing.swing.util.client.ClientUtils;
+import javax.swing.text.Position;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 
 /**
@@ -66,7 +69,26 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   private Color selectionForeground = ClientSettings.TREE_SELECTION_FOREGROUND;
 
   /** expandable tree */
-  private JTree tree = new JTree(new DefaultMutableTreeNode());
+  private JTree tree = new JTree(new DefaultMutableTreeNode()){
+
+      public TreePath getNextMatch(String prefix, int startingRow,
+                                 Position.Bias bias) {
+        try {
+          return super.getNextMatch(prefix, startingRow, bias);
+        }
+        catch (Exception ex) {
+          return null;
+        }
+      }
+
+
+      public void setModel(TreeModel model) {
+        super.setModel(model);
+        checkedNodes.clear();
+      }
+
+    };
+
 
   /** tree container */
   private JTable table = new JTable();
@@ -93,8 +115,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   private boolean firstTime = true;
 
   /** image icon used for leaves; default value: as for folders */
-  private String leavesImageName = ClientSettings.getInstance().
-      PERC_TREE_FOLDER;
+  private String leavesImageName = ClientSettings.getInstance().PERC_TREE_FOLDER;
 
   /** define if tree will be filled on viewing this panel; default value: true */
   private boolean loadWhenVisibile = true;
@@ -144,14 +165,32 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   /** list of MouseListener objects added to the tree */
   private ArrayList mouseListeners = new ArrayList();
 
+  /** cursor to show on dragging */
+  private Cursor dragCursor = null;
+
+  /** define if a check-box must be showed for each node; default value: <code>false</code> */
+  private boolean showCheckBoxes = false;
+
+  /** current checked nodes (i.e. nodes having selected the associated check-box) */
+  private HashSet checkedNodes = new HashSet();
+
+  /** define if a check-box must be showed for leaves nodes too; default value: <code>true</code> */
+  private boolean showCheckBoxesOnLeaves = true;
+
 
   /**
    * Constructor.
    */
   public TreePanel() {
     try {
-      tree.setRootVisible(false);
+      tree.setRootVisible(rootVisible);
+      tree.setShowsRootHandles(showsRootHandles);
       jbInit();
+      dragCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+        ClientUtils.getImage("drag.gif"),
+        new Point(15, 10),
+        ClientSettings.getInstance().getResources().getResource("drag")
+      );
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -236,7 +275,24 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   public final void repaintTree() {
     TreePath selPath = tree.getSelectionPath();
     treePane.getViewport().remove(tree);
-    tree = new JTree(treeModel);
+    tree = new JTree(treeModel) {
+
+      public TreePath getNextMatch(String prefix, int startingRow,
+				 Position.Bias bias) {
+        try {
+          return super.getNextMatch(prefix, startingRow, bias);
+        }
+        catch (Exception ex) {
+          return null;
+        }
+      }
+
+      public void setModel(TreeModel model) {
+        super.setModel(model);
+        checkedNodes.clear();
+      }
+
+    };
 
     searchWindowManager = new SearchWindowManager(this);
 
@@ -281,9 +337,15 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
   private void recreateTree() {
     try {
-      TreeNodeRenderer renderer = new TreeNodeRenderer(this, folderIconName,
-          leavesImageName, iconAttributeName, tooltipAttributeName);
+      TreeNodeRenderer renderer = new TreeNodeRenderer(
+        this,
+        folderIconName,
+        leavesImageName,
+        iconAttributeName,
+        tooltipAttributeName
+      );
       tree.setCellRenderer(renderer);
+
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -608,8 +670,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
           tree,
           DnDConstants.ACTION_MOVE,
           new DragGestureAdapter(this)
-          );
-
+      );
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -632,11 +693,11 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
      */
     public final void dragGestureRecognized(DragGestureEvent event) {
       if (dndListener.dragEnabled()) {
+        tree.setCursor(dragCursor);
         dragSource.startDrag(event, DragSource.DefaultMoveDrop,
                              new StringSelection(treeId), dragListener);
       }
       else
-
         // drag interrupted...
         event.getSourceAsDragGestureRecognizer().resetRecognizer();
     }
@@ -647,6 +708,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * This message goes to DragSourceListener, informing it that the dragging has entered the DropSite
    */
   public final void dragEnter(DragSourceDragEvent event) {
+    tree.setCursor(Cursor.getDefaultCursor());
     dndListener.dragEnter();
   }
 
@@ -654,6 +716,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * This message goes to DragSourceListener, informing it that the dragging has exited the DropSite.
    */
   public final void dragExit(DragSourceEvent event) {
+    tree.setCursor(Cursor.getDefaultCursor());
     dndListener.dragExit();
   }
 
@@ -661,6 +724,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * This message goes to DragSourceListener, informing it that the dragging is currently ocurring over the DropSite.
    */
   public final void dragOver(DragSourceDragEvent e) {
+    tree.setCursor(dragCursor);
     Point loc = tree.getLocationOnScreen();
     int row = (e.getY()-loc.y)/tree.getRowHeight();
     int firstVisibleRow = tree.getVisibleRect().y/tree.getRowHeight();
@@ -722,6 +786,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    */
   public final void drop(DropTargetDropEvent event) {
     try {
+      tree.setCursor(Cursor.getDefaultCursor());
+
       Transferable transferable = event.getTransferable();
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.
           getClosestPathForLocation(event.getLocation().x,
@@ -827,7 +893,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    */
   public final String getValueAt(int index) {
     try {
-      JLabel l = (JLabel) tree.getCellRenderer().getTreeCellRendererComponent(
+      JPanel p = (JPanel)tree.getCellRenderer().getTreeCellRendererComponent(
           tree,
           tree.getPathForRow(index).getLastPathComponent(),
           false,
@@ -836,7 +902,15 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
           index,
           false
           );
-      return l.getText();
+      JLabel l = null;
+      if (p.getComponent(0) instanceof JLabel)
+        l = (JLabel)p.getComponent(0);
+      else if (p.getComponent(1) instanceof JLabel)
+        l = (JLabel)p.getComponent(1);
+      if (l!=null)
+        return l.getText();
+      else
+        return "";
     }
     catch (Exception ex) {
       Object obj = tree.getPathForRow(index).getLastPathComponent();
@@ -1166,6 +1240,86 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     mouseListeners.remove(listener);
   }
 
+  /**
+   * @return define if a check-box must be showed for each node
+   */
+  public final boolean isShowCheckBoxes() {
+    return showCheckBoxes;
+  }
+
+
+  /**
+   * Define if a check-box must be showed for each node.
+   * @param showCheckBoxes define if a check-box must be showed for each node
+   */
+  public final void setShowCheckBoxes(boolean showCheckBoxes) {
+    this.showCheckBoxes = showCheckBoxes;
+  }
+
+
+  /**
+   * @return current checked nodes (i.e. nodes having selected the associated check-box)
+   */
+  public final HashSet getCheckedNodes() {
+    return checkedNodes;
+  }
+
+
+  /**
+   * Set current checked nodes (i.e. nodes having selected the associated check-box).
+   * @param checkedNodes current checked nodes (i.e. nodes having selected the associated check-box)
+   */
+  public void setCheckedNodes(HashSet checkedNodes) {
+    this.checkedNodes = checkedNodes;
+  }
+
+
+  /**
+   * @return define if a check-box must be showed for leaves nodes too
+   */
+  public final boolean isShowCheckBoxesOnLeaves() {
+    return showCheckBoxesOnLeaves;
+  }
+
+
+  /**
+   * Define if a check-box must be showed for leaves nodes too.
+   * @param showCheckBoxesOnLeaves define if a check-box must be showed for leaves nodes too
+   */
+  public final void setShowCheckBoxesOnLeaves(boolean showCheckBoxesOnLeaves) {
+    this.showCheckBoxesOnLeaves = showCheckBoxesOnLeaves;
+  }
+
+
+  /**
+   * @return retrieve current leaves having their check-boxes selected
+   */
+  public final HashSet getCheckedLeaves() {
+    HashSet set = new HashSet();
+    if (showCheckBoxesOnLeaves) {
+      Iterator it = checkedNodes.iterator();
+      Object node = null;
+      while(it.hasNext()) {
+        node = it.next();
+        if (checkedNodes.contains(node))
+          set.add(node);
+      }
+    }
+    else {
+      Iterator it = checkedNodes.iterator();
+      TreeNode node = null;
+      Object leaf = null;
+      while(it.hasNext()) {
+        node = (TreeNode)it.next();
+        if (checkedNodes.contains(node)) {
+          for(int i=0;i<node.getChildCount();i++)
+            if (node.getChildAt(i).isLeaf())
+              set.add(node.getChildAt(i));
+        }
+      }
+    }
+    return set;
+  }
 
 }
 

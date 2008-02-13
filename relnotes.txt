@@ -1,4 +1,25 @@
 
+
+Release Notes 1.4.7
+-------------------
+
+Final release 1.4.7 available
+
+Improved MDIFrame by adding two methods:
+- addStatusComponent(String name,JComponent c), adds a component to the status panel and identify it by the specified name
+- getStatusComponent(String name), returns the component previously added to the status panel by identifing it by the specified name
+Improved TreePanel and GridControl by showing a smarter drag icon when dragging objects.
+Added some new properties and utility methods to TreePanel in order to provide a "check-box tree":
+- "showCheckBoxes" property to show a check-box for each node to select
+- "showCheckBoxesOnLeaves" property to hide/show a check-box also for leaf nodes.
+- "getCheckedNodes()" and "setCheckedNodes(HashSet checkedNodes)" to retrieve current selected check-boxes in tree and to select check-boxes associated to node in tree.
+- "getCheckedLeaves()" to retrieve current leaves having their check-boxes selected.
+Improved check-box control and check-box column by adding a third optional state: null, that can be activated through new property "allowNullValue", 
+i.e. now a check box can be selected, deselected and set to null.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.4.6
 -------------------
 

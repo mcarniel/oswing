@@ -46,7 +46,7 @@ import org.openswing.swing.util.client.*;
 public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellEditor {
 
   /** flag used to store current check-box state */
-  private boolean selected = false;
+  private Boolean selected = Boolean.FALSE;
 
   /** cell content (a check-box is drawed inside it) */
   private CheckLabel label = new CheckLabel();
@@ -63,15 +63,19 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
   /** table hook */
   private JTable table = null;
 
+  /** define if null value is alloed (i.e. distinct from Boolean.FALSE value); default value: <code>false</code> */
+  private boolean allowNullValue;
+
 
   /**
    * Construtor.
    * @param required flag used to set mandatory property of the cell
    * @param itemListenerList ItemListener list associated to the check-box
    */
-  public CheckBoxCellEditor(boolean required,ArrayList itemListenerList) {
+  public CheckBoxCellEditor(boolean required,ArrayList itemListenerList,boolean allowNullValue) {
     this.required = required;
     this.itemListenerList = itemListenerList;
+    this.allowNullValue = allowNullValue;
     label.setFocusable(true);
   }
 
@@ -91,7 +95,7 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
 
 
   public final Object getCellEditorValue() {
-    return selected?new Boolean(true):new Boolean(false);
+    return selected;
   }
 
 
@@ -105,10 +109,20 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
 //      selected = false;
 //    label.repaint();
 //    return label;
-    if (value!=null)
-      selected = !value.equals(new Boolean(true));
-    else
-      selected = true;
+    if (allowNullValue) {
+      if (value==null)
+        selected = Boolean.FALSE;
+      else if (Boolean.TRUE.equals(value))
+        selected = null;
+      else
+        selected = Boolean.TRUE;
+    }
+    else {
+      if (value!=null && Boolean.TRUE.equals(value))
+        selected = Boolean.FALSE;
+      else
+        selected = Boolean.TRUE;
+    }
     label.repaint();
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
@@ -153,7 +167,11 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
       }
       g.translate((int)this.getWidth()/2-6,this.getHeight()/2-5);
       BasicGraphicsUtils.drawLoweredBezel(g,0,0,12,12,Color.darkGray,Color.black,Color.white,Color.gray);
-      if (selected) {
+      if (allowNullValue && selected==null) {
+        g.setColor(Color.lightGray);
+        g.fillRect(1,1,10,10);
+      }
+      if (Boolean.TRUE.equals(selected)) {
         g.setColor(Color.black);
         g.drawLine(3,5,5,7);
         g.drawLine(3,6,5,8);
@@ -174,8 +192,23 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
             public void run() {
               if (!table.hasFocus())
                 table.requestFocus();
-                selected = !selected;
-                table.setValueAt(new Boolean(selected),table.getSelectedRow(),column);
+
+                if (allowNullValue) {
+                  if (selected==null)
+                    selected = Boolean.TRUE;
+                  else if (Boolean.FALSE.equals(selected))
+                    selected = null;
+                  else
+                    selected = Boolean.FALSE;
+                }
+                else {
+                  if (selected!=null && Boolean.TRUE.equals(selected))
+                    selected = Boolean.FALSE;
+                  else
+                    selected = Boolean.TRUE;
+                }
+
+                table.setValueAt(selected,table.getSelectedRow(),column);
                 table.editCellAt(table.getSelectedRow(),column);
             }
           });

@@ -46,7 +46,7 @@ import org.openswing.swing.util.java.*;
 public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
 
   /** flag used to store the current check-box state */
-  private boolean selected = false;
+  private Boolean selected = Boolean.FALSE;
 
   /** cell content (the check-box is drawed inside) */
   private CheckLabel rend = new CheckLabel();
@@ -66,16 +66,20 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
   /** flag used to indicate if the button is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the button is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties */
   private boolean enableInReadOnlyMode = false;
 
+  /** define if null value is alloed (i.e. distinct from Boolean.FALSE value); default value: <code>false</code> */
+  private boolean allowNullValue;
+
 
   /**
    * Constructor.
    * @param gridContainer grid container
    */
-  public CheckBoxTableCellRenderer(GridController gridContainer,int alignement,boolean enableInReadOnlyMode) {
+  public CheckBoxTableCellRenderer(GridController gridContainer,int alignement,boolean enableInReadOnlyMode,boolean allowNullValue) {
     this.gridContainer = gridContainer;
     rend.setOpaque(true);
     rend.setHorizontalAlignment(alignement);
     this.enableInReadOnlyMode = enableInReadOnlyMode;
+    this.allowNullValue = allowNullValue;
   }
 
 
@@ -150,12 +154,14 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
       paintBorder = false;
     }
 
-    if (value==null)
-      selected = false;
-    else if (value.equals(new Boolean(true)))
-      selected = true;
+    if (value==null && allowNullValue)
+      selected = null;
+    else if (value==null && !allowNullValue)
+      selected = Boolean.FALSE;
+    else if (value.equals(Boolean.TRUE))
+      selected = Boolean.TRUE;
     else
-      selected = false;
+      selected = Boolean.FALSE;
     rend.setPreferredSize(new Dimension(table.getColumnModel().getColumn(column).getWidth(),table.getHeight()));
 
 
@@ -195,7 +201,11 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
       g.setColor(Color.white);
       g.fillRect(0,0,12,12);
       BasicGraphicsUtils.drawLoweredBezel(g,0,0,12,12,Color.darkGray,Color.black,Color.white,Color.gray);
-      if (selected) {
+      if (allowNullValue && selected==null) {
+        g.setColor(Color.lightGray);
+        g.fillRect(1,1,10,10);
+      }
+      if (Boolean.TRUE.equals(selected)) {
         g.setColor(Color.black);
         g.drawLine(3,5,5,7);
         g.drawLine(3,6,5,8);

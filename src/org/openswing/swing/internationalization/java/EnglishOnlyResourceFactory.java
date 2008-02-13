@@ -231,6 +231,10 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("search","Search");
     dictionary.setProperty("not found","Not found");
 
+    // drag...
+    dictionary.setProperty("drag","Drag");
+    dictionary.setProperty("drag stopped","Drag stopped");
+
     dictionary.putAll(additionalDictionary);
 
     resources = new Resources(

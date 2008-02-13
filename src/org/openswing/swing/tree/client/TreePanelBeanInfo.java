@@ -31,6 +31,8 @@ public class TreePanelBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _rowHeight = new PropertyDescriptor("rowHeight", beanClass, "getRowHeight", "setRowHeight");
       PropertyDescriptor _selectionBackground = new PropertyDescriptor("selectionBackground", beanClass, "getSelectionBackground", "setSelectionBackground");
       PropertyDescriptor _selectionForeground = new PropertyDescriptor("selectionForeground", beanClass, "getSelectionForeground", "setSelectionForeground");
+      PropertyDescriptor _showCheckBoxes = new PropertyDescriptor("showCheckBoxes", beanClass, "isShowCheckBoxes", "setShowCheckBoxes");
+      PropertyDescriptor _showCheckBoxesOnLeaves = new PropertyDescriptor("showCheckBoxesOnLeaves", beanClass, "isShowCheckBoxesOnLeaves", "setShowCheckBoxesOnLeaves");
       PropertyDescriptor _showsRootHandles = new PropertyDescriptor("showsRootHandles", beanClass, "getShowsRootHandles", "setShowsRootHandles");
       PropertyDescriptor _tooltipAttributeName = new PropertyDescriptor("tooltipAttributeName", beanClass, "getTooltipAttributeName", "setTooltipAttributeName");
       PropertyDescriptor _treeController = new PropertyDescriptor("treeController", beanClass, "getTreeController", "setTreeController");
@@ -46,6 +48,8 @@ public class TreePanelBeanInfo extends SimpleBeanInfo {
         _rowHeight,
         _selectionBackground,
         _selectionForeground,
+        _showCheckBoxes,
+        _showCheckBoxesOnLeaves,
         _showsRootHandles,
         _tooltipAttributeName,
         _treeController,
