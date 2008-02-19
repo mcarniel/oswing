@@ -44,6 +44,7 @@ public class ListControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _selectionBackground = new PropertyDescriptor("selectionBackground", beanClass, "getSelectionBackground", "setSelectionBackground");
       PropertyDescriptor _selectionForeground = new PropertyDescriptor("selectionForeground", beanClass, "getSelectionForeground", "setSelectionForeground");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
+      PropertyDescriptor _showCheckBoxes = new PropertyDescriptor("showCheckBoxes", beanClass, "isShowCheckBoxes", "setShowCheckBoxes");
       PropertyDescriptor _valueIsAdjusting = new PropertyDescriptor("valueIsAdjusting", beanClass, "getValueIsAdjusting", "setValueIsAdjusting");
       PropertyDescriptor _visibleRowCount = new PropertyDescriptor("visibleRowCount", beanClass, "getVisibleRowCount", "setVisibleRowCount");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
@@ -64,6 +65,7 @@ public class ListControlBeanInfo extends SimpleBeanInfo {
         _selectionBackground,
         _selectionForeground,
         _selectionMode,
+        _showCheckBoxes,
         _valueIsAdjusting,
         _visibleRowCount,
         _toolTipText};

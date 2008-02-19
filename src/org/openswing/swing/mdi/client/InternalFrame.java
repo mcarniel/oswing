@@ -11,6 +11,11 @@ import javax.swing.ImageIcon;
 import org.openswing.swing.client.*;
 
 import org.openswing.swing.util.client.*;
+import java.awt.Graphics;
+import java.beans.*;
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 
 
 /**
@@ -49,8 +54,17 @@ public class InternalFrame extends JInternalFrame {
   /** parent frame (optional) */
   private InternalFrame  parentFrame;
 
-  /** used when this window will be closed: if this flag is set to <code>true</code> then a warning dialog will be  showed before close the window to ask if it must be close */
-  private boolean askBeforeClose = true;
+  /** used when this window will be closed: if this flag is set to <code>true</code> then a warning dialog will be  showed before close the window to ask if it must be close; default value: <code>false</code> */
+  private boolean askBeforeClose = false;
+
+  /** last border of internal frame, before hiding title bar */
+  private Border lastBorder = null;
+
+  /** flag used to hide/show title bar; default value: <code>false</code> i.e. title bar is visible */
+  private boolean hideTitleBar = false;
+
+  /** last component added to the north of the internal frame, before hiding title bar */
+  private JComponent lastNorthPane = null;
 
 
   /**
@@ -154,6 +168,29 @@ public class InternalFrame extends JInternalFrame {
   public final void setAskBeforeClose(boolean askBeforeClose) {
     this.askBeforeClose = askBeforeClose;
   }
+
+
+  /**
+   * Define if title bar must be hidden or showed
+   * @param hide flag used to hide/show title bar; <code>true</code> to hide title bar; <code>false</code> to show it
+   */
+  public final void setHideTitleBar(boolean hideTitleBar) {
+    this.hideTitleBar = hideTitleBar;
+    if (hideTitleBar) {
+      super.setIconifiable(false);
+      super.setMaximizable(false);
+      lastNorthPane = ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).getNorthPane();
+      ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
+      lastBorder = super.getBorder();
+      super.setBorder(BorderFactory.createEmptyBorder());
+    }
+    else if (lastNorthPane!=null && lastBorder!=null) {
+      ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(lastNorthPane);
+      super.setBorder(lastBorder);
+    }
+  }
+
+
 
 
 }

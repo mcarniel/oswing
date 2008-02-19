@@ -14,6 +14,8 @@ import org.openswing.swing.message.receive.java.ValueObject;
 import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 import org.openswing.swing.logger.client.Logger;
+import javax.swing.plaf.basic.BasicGraphicsUtils;
+import java.util.HashSet;
 
 
 /**
@@ -49,11 +51,24 @@ import org.openswing.swing.logger.client.Logger;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ListControl extends BaseInputControl implements InputControl,SearchControl {
+public class ListControl extends BaseInputControl implements InputControl,SearchControl,MouseListener {
 
+  private ArrayList mouseListeners = new ArrayList();
+
+  /** flag used in addNotify method */
+  private boolean firstTime = false;
 
   /** list */
-  private JList list = new JList();
+  private JList list = new JList() {
+
+    public void addMouseListener(MouseListener listener) {
+      if (listener.equals(ListControl.this))
+        super.addMouseListener(listener);
+      else
+        mouseListeners.add(listener);
+    }
+
+  };
 
   /** domain related to this input control */
   private Domain domain = null;
@@ -66,6 +81,9 @@ public class ListControl extends BaseInputControl implements InputControl,Search
 
   /** define if in insert mode the list has no item selected; default value: <code>false</code> i.e. the first item is pre-selected */
   private boolean nullAsDefaultValue = false;
+
+  /** define if a check-box must be showed for each node; default value: <code>false</code> */
+  private boolean showCheckBoxes = false;
 
 
   /**
@@ -98,6 +116,14 @@ public class ListControl extends BaseInputControl implements InputControl,Search
     new SearchWindowManager(this);
   }
 
+
+  public final void addNotify() {
+    super.addNotify();
+    if (!firstTime) {
+      firstTime = true;
+      list.setCellRenderer(new ListControlCellRenderer());
+    }
+  }
 
 
   /**
@@ -788,6 +814,176 @@ public class ListControl extends BaseInputControl implements InputControl,Search
   public final boolean isReadOnly() {
     return !isEnabled();
   }
+
+
+
+  /**
+   * @return define if a check-box must be showed for each node
+   */
+  public final boolean isShowCheckBoxes() {
+    return showCheckBoxes;
+  }
+
+
+  /**
+   * Define if a check-box must be showed for each node.
+   * @param showCheckBoxes define if a check-box must be showed for each node
+   */
+  public final void setShowCheckBoxes(boolean showCheckBoxes) {
+    this.showCheckBoxes = showCheckBoxes;
+  }
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used to render an item list.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class ListControlCellRenderer extends DefaultListCellRenderer {
+
+    /** check-box showed when ListControl.isShowCheckBoxes is true */
+    private CheckBoxLabel checkBox = new CheckBoxLabel();
+
+    /** panel that contains check-box, image and description */
+    private JPanel panel = new JPanel();
+
+
+    public ListControlCellRenderer() {
+      checkBox.setOpaque(false);
+      panel.setOpaque(false);
+      panel.setLayout(new BorderLayout(0, 0));
+      panel.add(this, BorderLayout.CENTER);
+      if (ListControl.this.isShowCheckBoxes()) {
+        checkBox.setSize(14,14);
+        checkBox.setPreferredSize(new Dimension(14,14));
+        panel.add(checkBox, BorderLayout.BEFORE_LINE_BEGINS);
+        if (list.getSelectionMode()==ListSelectionModel.SINGLE_INTERVAL_SELECTION)
+          list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+      }
+      list.addMouseListener(ListControl.this);
+    }
+
+
+    public Component getListCellRendererComponent(
+        JList list,
+        Object value,
+        int index,
+        boolean isSelected,
+        boolean cellHasFocus) {
+      Component c = super.getListCellRendererComponent(list,value,index,isSelected && !isShowCheckBoxes(),cellHasFocus);
+
+      if (isShowCheckBoxes()) {
+        checkBox.setEnabled(ListControl.this.isEnabled());
+        checkBox.setSelected(isSelected);
+      }
+
+      return panel;
+    }
+
+
+  }
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used to render the check-box.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   * <p> </p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class CheckBoxLabel extends JLabel {
+
+    private boolean sel;
+
+    public void setSelected(boolean sel) {
+      this.sel = sel;
+      repaint();
+    }
+
+    public void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      g.translate((int)this.getWidth()/2-6,this.getHeight()/2-5);
+      BasicGraphicsUtils.drawLoweredBezel(g,0,0,12,12,Color.darkGray,Color.black,Color.white,Color.gray);
+      if (sel) {
+        if (!isEnabled())
+          g.setColor(Color.GRAY);
+        else
+          g.setColor(Color.black);
+        g.drawLine(3,5,5,7);
+        g.drawLine(3,6,5,8);
+        g.drawLine(3,7,5,9);
+        g.drawLine(6,6,9,3);
+        g.drawLine(6,7,9,4);
+        g.drawLine(6,8,9,5);
+      }
+    }
+
+  } // end inner class...
+
+
+  public void mouseEntered(MouseEvent e) {
+    if (!isShowCheckBoxes())
+      for(int i=0;i<mouseListeners.size();i++)
+        ((MouseListener)mouseListeners.get(i)).mouseEntered(e);
+  }
+
+
+  public void mouseExited(MouseEvent e) {
+    if (!isShowCheckBoxes())
+      for(int i=0;i<mouseListeners.size();i++)
+        ((MouseListener)mouseListeners.get(i)).mouseExited(e);
+  }
+
+
+  public void mouseReleased(MouseEvent e) {
+    if (!isShowCheckBoxes())
+      for(int i=0;i<mouseListeners.size();i++)
+        ((MouseListener)mouseListeners.get(i)).mouseReleased(e);
+  }
+
+
+  public void mousePressed(MouseEvent e) {
+    if (!isShowCheckBoxes())
+      for(int i=0;i<mouseListeners.size();i++)
+        ((MouseListener)mouseListeners.get(i)).mousePressed(e);
+  }
+
+
+  public void mouseClicked(MouseEvent e) {
+    if (isShowCheckBoxes()) {
+      if (isEnabled()) {
+        try {
+          int row = list.locationToIndex(e.getPoint());
+          if (row!=-1) {
+            if (list.getSelectionMode()==ListSelectionModel.SINGLE_SELECTION) {
+              list.setSelectedIndex(row);
+            }
+            else {
+              int[] indexes = list.getSelectedIndices();
+              for(int i=0;i<indexes.length;i++)
+                if (indexes[i]==row) {
+                  list.getSelectionModel().removeSelectionInterval(row,row);
+                  return;
+                }
+              list.getSelectionModel().addSelectionInterval(row,row);
+            }
+          }
+        }
+        catch (Exception ex) {
+        }
+      }
+    }
+    else {
+      for(int i=0;i<mouseListeners.size();i++)
+        ((MouseListener)mouseListeners.get(i)).mouseClicked(e);
+    }
+  }
+
+
 
 
 }

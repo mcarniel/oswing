@@ -171,9 +171,12 @@ public class WinIconsPanel extends JPanel {
       btn.addMouseListener(new MouseAdapter() {
 
         public void mouseClicked(MouseEvent e) {
-          if (SwingUtilities.isRightMouseButton(e))
-            menu.show(btn,e.getX(),e.getY());
+          if (SwingUtilities.isRightMouseButton(e)) {
             frameToClose = (InternalFrame)buttons.get(btn);
+            iconMenu.setVisible( frameToClose.isIconifiable() );
+
+            menu.show(btn,e.getX(),e.getY());
+          }
         }
 
         public void mouseEntered(MouseEvent e) {
@@ -223,6 +226,10 @@ public class WinIconsPanel extends JPanel {
             try {
               if ( ( (Integer) buttonsNr.get(frame.getTitle())).intValue() == 1) {
                 buttonsNr.remove(frame.getTitle());
+              }
+              else if ( ( (Integer) buttonsNr.get(frame.getTitle())).intValue() > 1) {
+                int num = ((Integer) buttonsNr.get(frame.getTitle())).intValue() - 1;
+                buttonsNr.put(frame.getTitle(),new Integer(num));
               }
             }
             catch (Exception ex) {

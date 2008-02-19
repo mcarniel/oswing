@@ -161,6 +161,7 @@ public class DetailFrame extends JFrame {
     controlRadioButton2.setText("N");
     listControl1.setAttributeName("listValues");
     listControl1.setDomainId("LISTVALUES");
+//    listControl1.setShowCheckBoxes(true);
     controlPasswd.setAttributeName("stringValue");
     controlPasswd.setRequired(true);
     linkButton1.addActionListener(new DetailFrame_linkButton1_actionAdapter(this));

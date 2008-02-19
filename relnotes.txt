@@ -1,5 +1,20 @@
 
 
+Release Notes 1.4.8
+-------------------
+
+Final release 1.4.8 available
+
+Added new property to ListControl in order to provide a "check-box list": 
+"showCheckBoxes" property allows to show a check-box for each item to select.
+Added "NoLogger" class to avoid to log any message.
+Fixed problem in windows bar on the bottom of MDIFrame, where window's name was not correct with more than one window having the same name.
+Added "hideTitleBar" property to InternalFrame, in order to hide the title bar in an internal frame.
+Added "demo34" sample application to show how to use new "hideTitleBar" property.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.4.7
 -------------------
 
