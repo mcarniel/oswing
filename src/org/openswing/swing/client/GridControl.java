@@ -181,6 +181,9 @@ public class GridControl extends JPanel {
   /** <code>true</code> to automatically show a filter panel when moving mouse at right of the grid; <code>false</code> to do not show it */
   private boolean showFilterPanelOnGrid = ClientSettings.FILTER_PANEL_ON_GRID;
 
+  /** this property is used only when "showFilterPanelOnGrid" is set to <code>true</code>; define filter panel policy for hiding it; allowed values: Consts.FILTER_PANEL_ON_GRID_xxx; default value: ClientSettings.FILTER_PANEL_ON_GRID_POLICY */
+  private int filterPanelOnGridPolicy = ClientSettings.FILTER_PANEL_ON_GRID_POLICY;
+
   /** split pane used to split grid component from filter panel (optional) */
   private JSplitPane split = new JSplitPane();
 
@@ -243,6 +246,9 @@ public class GridControl extends JPanel {
 
   /** profile list menu */
   private JMenu profilesMenu = new JMenu(ClientSettings.getInstance().getResources().getResource("select grid profile"));
+
+  /** flag used to anchor the last column on the right margin of the grid, only when all columns width is lesser than grid width */
+  private boolean anchorLastColumn = false;
 
 
   /**
@@ -767,7 +773,7 @@ public class GridControl extends JPanel {
         gridStatusPanel.add(labelPanel,BorderLayout.SOUTH);
 
       if (showFilterPanelOnGrid) {
-        filterPanel = new FilterPanel(columnProperties,table);
+        filterPanel = new FilterPanel(columnProperties,table,filterPanelOnGridPolicy);
 
         split.setOrientation(split.HORIZONTAL_SPLIT);
         split.setDividerSize(1);
@@ -778,10 +784,22 @@ public class GridControl extends JPanel {
         table.getGrid().addMouseListener(new MouseAdapter() {
 
           public void mouseEntered(MouseEvent e) {
-            split.setDividerLocation(split.getWidth()-10);
+            if (filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT ||
+                filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_PRESSED && !filterPanel.isLocked() ||
+                filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_UNPRESSED && !filterPanel.isLocked())
+              split.setDividerLocation(split.getWidth()-10);
           }
 
         });
+
+         if (filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_CLOSE_BUTTON) {
+           filterPanel.getClosePanel().addMouseListener(new MouseAdapter() {
+             public void mouseClicked(MouseEvent e) {
+               split.setDividerLocation(split.getWidth()-10);
+             }
+           });
+         }
+
         if (table.getLockedGrid()!=null)
           table.getLockedGrid().addMouseListener(new MouseAdapter() {
 
@@ -793,9 +811,6 @@ public class GridControl extends JPanel {
 
         filterPanel.addMouseListener(new MouseAdapter() {
 
-          /**
-           * Invoked when the mouse enters a component.
-           */
           public void mouseEntered(MouseEvent e) {
             if (split.getDividerLocation()<=split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20)
               return;
@@ -807,12 +822,12 @@ public class GridControl extends JPanel {
               split.setDividerLocation(split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20);
           }
 
-          /**
-           * Invoked when the mouse exits a component.
-           */
           public void mouseExited(MouseEvent e) {
-            if (e.getX()<=0 || e.getY()<=0 || e.getX()>=filterPanel.getWidth() || e.getY()>=filterPanel.getHeight()) {
-              split.setDividerLocation(split.getWidth()-10);
+            if (filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT ||
+                filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_PRESSED && !filterPanel.isLocked() ||
+                filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_UNPRESSED && !filterPanel.isLocked()) {
+              if (e.getX()<=0 || e.getY()<=0 || e.getX()>=filterPanel.getWidth() || e.getY()>=filterPanel.getHeight())
+                split.setDividerLocation(split.getWidth()-10);
             }
           }
 
@@ -2296,6 +2311,43 @@ public class GridControl extends JPanel {
       Logger.error(this.getClass().getName(), "maybeStoreProfile", "Error while saving grid profile: "+ex.getMessage(),ex);
     }
   }
+
+
+  /**
+   * @return used only when "showFilterPanelOnGrid" is set to <code>true</code>; define filter panel policy for hiding it; allowed values: Consts.FILTER_PANEL_ON_GRID_xxx; default value: ClientSettings.FILTER_PANEL_ON_GRID_POLICY
+   */
+  public final int getFilterPanelOnGridPolicy() {
+    return filterPanelOnGridPolicy;
+  }
+
+
+  /**
+   * Define filter panel policy for hiding it; allowed values: Consts.FILTER_PANEL_ON_GRID_xxx; default value: ClientSettings.FILTER_PANEL_ON_GRID_POLICY
+   * @param filterPanelOnGridPolicy used only when "showFilterPanelOnGrid" is set to <code>true</code>; define filter panel policy for hiding it; allowed values: Consts.FILTER_PANEL_ON_GRID_xxx
+   */
+  public final void setFilterPanelOnGridPolicy(int filterPanelOnGridPolicy) {
+    this.filterPanelOnGridPolicy = filterPanelOnGridPolicy;
+  }
+
+
+  /**
+   * @return define if the last column must be to anchored on the right margin of the grid, only when all columns width is lesser than grid width
+   */
+  public boolean isAnchorLastColumn() {
+    return anchorLastColumn;
+  }
+
+
+  /**
+   * Define if the last column must be anchored on the right margin of the grid, only when all columns width is lesser than grid width.
+   * @param anchorLastColumn flag used to anchor the last column on the right margin of the grid, only when all columns width is lesser than grid width
+   */
+  public void setAnchorLastColumn(boolean anchorLastColumn) {
+    this.anchorLastColumn = anchorLastColumn;
+  }
+
+
+
 
 
 

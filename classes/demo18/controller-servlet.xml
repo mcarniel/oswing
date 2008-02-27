@@ -91,5 +91,10 @@
             <property name="facade" ref="mainFacade"/>
     </bean>
     
-    
+    <bean id="exportDataGrid" class="org.openswing.springframework.web.servlet.utils.ExportController">
+    </bean>
+
+    <bean id="getDoc" class="org.openswing.springframework.web.servlet.utils.DocumentController">
+    </bean>
+        
 </beans>

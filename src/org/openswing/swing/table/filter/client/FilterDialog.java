@@ -67,7 +67,7 @@ public class FilterDialog extends JDialog {
   public FilterDialog(Column[] colProperties,Grids grid) {
     super(ClientUtils.getParentFrame(grid),ClientSettings.getInstance().getResources().getResource("filtering and sorting settings"),true);
     try {
-      panel = new FilterPanel(colProperties,grid);
+      panel = new FilterPanel(colProperties,grid,Consts.FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT);
       jbInit();
       setSize(300,400);
       setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);

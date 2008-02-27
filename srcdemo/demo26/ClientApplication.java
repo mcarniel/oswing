@@ -10,6 +10,7 @@ import org.openswing.swing.permissions.java.ButtonsAuthorizations;
 import org.openswing.swing.internationalization.java.*;
 import javax.swing.UIManager;
 import javax.swing.*;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -61,6 +62,7 @@ public class ClientApplication {
     );
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.FILTER_PANEL_ON_GRID = true;
+    ClientSettings.FILTER_PANEL_ON_GRID_POLICY = Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_PRESSED;
     ClientSettings.VIEW_BACKGROUND_SEL_COLOR = true;
     ClientSettings.SHOW_SORTING_ORDER = true;
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";

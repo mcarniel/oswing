@@ -112,6 +112,10 @@ public class OpenSwingHandlerMapping extends AbstractHandlerMapping {
     Command command = (Command)request.getAttribute(COMMAND_ATTRIBUTE_NAME);
     if (command!=null)
       return command.getMethodName();
+    else if (request.getMethod().equals("GET") && request.getParameter("docId")!=null) {
+      request.setAttribute(COMMAND_ATTRIBUTE_NAME,new Command(request.getParameter("sessionId"),"getDoc",request.getParameter("docId")));
+      return command.getMethodName();
+    }
 
     ObjectInputStream ois = new ObjectInputStream(request.getInputStream());
     command = (Command) ois.readObject();

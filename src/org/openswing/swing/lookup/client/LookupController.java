@@ -987,6 +987,21 @@ public class LookupController {
 
 
   /**
+   * Define column alignement in the lookup grid frame.
+   * @param lookupAttributeName attribute name that identifies the column
+   * @param alignment column text horizontal alignement; possible values: "SwingConstants.LEFT", "SwingConstants.RIGHT", "SwingConstants.CENTER".
+   */
+  public final void setColumnTextAlignment(String lookupAttributeName,int alignement) {
+    for(int i=0;i<colProperties.length;i++)
+      if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
+        colProperties[i].setTextAlignment(alignement);
+        return;
+      }
+    Logger.error(this.getClass().getName(),"setColumnTextAlignment","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);
+  }
+
+
+  /**
    * Add a link from an attribute of the lookup v.o. to an attribute of the lookup container v.o.
    * @param lookupAttributeName attribute of the lookup v.o.
    * @param parentAttributeName attribute of the lookup container v.o.

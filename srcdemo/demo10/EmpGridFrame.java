@@ -40,7 +40,7 @@ public class EmpGridFrame extends InternalFrame {
     this.conn = conn;
     try {
       jbInit();
-      setSize(750,300);
+      setSize(770,300);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
       setTitle("Employees");
@@ -57,6 +57,7 @@ public class EmpGridFrame extends InternalFrame {
 
 
   private void jbInit() throws Exception {
+    grid.setAnchorLastColumn(true);
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     grid.setDeleteButton(deleteButton);

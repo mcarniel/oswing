@@ -1,5 +1,20 @@
 
 
+Release Notes 1.4.9
+-------------------
+
+Final release 1.4.9 available
+
+Added new property in ClientSettings: FILTER_PANEL_ON_GRID_POLICY; this property is used as default value in "filterPanelOnGridPolicy" new property of GridControl:
+it allows to define filter panel policy for hiding it: automatically close filter panel when mouse exits from it, close it when pressing a close button, close it through a padlock button.
+Added new property "anchorLastColumn" to GridControl, to anchor the last column to the right margin of the grid.
+Added "setColumnTextAlignment" method to LookupController, to define text alignement in columns. 
+Added grid exporting feature when combining OpenSwing to Spring framework.
+Fixed a problem related to rendering GanttControl in NetBeans UI designer.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.4.8
 -------------------
 

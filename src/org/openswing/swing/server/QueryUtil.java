@@ -640,7 +640,29 @@ public class QueryUtil {
             value = rset.getTimestamp(i+1);
           else
             value = rset.getObject(i+1);
-          setterMethods[i].invoke(currentVO,new Object[]{value});
+
+          try {
+            setterMethods[i].invoke(currentVO, new Object[] {value});
+          }
+          catch (IllegalArgumentException ex5) {
+            try {
+              if (value!=null && !value.getClass().getName().equals(setterMethods[i].getParameterTypes()[0].getClass().getName()))
+                Logger.error(
+                    userSessionPars.getUsername(),
+                    "org.openswing.swing.server.QueryUtil",
+                    "getQuery",
+                    "Error while executing the SQL:\n"+
+                    baseSQL+"\n"+
+                    params+"\n"+
+                    "Incompatible type found between value read ("+value.getClass().getName()+") and value exptected ("+setterMethods[i].getParameterTypes()[0].getClass().getName()+") in setter '"+setterMethods[i].getName()+"'.",
+                    null
+                );
+            }
+            catch (Throwable ex6) {
+
+            }
+            throw ex5;
+          }
         }
 
         list.add(vo);

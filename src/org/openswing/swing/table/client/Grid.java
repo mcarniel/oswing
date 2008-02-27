@@ -216,7 +216,8 @@ public class Grid extends JTable
     this.gridController = gridController;
     this.lockedGrid = lockedGrid;
     this.setShowGrid(true);
-    this.setAutoResizeMode(this.AUTO_RESIZE_OFF);
+    if (grids==null || grids.getGridControl()==null || !grids.getGridControl().isAnchorLastColumn())
+      this.setAutoResizeMode(this.AUTO_RESIZE_OFF);
     this.setRowHeight(ClientSettings.CELL_HEIGHT);
     this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     this.setSurrendersFocusOnKeystroke(true);
@@ -710,14 +711,6 @@ public class Grid extends JTable
       Logger.error(this.getClass().getName(),"Grid","Error while constructing grid.",t);
     }
   }
-
-
-//  public void processFocusEvent(FocusEvent e) {
-//    super.processFocusEvent(e);
-//    if (e.getID()==e.FOCUS_LOST) {
-//      ;
-//    }
-//  }
 
 
   /**
@@ -1551,8 +1544,9 @@ public class Grid extends JTable
       colsModel.removeColumn(colsModel.getColumn(0));
     // add visible columns only...
     for(int i=fromColIndex;i<toColIndex;i++) {
-      if (colProps[i].isColumnVisible())
+      if (colProps[i].isColumnVisible()) {
         this.addColumn(tableColumnModel[i]);
+      }
     }
   }
 

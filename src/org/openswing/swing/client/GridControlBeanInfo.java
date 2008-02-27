@@ -16,6 +16,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _anchorLastColumn = new PropertyDescriptor("anchorLastColumn", beanClass, "isAnchorLastColumn", "setAnchorLastColumn");
       PropertyDescriptor _autoLoadData = new PropertyDescriptor("autoLoadData", beanClass, "isAutoLoadData", "setAutoLoadData");
       PropertyDescriptor _colorsInReadOnlyMode = new PropertyDescriptor("colorsInReadOnlyMode", beanClass, "isColorsInReadOnlyMode", "setColorsInReadOnlyMode");
       PropertyDescriptor _copyButton = new PropertyDescriptor("copyButton", beanClass, "getCopyButton", "setCopyButton");
@@ -23,6 +24,8 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       _defaultQuickFilterCriteria.setPropertyEditorClass(org.openswing.swing.client.QuickFilterCriteriaEditor.class);
       PropertyDescriptor _deleteButton = new PropertyDescriptor("deleteButton", beanClass, "getDeleteButton", "setDeleteButton");
       PropertyDescriptor _editButton = new PropertyDescriptor("editButton", beanClass, "getEditButton", "setEditButton");
+      PropertyDescriptor _filterPanelOnGridPolicy = new PropertyDescriptor("filterPanelOnGridPolicy", beanClass, "getFilterPanelOnGridPolicy", "setFilterPanelOnGridPolicy");
+      _filterPanelOnGridPolicy.setPropertyEditorClass(org.openswing.swing.client.FilterPanelOnGridPolicyEditor.class);
       PropertyDescriptor _gridDataLocator = new PropertyDescriptor("gridDataLocator", beanClass, "getGridDataLocator", "setGridDataLocator");
       PropertyDescriptor _insertButton = new PropertyDescriptor("insertButton", beanClass, "getInsertButton", "setInsertButton");
       PropertyDescriptor _exportButton = new PropertyDescriptor("exportButton", beanClass, "getExportButton", "setExportButton");
@@ -50,6 +53,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _valueObjectClassName = new PropertyDescriptor("valueObjectClassName", beanClass, "getValueObjectClassName", "setValueObjectClassName");
       PropertyDescriptor _visibleStatusPanel = new PropertyDescriptor("visibleStatusPanel", beanClass, "isVisibleStatusPanel", "setVisibleStatusPanel");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _anchorLastColumn,
         _autoLoadData,
         _colorsInReadOnlyMode,
         _copyButton,
@@ -58,6 +62,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _editButton,
         _exportButton,
         _filterButton,
+        _filterPanelOnGridPolicy,
         _functionId,
         _gridDataLocator,
         _intercellSpacing,

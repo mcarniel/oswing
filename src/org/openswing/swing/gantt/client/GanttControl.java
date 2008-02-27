@@ -491,7 +491,7 @@ public class GanttControl extends JPanel {
    */
   public final void addNotify() {
   super.addNotify();
-    if (this.isVisible() && firstTime) {
+    if (!Beans.isDesignTime() && this.isVisible() && firstTime) {
       firstTime = false;
       if (autoLoadData)
         reloadData();

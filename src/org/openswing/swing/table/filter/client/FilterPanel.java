@@ -105,7 +105,19 @@ public class FilterPanel extends JPanel {
 
   /** order and sort versus for columns initially sorted (String[]{attribute name,ASC/DESC}) */
   private ArrayList initialOrderList = new ArrayList();
+
+  /** used only when "showFilterPanelOnGrid" is set to <code>true</code>; define filter panel policy for hiding it; allowed values: Consts.FILTER_PANEL_ON_GRID_xxx */
+  private int filterPanelOnGridPolicy;
+
   GridBagLayout gridBagLayout5 = new GridBagLayout();
+
+  private GenericButton lockPanel;
+  private ImageIcon lockImage;
+  private ImageIcon unlockImage;
+  private boolean locked;
+
+  private GenericButton closePanel;
+
 
   /**
    * Constructor called by a grid control to apply filtering/sorting conditions.
@@ -113,18 +125,63 @@ public class FilterPanel extends JPanel {
    * @param gridOrder list or order clauses to apply to the grid
    * @param gridFilter list of filter clauses to apply to the grid
    * @param grid grid control
+   * @param filterPanelOnGridPolicy used only when "showFilterPanelOnGrid" is set to <code>true</code>; define filter panel policy for hiding it; allowed values: FILTER_PANEL_ON_GRID_xxx; default value: ClientSettings.FILTER_PANEL_ON_GRID_POLICY
    */
-  public FilterPanel(Column[] colProperties,Grids grid) {
+  public FilterPanel(Column[] colProperties,Grids grid,int filterPanelOnGridPolicy) {
     this.colProperties = colProperties;
 //    this.gridOrder = gridOrder;
 //    this.gridFilter = gridFilter;
     this.grid = grid;
+    this.filterPanelOnGridPolicy = filterPanelOnGridPolicy;
     try {
       jbInit();
+
+      if (filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_PRESSED ||
+          filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_UNPRESSED) {
+        // create padlock...
+        lockImage = new ImageIcon(ClientUtils.getImage(ClientSettings.FILTER_PANEL_LOCK_ON));
+        unlockImage = new ImageIcon(ClientUtils.getImage(ClientSettings.FILTER_PANEL_LOCK_OFF));
+
+        lockPanel = new GenericButton(lockImage);
+        lockPanel.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+            lockPanel_mouseClicked(e);
+          }
+        });
+        setLocked(filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_PRESSED);
+        topPanel.add(lockPanel,null);
+      }
+      else if (filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_CLOSE_BUTTON) {
+        // create close button...
+        closePanel = new GenericButton(new ImageIcon(ClientUtils.getImage(ClientSettings.CLOSE_BUTTON_ON_FILTER_PANEL)));
+        closePanel.setToolTipText(ClientSettings.getInstance().getResources().getResource("close window"));
+        topPanel.add(closePanel,null);
+      }
+
+
     }
     catch(Exception e) {
       e.printStackTrace();
     }
+  }
+
+
+  void lockPanel_mouseClicked(MouseEvent e) {
+    setLocked(! locked);
+  }
+
+
+  public boolean isLocked() {
+    return(locked);
+  }
+
+
+  public void setLocked(boolean value) {
+    this.locked = value;
+    if (locked)
+      lockPanel.setIcon(lockImage);
+    else
+      lockPanel.setIcon(unlockImage);
   }
 
 
@@ -788,6 +845,9 @@ public class FilterPanel extends JPanel {
 
     // reload grid...
     grid.reload();
+  }
+  public GenericButton getClosePanel() {
+    return closePanel;
   }
 
 

@@ -80,6 +80,18 @@ public class Consts {
   /** default value that could be set in the quick filter criteria: ends with */
   public static final int ENDS_WITH = 3;
 
+  /** constant assignable in "filterPanelOnGridPolicy" property of GridControl to automatically hide filter panel when mouse exits from that panel */
+  public static final int FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT = 0;
+
+  /** constant assignable in "filterPanelOnGridPolicy" property of GridControl to hide filter panel by pressing a close button */
+  public static final int FILTER_PANEL_ON_GRID_USE_CLOSE_BUTTON = 1;
+
+  /** constant assignable in "filterPanelOnGridPolicy" property of GridControl to hide filter panel by using a padlock button (pressed as default) */
+  public static final int FILTER_PANEL_ON_GRID_USE_PADLOCK_PRESSED = 2;
+
+  /** constant assignable in "filterPanelOnGridPolicy" property of GridControl to hide filter panel by using a padlock button (unpressed as default) */
+  public static final int FILTER_PANEL_ON_GRID_USE_PADLOCK_UNPRESSED = 3;
+
 
 
 }

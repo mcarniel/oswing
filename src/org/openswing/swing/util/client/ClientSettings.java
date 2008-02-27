@@ -15,6 +15,7 @@ import java.awt.Font;
 import java.awt.Dimension;
 import org.openswing.swing.table.profiles.java.GridProfileManager;
 import org.openswing.swing.lookup.client.LookupController;
+import org.openswing.swing.client.GridControl;
 
 
 /**
@@ -58,6 +59,15 @@ public class ClientSettings {
 
   /** image name for closed padlock icon */
   public static String LOCK_OFF = "lock_off.gif";
+
+  /** image name for opened padlock icon in filter panel */
+  public static String FILTER_PANEL_LOCK_ON = "lock.gif";
+
+  /** image name for closed padlock icon in filter panel */
+  public static String FILTER_PANEL_LOCK_OFF = "unlock.gif";
+
+  /** image name for close button in filter panel */
+  public static String CLOSE_BUTTON_ON_FILTER_PANEL = "cancel.gif";
 
   /** image name for tree menu icons */
   public static String PERC_TREE_NODE = "node.gif";
@@ -160,6 +170,9 @@ public class ClientSettings {
 
   /** <code>true</code> to automatically show a filter panel when moving mouse at right of the grid; <code>false</code> to do not show it */
   public static boolean FILTER_PANEL_ON_GRID = false;
+
+  /** used as default value in "filterPanelOnGridPolicy" property of GridControl: it used only when "showFilterPanelOnGrid" property is set to <code>true</code>; define filter panel policy for hiding it; allowed values: Consts.FILTER_PANEL_ON_GRID_xxx; default value: Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_UNPRESSED */
+  public static int FILTER_PANEL_ON_GRID_POLICY = Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_UNPRESSED;
 
   /** default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
   public static int DEFAULT_QUICK_FILTER_CRITERIA = Consts.EQUALS;
