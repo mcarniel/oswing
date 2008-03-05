@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class LinkButtonBeanInfo extends SimpleBeanInfo {
   Class beanClass = LinkButton.class;
-  String iconColor16x16Filename = "GenericButton16.gif";
-  String iconColor32x32Filename = "GenericButton.gif";
-  String iconMono16x16Filename = "GenericButton16.gif";
-  String iconMono32x32Filename = "GenericButton.gif";
+  String iconColor16x16Filename = "GenericButton16.png";
+  String iconColor32x32Filename = "GenericButton.png";
+  String iconMono16x16Filename = "GenericButton16.png";
+  String iconMono32x32Filename = "GenericButton.png";
 
 
   public LinkButtonBeanInfo() {

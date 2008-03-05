@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class TextAreaControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = TextAreaControl.class;
-  String iconColor16x16Filename = "TextAreaControl16.gif";
-  String iconColor32x32Filename = "TextAreaControl.gif";
-  String iconMono16x16Filename = "TextAreaControl16.gif";
-  String iconMono32x32Filename = "TextAreaControl.gif";
+  String iconColor16x16Filename = "TextAreaControl16.png";
+  String iconColor32x32Filename = "TextAreaControl.png";
+  String iconMono16x16Filename = "TextAreaControl16.png";
+  String iconMono32x32Filename = "TextAreaControl.png";
 
   public TextAreaControlBeanInfo() {
   }

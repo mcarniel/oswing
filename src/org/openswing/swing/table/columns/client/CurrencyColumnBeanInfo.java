@@ -34,10 +34,10 @@ import java.beans.*;
 
 public class CurrencyColumnBeanInfo extends SimpleBeanInfo {
   Class beanClass = CurrencyColumn.class;
-  String iconColor16x16Filename = "CurrencyColumn16.gif";
-  String iconColor32x32Filename = "CurrencyColumn.gif";
-  String iconMono16x16Filename = "CurrencyColumn16.gif";
-  String iconMono32x32Filename = "CurrencyColumn.gif";
+  String iconColor16x16Filename = "CurrencyColumn16.png";
+  String iconColor32x32Filename = "CurrencyColumn.png";
+  String iconMono16x16Filename = "CurrencyColumn16.png";
+  String iconMono32x32Filename = "CurrencyColumn.png";
 
   public CurrencyColumnBeanInfo() {
   }

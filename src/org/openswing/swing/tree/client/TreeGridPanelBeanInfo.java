@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class TreeGridPanelBeanInfo extends SimpleBeanInfo {
   Class beanClass = TreeGridPanel.class;
-  String iconColor16x16Filename = "TreeGridPanel16.gif";
-  String iconColor32x32Filename = "TreeGridPanel.gif";
-  String iconMono16x16Filename = "TreeGridPanel16.gif";
-  String iconMono32x32Filename = "TreeGridPanel.gif";
+  String iconColor16x16Filename = "TreeGridPanel16.png";
+  String iconColor32x32Filename = "TreeGridPanel.png";
+  String iconMono16x16Filename = "TreeGridPanel16.png";
+  String iconMono32x32Filename = "TreeGridPanel.png";
 
   public TreeGridPanelBeanInfo() {
   }

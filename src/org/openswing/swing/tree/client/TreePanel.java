@@ -62,6 +62,9 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     UIManager.getDefaults().put("Tree.selectionForeground",new javax.swing.plaf.ColorUIResource(ClientSettings.TREE_SELECTION_FOREGROUND));
   }
 
+  /** current checked nodes (i.e. nodes having selected the associated check-box) */
+  private HashSet checkedNodes = new HashSet();
+
   /** tree selection background color */
   private Color selectionBackground = ClientSettings.TREE_SELECTION_BACKGROUND;
 
@@ -84,7 +87,13 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
       public void setModel(TreeModel model) {
         super.setModel(model);
-        checkedNodes.clear();
+        try {
+          if (checkedNodes != null) {
+            checkedNodes.clear();
+          }
+        }
+        catch (Exception ex) {
+        }
       }
 
     };
@@ -171,9 +180,6 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   /** define if a check-box must be showed for each node; default value: <code>false</code> */
   private boolean showCheckBoxes = false;
 
-  /** current checked nodes (i.e. nodes having selected the associated check-box) */
-  private HashSet checkedNodes = new HashSet();
-
   /** define if a check-box must be showed for leaves nodes too; default value: <code>true</code> */
   private boolean showCheckBoxesOnLeaves = true;
 
@@ -248,8 +254,13 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    */
   public final void expandAllNodes() {
     int i = 0;
-    while (i < tree.getRowCount())
-      tree.expandRow(i++);
+    try {
+      while (i < tree.getRowCount()) {
+        tree.expandRow(i++);
+      }
+    }
+    catch (Exception ex) {
+    }
   }
 
 
@@ -289,12 +300,23 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
       public void setModel(TreeModel model) {
         super.setModel(model);
-        checkedNodes.clear();
+        try {
+          if (checkedNodes != null) {
+            checkedNodes.clear();
+          }
+        }
+        catch (Exception ex) {
+        }
       }
 
     };
 
     searchWindowManager = new SearchWindowManager(this);
+
+    for(int i=0;i<keyListeners.size();i++)
+      tree.addKeyListener((KeyListener)keyListeners.get(i));
+    for(int i=0;i<mouseListeners.size();i++)
+      tree.addMouseListener((MouseListener)mouseListeners.get(i));
 
     if (treeId != null && dndListener != null)
       enableDrag(treeId, dndListener);

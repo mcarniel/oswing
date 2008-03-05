@@ -35,10 +35,10 @@ import org.openswing.swing.client.StringAttributeNameEditor;
 
 public class MultiLineTextColumnBeanInfo extends SimpleBeanInfo {
   Class beanClass = MultiLineTextColumn.class;
-  String iconColor16x16Filename = "MLTextColumn16.gif";
-  String iconColor32x32Filename = "MLTextColumn.gif";
-  String iconMono16x16Filename = "MLTextColumn16.gif";
-  String iconMono32x32Filename = "MLTextColumn.gif";
+  String iconColor16x16Filename = "MLTextColumn16.png";
+  String iconColor32x32Filename = "MLTextColumn.png";
+  String iconMono16x16Filename = "MLTextColumn16.png";
+  String iconMono32x32Filename = "MLTextColumn.png";
 
   public MultiLineTextColumnBeanInfo() {
   }

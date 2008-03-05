@@ -7,10 +7,10 @@ import java.awt.FlowLayout;
 
 public class GridControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = GridControl.class;
-  String iconColor16x16Filename = "GridControl16.gif";
-  String iconColor32x32Filename = "GridControl.gif";
-  String iconMono16x16Filename = "GridControl16.gif";
-  String iconMono32x32Filename = "GridControl.gif";
+  String iconColor16x16Filename = "GridControl16.png";
+  String iconColor32x32Filename = "GridControl.png";
+  String iconMono16x16Filename = "GridControl16.png";
+  String iconMono32x32Filename = "GridControl.png";
 
   public GridControlBeanInfo() {
   }

@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class NumericControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = NumericControl.class;
-  String iconColor16x16Filename = "NumericControl16.gif";
-  String iconColor32x32Filename = "NumericControl.gif";
-  String iconMono16x16Filename = "NumericControl16.gif";
-  String iconMono32x32Filename = "NumericControl.gif";
+  String iconColor16x16Filename = "NumericControl16.png";
+  String iconColor32x32Filename = "NumericControl.png";
+  String iconMono16x16Filename = "NumericControl16.png";
+  String iconMono32x32Filename = "NumericControl.png";
 
   public NumericControlBeanInfo() {
   }

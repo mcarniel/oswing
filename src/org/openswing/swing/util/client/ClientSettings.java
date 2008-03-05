@@ -60,6 +60,9 @@ public class ClientSettings {
   /** image name for closed padlock icon */
   public static String LOCK_OFF = "lock_off.gif";
 
+  /** flag used to show/hide a padlock in the tree menu panel; default value: <code>true</code> */
+  public static boolean SHOW_PADLOCK_IN_TREE_MENU = true;
+
   /** image name for opened padlock icon in filter panel */
   public static String FILTER_PANEL_LOCK_ON = "lock.gif";
 

@@ -33,10 +33,10 @@ import java.beans.*;
  */
 public class IntegerColumnBeanInfo extends SimpleBeanInfo {
   private Class beanClass = IntegerColumn.class;
-  private String iconColor16x16Filename = "IntegerColumn16.gif";
-  private String iconColor32x32Filename = "IntegerColumn.gif";
-  private String iconMono16x16Filename = "IntegerColumn16.gif";
-  private String iconMono32x32Filename = "IntegerColumn.gif";
+  private String iconColor16x16Filename = "IntegerColumn16.png";
+  private String iconColor32x32Filename = "IntegerColumn.png";
+  private String iconMono16x16Filename = "IntegerColumn16.png";
+  private String iconMono32x32Filename = "IntegerColumn.png";
 
   public IntegerColumnBeanInfo() {
   }

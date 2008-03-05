@@ -151,8 +151,9 @@ public class TreeMenu extends JPanel {
     });
     titlePanel.add(titleLabel,        new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    titlePanel.add(lockPanel,         new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0
-            ,GridBagConstraints.EAST, GridBagConstraints.VERTICAL, new Insets(5, 10, 0, 10), 0, 0));
+    if (ClientSettings.SHOW_PADLOCK_IN_TREE_MENU)
+      titlePanel.add(lockPanel,         new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0
+              ,GridBagConstraints.EAST, GridBagConstraints.VERTICAL, new Insets(5, 10, 0, 10), 0, 0));
     titlePanel.add(findLabel,  new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     titlePanel.add(findTF,     new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0

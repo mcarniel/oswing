@@ -33,10 +33,10 @@ import java.beans.*;
  */
 public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
   private Class beanClass = CodLookupColumn.class;
-  private String iconColor16x16Filename = "CodLookupColumn16.gif";
-  private String iconColor32x32Filename = "CodLookupColumn.gif";
-  private String iconMono16x16Filename = "CodLookupColumn16.gif";
-  private String iconMono32x32Filename = "CodLookupColumn.gif";
+  private String iconColor16x16Filename = "CodLookupColumn16.png";
+  private String iconColor32x32Filename = "CodLookupColumn.png";
+  private String iconMono16x16Filename = "CodLookupColumn16.png";
+  private String iconMono32x32Filename = "CodLookupColumn.png";
 
   public CodLookupColumnBeanInfo() {
   }

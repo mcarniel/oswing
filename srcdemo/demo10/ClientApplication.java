@@ -99,6 +99,9 @@ public class ClientApplication implements MDIController,LoginController {
     props.setProperty("friday","Friday");
     props.setProperty("saturday","Saturday");
 
+    props.setProperty("close","Close");
+
+
     // tips...
     props.setProperty("shortcuts in grid and form controls","Shortcuts in grid and form controls");
     props.setProperty("quick filter and other features in grid control","Quick filter and other features in grid control");

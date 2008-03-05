@@ -1,5 +1,19 @@
 
 
+Release Notes 1.5
+-----------------
+
+Final release 1.5 available
+
+Fixed a problem related to rendering TreePanel when check-boxes are showed.
+Fixed a bug on TreePanel when check-boxes are showed and user clicks with the right mouse button.
+Fixed bug in CheckBoxControl having three states when clicking with mouse and the control is disabled.
+Added "SHOW_PADLOCK_IN_TREE_MENU" property to ClientSettings to show/hide the padlock within the tree menu panel.
+Changed gif images with png images in BeanInfo.jar file to improve icons viewing in Eclipse components palette.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.4.9
 -------------------
 

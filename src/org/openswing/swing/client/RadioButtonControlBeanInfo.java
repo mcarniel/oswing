@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class RadioButtonControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = RadioButtonControl.class;
-  String iconColor16x16Filename = "RadioButtonControl16.gif";
-  String iconColor32x32Filename = "RadioButtonControl.gif";
-  String iconMono16x16Filename = "RadioButtonControl16.gif";
-  String iconMono32x32Filename = "RadioButtonControl.gif";
+  String iconColor16x16Filename = "RadioButtonControl16.png";
+  String iconColor32x32Filename = "RadioButtonControl.png";
+  String iconMono16x16Filename = "RadioButtonControl16.png";
+  String iconMono32x32Filename = "RadioButtonControl.png";
 
   public RadioButtonControlBeanInfo() {
   }

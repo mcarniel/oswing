@@ -15,10 +15,10 @@ import org.openswing.swing.client.*;
 
 public class EditButtonBeanInfo extends SimpleBeanInfo {
   Class beanClass = EditButton.class;
-  String iconColor16x16Filename = "EditButton16.gif";
-  String iconColor32x32Filename = "EditButton.gif";
-  String iconMono16x16Filename = "EditButton16.gif";
-  String iconMono32x32Filename = "EditButton.gif";
+  String iconColor16x16Filename = "EditButton16.png";
+  String iconColor32x32Filename = "EditButton.png";
+  String iconMono16x16Filename = "EditButton16.png";
+  String iconMono32x32Filename = "EditButton.png";
 
   public EditButtonBeanInfo() {
   }

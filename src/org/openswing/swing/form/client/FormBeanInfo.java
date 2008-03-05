@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class FormBeanInfo extends SimpleBeanInfo {
   Class beanClass = Form.class;
-  String iconColor16x16Filename = "Form16.gif";
-  String iconColor32x32Filename = "Form.gif";
-  String iconMono16x16Filename = "Form16.gif";
-  String iconMono32x32Filename = "Form.gif";
+  String iconColor16x16Filename = "Form16.png";
+  String iconColor32x32Filename = "Form.png";
+  String iconMono16x16Filename = "Form16.png";
+  String iconMono32x32Filename = "Form.png";
 
   public FormBeanInfo() {
   }

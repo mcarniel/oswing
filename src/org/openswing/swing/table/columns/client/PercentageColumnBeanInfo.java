@@ -33,10 +33,10 @@ import java.beans.*;
  */
 public class PercentageColumnBeanInfo extends SimpleBeanInfo {
   private Class beanClass = PercentageColumn.class;
-  private String iconColor16x16Filename = "PercentageColumn16.gif";
-  private String iconColor32x32Filename = "PercentageColumn.gif";
-  private String iconMono16x16Filename = "PercentageColumn16.gif";
-  private String iconMono32x32Filename = "PercentageColumn.gif";
+  private String iconColor16x16Filename = "PercentageColumn16.png";
+  private String iconColor32x32Filename = "PercentageColumn.png";
+  private String iconMono16x16Filename = "PercentageColumn16.png";
+  private String iconMono32x32Filename = "PercentageColumn.png";
 
   public PercentageColumnBeanInfo() {
   }

@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class CodLookupControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = CodLookupControl.class;
-  String iconColor16x16Filename = "CodLookupControl16.gif";
-  String iconColor32x32Filename = "CodLookupControl.gif";
-  String iconMono16x16Filename = "CodLookupControl16.gif";
-  String iconMono32x32Filename = "CodLookupControl.gif";
+  String iconColor16x16Filename = "CodLookupControl16.png";
+  String iconColor32x32Filename = "CodLookupControl.png";
+  String iconMono16x16Filename = "CodLookupControl16.png";
+  String iconMono32x32Filename = "CodLookupControl.png";
 
   public CodLookupControlBeanInfo() {
   }

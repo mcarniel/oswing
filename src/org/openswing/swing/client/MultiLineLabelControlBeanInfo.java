@@ -33,10 +33,10 @@ import java.beans.*;
  */
 public class MultiLineLabelControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = MultiLineLabelControl.class;
-  String iconColor16x16Filename = "LabelControl16.gif";
-  String iconColor32x32Filename = "LabelControl.gif";
-  String iconMono16x16Filename = "LabelControl16.gif";
-  String iconMono32x32Filename = "LabelControl.gif";
+  String iconColor16x16Filename = "LabelControl16.png";
+  String iconColor32x32Filename = "LabelControl.png";
+  String iconMono16x16Filename = "LabelControl16.png";
+  String iconMono32x32Filename = "LabelControl.png";
 
   public MultiLineLabelControlBeanInfo() {
   }

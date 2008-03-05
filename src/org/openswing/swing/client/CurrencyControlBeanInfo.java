@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class CurrencyControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = CurrencyControl.class;
-  String iconColor16x16Filename = "CurrencyControl16.gif";
-  String iconColor32x32Filename = "CurrencyControl.gif";
-  String iconMono16x16Filename = "CurrencyControl16.gif";
-  String iconMono32x32Filename = "CurrencyControl.gif";
+  String iconColor16x16Filename = "CurrencyControl16.png";
+  String iconColor32x32Filename = "CurrencyControl.png";
+  String iconMono16x16Filename = "CurrencyControl16.png";
+  String iconMono32x32Filename = "CurrencyControl.png";
 
   public CurrencyControlBeanInfo() {
   }

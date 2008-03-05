@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class DateControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = DateControl.class;
-  String iconColor16x16Filename = "DateControl16.gif";
-  String iconColor32x32Filename = "DateControl.gif";
-  String iconMono16x16Filename = "DateControl16.gif";
-  String iconMono32x32Filename = "DateControl.gif";
+  String iconColor16x16Filename = "DateControl16.png";
+  String iconColor32x32Filename = "DateControl.png";
+  String iconMono16x16Filename = "DateControl16.png";
+  String iconMono32x32Filename = "DateControl.png";
 
   public DateControlBeanInfo() {
   }

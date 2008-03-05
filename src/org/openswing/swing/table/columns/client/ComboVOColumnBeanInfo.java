@@ -33,10 +33,10 @@ import java.beans.*;
  */
 public class ComboVOColumnBeanInfo extends SimpleBeanInfo {
   private Class beanClass = ComboVOColumn.class;
-  private String iconColor16x16Filename = "ComboColumn16.gif";
-  private String iconColor32x32Filename = "ComboColumn.gif";
-  private String iconMono16x16Filename = "ComboColumn16.gif";
-  private String iconMono32x32Filename = "ComboColumn.gif";
+  private String iconColor16x16Filename = "ComboColumn16.png";
+  private String iconColor32x32Filename = "ComboColumn.png";
+  private String iconMono16x16Filename = "ComboColumn16.png";
+  private String iconMono32x32Filename = "ComboColumn.png";
 
   public ComboVOColumnBeanInfo() {
   }

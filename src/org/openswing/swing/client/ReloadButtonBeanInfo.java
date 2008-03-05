@@ -16,10 +16,10 @@ import org.openswing.swing.util.client.*;
 
 public class ReloadButtonBeanInfo extends SimpleBeanInfo {
   Class beanClass = ReloadButton.class;
-  String iconColor16x16Filename = "ReloadButton16.gif";
-  String iconColor32x32Filename = "ReloadButton.gif";
-  String iconMono16x16Filename = "ReloadButton16.gif";
-  String iconMono32x32Filename = "ReloadButton.gif";
+  String iconColor16x16Filename = "ReloadButton16.png";
+  String iconColor32x32Filename = "ReloadButton.png";
+  String iconMono16x16Filename = "ReloadButton16.png";
+  String iconMono32x32Filename = "ReloadButton.png";
 
   public ReloadButtonBeanInfo() {
   }

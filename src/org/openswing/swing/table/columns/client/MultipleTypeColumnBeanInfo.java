@@ -36,10 +36,10 @@ import org.openswing.swing.client.AttributeNameEditor;
 
 public class MultipleTypeColumnBeanInfo extends SimpleBeanInfo {
   Class beanClass = MultipleTypeColumn.class;
-  String iconColor16x16Filename = "MultipleTypeColumn16.gif";
-  String iconColor32x32Filename = "MultipleTypeColumn.gif";
-  String iconMono16x16Filename = "MultipleTypeColumn16.gif";
-  String iconMono32x32Filename = "MultipleTypeColumn.gif";
+  String iconColor16x16Filename = "MultipleTypeColumn16.png";
+  String iconColor32x32Filename = "MultipleTypeColumn.png";
+  String iconMono16x16Filename = "MultipleTypeColumn16.png";
+  String iconMono32x32Filename = "MultipleTypeColumn.png";
 
   public MultipleTypeColumnBeanInfo() {
   }

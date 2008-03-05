@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class ProgressBarControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = ProgressBarControl.class;
-  String iconColor16x16Filename = "ProgressBarControl16.gif";
-  String iconColor32x32Filename = "ProgressBarControl.gif";
-  String iconMono16x16Filename = "ProgressBarControl16.gif";
-  String iconMono32x32Filename = "ProgressBarControl.gif";
+  String iconColor16x16Filename = "ProgressBarControl16.png";
+  String iconColor32x32Filename = "ProgressBarControl.png";
+  String iconMono16x16Filename = "ProgressBarControl16.png";
+  String iconMono32x32Filename = "ProgressBarControl.png";
 
 
   public ProgressBarControlBeanInfo() {

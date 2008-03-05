@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class ProgressBarColumnBeanInfo extends SimpleBeanInfo {
   Class beanClass = ProgressBarColumn.class;
-  private String iconColor16x16Filename = "ProgressBarColumn16.gif";
-  private String iconColor32x32Filename = "ProgressBarColumn.gif";
-  private String iconMono16x16Filename = "ProgressBarColumn16.gif";
-  private String iconMono32x32Filename = "ProgressBarColumn.gif";
+  private String iconColor16x16Filename = "ProgressBarColumn16.png";
+  private String iconColor32x32Filename = "ProgressBarColumn.png";
+  private String iconMono16x16Filename = "ProgressBarColumn16.png";
+  private String iconMono32x32Filename = "ProgressBarColumn.png";
 
   public ProgressBarColumnBeanInfo() {
   }

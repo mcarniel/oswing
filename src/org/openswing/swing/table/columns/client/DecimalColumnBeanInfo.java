@@ -33,10 +33,10 @@ import java.beans.*;
  */
 public class DecimalColumnBeanInfo extends SimpleBeanInfo {
   private Class beanClass = DecimalColumn.class;
-  private String iconColor16x16Filename = "DecimalColumn16.gif";
-  private String iconColor32x32Filename = "DecimalColumn.gif";
-  private String iconMono16x16Filename = "DecimalColumn16.gif";
-  private String iconMono32x32Filename = "DecimalColumn.gif";
+  private String iconColor16x16Filename = "DecimalColumn16.png";
+  private String iconColor32x32Filename = "DecimalColumn.png";
+  private String iconMono16x16Filename = "DecimalColumn16.png";
+  private String iconMono32x32Filename = "DecimalColumn.png";
 
   public DecimalColumnBeanInfo() {
   }

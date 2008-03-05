@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class ImageColumnBeanInfo extends SimpleBeanInfo {
   Class beanClass = ImageColumn.class;
-  String iconColor16x16Filename = "ImageControl16.gif";
-  String iconColor32x32Filename = "ImageControl.gif";
-  String iconMono16x16Filename = "ImageControl16.gif";
-  String iconMono32x32Filename = "ImageControl.gif";
+  String iconColor16x16Filename = "ImageControl16.png";
+  String iconColor32x32Filename = "ImageControl.png";
+  String iconMono16x16Filename = "ImageControl16.png";
+  String iconMono32x32Filename = "ImageControl.png";
 
   public ImageColumnBeanInfo() {
   }

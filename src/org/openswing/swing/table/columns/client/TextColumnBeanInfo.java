@@ -35,10 +35,10 @@ import org.openswing.swing.client.StringAttributeNameEditor;
 
 public class TextColumnBeanInfo extends SimpleBeanInfo {
   Class beanClass = TextColumn.class;
-  String iconColor16x16Filename = "TextColumn16.gif";
-  String iconColor32x32Filename = "TextColumn.gif";
-  String iconMono16x16Filename = "TextColumn16.gif";
-  String iconMono32x32Filename = "TextColumn.gif";
+  String iconColor16x16Filename = "TextColumn16.png";
+  String iconColor32x32Filename = "TextColumn.png";
+  String iconMono16x16Filename = "TextColumn16.png";
+  String iconMono32x32Filename = "TextColumn.png";
 
   public TextColumnBeanInfo() {
   }

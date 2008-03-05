@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class ListControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = ListControl.class;
-  String iconColor16x16Filename = "ListControl16.gif";
-  String iconColor32x32Filename = "ListControl16.gif";
-  String iconMono16x16Filename = "ListControl16.gif";
-  String iconMono32x32Filename = "ListControl16.gif";
+  String iconColor16x16Filename = "ListControl16.png";
+  String iconColor32x32Filename = "ListControl16.png";
+  String iconMono16x16Filename = "ListControl16.png";
+  String iconMono32x32Filename = "ListControl16.png";
 
 
   public ListControlBeanInfo() {

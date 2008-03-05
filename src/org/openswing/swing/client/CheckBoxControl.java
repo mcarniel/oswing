@@ -436,6 +436,8 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
 
       super.addMouseListener(new MouseAdapter() {
           public void mousePressed(MouseEvent e) {
+            if (!CheckBoxControl.this.isEnabled())
+                return;
             grabFocus();
             if (model.getCurrentValue()==null)
               model.setCurrentValue(Boolean.FALSE);

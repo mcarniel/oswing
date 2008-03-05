@@ -15,10 +15,10 @@ import org.openswing.swing.client.*;
 
 public class DeleteButtonBeanInfo extends SimpleBeanInfo {
   Class beanClass = DeleteButton.class;
-  String iconColor16x16Filename = "DeleteButton16.gif";
-  String iconColor32x32Filename = "DeleteButton.gif";
-  String iconMono16x16Filename = "DeleteButton16.gif";
-  String iconMono32x32Filename = "DeleteButton.gif";
+  String iconColor16x16Filename = "DeleteButton16.png";
+  String iconColor32x32Filename = "DeleteButton.png";
+  String iconMono16x16Filename = "DeleteButton16.png";
+  String iconMono32x32Filename = "DeleteButton.png";
 
   public DeleteButtonBeanInfo() {
   }

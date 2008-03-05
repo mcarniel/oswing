@@ -101,17 +101,22 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
 
         treePanel.getTree().addKeyListener(new KeyAdapter() {
           public void keyReleased(KeyEvent e) {
-            if (e.getKeyChar()==' ' && TreeNodeRenderer.this.treePanel.getSelectedNode()!=null) {
-              checkChanged(TreeNodeRenderer.this.treePanel.getSelectedNode());
+            if (checkBox.isEnabled()) {
+              DefaultMutableTreeNode node = TreeNodeRenderer.this.treePanel.getSelectedNode();
+              if (e.getKeyChar()==' ' && node!=null) {
+                if (TreeNodeRenderer.this.treePanel.isShowCheckBoxesOnLeaves() || !node.isLeaf())
+                  checkChanged(node);
+              }
             }
           }
         });
         treePanel.getTree().addMouseListener(new MouseAdapter() {
           public void mouseClicked(MouseEvent e) {
-            if (checkBox.isEnabled()) {
+            if (checkBox.isEnabled() && SwingUtilities.isLeftMouseButton(e) && e.getClickCount()==1) {
               try {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeNodeRenderer.this.treePanel.getTree().getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
-                checkChanged(node);
+                if (TreeNodeRenderer.this.treePanel.isShowCheckBoxesOnLeaves() || !node.isLeaf())
+                  checkChanged(node);
               }
               catch (Exception ex) {
               }

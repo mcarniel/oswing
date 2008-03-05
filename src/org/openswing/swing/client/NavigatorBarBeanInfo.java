@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class NavigatorBarBeanInfo extends SimpleBeanInfo {
   Class beanClass = NavigatorBar.class;
-  String iconColor16x16Filename = "NavigatorBar16.gif";
-  String iconColor32x32Filename = "NavigatorBar.gif";
-  String iconMono16x16Filename = "NavigatorBar16.gif";
-  String iconMono32x32Filename = "NavigatorBar.gif";
+  String iconColor16x16Filename = "NavigatorBar16.png";
+  String iconColor32x32Filename = "NavigatorBar.png";
+  String iconMono16x16Filename = "NavigatorBar16.png";
+  String iconMono32x32Filename = "NavigatorBar.png";
 
   public NavigatorBarBeanInfo() {
   }

@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class PasswordControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = PasswordControl.class;
-  String iconColor16x16Filename = "PasswordControl16.gif";
-  String iconColor32x32Filename = "PasswordControl.gif";
-  String iconMono16x16Filename = "PasswordControl16.gif";
-  String iconMono32x32Filename = "PasswordControl.gif";
+  String iconColor16x16Filename = "PasswordControl16.png";
+  String iconColor32x32Filename = "PasswordControl.png";
+  String iconMono16x16Filename = "PasswordControl16.png";
+  String iconMono32x32Filename = "PasswordControl.png";
 
   public PasswordControlBeanInfo() {
   }

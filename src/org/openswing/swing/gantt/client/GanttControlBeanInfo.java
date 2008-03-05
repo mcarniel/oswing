@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class GanttControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = GanttControl.class;
-  String iconColor16x16Filename = "GanttControl16.gif";
-  String iconColor32x32Filename = "GanttControl.gif";
-  String iconMono16x16Filename = "GanttControl16.gif";
-  String iconMono32x32Filename = "GanttControl.gif";
+  String iconColor16x16Filename = "GanttControl16.png";
+  String iconColor32x32Filename = "GanttControl.png";
+  String iconMono16x16Filename = "GanttControl16.png";
+  String iconMono32x32Filename = "GanttControl.png";
 
   public GanttControlBeanInfo() {
   }

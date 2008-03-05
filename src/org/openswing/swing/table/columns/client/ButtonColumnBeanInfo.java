@@ -13,10 +13,10 @@ import java.beans.*;
 
 public class ButtonColumnBeanInfo extends SimpleBeanInfo {
   Class beanClass = ButtonColumn.class;
-  String iconColor16x16Filename = "ButtonColumn16.gif";
-  String iconColor32x32Filename = "ButtonColumn.gif";
-  String iconMono16x16Filename = "ButtonColumn16.gif";
-  String iconMono32x32Filename = "ButtonColumn.gif";
+  String iconColor16x16Filename = "ButtonColumn16.png";
+  String iconColor32x32Filename = "ButtonColumn.png";
+  String iconMono16x16Filename = "ButtonColumn16.png";
+  String iconMono32x32Filename = "ButtonColumn.png";
 
   public ButtonColumnBeanInfo() {
   }

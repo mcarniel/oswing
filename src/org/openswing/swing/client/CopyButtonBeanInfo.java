@@ -15,10 +15,10 @@ import org.openswing.swing.client.*;
 
 public class CopyButtonBeanInfo extends SimpleBeanInfo {
   Class beanClass = CopyButton.class;
-  String iconColor16x16Filename = "CopyButton16.gif";
-  String iconColor32x32Filename = "CopyButton.gif";
-  String iconMono16x16Filename = "CopyButton16.gif";
-  String iconMono32x32Filename = "CopyButton.gif";
+  String iconColor16x16Filename = "CopyButton16.png";
+  String iconColor32x32Filename = "CopyButton.png";
+  String iconMono16x16Filename = "CopyButton16.png";
+  String iconMono32x32Filename = "CopyButton.png";
 
   public CopyButtonBeanInfo() {
   }

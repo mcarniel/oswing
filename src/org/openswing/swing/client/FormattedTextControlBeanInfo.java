@@ -14,10 +14,10 @@ import java.beans.*;
 
 public class FormattedTextControlBeanInfo extends SimpleBeanInfo {
   Class beanClass = TextControl.class;
-  String iconColor16x16Filename = "TextControl16.gif";
-  String iconColor32x32Filename = "TextControl.gif";
-  String iconMono16x16Filename = "TextControl16.gif";
-  String iconMono32x32Filename = "TextControl.gif";
+  String iconColor16x16Filename = "TextControl16.png";
+  String iconColor32x32Filename = "TextControl.png";
+  String iconMono16x16Filename = "TextControl16.png";
+  String iconMono32x32Filename = "TextControl.png";
 
   public FormattedTextControlBeanInfo() {
   }
