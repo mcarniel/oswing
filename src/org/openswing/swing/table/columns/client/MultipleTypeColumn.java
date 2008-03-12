@@ -6,7 +6,6 @@ import org.openswing.swing.table.client.GridController;
 import org.openswing.swing.table.renderers.client.MultipleTypeTableCellRenderer;
 import org.openswing.swing.table.editors.client.MultipleTypeCellEditor;
 import org.openswing.swing.table.client.Grids;
-import org.openswing.swing.table.client.Grids;
 
 
 /**

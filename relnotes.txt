@@ -1,5 +1,18 @@
 
 
+Release Notes 1.5.1
+-------------------
+
+Final release 1.5.1 available
+
+Included support for JPA/EJB 3.0/TopLink Essentials: JPAUtils class has been provided to easily support grid pagination, filtering, sorting 
+from OpenSwing GridControl to JPA API.
+Added "demo35" sample application to show how to combine JPA with OpenSwing.
+Updated web site documentation by adding description about how to use together JPA and OpenSwing.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5
 -----------------
 

@@ -27,6 +27,8 @@ aspectjrt.jar, aspectjweaver.jar, cglib-nodep-2.1_3.jar, commons-dbcp.jar, commo
 
 Note: to run the "demo19" sample you have to include in the classpath iBatis libraries too (see runDemo19.bat/sh). "demo19" sample app has been tested with iBatis 2.3
 
+Note: to run the "demo35" sample you have to use Java 5 EE and include in the classpath an Entity Manager implementation, such as javaee.jar file of GlassFish A.S. (see README.xxt file within demo35 source folder)
+
 
 
 2. Directory Structure
@@ -39,10 +41,13 @@ srcspring       source files of OpenSwing framework specifically related to Spri
 
 srchibernate    source files of OpenSwing framework specifically related to iBatis embedding; to compile these classes you have to include in classpath iBatis jars too (NOT provided in OpenSwing distribution)
 
+srcjpa          source files of OpenSwing framework specifically related to JPA/TopLink embedding; to compile these classes you have to use Java 5 EE and include in classpath an Entity Manager implementation, such as that included in GlassFish A.S. (NOT provided in OpenSwing distribution)
+
 srcdemo		source files of demos included in the distribution; 
                 "demo17" subfolder requires Hibernate jars too (NOT provided in OpenSwing distribution)
                 "demo18" subfolder requires Spring jars too (NOT provided in OpenSwing distribution)
                 "demo19" subfolder requires iBatis jars too (NOT provided in OpenSwing distribution)
+                "demo35" subfolder requires Java 5 EE and an Entity Manager implementation such as that included in GlassFish A.S. (NOT provided in OpenSwing distribution)
 
 build		jar files 
 
@@ -139,8 +144,9 @@ Note: maybe component images could be not visible; in that case you have to sele
 Eclipse's Visual Editor is not able to correctly render all OpenSwing graphics controls, because of it does not fully support Java Beans specifications.
 You can use Eclipse and OpenSwing only if you include an Eclipse plugin that fully support Java Beans specifications.
 A good (non free) plugin for Eclipse 3.x is "Window Builder - Swing Designer" (see http://www.swing-designer.com/)
+Another plugin for Eclipse 3.x is Jigloo (see http://www.cloudgarden.com/jigloo), that it is distributed in dual licence: free for non commercial use and a commercial use licence. 
 
-After installing "Window Builder - Swing Designer" (see Swing Designer installation instructions), you can create JFrame, JPanel and many other Swing components by: 
+3.4.1) After installing "Window Builder - Swing Designer" (see Swing Designer installation instructions), you can create JFrame, JPanel and many other Swing components by: 
 - selecting "File" from menu bar
 - selecting "New" -> "Other" menu items
 - expanding "Designer" -> "Swing" folders
@@ -158,6 +164,24 @@ Inside this Component Palette it is possible to include all OpenSwing components
 - finally press "Ok": at this point the OpenSwing palette will be visible in the Component Palette
 
 Note: if OpenSwing components are not visible inside the new category, close Eclipse and restart it.
+
+3.4.2) After installing "Jigloo" (see Jigloo plugin installation instructions), you can create JFrame, JPanel and many other Swing components by: 
+- selecting "File" from menu bar
+- selecting "New" -> "Other" menu items
+- expanding "Designer" -> "Swing" folders
+- selecting a Swing components, e.g. JFrame and creating a class
+
+At this point "Jigloo" plugin will open the class with two alternative views: GUI/Java editors.
+When GUI editor is visible, it is available a Component Palette.
+Inside this Component Palette it is possible to include all OpenSwing components, through the following steps: 
+- select "Window" -> "Preferences" from Eclipse menu bar
+- expand "Jigloo GUI Builder" node in the menu tree
+- select "Component Palette/Custom classes" 
+- press "Add (bean or palette)" button to specify a new components folder, such as "OpenSwing": press "Ok" and select it
+- press "Add Beans from Archive " button: this will open a jar file selection window
+- choose "Beaninfo.jar" file included with OpenSwing distribution and press "Ok" button 
+- press "Ok" to confirm new components inclusion: at this point the OpenSwing palette will be visible in the Component Palette
+
 
 
 4. How to use the framework

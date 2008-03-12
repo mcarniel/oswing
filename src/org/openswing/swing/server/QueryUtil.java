@@ -96,7 +96,45 @@ public class QueryUtil {
       ArrayList currentSortedVersusColumns,
       Map attributesMapping
   ) {
+    return getSql(
+      userSessionPars,
+      baseSQL,
+      attrNames,
+      values,
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      attributesMapping,
+      false
+    );
+  }
+
+  /**
+   * This constructor can be useful when combining OpenSwing with Hibernate, to retrieve attribute names too.
+   * @param baseSQL SQL to change by adding filter and order clauses
+   * @param attrNames attribute names related to filter values
+   * @param values binding values related to baseSQL
+   * @param filteredColumns columns to add in the WHERE clause
+   * @param currentSortedColumns columns to add in the ORDER clause
+   * @param currentSortedVersusColumns ordering versus
+   * @param attributesMapping collection of pairs attributeName, corresponding database column (table.column)
+   * @param isJPAsyntax flag
+   * @return baseSQL + filtering and ordering conditions
+
+   */
+  public static String getSql(
+      UserSessionParameters userSessionPars,
+      String baseSQL,
+      ArrayList attrNames,
+      ArrayList values,
+      Map filteredColumns,
+      ArrayList currentSortedColumns,
+      ArrayList currentSortedVersusColumns,
+      Map attributesMapping,
+      boolean isJPAsyntax
+  ) {
     try {
+      int num = values.size()+1;
       if (filteredColumns.size() > 0) {
         if (baseSQL.toLowerCase().indexOf("where") == -1) {
           baseSQL += " WHERE ";
@@ -115,7 +153,7 @@ public class QueryUtil {
               " " + filterClauses[0].getOperator() + " ";
           if (filterClauses[0].getValue()!=null &&
               !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
-            baseSQL += "? AND ";
+            baseSQL += "?"+(isJPAsyntax?String.valueOf(num++):"")+" AND ";
             values.add(filterClauses[0].getValue());
           }
           else
@@ -127,7 +165,7 @@ public class QueryUtil {
                 " " + filterClauses[1].getOperator() + " ";
             if (filterClauses[1].getValue()!=null &&
                 !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
-              baseSQL += "? AND ";
+              baseSQL += "?"+(isJPAsyntax?String.valueOf(num++):"")+" AND ";
               values.add(filterClauses[1].getValue());
             }
             else
