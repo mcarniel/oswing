@@ -39,6 +39,8 @@ public class ClientApplet extends ClientUtils implements MDIController,LoginCont
 
 
   public void start() {
+    ClientUtils.setObjectSender(new HessianObjectSender());
+
     clientFacade = new DemoClientFacade();
 
     LoginDialog d = new LoginDialog(null,false,this);

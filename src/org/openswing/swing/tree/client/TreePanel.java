@@ -24,6 +24,7 @@ import org.openswing.swing.util.client.SearchControl;
 import org.openswing.swing.util.client.ClientUtils;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -72,7 +73,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   private Color selectionForeground = ClientSettings.TREE_SELECTION_FOREGROUND;
 
   /** expandable tree */
-  private JTree tree = new JTree(new DefaultMutableTreeNode()){
+  private JTree tree = new JTree(new OpenSwingTreeNode()){
 
       public TreePath getNextMatch(String prefix, int startingRow,
                                  Position.Bias bias) {
@@ -103,7 +104,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   private JTable table = new JTable();
 
   /** tree model */
-  private DefaultTreeModel treeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
+  private DefaultTreeModel treeModel = new DefaultTreeModel(new OpenSwingTreeNode());
 
   /** tree container */
   private JScrollPane treePane = new JScrollPane();
@@ -234,7 +235,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
         else {
           Response response = treeDataLocator.getTreeModel(tree);
           if (response.isError())
-            treeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
+            treeModel = new DefaultTreeModel(new OpenSwingTreeNode());
           else
             treeModel = (DefaultTreeModel) ( (VOResponse) response).getVo();
           tree.setModel(treeModel);
@@ -339,7 +340,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * Remove all nodes (expept the root node) from the tree.
    */
   public final void clearTree() {
-    treeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
+    treeModel = new DefaultTreeModel(new OpenSwingTreeNode());
     repaintTree();
   }
 
@@ -349,7 +350,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   private void createTree() {
     Response response = treeDataLocator.getTreeModel(tree);
     if (response.isError())
-      treeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
+      treeModel = new DefaultTreeModel(new OpenSwingTreeNode());
     else
       treeModel = (DefaultTreeModel) ( (VOResponse) response).getVo();
     recreateTree();

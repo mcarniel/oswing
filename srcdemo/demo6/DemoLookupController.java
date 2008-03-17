@@ -8,6 +8,7 @@ import java.util.*;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -98,7 +99,7 @@ public class DemoLookupController extends LookupController {
       public Response getTreeModel(JTree tree) {
         Statement stmt = null;
         try {
-          DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+          DefaultMutableTreeNode root = new OpenSwingTreeNode();
           int lev = 0;
           DefaultMutableTreeNode currN = null;
 
@@ -109,7 +110,7 @@ public class DemoLookupController extends LookupController {
             TestLookupVO vo = new TestLookupVO();
             vo.setLookupValue(rset.getString(1));
             vo.setDescrLookupValue(rset.getString(2));
-            DefaultMutableTreeNode n = new DefaultMutableTreeNode(vo);
+            DefaultMutableTreeNode n = new OpenSwingTreeNode(vo);
             if (lev==0) {
               root.add(n);
               currN = n;
@@ -131,7 +132,7 @@ public class DemoLookupController extends LookupController {
         }
         catch (SQLException ex) {
           ex.printStackTrace();
-          return new VOResponse(new DefaultTreeModel(new DefaultMutableTreeNode()));
+          return new VOResponse(new DefaultTreeModel(new OpenSwingTreeNode()));
         }
         finally {
           try {

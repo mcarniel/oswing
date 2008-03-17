@@ -22,6 +22,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 import java.io.InputStream;
 import com.ibatis.common.logging.LogFactory;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -256,7 +257,7 @@ public class ClientApplication implements MDIController,LoginController {
    * @return application functions (ApplicationFunction objects), organized as a tree
    */
   public DefaultTreeModel getApplicationFunctions() {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Administration",null);
     ApplicationFunction n13 = new ApplicationFunction("Employees","EMP","appicon.gif","getEmps");

@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ObjectOutputStream;
 import org.openswing.swing.message.receive.java.ErrorResponse;
+import org.openswing.swing.util.server.ObjectReceiver;
+import org.openswing.swing.util.server.DefaultObjectReceiver;
 
 
 /**
@@ -40,6 +42,18 @@ public class OpenSwingViewResolver extends AbstractView {
 
   public static final String RESPONSE_PROPERTY_NAME = "response";
 
+  /** receiver class used in combination with "ClientUtils.getData" method to comunicate with a remote client via HTTP; default value: "DefaultObjectReceiver" */
+  private ObjectReceiver objectReceiver = new DefaultObjectReceiver();
+
+
+  /**
+   * Set the receiver class used in combination with "ClientUtils.getData" method to comunicate with a remote client via HTTP.
+   * @param objectReceiver receiver class to use
+   */
+  public final void setObjectReceiver(ObjectReceiver objectReceiver) {
+    this.objectReceiver = objectReceiver;
+  }
+
 
   /**
    * Give back to OpenSwing client layer the Response object stored in "model" argument.
@@ -55,9 +69,7 @@ public class OpenSwingViewResolver extends AbstractView {
     if (answer==null)
       answer = new ErrorResponse("no model found!");
 
-    ObjectOutputStream oos = new ObjectOutputStream(response.getOutputStream());
-    oos.writeObject(answer);
-    oos.close();
+    objectReceiver.setObjectToResponse(response,answer);
   }
 
 

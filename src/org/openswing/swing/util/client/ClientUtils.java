@@ -63,6 +63,9 @@ public class ClientUtils extends JApplet {
   /** list of listener of busy state events */
   private static ArrayList busyListeners = new ArrayList();
 
+  /** sender used inside "getData" method to comunicate with a remote site via HTTP; default value: "DefaultObjectSender" */
+  private static ObjectSender defaultSender = new DefaultObjectSender();
+
 
   public final void init() {
     applet = this;
@@ -216,13 +219,8 @@ public class ClientUtils extends JApplet {
 
       // set POST method...
       urlC.setDoOutput(true);
-      ObjectOutputStream oos = new ObjectOutputStream(urlC.getOutputStream());
-      oos.writeObject(new Command(sessionId,serverMethodName,param));
-      oos.close();
 
-      ObjectInputStream ois = new ObjectInputStream(urlC.getInputStream());
-      Response response = (Response)ois.readObject();
-      ois.close();
+      Response response = defaultSender.sendRequest(urlC,new Command(sessionId,serverMethodName,param));
 
       // store the session identifier returned by the server side...
       if (sessionId==null || serverMethodName.equals("login"))
@@ -246,7 +244,7 @@ public class ClientUtils extends JApplet {
 
       return response;
     }
-    catch (Exception ex) {
+    catch (Throwable ex) {
       try {
         for(int i=0;i<busyListeners.size();i++)
           ((BusyListener)busyListeners.get(i)).setBusy(false);
@@ -456,6 +454,14 @@ public class ClientUtils extends JApplet {
     return null;
   }
 
+
+  /**
+   * Set the sender to use inside "getData" method to comunicate with a remote site via HTTP.
+   * @param objectSender ObjectSender to set
+   */
+  public static final void setObjectSender(ObjectSender objectSender) {
+    defaultSender = objectSender;
+  }
 
 
 }

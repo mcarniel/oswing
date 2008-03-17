@@ -1,5 +1,25 @@
 
 
+Release Notes 1.5.2
+-------------------
+
+Final release 1.5.2 available
+
+Included support for Hessian serialization/deserialization: thanks to this open source library, it will be possible to combine
+different versions of java for client and server sides for the application. 
+Hessian usage is described in documentation available in "Messages" and "Business logic and data access tier development" and
+"Spring integration" sections of OpenSwing web site. Spring intergration section reported Hessian usage too.
+Changed "demo5" sample application to show how to use Hessian support in a 3 tier client-server application fully based on OpenSwing.
+Changed "demo18" sample application to show how to use Hessian support in a 3 tier client-server application based on OpenSwing and Spring.
+Created class OpenSwingTreeNode that inherits from DefaultMutableTreeNode; this subclass allows to serialize the "userObject" attribute 
+of DefaultMutableTreeNode: in this way "userObject" attribute can be correctly serialized using different versions of Java between client and server, hence with Hessian too.
+Changed behavior in GridControl component when right clicking with the mouse: now it is possible to execute some popup command on multiple selected rows.
+Fixed bugs in demo6, demo7 and demo9 sample applications.
+Added .bat/.sh start files for sample applications demo27..demo35 (see README.txt file for demo35).
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5.1
 -------------------
 

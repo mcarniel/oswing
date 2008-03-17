@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import org.openswing.swing.message.receive.java.VOResponse;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
+
 
 /**
  * <p>Title: OpenSwing Demo</p>
@@ -40,7 +42,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo.setItemCode("C1");
     vo.setPrice(new BigDecimal(110));
     vo.setQty(new BigDecimal(1));
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode(vo);
+    DefaultMutableTreeNode root = new OpenSwingTreeNode(vo);
     DefaultTreeModel model = new DefaultTreeModel(root);
 
     vo = new TestVO();
@@ -48,7 +50,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo.setItemCode("L1");
     vo.setPrice(new BigDecimal(10));
     vo.setQty(new BigDecimal(4));
-    DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(vo);
+    DefaultMutableTreeNode node1 = new OpenSwingTreeNode(vo);
     root.add(node1);
 
     vo = new TestVO();
@@ -56,7 +58,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo.setItemCode("B1");
     vo.setPrice(new BigDecimal(50));
     vo.setQty(new BigDecimal(1));
-    DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(vo);
+    DefaultMutableTreeNode node2 = new OpenSwingTreeNode(vo);
     root.add(node2);
 
     vo = new TestVO();
@@ -64,7 +66,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo.setItemCode("S1");
     vo.setPrice(new BigDecimal(50));
     vo.setQty(new BigDecimal(1));
-    DefaultMutableTreeNode node3 = new DefaultMutableTreeNode(vo);
+    DefaultMutableTreeNode node3 = new OpenSwingTreeNode(vo);
     root.add(node3);
 
     vo = new TestVO();
@@ -72,7 +74,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo.setItemCode("P1");
     vo.setPrice(new BigDecimal(40));
     vo.setQty(new BigDecimal(1));
-    DefaultMutableTreeNode node31 = new DefaultMutableTreeNode(vo);
+    DefaultMutableTreeNode node31 = new OpenSwingTreeNode(vo);
     node3.add(node31);
 
     vo = new TestVO();
@@ -80,7 +82,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo.setItemCode("W1");
     vo.setPrice(new BigDecimal(10));
     vo.setQty(new BigDecimal(1));
-    DefaultMutableTreeNode node32 = new DefaultMutableTreeNode(vo);
+    DefaultMutableTreeNode node32 = new OpenSwingTreeNode(vo);
     node3.add(node32);
 
     return new VOResponse(model);

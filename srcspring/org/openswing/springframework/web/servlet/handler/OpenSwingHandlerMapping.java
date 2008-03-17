@@ -2,7 +2,6 @@ package org.openswing.springframework.web.servlet.handler;
 
 import org.springframework.web.servlet.handler.AbstractHandlerMapping;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ObjectInputStream;
 import org.openswing.swing.message.send.java.Command;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -12,6 +11,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.ModelAndView;
 import org.openswing.swing.message.receive.java.Response;
 import org.openswing.springframework.web.servlet.view.OpenSwingViewResolver;
+import org.openswing.swing.util.server.ObjectReceiver;
+import org.openswing.swing.util.server.DefaultObjectReceiver;
 
 
 /**
@@ -56,6 +57,22 @@ public class OpenSwingHandlerMapping extends AbstractHandlerMapping {
 
   /** interceptors cache */
   private HandlerInterceptor[] newinterceptors = null;
+
+  /** receiver class used in combination with "ClientUtils.getData" method to comunicate with a remote client via HTTP; default value: "DefaultObjectReceiver" */
+  private ObjectReceiver objectReceiver = new DefaultObjectReceiver();
+
+  /** resolver */
+  private OpenSwingViewResolver resolver = new OpenSwingViewResolver();
+
+
+  /**
+   * Set the receiver class used in combination with "ClientUtils.getData" method to comunicate with a remote client via HTTP.
+   * @param objectReceiver receiver class to use
+   */
+  public final void setObjectReceiver(ObjectReceiver objectReceiver) {
+    this.objectReceiver = objectReceiver;
+    resolver.setObjectReceiver(objectReceiver);
+  }
 
 
   /**
@@ -117,9 +134,7 @@ public class OpenSwingHandlerMapping extends AbstractHandlerMapping {
       return command.getMethodName();
     }
 
-    ObjectInputStream ois = new ObjectInputStream(request.getInputStream());
-    command = (Command) ois.readObject();
-    ois.close();
+    command = objectReceiver.getObjectFromRequest(request);
     request.setAttribute(COMMAND_ATTRIBUTE_NAME,command);
     return command.getMethodName();
   }
@@ -149,7 +164,7 @@ public class OpenSwingHandlerMapping extends AbstractHandlerMapping {
           sessionId = ""+System.currentTimeMillis()+Math.random();
         if (((Response)answer).getSessionId()==null)
           ((Response)answer).setSessionId(sessionId);
-        model.setView(new OpenSwingViewResolver());
+        model.setView(resolver);
       }
 
     }

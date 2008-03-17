@@ -18,6 +18,7 @@ import org.openswing.swing.domains.java.Domain;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.message.receive.java.Response;
 import org.openswing.swing.client.OptionPane;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -37,6 +38,8 @@ public class ClientApplicationWithLogin implements MDIController,LoginController
 
 
   public ClientApplicationWithLogin() {
+    ClientUtils.setObjectSender(new HessianObjectSender());
+
     clientFacade = new DemoClientFacade();
 
 
@@ -242,7 +245,7 @@ public class ClientApplicationWithLogin implements MDIController,LoginController
    * @return application functions (ApplicationFunction objects), organized as a tree
    */
   public DefaultTreeModel getApplicationFunctions() {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Administration",null);
     ApplicationFunction n11 = new ApplicationFunction("Employees","EMP","men.gif","getEmployees");

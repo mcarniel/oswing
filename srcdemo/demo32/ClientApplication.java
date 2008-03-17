@@ -1,5 +1,6 @@
 package demo32;
 
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 import java.util.*;
 import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.util.client.ClientSettings;
@@ -277,7 +278,7 @@ public class ClientApplication implements MDIController,LoginController {
    * @return application functions (ApplicationFunction objects), organized as a tree
    */
   public DefaultTreeModel getApplicationFunctions() {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n0 = new ApplicationFunction("Email",null);
     ApplicationFunction n1 = new ApplicationFunction("New message","NEW",null,"newEmail");

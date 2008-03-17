@@ -9,6 +9,8 @@ import java.io.ObjectInputStream;
 import org.openswing.swing.message.receive.java.ErrorResponse;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
+import org.openswing.swing.util.server.ObjectReceiver;
+import org.openswing.swing.util.server.DefaultObjectReceiver;
 
 
 /**
@@ -45,6 +47,18 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
   /** value of Command.getMethodName() that is recognized as a request to login, so it is always accepted */
   private String loginMethodName;
 
+  /** receiver class used in combination with "ClientUtils.getData" method to comunicate with a remote client via HTTP; default value: "DefaultObjectReceiver" */
+  private ObjectReceiver objectReceiver = new DefaultObjectReceiver();
+
+
+  /**
+   * Set the receiver class used in combination with "ClientUtils.getData" method to comunicate with a remote client via HTTP.
+   * @param objectReceiver receiver class to use
+   */
+  public final void setObjectReceiver(ObjectReceiver objectReceiver) {
+    this.objectReceiver = objectReceiver;
+  }
+
 
   public final boolean preHandle(
           HttpServletRequest request,
@@ -64,9 +78,8 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
         (command.getMethodName().equals(loginMethodName) || command.getSessionId()!=null && sessionIds.contains(command.getSessionId()));
     if (!ok) {
       ErrorResponse answer = new ErrorResponse("Cannot process the request: authentication needed!");
-      ObjectOutputStream oos = new ObjectOutputStream(response.getOutputStream());
-      oos.writeObject(answer);
-      oos.close();
+
+      objectReceiver.setObjectToResponse(response,answer);
     }
     return ok;
   }

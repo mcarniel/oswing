@@ -44,6 +44,7 @@ import java.awt.event.KeyEvent;
 import org.openswing.swing.util.client.ClientUtils;
 import java.lang.reflect.*;
 import javax.swing.SwingUtilities;
+import javax.swing.InputMap;
 
 
 /**
@@ -635,6 +636,7 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
     if (controllerMethodName!=null)
       this.add(plusButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(0, 0, 0, 0), 0, 0));
   }
+
 
 
 }

@@ -38,6 +38,7 @@ public class ClientApplication implements MDIController,LoginController {
 
 
   public ClientApplication() {
+    ClientUtils.setObjectSender(new HessianObjectSender());
     clientFacade = new DemoClientFacade();
 
     LoginDialog d = new LoginDialog(null,false,this);

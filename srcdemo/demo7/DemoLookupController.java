@@ -10,6 +10,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.Dimension;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -146,25 +147,25 @@ public class DemoLookupController extends LookupController {
           vo = new TreeNodeVO();
           vo.setCodLevel("0");
           vo.setDescrLevel("Level0");
-          DefaultMutableTreeNode root = new DefaultMutableTreeNode(vo);
+          DefaultMutableTreeNode root = new OpenSwingTreeNode(vo);
 
           vo = new TreeNodeVO();
           vo.setCodLevel("1");
           vo.setDescrLevel("Level1");
-          DefaultMutableTreeNode n1 = new DefaultMutableTreeNode(vo);
+          DefaultMutableTreeNode n1 = new OpenSwingTreeNode(vo);
           root.add(n1);
 
           vo = new TreeNodeVO();
           vo.setCodLevel("2");
           vo.setDescrLevel("Level2");
-          DefaultMutableTreeNode n2 = new DefaultMutableTreeNode(vo);
+          DefaultMutableTreeNode n2 = new OpenSwingTreeNode(vo);
           root.add(n2);
 
           return new VOResponse(new DefaultTreeModel(root));
         }
         catch (Exception ex) {
           ex.printStackTrace();
-          return new VOResponse(new DefaultTreeModel(new DefaultMutableTreeNode()));
+          return new VOResponse(new DefaultTreeModel(new OpenSwingTreeNode()));
         }
 
       }

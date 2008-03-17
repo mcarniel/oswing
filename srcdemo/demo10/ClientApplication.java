@@ -20,6 +20,7 @@ import org.openswing.swing.miscellaneous.client.TipInternalFrame;
 import org.openswing.swing.miscellaneous.client.TipPanelContent;
 import java.math.BigDecimal;
 import org.openswing.swing.table.profiles.client.FileGridProfileManager;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -347,7 +348,7 @@ public class ClientApplication implements MDIController,LoginController {
    * @return application functions (ApplicationFunction objects), organized as a tree
    */
   public DefaultTreeModel getApplicationFunctions() {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Administration",null);
     ApplicationFunction n11 = new ApplicationFunction("Employees","getEmployees","men.gif","getEmployees");

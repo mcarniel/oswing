@@ -12,7 +12,7 @@ import org.openswing.swing.mdi.java.ApplicationFunction;
 import org.openswing.swing.message.receive.java.UserAuthorizationsResponse;
 import org.openswing.swing.permissions.java.ButtonsAuthorizations;
 import org.openswing.swing.internationalization.java.ResourcesFactory;
-
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -50,7 +50,7 @@ public class DemoFunctionAuthorizationsAction implements Action {
 
     if (userSessionPars.getUsername().equals("ADMIN")) {
       // all grants...
-      DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+      DefaultMutableTreeNode root = new OpenSwingTreeNode();
       DefaultTreeModel model = new DefaultTreeModel(root);
       ApplicationFunction n1 = new ApplicationFunction(factory.getResources(langId).getResource("folder1"),null);
       ApplicationFunction n2 = new ApplicationFunction(factory.getResources(langId).getResource("folder2"),null);
@@ -75,7 +75,7 @@ public class DemoFunctionAuthorizationsAction implements Action {
     }
     else {
       // limited grants...
-      DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+      DefaultMutableTreeNode root = new OpenSwingTreeNode();
       DefaultTreeModel model = new DefaultTreeModel(root);
       ApplicationFunction n1 = new ApplicationFunction(factory.getResources(langId).getResource("function1"),"F1",null,"getF1");
       root.add(n1);

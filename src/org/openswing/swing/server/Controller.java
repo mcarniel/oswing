@@ -6,10 +6,10 @@ import java.io.*;
 import java.util.*;
 import org.openswing.swing.message.send.java.*;
 import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.internationalization.java.ResourcesFactory;
 import org.openswing.swing.logger.server.*;
-import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.internationalization.server.*;
+import org.openswing.swing.util.server.ObjectReceiver;
+import org.openswing.swing.util.server.DefaultObjectReceiver;
 
 
 /**
@@ -75,6 +75,9 @@ public class Controller extends HttpServlet {
 
   /** class that derives from ControllerCallbacks */
   public static final String CONTROLLER_CALLBACKS = "CONTROLLER_CALLBACKS";
+
+  /** receiver class used in combination with "ClientUtils.getData" method to comunicate with a remote client via HTTP; default value: "DefaultObjectReceiver" */
+  private ObjectReceiver objectReceiver = new DefaultObjectReceiver();
 
 
   /**
@@ -179,6 +182,21 @@ public class Controller extends HttpServlet {
 
     if (controllerCallbacksObj != null)
       controllerCallbacksObj.afterInit(super.getServletContext());
+
+    // initialize objects receiver...
+    try {
+      String objectsReceiverClassName = super.getInitParameter("objectsReceiver");
+      if (objectsReceiverClassName != null) {
+        objectReceiver = (ObjectReceiver)Class.forName(objectsReceiverClassName).newInstance();
+      }
+    }
+    catch (Throwable ex) {
+      String msg = "Error on initializing objects receiver class";
+      if (logOk)
+        Logger.error("NONAME",this.getClass().getName(),"init",msg,ex);
+      else
+        this.getServletContext().log(msg,ex);
+    }
 
     if (logOk)
       Logger.info("NONAME",this.getClass().getName(),"init","Servlet Initialization completed.");
@@ -341,8 +359,7 @@ public class Controller extends HttpServlet {
 
     // read the client request...
     try {
-      ObjectInputStream ois = new ObjectInputStream(request.getInputStream());
-      Command command = (Command) ois.readObject();
+      Command command = objectReceiver.getObjectFromRequest(request);
 
       if (!ConnectionManager.isConnectionSourceCreated() || command.getMethodName().equals("databaseAlreadyExixts")) {
         // database connection error: all requests will pass. throught..
@@ -395,18 +412,27 @@ public class Controller extends HttpServlet {
           answer = new ErrorResponse( msg + ": '" + command.getMethodName() + "'" );
         }
       }
-      ois.close();
     }
     catch (Exception ex) {
       this.getServletContext().log("Error on processing client request",ex);
-      ObjectOutputStream oos = new ObjectOutputStream(response.getOutputStream());
-      oos.writeObject(new ErrorResponse(ex.getMessage()));
-      oos.close();
+      try {
+        objectReceiver.setObjectToResponse(response, new ErrorResponse(ex.getMessage()));
+      }
+      catch (Exception exx1) {
+        this.getServletContext().log("Error on processing client request",exx1);
+        response.getOutputStream().close();
+      }
       return;
     }
-    ObjectOutputStream oos = new ObjectOutputStream(response.getOutputStream());
-    oos.writeObject(answer);
-    oos.close();
+
+    try {
+      objectReceiver.setObjectToResponse(response, answer);
+    }
+    catch (Exception ex1) {
+      this.getServletContext().log("Error on processing client request",ex1);
+      response.getOutputStream().close();
+      return;
+    }
   }
 
 

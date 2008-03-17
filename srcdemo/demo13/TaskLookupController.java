@@ -8,6 +8,7 @@ import java.util.*;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -115,7 +116,7 @@ public class TaskLookupController extends LookupController {
        * @return a VOReponse containing a DefaultTreeModel object
        */
       public Response getTreeModel(JTree tree) {
-        return new VOResponse(new DefaultTreeModel(new DefaultMutableTreeNode()));
+        return new VOResponse(new DefaultTreeModel(new OpenSwingTreeNode()));
       }
 
 

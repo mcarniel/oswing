@@ -43,7 +43,7 @@ public class EmpGridFrame extends InternalFrame {
       grid.setController(controller);
       grid.setGridDataLocator(serverDataLocator);
       serverDataLocator.setServerMethodName("loadEmps");
-
+      setTitle("Employees");
     }
     catch(Exception e) {
       e.printStackTrace();

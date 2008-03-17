@@ -14,7 +14,7 @@
     width="500" height="400" align="baseline"
     codebase="http://java.sun.com/products/plugin/autodl/jinstall-1_4_2-windows-i586.cab#Version=1,4,2">
     <PARAM NAME="code" VALUE="demo5.client.ClientApplet">
-    <PARAM NAME=archive VALUE="demo5client.jar,clientos.jar,jcalendar.jar,jnlp.jar">
+    <PARAM NAME=archive VALUE="demo5client.jar,clientos.jar,jcalendar.jar,jnlp.jar,hessian-3.1.5.jar">
     <PARAM NAME="codebase" VALUE=".">
     <PARAM NAME="type" VALUE="application/x-java-applet;jpi-version=1.4.2">
     <PARAM NAME=MAYSCRIPT value="true">
@@ -28,7 +28,7 @@
    height="400" align="baseline" code="demo5.client.ClientApplet"
    codebase="."
    pluginspage="http://java.sun.com/products/plugin/autodl/jinstall-1_4_2-windows-i586.cab#Version=1,4,2"
-   archive="demo5client.jar,clientos.jar,jcalendar.jar,jnlp.jar" MAYSCRIPT="true"
+   archive="demo5client.jar,clientos.jar,jcalendar.jar,jnlp.jar,hessian-3.1.5.jar" MAYSCRIPT="true"
    SERVERURL="<%=request.getScheme()%>://<%= request.getServerName()+":"+request.getServerPort()+request.getContextPath()%>/controller"
 >
 <NOEMBED>

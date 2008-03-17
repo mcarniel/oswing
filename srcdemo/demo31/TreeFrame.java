@@ -8,6 +8,7 @@ import java.awt.event.*;
 import org.openswing.swing.util.client.ClientSettings;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -129,7 +130,7 @@ public class TreeFrame extends JFrame {
             // copy node...
             DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)node.getParent();
             if (parentNode!=null) {
-              DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(dragNode.getUserObject());
+              DefaultMutableTreeNode newNode = new OpenSwingTreeNode(dragNode.getUserObject());
               if (((TestVO)node.getUserObject()).getCode()==null)
                 // dropped node is a folder...
                 node.add(newNode);

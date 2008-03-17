@@ -17,3 +17,5 @@ To run this web application, tou have to:
 
 - launch client-side application through a web browser by clicking on the "demo18login.jnlp" file; this stating version does require a login: use account: "admin" / "guest".
   Before use this file you have to (i) uncomment the "sessionCheckInterceptor" id bean from "controller-servlet.xml" file and (ii) uncomment "interceptors" property from the same file.
+
+- in last release of this application, the hessian-3.1.1.jar library has been added; as consequence, this demo can be executed only with Java 1.5 or above.

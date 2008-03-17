@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import org.openswing.swing.util.server.JPAUtils;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -233,7 +234,7 @@ public class ClientApplication implements MDIController,LoginController {
    * @return application functions (ApplicationFunction objects), organized as a tree
    */
   public DefaultTreeModel getApplicationFunctions() {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Folder1",null);
     ApplicationFunction n2 = new ApplicationFunction("Folder2",null);

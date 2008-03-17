@@ -24,6 +24,7 @@ Note: to run the "demo17" sample you have to include in the classpath Hibernate 
 Note: to run the "demo18" sample you have to include in the classpath Spring framework libraries too. "demo18" sample app has been tested with release 2.0.4 of Spring, using Tomcat 5.5 and JDK 1.6.
 You have to include in web container classpath at least the following Spring files: 
 aspectjrt.jar, aspectjweaver.jar, cglib-nodep-2.1_3.jar, commons-dbcp.jar, commons-pool.jar, spring-aspects.jar, spring.jar
+Moreover, in last release of this demo, the hessian-3.1.1.jar library has been added; as consequence, this demo can be executed only with Java 1.5 or above.
 
 Note: to run the "demo19" sample you have to include in the classpath iBatis libraries too (see runDemo19.bat/sh). "demo19" sample app has been tested with iBatis 2.3
 

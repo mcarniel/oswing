@@ -16,6 +16,8 @@ import org.openswing.swing.message.receive.java.VOResponse;
 import org.openswing.swing.message.receive.java.ValueObject;
 import java.lang.reflect.*;
 import java.text.Format;
+import javax.swing.tree.DefaultMutableTreeNode;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -142,7 +144,7 @@ public class TreeGridPanel extends JPanel {
         else {
           Response response = treeDataLocator.getTreeModel(tree.getTree());
           if (response.isError())
-            treeRoot = new DefaultMutableTreeNode();
+            treeRoot = new OpenSwingTreeNode();
           else
             treeRoot = (DefaultMutableTreeNode)((DefaultTreeModel)((VOResponse)response).getVo()).getRoot();
           recreateTree();
@@ -200,7 +202,7 @@ public class TreeGridPanel extends JPanel {
    * Remove all nodes (expept the root node) from the tree.
    */
   public final void clearTree() {
-    treeRoot = new DefaultMutableTreeNode();
+    treeRoot = new OpenSwingTreeNode();
     repaintTree();
   }
 
@@ -211,7 +213,7 @@ public class TreeGridPanel extends JPanel {
   private void createTree() {
     Response response = treeDataLocator.getTreeModel(tree.getTree());
     if (response.isError())
-      treeRoot = new DefaultMutableTreeNode();
+      treeRoot = new OpenSwingTreeNode();
     else
       treeRoot = (DefaultMutableTreeNode)((DefaultTreeModel)((VOResponse)response).getVo()).getRoot();
     recreateTree();
@@ -520,7 +522,7 @@ public class TreeGridPanel extends JPanel {
 
 
     public TreeGridModel() {
-      this(new DefaultMutableTreeNode());
+      this(new OpenSwingTreeNode());
     }
 
 

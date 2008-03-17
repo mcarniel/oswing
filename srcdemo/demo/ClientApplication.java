@@ -12,6 +12,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.openswing.swing.mdi.java.ApplicationFunction;
 import org.openswing.swing.client.SplashScreen;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -204,7 +205,7 @@ public class ClientApplication implements MDIController,LoginController {
    * @return application functions (ApplicationFunction objects), organized as a tree
    */
   public DefaultTreeModel getApplicationFunctions() {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Folder1",null);
     ApplicationFunction n2 = new ApplicationFunction("Folder2",null);

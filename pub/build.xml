@@ -1,4 +1,4 @@
-<project name="OpenSwing" default="allclasses" basedir=".">
+<project name="OpenSwing" default="all" basedir=".">
 
   <property name="src" value="${basedir}/../src"/>
   <property name="srch" value="${basedir}/../srchibernate"/>
@@ -150,6 +150,7 @@
         <include name="jnlp.jar"/>
         <include name="jnlp-servlet.jar"/>
         <include name="OfficeLnFs_2.7.jar"/>
+        <include name="hessian-3.1.5.jar"/>
       </fileset>
     </copy>
     <signjar jar="${signedlib}/looks-2.0.1.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
@@ -163,7 +164,7 @@
     <signjar jar="${signedlib}/jnlp.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <signjar jar="${signedlib}/jnlp-servlet.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
     <signjar jar="${signedlib}/OfficeLnFs_2.7.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
-
+    <signjar jar="${signedlib}/hessian-3.1.5.jar" alias="${ALIAS}" storepass="${STOREPASS}" keystore="${keystore}" />
   </target>
 
 
@@ -216,6 +217,7 @@
         <include name="clientos.jar"/>
         <include name="jcalendar.jar"/>
         <include name="jnlp.jar"/>
+        <include name="hessian-3.1.5.jar"/>
       </fileset>
       <fileset dir="${classes}/demo5">
         <include name="demo5.jnlp"/>
@@ -251,6 +253,7 @@
         <include name="poi-2.0-RC2-20040102.jar"/>
         <include name="itext-1.4.8.jar"/>
         <include name="jnlp-servlet.jar"/>
+        <include name="hessian-3.1.5.jar"/>
       </fileset>
     </copy>
     <copy todir="${webapps}/demo5/WEB-INF" >
@@ -296,6 +299,7 @@
         <include name="clientos.jar"/>
         <include name="jcalendar.jar"/>
         <include name="jnlp.jar"/>
+        <include name="hessian-3.1.5.jar"/>
       </fileset>
       <fileset dir="${classes}/demo18">
         <include name="demo18.jnlp"/>
@@ -331,6 +335,7 @@
         <include name="poi-2.0-RC2-20040102.jar"/>
         <include name="itext-1.4.8.jar"/>
         <include name="jnlp-servlet.jar"/>
+        <include name="hessian-3.1.5.jar"/>
       </fileset>
     </copy>
     <copy todir="${webapps}/demo18/WEB-INF" >

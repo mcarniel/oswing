@@ -24,6 +24,7 @@ import org.openswing.swing.table.profiles.database.server.DbConnectionSource;
 import org.openswing.swing.table.profiles.database.server.DefaultDbActiveProfileDescriptor;
 import org.openswing.swing.table.profiles.database.server.DefaultDbDigestDescriptor;
 import org.openswing.swing.table.profiles.database.server.DefaultDbProfileDescriptor;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -441,7 +442,7 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
    * @return application functions (ApplicationFunction objects), organized as a tree
    */
   public DefaultTreeModel getApplicationFunctions() {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Administration",null);
     ApplicationFunction n11 = new ApplicationFunction("Employees","getEmployees","men.gif","getEmployees");

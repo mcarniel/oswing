@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.lang.reflect.Method;
 import org.openswing.swing.util.client.ClientUtils;
 import org.openswing.swing.message.receive.java.ValueObject;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 
 /**

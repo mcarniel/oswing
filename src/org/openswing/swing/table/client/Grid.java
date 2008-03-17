@@ -1944,10 +1944,11 @@ public class Grid extends JTable
               Grid.this.columnAtPoint(e.getPoint())
           );
         if (model.getRowCount()>0 && Grid.this.rowAtPoint(e.getPoint())>=0)
-          Grid.this.setRowSelectionInterval(
-              Grid.this.rowAtPoint(e.getPoint()),
-              Grid.this.rowAtPoint(e.getPoint())
-          );
+          if (Grid.this.getSelectedRows()!=null && Grid.this.getSelectedRows().length<=1)
+            Grid.this.setRowSelectionInterval(
+                Grid.this.rowAtPoint(e.getPoint()),
+                Grid.this.rowAtPoint(e.getPoint())
+            );
 //        if (Grid.this.rowAtPoint(e.getPoint())>=0)
           showPopupMenu(e.getX(),e.getY());
       }

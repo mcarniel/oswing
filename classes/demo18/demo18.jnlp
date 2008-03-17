@@ -15,11 +15,12 @@
   </security> 
     
     <resources>
-<j2se version="1.4+"/> 
+<j2se version="1.5+"/> 
 <jar href="demo18client.jar" />
 <jar href="clientos.jar" />
 <jar href="jcalendar.jar" />
 <jar href="jnlp.jar" />    
+<jar href="hessian-3.1.5.jar" />    
    
 <property name="SERVERURL" value="$$context/controller"/>    
    

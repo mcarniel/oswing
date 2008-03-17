@@ -36,6 +36,10 @@
 	      <param-name>controllerCallbacks</param-name>
 	      <param-value>demo5.server.DemoControllerCallbacks</param-value>
 	    </init-param>
+	    <init-param>
+	      <param-name>objectsReceiver</param-name>
+	      <param-value>org.openswing.swing.util.server.HessianObjectReceiver</param-value>
+	    </init-param>
 	    
 	    <load-on-startup>1</load-on-startup>
         </servlet>
