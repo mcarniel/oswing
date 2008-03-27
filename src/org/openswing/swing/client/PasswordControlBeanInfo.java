@@ -21,16 +21,8 @@ public class PasswordControlBeanInfo extends SimpleBeanInfo {
   public PasswordControlBeanInfo() {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
-    try {
-      PropertyDescriptor _encryptText = new PropertyDescriptor("encryptText", beanClass, null, null);
-      PropertyDescriptor[] pds = new PropertyDescriptor[] {
-        _encryptText};
-      return pds;
-    }
-    catch(IntrospectionException ex) {
-      ex.printStackTrace();
-      return null;
-    }
+    PropertyDescriptor[] pds = new PropertyDescriptor[] {};
+    return pds;
   }
   public java.awt.Image getIcon(int iconKind) {
     switch (iconKind) {

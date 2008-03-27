@@ -1,6 +1,6 @@
 package org.openswing.swing.table.profiles.database.server;
 
-import java.util.Hashtable;
+import java.util.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

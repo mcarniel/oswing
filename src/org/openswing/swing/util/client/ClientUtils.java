@@ -1,22 +1,20 @@
 package org.openswing.swing.util.client;
 
-import java.awt.*;
-import javax.swing.*;
-import java.io.*;
+import java.beans.*;
 import java.net.*;
 import java.util.*;
+import javax.imageio.*;
 import javax.jnlp.*;
+
+import java.awt.*;
+import javax.swing.*;
+
 import org.openswing.swing.client.*;
+import org.openswing.swing.form.client.*;
+import org.openswing.swing.logger.client.*;
 import org.openswing.swing.mdi.client.*;
-import org.openswing.swing.message.send.java.*;
-import org.openswing.swing.domains.java.*;
 import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.form.client.Form;
-import java.beans.PropertyDescriptor;
-import java.beans.Introspector;
-import javax.imageio.ImageIO;
+import org.openswing.swing.message.send.java.*;
 
 
 /**

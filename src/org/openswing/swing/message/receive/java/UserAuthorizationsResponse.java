@@ -2,7 +2,8 @@ package org.openswing.swing.message.receive.java;
 
 
 
-import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.*;
+
 import org.openswing.swing.permissions.java.*;
 
 /**

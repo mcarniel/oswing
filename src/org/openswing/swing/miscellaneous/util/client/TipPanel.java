@@ -1,16 +1,13 @@
 package org.openswing.swing.miscellaneous.util.client;
 
-import org.openswing.swing.util.client.ClientSettings;
-import javax.swing.*;
-import java.text.*;
-import java.beans.Beans;
-import org.openswing.swing.internationalization.java.*;
-import java.math.BigDecimal;
 import java.awt.*;
-import org.openswing.swing.client.*;
 import java.awt.event.*;
-import org.openswing.swing.miscellaneous.client.TipPanelContent;
-import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.*;
+import javax.swing.text.html.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.miscellaneous.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

@@ -1,7 +1,6 @@
 package org.openswing.swing.properties.client;
 
-import org.openswing.swing.client.PropertyGridControl;
-import java.util.Hashtable;
+import org.openswing.swing.client.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

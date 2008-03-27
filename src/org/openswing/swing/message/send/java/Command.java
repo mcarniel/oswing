@@ -1,8 +1,6 @@
 package org.openswing.swing.message.send.java;
 
-import java.io.Serializable;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
+import java.io.*;
 
 
 

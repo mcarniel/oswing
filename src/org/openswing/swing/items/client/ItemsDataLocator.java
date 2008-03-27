@@ -1,9 +1,8 @@
 package org.openswing.swing.items.client;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import org.openswing.swing.message.receive.java.Response;
+import java.util.*;
+
+import org.openswing.swing.message.receive.java.*;
 
 
 /**

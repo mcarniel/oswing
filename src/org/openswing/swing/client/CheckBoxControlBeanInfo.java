@@ -1,14 +1,6 @@
 package org.openswing.swing.client;
 
-import java.awt.Image;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.beans.SimpleBeanInfo;
-import java.net.URL;
-
-import javax.swing.ImageIcon;
+import java.beans.*;
 
 /**
  * <p>
@@ -22,7 +14,7 @@ import javax.swing.ImageIcon;
  * </p>
  * <p>
  * </p>
- * 
+ *
  * @author Mauro Carniel
  * @version 1.0
  */
@@ -32,10 +24,10 @@ public class CheckBoxControlBeanInfo extends SimpleBeanInfo {
     String iconColor32x32Filename = "CheckBoxControl.png";
     String iconMono16x16Filename  = "CheckBoxControl16.png";
     String iconMono32x32Filename  = "CheckBoxControl.png";
-    
+
     public CheckBoxControlBeanInfo() {
     }
-    
+
     public PropertyDescriptor[] getPropertyDescriptors() {
         try {
             PropertyDescriptor _allowNullValue = new PropertyDescriptor("allowNullValue", beanClass, "isAllowNullValue", "setAllowNullValue");
@@ -56,7 +48,7 @@ public class CheckBoxControlBeanInfo extends SimpleBeanInfo {
             return null;
         }
     }
-    
+
     public java.awt.Image getIcon(int iconKind) {
         switch (iconKind) {
             case BeanInfo.ICON_COLOR_16x16:
@@ -70,8 +62,8 @@ public class CheckBoxControlBeanInfo extends SimpleBeanInfo {
         }
         return null;
     }
-    
-    
+
+
     public BeanInfo[] getAdditionalBeanInfo() {
         Class superclass = beanClass.getSuperclass();
         try {

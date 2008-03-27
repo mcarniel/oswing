@@ -1,10 +1,9 @@
 package org.openswing.swing.lookup.client;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import org.openswing.swing.message.receive.java.Response;
-import org.openswing.swing.tree.client.TreeDataLocator;
+import java.util.*;
+
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.tree.client.*;
 
 
 /**

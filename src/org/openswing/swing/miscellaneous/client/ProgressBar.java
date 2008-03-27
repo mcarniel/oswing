@@ -1,10 +1,11 @@
 package org.openswing.swing.miscellaneous.client;
 
-import javax.swing.*;
+import java.util.*;
+
 import java.awt.*;
-import java.awt.event.*;
-import org.openswing.swing.util.client.ClientSettings;
-import java.util.ArrayList;
+import javax.swing.*;
+
+import org.openswing.swing.util.client.*;
 
 
 /**

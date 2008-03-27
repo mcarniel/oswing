@@ -1,7 +1,8 @@
 package org.openswing.swing.table.columns.client;
 
 import java.beans.*;
-import javax.swing.SwingConstants;
+
+import javax.swing.*;
 
 
 /**

@@ -48,6 +48,8 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
   public EnglishOnlyResourceFactory(String currencySymbol,Properties additionalDictionary,boolean showResourceNotFoundWarning) {
     Properties dictionary = new Properties();
 
+    dictionary.putAll(additionalDictionary);
+
     // grid...
     dictionary.setProperty("Remove Filter","Remove Filter");
     dictionary.setProperty("This column is not sorteable","This column is not sorteable");
@@ -234,8 +236,6 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     // drag...
     dictionary.setProperty("drag","Drag");
     dictionary.setProperty("drag stopped","Drag stopped");
-
-    dictionary.putAll(additionalDictionary);
 
     resources = new Resources(
       dictionary,

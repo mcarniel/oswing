@@ -1,19 +1,16 @@
 package org.openswing.swing.table.columns.client;
 
 
-import org.openswing.swing.client.CodBox;
-import org.openswing.swing.lookup.client.*;
-import org.openswing.swing.message.receive.java.ValueObject;
+import java.io.*;
+import java.util.*;
+
+import java.awt.event.*;
 import javax.swing.filechooser.FileFilter;
-import java.io.File;
-import java.util.ArrayList;
-import java.awt.event.ActionListener;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import org.openswing.swing.table.client.GridController;
-import org.openswing.swing.table.client.Grids;
-import org.openswing.swing.table.renderers.client.ImageTableCellRenderer;
-import org.openswing.swing.table.editors.client.ImageCellEditor;
+import javax.swing.table.*;
+
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.table.editors.client.*;
+import org.openswing.swing.table.renderers.client.*;
 
 
 /**

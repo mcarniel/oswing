@@ -1,11 +1,10 @@
 package org.openswing.swing.mdi.client;
 
 import java.awt.*;
-import javax.swing.*;
-import org.openswing.swing.util.client.ClientSettings;
 import java.awt.event.*;
-import org.openswing.swing.util.client.ClientUtils;
-import org.openswing.swing.internationalization.java.*;
+import javax.swing.*;
+
+import org.openswing.swing.util.client.*;
 
 
 /**

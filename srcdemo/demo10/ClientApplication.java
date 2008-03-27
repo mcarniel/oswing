@@ -351,12 +351,14 @@ public class ClientApplication implements MDIController,LoginController {
     DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Administration",null);
-    ApplicationFunction n11 = new ApplicationFunction("Employees","getEmployees","men.gif","getEmployees");
-    ApplicationFunction n12 = new ApplicationFunction("Departments","getDepts","appicon.gif","getDepts");
-    ApplicationFunction n13 = new ApplicationFunction("Tasks","getTasks","appicon.gif","getTasks");
+    ApplicationFunction n11 = new ApplicationFunction("Employees in grid+detail","getEmployees","men.gif","getEmployees");
+    ApplicationFunction n12 = new ApplicationFunction("Employees in editable grid","getEmployees2","men.gif","getEmployees2");
+    ApplicationFunction n13 = new ApplicationFunction("Departments","getDepts","appicon.gif","getDepts");
+    ApplicationFunction n14 = new ApplicationFunction("Tasks","getTasks","appicon.gif","getTasks");
     n1.add(n11);
     n1.add(n12);
     n1.add(n13);
+    n1.add(n14);
     root.add(n1);
 
     return model;

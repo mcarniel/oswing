@@ -1,19 +1,17 @@
 package org.openswing.swing.items.client;
 
+import java.io.*;
+import java.lang.reflect.*;
+import java.text.*;
+import java.util.*;
+
+import java.awt.*;
 import javax.swing.*;
-import java.io.Serializable;
 import javax.swing.border.*;
-import java.awt.Dimension;
-import java.awt.Component;
-import org.openswing.swing.table.columns.client.Column;
-import java.util.Hashtable;
-import java.awt.Graphics;
-import java.lang.reflect.Method;
-import java.awt.Color;
+
 import org.openswing.swing.table.columns.client.*;
-import java.text.SimpleDateFormat;
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.util.java.Consts;
+import org.openswing.swing.util.client.*;
+import org.openswing.swing.util.java.*;
 
 
 /**

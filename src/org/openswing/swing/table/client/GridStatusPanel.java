@@ -1,11 +1,10 @@
 package org.openswing.swing.table.client;
 
+import java.awt.*;
 import javax.swing.*;
-import java.awt.BorderLayout;
 import javax.swing.border.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.util.client.ClientSettings;
-import java.awt.Dimension;
+
+import org.openswing.swing.util.client.*;
 
 
 

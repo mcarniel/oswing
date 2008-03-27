@@ -1,7 +1,7 @@
 package org.openswing.swing.table.java;
 
 import java.util.*;
-import java.io.Serializable;
+
 import org.openswing.swing.message.receive.java.*;
 
 

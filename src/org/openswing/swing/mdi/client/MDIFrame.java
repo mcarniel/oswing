@@ -1,33 +1,16 @@
 package org.openswing.swing.mdi.client;
 
+import java.util.*;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import javax.swing.plaf.SplitPaneUI;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.*;
-import java.lang.reflect.*;
+import javax.swing.plaf.basic.*;
+import javax.swing.tree.*;
 
-
-import org.openswing.swing.client.*;
-import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.mdi.java.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.permissions.client.*;
-import org.openswing.swing.mdi.java.ApplicationFunction;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import org.openswing.swing.logger.client.Logger;
-import java.util.HashSet;
-import org.openswing.swing.internationalization.java.*;
-import javax.swing.JToolBar;
-import java.util.Hashtable;
 
 
 /**
@@ -601,6 +584,23 @@ public class MDIFrame extends JFrame implements BusyListener {
 
 
   /**
+   * Set progress bar value. Minimum value is 0 and maximum value is 15.
+   * @param progressBarValue value to set for the progress bar; if specified value is less than 0 then 0 is setted; if specified value is greater than 15 then it is set to 15.
+   */
+  public final void setProgressBarValue(int progressBarValue) {
+    statusBar.setProgressBarValue(progressBarValue);
+  }
+
+
+  /**
+   * @return current value in progress bar; minimum value is 0 and maximum value is 15
+   */
+  public final int getProgressBarValue() {
+    return statusBar.getProgressBarValue();
+  }
+
+
+  /**
    * @return this
    */
   public static MDIFrame getInstance() {
@@ -633,6 +633,14 @@ public class MDIFrame extends JFrame implements BusyListener {
    */
   public static final void setStatusBar(String text) {
     statusBar.setText(text);
+  }
+
+
+  /**
+   * @return StatusBar object
+   */
+  public static final StatusBar getStatusBar() {
+    return statusBar;
   }
 
 

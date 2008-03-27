@@ -1,6 +1,6 @@
 package org.openswing.swing.table.profiles.java;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

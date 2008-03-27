@@ -1,10 +1,9 @@
 package org.openswing.swing.mdi.client;
 
-import java.awt.Image;
-import java.util.ArrayList;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.JFrame;
-import javax.swing.JDialog;
+import java.util.*;
+
+import javax.swing.*;
+import javax.swing.tree.*;
 
 
 /**

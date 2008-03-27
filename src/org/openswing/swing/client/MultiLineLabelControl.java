@@ -1,10 +1,12 @@
 package org.openswing.swing.client;
 
-import javax.swing.*;
-import javax.swing.text.DefaultCaret;
+import java.beans.*;
+
 import java.awt.*;
-import org.openswing.swing.util.client.ClientSettings;
-import java.beans.Beans;
+import javax.swing.*;
+import javax.swing.text.*;
+
+import org.openswing.swing.util.client.*;
 
 
 /**

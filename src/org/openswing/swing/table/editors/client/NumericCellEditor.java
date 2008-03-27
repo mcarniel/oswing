@@ -1,19 +1,13 @@
 package org.openswing.swing.table.editors.client;
 
-import javax.swing.*;
 import java.awt.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.tree.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.table.*;
 
 import org.openswing.swing.client.*;
-import org.openswing.swing.table.columns.client.Column;
-
-import java.awt.event.*;
+import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.table.columns.client.DecimalColumnSettings;
-import org.openswing.swing.table.columns.client.CurrencyColumnSettings;
-import org.openswing.swing.table.columns.client.IntegerColumnSettings;
 
 
 /**

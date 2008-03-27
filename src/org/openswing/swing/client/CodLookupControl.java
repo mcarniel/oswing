@@ -1,50 +1,19 @@
 package org.openswing.swing.client;
 
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.util.Collection;
-import java.util.Iterator;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.UIManager;
+import java.beans.*;
+import java.util.*;
 
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Toolkit;
-import javax.swing.JPanel;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
-import org.openswing.swing.client.*;
 import org.openswing.swing.form.client.*;
 import org.openswing.swing.form.model.client.*;
 import org.openswing.swing.lookup.client.*;
-import org.openswing.swing.domains.java.*;
+import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.form.client.*;
-import org.openswing.swing.form.model.client.*;
-import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.mdi.client.MDIFrame;
-
-import java.awt.Container;
-import java.awt.event.FocusAdapter;
-import java.beans.PropertyDescriptor;
-import java.beans.Introspector;
-import java.beans.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import org.openswing.swing.util.client.ClientUtils;
-import java.lang.reflect.*;
-import javax.swing.SwingUtilities;
-import javax.swing.InputMap;
+import org.openswing.swing.util.client.*;
 
 
 /**
@@ -192,11 +161,13 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
 
     codBox.addKeyListener(new KeyAdapter() {
       public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode()==e.VK_F1) {
+        if (e.getKeyCode()==ClientSettings.LOOKUP_OPEN_KEY.getKeyCode() &&
+            e.getModifiers()+e.getModifiersEx()==ClientSettings.LOOKUP_OPEN_KEY.getModifiers()) {
           if (validationController!=null)
             validationController.openLookupFrame(codBox,CodLookupControl.this);
         }
-        if (e.getKeyCode()==e.VK_F2) {
+        if (e.getKeyCode()==ClientSettings.LOOKUP_CONTROLLER_KEY.getKeyCode() &&
+            e.getModifiers()+e.getModifiersEx()==ClientSettings.LOOKUP_CONTROLLER_KEY.getModifiers()) {
           if (controllerClassName!=null) {
             try {
               Class.forName(controllerClassName).newInstance();

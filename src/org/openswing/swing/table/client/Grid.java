@@ -1,44 +1,28 @@
 package org.openswing.swing.table.client;
 
 import java.util.*;
-import java.util.List;
 
 import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.*;
 import javax.swing.event.*;
+import javax.swing.plaf.*;
 import javax.swing.table.*;
 
-import org.openswing.swing.message.send.java.*;
-import org.openswing.swing.message.receive.java.*;
-import javax.swing.border.*;
-import org.openswing.swing.table.columns.client.*;
-import org.openswing.swing.table.model.client.*;
 import org.openswing.swing.client.*;
-import org.openswing.swing.logger.client.Logger;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.mdi.client.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.message.send.java.*;
+import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.table.filter.client.*;
-
+import org.openswing.swing.table.model.client.*;
+import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.export.client.ExportDialog;
-import org.openswing.swing.export.java.ExportOptions;
-import org.openswing.swing.table.java.*;
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.form.client.Form;
-import org.openswing.swing.export.java.ExportToExcel;
-import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.util.java.*;
-import java.io.FileOutputStream;
-import java.io.File;
-
-import java.awt.dnd.*;
-import org.openswing.swing.mdi.client.MDIFrame;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.DataFlavor;
-import javax.swing.plaf.UIResource;
-import java.awt.Rectangle;
-import org.openswing.swing.table.profiles.java.GridProfile;
-import java.awt.event.AdjustmentListener;
 
 
 /**
@@ -310,24 +294,51 @@ public class Grid extends JTable
             if (e.getKeyCode()==e.VK_ENTER)
               e.consume();
 
-            // accelerator key pressed...
-            if (e.getKeyCode()==e.VK_Z && e.isControlDown() && (Grid.this.grids.getReloadButton()!=null) && Grid.this.grids.getReloadButton().isEnabled())
+              // accelerator key pressed...
+            if (e.getKeyCode()==ClientSettings.RELOAD_BUTTON_KEY.getKeyCode() &&
+                e.getModifiers()+e.getModifiersEx()==ClientSettings.RELOAD_BUTTON_KEY.getModifiers() &&
+                Grid.this.grids.getReloadButton()!=null &&
+                Grid.this.grids.getReloadButton().isEnabled())
               Grid.this.grids.reload();
-            else if (e.getKeyCode()==e.VK_F && e.isControlDown() && (Grid.this.grids.getFilterButton()!=null) && Grid.this.grids.getFilterButton().isEnabled())
+            else if (e.getKeyCode()==ClientSettings.FILTER_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.FILTER_BUTTON_KEY.getModifiers() &&
+                     Grid.this.grids.getFilterButton()!=null &&
+                     Grid.this.grids.getFilterButton().isEnabled())
               Grid.this.grids.filterSort();
-            else if (e.getKeyCode()==e.VK_S && e.isControlDown() & (Grid.this.grids.getSaveButton()!=null) && Grid.this.grids.getSaveButton().isEnabled())
+            else if (e.getKeyCode()==ClientSettings.SAVE_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.SAVE_BUTTON_KEY.getModifiers() &&
+                     Grid.this.grids.getSaveButton()!=null &&
+                     Grid.this.grids.getSaveButton().isEnabled())
               Grid.this.grids.save();
-            else if (e.getKeyCode()==e.VK_I && e.isControlDown() && (Grid.this.grids.getInsertButton()!=null) && Grid.this.grids.getInsertButton().isEnabled())
+            else if (e.getKeyCode()==ClientSettings.INSERT_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.INSERT_BUTTON_KEY.getModifiers() &&
+                     Grid.this.grids.getInsertButton()!=null &&
+                     Grid.this.grids.getInsertButton().isEnabled())
               Grid.this.grids.insert();
-            else if (e.getKeyCode()==e.VK_E && e.isControlDown() && (Grid.this.grids.getEditButton()!=null) && Grid.this.grids.getEditButton().isEnabled())
+            else if (e.getKeyCode()==ClientSettings.EDIT_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.EDIT_BUTTON_KEY.getModifiers() &&
+                     Grid.this.grids.getEditButton()!=null &&
+                     Grid.this.grids.getEditButton().isEnabled())
               Grid.this.grids.edit();
-            else if (e.getKeyCode()==e.VK_D && e.isControlDown() && (Grid.this.grids.getDeleteButton()!=null) && Grid.this.grids.getDeleteButton().isEnabled())
+            else if (e.getKeyCode()==ClientSettings.DELETE_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.DELETE_BUTTON_KEY.getModifiers() &&
+                     Grid.this.grids.getDeleteButton()!=null &&
+                     Grid.this.grids.getDeleteButton().isEnabled())
               Grid.this.grids.delete();
-            else if (e.getKeyCode()==e.VK_C && e.isControlDown() && (Grid.this.grids.getCopyButton()!=null) && Grid.this.grids.getCopyButton().isEnabled())
+            else if (e.getKeyCode()==ClientSettings.COPY_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.COPY_BUTTON_KEY.getModifiers() &&
+                     Grid.this.grids.getCopyButton()!=null &&
+                Grid.this.grids.getCopyButton().isEnabled())
               Grid.this.grids.copy();
-            else if (e.getKeyCode()==e.VK_X && e.isControlDown() && (Grid.this.grids.getExportButton()!=null) && Grid.this.grids.getExportButton().isEnabled())
+            else if (e.getKeyCode()==ClientSettings.EXPORT_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.EXPORT_BUTTON_KEY.getModifiers() &&
+                     Grid.this.grids.getExportButton()!=null &&
+                Grid.this.grids.getExportButton().isEnabled())
               Grid.this.grids.export();
-            else if (e.getKeyCode()==e.VK_Q && e.isControlDown() && getMode()==Consts.READONLY && getRowCount()>0 && getColumnModel().getColumnCount()>0) {
+            else if (e.getKeyCode()==ClientSettings.GRID_POPUP_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.GRID_POPUP_KEY.getModifiers() &&
+                     getMode()==Consts.READONLY && getRowCount()>0 &&
+                     getColumnModel().getColumnCount()>0) {
               if (getSelectedColumn()==-1)
                 setColumnSelectionInterval(0,0);
               if (getSelectedRow()==-1)

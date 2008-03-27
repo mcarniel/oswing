@@ -1,14 +1,12 @@
 package org.openswing.swing.miscellaneous.client;
 
+import java.util.*;
+
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
-import java.awt.Component;
-import java.util.ArrayList;
-import java.awt.Dimension;
-import org.openswing.swing.util.client.ClientUtils;
-import java.awt.BorderLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.Container;
+
+import org.openswing.swing.util.client.*;
 
 
 /**

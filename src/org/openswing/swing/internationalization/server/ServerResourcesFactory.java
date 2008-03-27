@@ -1,6 +1,7 @@
 package org.openswing.swing.internationalization.server;
 
-import javax.servlet.ServletContext;
+import javax.servlet.*;
+
 import org.openswing.swing.internationalization.java.*;
 
 

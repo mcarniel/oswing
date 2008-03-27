@@ -1,30 +1,19 @@
 package org.openswing.swing.tree.client;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
-import java.awt.*;
 import java.util.*;
-import java.awt.event.*;
-import javax.swing.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.table.*;
-import javax.swing.tree.*;
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.message.receive.java.Response;
-import org.openswing.swing.message.receive.java.VOResponse;
-import org.openswing.swing.message.receive.java.ValueObject;
-import java.lang.reflect.*;
+
+import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.dnd.*;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.DataFlavor;
-import org.openswing.swing.util.client.SearchWindowManager;
-import org.openswing.swing.util.client.SearchControl;
-import org.openswing.swing.util.client.ClientUtils;
-import javax.swing.text.Position;
-import javax.swing.tree.DefaultMutableTreeNode;
-import org.openswing.swing.tree.java.OpenSwingTreeNode;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.text.*;
+import javax.swing.tree.*;
+
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.tree.java.*;
+import org.openswing.swing.util.client.*;
+
 
 
 /**

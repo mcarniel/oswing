@@ -1,13 +1,7 @@
 package org.openswing.swing.domains.java;
 
-import java.io.Serializable;
-import java.util.Hashtable;
-import java.util.ArrayList;
-import org.openswing.swing.client.*;
-import org.openswing.swing.domains.java.*;
-
-import org.openswing.swing.util.client.*;
-import org.openswing.swing.internationalization.java.*;
+import java.io.*;
+import java.util.*;
 
 
 /**

@@ -1,7 +1,6 @@
 package org.openswing.swing.message.receive.java;
 
-import java.io.Serializable;
-import java.util.Vector;
+import java.util.*;
 
 
 /**

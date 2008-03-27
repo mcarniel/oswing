@@ -1,14 +1,10 @@
 package org.openswing.swing.table.client;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.plaf.ComponentUI;
-import javax.swing.plaf.basic.BasicArrowButton;
-import com.sun.java.swing.plaf.mac.MacScrollBarUI;
-import com.sun.java.swing.plaf.mac.MacScrollButton;
-import com.sun.java.swing.plaf.mac.MacLookAndFeel;
-import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.*;
+
+import com.sun.java.swing.plaf.mac.*;
 
 
 /**

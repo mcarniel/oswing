@@ -1,19 +1,15 @@
 package org.openswing.swing.table.renderers.client;
 
-import javax.swing.*;
+import java.text.*;
 import java.util.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import java.text.SimpleDateFormat;
-import org.openswing.swing.client.*;
-import org.openswing.swing.table.columns.client.Column;
-import org.openswing.swing.table.client.*;
-import org.openswing.swing.client.*;
 
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.util.java.*;
-import java.awt.Color;
-import java.awt.Font;
 
 
 /**

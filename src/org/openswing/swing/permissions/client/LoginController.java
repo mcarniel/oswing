@@ -1,6 +1,6 @@
 package org.openswing.swing.permissions.client;
 
-import java.util.Map;
+import java.util.*;
 
 
 /**

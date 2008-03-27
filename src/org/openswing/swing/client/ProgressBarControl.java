@@ -1,12 +1,11 @@
 package org.openswing.swing.client;
 
-import java.math.BigDecimal;
-import javax.swing.JComponent;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Color;
-import org.openswing.swing.miscellaneous.client.ProgressBar;
+import java.math.*;
+
+import java.awt.*;
+import javax.swing.*;
+
+import org.openswing.swing.miscellaneous.client.*;
 
 
 /**

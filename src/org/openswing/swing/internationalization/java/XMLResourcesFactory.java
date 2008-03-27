@@ -1,12 +1,10 @@
 package org.openswing.swing.internationalization.java;
 
-import java.util.*;
 import java.io.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
+import java.util.*;
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
 
 
 

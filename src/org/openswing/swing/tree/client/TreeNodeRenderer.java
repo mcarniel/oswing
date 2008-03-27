@@ -24,6 +24,7 @@ import javax.swing.event.CellEditorListener;
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.plaf.basic.BasicGraphicsUtils;
+import java.util.ArrayList;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -99,30 +100,29 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
         checkBox.setPreferredSize(new Dimension(14,14));
         panel.add(checkBox, BorderLayout.BEFORE_LINE_BEGINS);
 
-        treePanel.getTree().addKeyListener(new KeyAdapter() {
-          public void keyReleased(KeyEvent e) {
-            if (checkBox.isEnabled()) {
-              DefaultMutableTreeNode node = TreeNodeRenderer.this.treePanel.getSelectedNode();
-              if (e.getKeyChar()==' ' && node!=null) {
-                if (TreeNodeRenderer.this.treePanel.isShowCheckBoxesOnLeaves() || !node.isLeaf())
-                  checkChanged(node);
-              }
-            }
-          }
-        });
-        treePanel.getTree().addMouseListener(new MouseAdapter() {
-          public void mouseClicked(MouseEvent e) {
-            if (checkBox.isEnabled() && SwingUtilities.isLeftMouseButton(e) && e.getClickCount()==1) {
-              try {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeNodeRenderer.this.treePanel.getTree().getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
-                if (TreeNodeRenderer.this.treePanel.isShowCheckBoxesOnLeaves() || !node.isLeaf())
-                  checkChanged(node);
-              }
-              catch (Exception ex) {
-              }
-            }
-          }
-        });
+        KeyListener kl= null;
+        ArrayList toRemove = new ArrayList();
+        for(int i=0;i<treePanel.getTree().getKeyListeners().length;i++) {
+          kl = treePanel.getTree().getKeyListeners()[i];
+          if (kl instanceof TreeNodeRendererListener)
+            toRemove.add(kl);
+        }
+        for(int i=0;i<toRemove.size();i++)
+          treePanel.getTree().removeKeyListener((KeyListener)toRemove.get(i));
+
+        MouseListener ml= null;
+        toRemove.clear();
+        for(int i=0;i<treePanel.getTree().getMouseListeners().length;i++) {
+          ml = treePanel.getTree().getMouseListeners()[i];
+          if (ml instanceof TreeNodeRendererListener)
+            toRemove.add(ml);
+        }
+        for(int i=0;i<toRemove.size();i++)
+          treePanel.getTree().removeMouseListener((MouseListener)toRemove.get(i));
+
+        TreeNodeRendererListener l = new TreeNodeRendererListener(treePanel);
+        treePanel.getTree().addKeyListener(l);
+        treePanel.getTree().addMouseListener(l);
       }
       this.setBackgroundNonSelectionColor(new java.awt.Color(0,0,0,0));
 
@@ -146,47 +146,6 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
       }
     return gray;
   }
-
-
-  private boolean areAllDeselectedCheckBox(TreeNode node) {
-    for(int i=0;i<node.getChildCount();i++) {
-      if (treePanel.getCheckedNodes().contains(node.getChildAt(i)) ||
-          node.getChildAt(i).isLeaf() && !treePanel.isShowCheckBoxes())
-        return false;
-    }
-    return true;
-  }
-
-
-  /**
-   * Changed check-box selection value.
-   * @param node node that contains the check-box
-   */
-  private void checkChanged(DefaultMutableTreeNode node) {
-    if (TreeNodeRenderer.this.treePanel.getCheckedNodes().contains(node)) {
-      TreeNodeRenderer.this.treePanel.getCheckedNodes().remove(node);
-      updateCheckboxesOnSubTree(node,false);
-      while((node=(DefaultMutableTreeNode)node.getParent())!=null)
-        if (areAllDeselectedCheckBox(node))
-          TreeNodeRenderer.this.treePanel.getCheckedNodes().remove(node);
-    }
-    else {
-      TreeNodeRenderer.this.treePanel.getCheckedNodes().add(node);
-      updateCheckboxesOnSubTree(node,true);
-    }
-    TreeNodeRenderer.this.treePanel.getTree().repaint();
-  }
-
-
-  private void updateCheckboxesOnSubTree(TreeNode node,boolean sel) {
-    if (sel)
-      treePanel.getCheckedNodes().add(node);
-    else
-      treePanel.getCheckedNodes().remove(node);
-    for(int i=0;i<node.getChildCount();i++)
-      updateCheckboxesOnSubTree(node.getChildAt(i),sel);
-  }
-
 
 
   public Component getTreeCellRendererComponent(JTree tree,

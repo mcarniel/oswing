@@ -1,10 +1,9 @@
 package org.openswing.swing.table.client;
 
-import java.util.*;
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.table.*;
 import javax.swing.plaf.basic.*;
+import javax.swing.table.*;
 
 
 /**
@@ -128,11 +127,8 @@ public class GridUI extends BasicTableUI {
       TableColumn draggedColumn = (header == null) ? null : header.getDraggedColumn();
 
       TableColumnModel cm = table.getColumnModel();
-      int columnMargin = cm.getColumnMargin();
-
       Rectangle cellRect;
       TableColumn aColumn;
-      int columnWidth;
       for(int row = rMin; row <= rMax; row++) {
           for(int column = cMin; column <= cMax; column++) {
               cellRect = table.getCellRect(row, column, false);

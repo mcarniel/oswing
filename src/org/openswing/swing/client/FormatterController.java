@@ -1,6 +1,6 @@
 package org.openswing.swing.client;
 
-import javax.swing.JFormattedTextField;
+import javax.swing.*;
 
 
 /**

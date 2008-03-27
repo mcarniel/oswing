@@ -1,15 +1,12 @@
 package org.openswing.swing.miscellaneous.client;
 
 
-import javax.swing.*;
 import java.awt.*;
-import org.openswing.swing.util.client.ClientSettings;
 import java.awt.event.*;
-import org.openswing.swing.mdi.client.MDIFrame;
-import java.util.StringTokenizer;
-import java.util.ArrayList;
-import org.openswing.swing.client.ImagePanel;
-import org.openswing.swing.util.client.ClientUtils;
+import javax.swing.*;
+
+import org.openswing.swing.mdi.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

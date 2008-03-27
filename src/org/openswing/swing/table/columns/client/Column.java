@@ -1,24 +1,14 @@
 package org.openswing.swing.table.columns.client;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.beans.Beans;
-import org.openswing.swing.client.*;
-import org.openswing.swing.lookup.client.*;
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.client.*;
+import java.beans.*;
 
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import org.openswing.swing.table.client.Grids;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.DefaultCellEditor;
-import org.openswing.swing.table.client.GridController;
-import org.openswing.swing.table.client.Grids;
 
 
 /**

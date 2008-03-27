@@ -36,6 +36,10 @@ public class DemoClientFacade implements ClientFacade {
   }
 
 
+  public void getEmployees2() {
+    new EmpGridFrameController2(conn);
+  }
+
 
 
 }

@@ -1,7 +1,7 @@
 package org.openswing.swing.client;
 
-import java.awt.event.KeyEvent;
-import javax.swing.JTextField;
+import java.awt.event.*;
+import javax.swing.*;
 
 
 /**
@@ -34,10 +34,6 @@ import javax.swing.JTextField;
  */
 public class PasswordControl extends TextControl {
 
-  /** flag used to view "*" symbols instead of the real text in read-only mode; useful for password fields */
-  private boolean encryptText;
-
-
   public PasswordControl() {
   }
 
@@ -50,6 +46,7 @@ public class PasswordControl extends TextControl {
   }
 
 
+
   /**
    * <p>Title: OpenSwing Framework</p>
    * <p>Description: Inner class used to redirect key event to the inner JPasswordField.</p>
@@ -57,7 +54,7 @@ public class PasswordControl extends TextControl {
    * @author Mauro Carniel
    * @version 1.0
    */
-  class PasswdBox extends javax.swing.JPasswordField {
+  class PasswdBox extends javax.swing.JPasswordField implements OpenSwingTextField {
 
     public void processKeyEvent(KeyEvent e) {
       super.processKeyEvent(e);

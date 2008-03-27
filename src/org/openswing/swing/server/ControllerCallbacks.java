@@ -1,7 +1,6 @@
 package org.openswing.swing.server;
 
 import javax.servlet.*;
-import javax.servlet.http.*;
 
 
 /**

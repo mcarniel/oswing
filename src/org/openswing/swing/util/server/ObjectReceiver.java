@@ -1,8 +1,8 @@
 package org.openswing.swing.util.server;
 
-import org.openswing.swing.message.send.java.Command;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
+
+import org.openswing.swing.message.send.java.*;
 
 
 /**

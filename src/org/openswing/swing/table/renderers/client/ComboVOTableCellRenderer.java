@@ -1,29 +1,18 @@
 package org.openswing.swing.table.renderers.client;
 
-import javax.swing.*;
-import java.awt.Component;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.DefaultTableCellRenderer;
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.table.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.domains.java.*;
+import java.lang.reflect.*;
+import java.util.*;
 
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.items.client.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import java.awt.Color;
-import java.awt.Font;
-import org.openswing.swing.items.client.ItemsDataLocator;
-import org.openswing.swing.message.receive.java.ValueObject;
-import org.openswing.swing.table.columns.client.Column;
-import java.util.Hashtable;
-import org.openswing.swing.message.receive.java.Response;
-import java.util.ArrayList;
-import org.openswing.swing.message.receive.java.VOListResponse;
-import org.openswing.swing.items.client.ItemRenderer;
-import java.lang.reflect.Method;
 
 
 /**

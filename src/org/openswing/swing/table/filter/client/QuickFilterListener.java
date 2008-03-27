@@ -1,6 +1,6 @@
 package org.openswing.swing.table.filter.client;
 
-import org.openswing.swing.table.columns.client.Column;
+import org.openswing.swing.table.columns.client.*;
 
 
 /**

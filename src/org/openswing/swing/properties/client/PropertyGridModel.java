@@ -1,16 +1,12 @@
 package org.openswing.swing.properties.client;
 
-import org.openswing.swing.util.client.ClientSettings;
-import javax.swing.table.TableModel;
-import javax.swing.table.DefaultTableModel;
-import org.openswing.swing.util.java.Consts;
-import java.awt.Component;
-import org.openswing.swing.client.InputControl;
-import java.util.Hashtable;
-import java.util.Iterator;
-import org.openswing.swing.logger.client.Logger;
-import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.*;
+
+import javax.swing.table.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.util.client.*;
+import org.openswing.swing.util.java.*;
 
 
 /**

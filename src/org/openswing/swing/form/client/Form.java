@@ -1,37 +1,21 @@
 package org.openswing.swing.form.client;
 
+import java.beans.*;
 import java.util.*;
-import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.form.model.client.*;
-import java.awt.Component;
-import java.awt.event.*;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JOptionPane;
-import java.awt.Container;
-import javax.swing.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.mdi.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.form.client.*;
 
-import org.openswing.swing.logger.client.Logger;
-import java.beans.Beans;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.form.model.client.*;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.message.send.java.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.util.java.*;
-import java.awt.EventQueue;
-import java.awt.AWTEvent;
-import java.awt.Toolkit;
-import javax.swing.border.Border;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.text.JTextComponent;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.AncestorEvent;
-import org.openswing.swing.message.send.java.FilterWhereClause;
-import org.openswing.swing.message.send.java.GridParams;
 
 
 /**
@@ -157,33 +141,45 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
         public void keyPressed(KeyEvent e) {
           if (currentFocusedForm!=null) {
-            if (((KeyEvent)e).getKeyCode() == KeyEvent.VK_Z && ((KeyEvent)e).isControlDown() && (currentFocusedForm.getReloadButton() != null) &&
+            if (e.getKeyCode()==ClientSettings.RELOAD_BUTTON_KEY.getKeyCode() &&
+                e.getModifiers()+e.getModifiersEx()==ClientSettings.RELOAD_BUTTON_KEY.getModifiers() &&
+                currentFocusedForm.getReloadButton() != null &&
                 currentFocusedForm.getReloadButton().isEnabled()) {
               currentFocusedForm.getReloadButton().requestFocus();
               currentFocusedForm.reload();
             }
-            else if (e.getKeyCode() == KeyEvent.VK_S && e.isControlDown() & (currentFocusedForm.getSaveButton() != null) &&
+            else if (e.getKeyCode()==ClientSettings.SAVE_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.SAVE_BUTTON_KEY.getModifiers() &&
+                     currentFocusedForm.getSaveButton() != null &&
                      currentFocusedForm.getSaveButton().isEnabled()) {
               currentFocusedForm.getSaveButton().requestFocus();
               currentFocusedForm.save();
             }
-            else if (e.getKeyCode() == KeyEvent.VK_I && e.isControlDown() &&
-                     (currentFocusedForm.getInsertButton() != null) && currentFocusedForm.getInsertButton().isEnabled()) {
+            else if (e.getKeyCode()==ClientSettings.INSERT_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.INSERT_BUTTON_KEY.getModifiers() &&
+                     currentFocusedForm.getInsertButton() != null &&
+                     currentFocusedForm.getInsertButton().isEnabled()) {
               currentFocusedForm.getInsertButton().requestFocus();
               currentFocusedForm.insert();
             }
-            else if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown() &&
-                     (currentFocusedForm.getCopyButton() != null) && currentFocusedForm.getCopyButton().isEnabled()) {
+            else if (e.getKeyCode()==ClientSettings.COPY_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.COPY_BUTTON_KEY.getModifiers() &&
+                     currentFocusedForm.getCopyButton() != null &&
+                     currentFocusedForm.getCopyButton().isEnabled()) {
               currentFocusedForm.getCopyButton().requestFocus();
               currentFocusedForm.copy();
             }
-            else if (e.getKeyCode() == KeyEvent.VK_E && e.isControlDown() && (currentFocusedForm.getEditButton() != null) &&
+            else if (e.getKeyCode()==ClientSettings.EDIT_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.EDIT_BUTTON_KEY.getModifiers() &&
+                     currentFocusedForm.getEditButton() != null &&
                      currentFocusedForm.getEditButton().isEnabled()) {
               currentFocusedForm.getEditButton().requestFocus();
               currentFocusedForm.edit();
             }
-            else if (e.getKeyCode() == KeyEvent.VK_D && e.isControlDown() &&
-                     (currentFocusedForm.getDeleteButton() != null) && currentFocusedForm.getDeleteButton().isEnabled())
+            else if (e.getKeyCode()==ClientSettings.DELETE_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.DELETE_BUTTON_KEY.getModifiers() &&
+                     currentFocusedForm.getDeleteButton() != null &&
+                     currentFocusedForm.getDeleteButton().isEnabled())
               currentFocusedForm.delete();
           }
         }
@@ -199,14 +195,12 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   public static void setCurrentFocusedForm(Form form) {
     if (Beans.isDesignTime())
       return;
-    if (!ClientSettings.SHOW_FOCUS_BORDER_ON_FORM)
-      return;
     if (form!=null && !form.isShowing())
       return;
     if (currentFocusedForm!=null && !currentFocusedForm.equals(form))
       currentFocusedForm.disableFocusedForm();
     currentFocusedForm = form;
-    if (currentFocusedForm!=null)
+    if (currentFocusedForm!=null && ClientSettings.SHOW_FOCUS_BORDER_ON_FORM)
       currentFocusedForm.setBorder(BorderFactory.createCompoundBorder(
         currentFocusedForm.getNotFocusedBorder(),
         BorderFactory.createLineBorder(ClientSettings.FORM_FOCUS_BORDER,1)

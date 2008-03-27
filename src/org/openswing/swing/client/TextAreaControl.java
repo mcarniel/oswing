@@ -1,18 +1,8 @@
 package org.openswing.swing.client;
 
-import javax.swing.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.Container;
-import org.openswing.swing.form.client.Form;
+import java.awt.*;
 import java.awt.event.*;
-import java.awt.Color;
-import java.awt.BorderLayout;
-import org.openswing.swing.message.receive.java.ValueObject;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import javax.swing.*;
 
 
 /**

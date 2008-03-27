@@ -1,12 +1,12 @@
 package org.openswing.swing.permissions.client;
 
+import java.util.*;
+
 import java.awt.*;
-import javax.swing.*;
 import java.awt.event.*;
-import java.util.HashMap;
-import org.openswing.swing.internationalization.java.*;
-import org.openswing.swing.util.client.ClientUtils;
-import org.openswing.swing.util.client.ClientSettings;
+import javax.swing.*;
+
+import org.openswing.swing.util.client.*;
 
 
 /**

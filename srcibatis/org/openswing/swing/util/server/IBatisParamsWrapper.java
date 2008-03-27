@@ -1,11 +1,8 @@
 package org.openswing.swing.util.server;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Iterator;
-import org.openswing.swing.message.send.java.FilterWhereClause;
-import java.util.HashMap;
+import java.util.*;
+
+import org.openswing.swing.message.send.java.*;
 
 
 /**

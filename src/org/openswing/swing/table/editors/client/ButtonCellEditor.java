@@ -1,13 +1,13 @@
 package org.openswing.swing.table.editors.client;
 
+import java.util.*;
+
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.table.TableCellEditor;
+import javax.swing.table.*;
 
 import org.openswing.swing.util.client.*;
-import java.util.ArrayList;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 
 
 /**

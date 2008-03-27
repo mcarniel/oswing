@@ -1,5 +1,27 @@
 
 
+Release Notes 1.5.3
+-------------------
+
+Final release 1.5.3 available
+Cleanup the OpenSwing source code, by removing unused imports and not referred attributes/variabled.
+Improved QueryUtils and grid/form models by supporting primitive types (int, long, float, double) for attributes within a value object.
+Fixed focus problem on lookup type columns when closing the lookup grid frame: now focus is resetted in the edited cell.
+Added get/setProgressBarValue() methods to MDIFrame to directly set current value in progress bar, instead of using MDIFrame.setBusy() method.
+Added getStatusBar() method to MDIFrame to directly manage StatusBar object, instead of using MDIFrame.addStatusComponent() method.
+Changed EnglishOnlyResourceFactory behavior: now translations passed to the class constructor have priority on default translations internally defined (on EnglishOnlyResourceFactory).
+Changed applyFiltersAndSorter method in HibernateUtils utility class, to include id in filtered columns.
+Changed jcalendar.jar file.
+Improved date component: now date can be selected in calendar using F2 shortcut key and using up/down/left/right/tab/space keys.
+Improved ClientSettings class, by adding switchers to define shortcut keys:
+- to use within date and lookup components
+- to use within a Form panel or GridControl for all buttons linked to them 
+Fixed a bug in Form panel and GridControl when pressing CTRL+S to save form content.
+Fixed a bug in PasswordControl.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5.2
 -------------------
 

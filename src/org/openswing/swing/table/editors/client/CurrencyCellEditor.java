@@ -1,14 +1,7 @@
 package org.openswing.swing.table.editors.client;
 
-import javax.swing.*;
-import java.awt.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.tree.*;
-
 import org.openswing.swing.client.*;
-import org.openswing.swing.table.columns.client.Column;
-import org.openswing.swing.table.columns.client.IntegerColumnSettings;
+import org.openswing.swing.table.columns.client.*;
 
 
 

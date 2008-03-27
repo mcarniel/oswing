@@ -1,16 +1,16 @@
 package org.openswing.swing.server;
 
-import java.util.*;
-import org.openswing.swing.message.send.java.FilterWhereClause;
-import org.openswing.swing.logger.server.Logger;
-import java.sql.*;
-import javax.servlet.ServletContext;
-import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.message.send.java.GridParams;
 import java.lang.reflect.*;
-import java.math.BigDecimal;
-import org.openswing.swing.internationalization.java.ResourcesFactory;
-import org.openswing.swing.util.java.Consts;
+import java.math.*;
+import java.sql.*;
+import java.util.*;
+import javax.servlet.*;
+
+import org.openswing.swing.internationalization.java.*;
+import org.openswing.swing.logger.server.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.message.send.java.*;
+import org.openswing.swing.util.java.*;
 
 
 /**
@@ -639,42 +639,43 @@ public class QueryUtil {
               currentVO = ((Method)getters[i].get(j)).invoke(currentVO,new Object[0]);
           }
 
-          if (setterMethods[i].getParameterTypes()[0].equals(String.class))
+          Class parType = setterMethods[i].getParameterTypes()[0];
+          if (parType.equals(String.class))
             value = rset.getString(i+1);
-          else if (setterMethods[i].getParameterTypes()[0].equals(Boolean.class) ||
-                   setterMethods[i].getParameterTypes()[0].equals(boolean.class)) {
+          else if (parType.equals(Boolean.class) ||
+                   parType.equals(boolean.class)) {
             value = rset.getString(i + 1);
             if (value!=null && value.equals(booleanTrueValue))
               value = Boolean.TRUE;
             else if (value!=null && value.equals(booleanFalseValue))
               value = Boolean.FALSE;
           }
-          else if (setterMethods[i].getParameterTypes()[0].equals(BigDecimal.class))
+          else if (parType.equals(BigDecimal.class))
             value = rset.getBigDecimal(i+1);
-          else if (setterMethods[i].getParameterTypes()[0].equals(Double.class)) {
+          else if (parType.equals(Double.class) || parType==Double.TYPE) {
             value = rset.getBigDecimal(i+1);
             if (value!=null)
               value = new Double(((BigDecimal)value).doubleValue());
           }
-          else if (setterMethods[i].getParameterTypes()[0].equals(Float.class)) {
+          else if (parType.equals(Float.class) || parType==Float.TYPE) {
             value = rset.getBigDecimal(i+1);
             if (value!=null)
               value = new Float(((BigDecimal)value).floatValue());
           }
-          else if (setterMethods[i].getParameterTypes()[0].equals(Integer.class)) {
+          else if (parType.equals(Integer.class) || parType==Integer.TYPE) {
             value = rset.getBigDecimal(i+1);
             if (value!=null)
               value = new Integer(((BigDecimal)value).intValue());
           }
-          else if (setterMethods[i].getParameterTypes()[0].equals(Long.class)) {
+          else if (parType.equals(Long.class) || parType==Long.TYPE) {
             value = rset.getBigDecimal(i+1);
             if (value!=null)
               value = new Long(((BigDecimal)value).longValue());
           }
-          else if (setterMethods[i].getParameterTypes()[0].equals(java.util.Date.class) ||
-                   setterMethods[i].getParameterTypes()[0].equals(java.sql.Date.class))
+          else if (parType.equals(java.util.Date.class) ||
+                   parType.equals(java.sql.Date.class))
             value = rset.getDate(i+1);
-          else if (setterMethods[i].getParameterTypes()[0].equals(java.sql.Timestamp.class))
+          else if (parType.equals(java.sql.Timestamp.class))
             value = rset.getTimestamp(i+1);
           else
             value = rset.getObject(i+1);
@@ -684,7 +685,7 @@ public class QueryUtil {
           }
           catch (IllegalArgumentException ex5) {
             try {
-              if (value!=null && !value.getClass().getName().equals(setterMethods[i].getParameterTypes()[0].getClass().getName()))
+              if (value!=null && !value.getClass().getName().equals(parType.getClass().getName()))
                 Logger.error(
                     userSessionPars.getUsername(),
                     "org.openswing.swing.server.QueryUtil",
@@ -692,7 +693,7 @@ public class QueryUtil {
                     "Error while executing the SQL:\n"+
                     baseSQL+"\n"+
                     params+"\n"+
-                    "Incompatible type found between value read ("+value.getClass().getName()+") and value exptected ("+setterMethods[i].getParameterTypes()[0].getClass().getName()+") in setter '"+setterMethods[i].getName()+"'.",
+                    "Incompatible type found between value read ("+value.getClass().getName()+") and value exptected ("+parType.getClass().getName()+") in setter '"+setterMethods[i].getName()+"'.",
                     null
                 );
             }

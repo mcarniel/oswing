@@ -1,24 +1,17 @@
 package org.openswing.swing.table.filter.client;
 
-import org.openswing.swing.table.columns.client.*;
-import org.openswing.swing.table.client.GridController;
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.client.*;
-
-
-import java.util.*;
 import java.math.*;
+import java.util.*;
+
 import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.*;
 import java.awt.event.*;
-import java.sql.Types;
+import javax.swing.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.domains.java.*;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.internationalization.java.*;
-import org.openswing.swing.client.CheckBoxControl;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
 
 /**
  * <p>Title: OpenSwing Framework</p>

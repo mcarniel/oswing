@@ -1,7 +1,6 @@
 package org.openswing.swing.domains.java;
 
-import java.io.Serializable;
-import org.openswing.swing.client.*;
+import java.io.*;
 
 
 

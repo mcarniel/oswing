@@ -1,9 +1,6 @@
 package org.openswing.swing.mdi.java;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import java.lang.String;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
+import javax.swing.tree.*;
 
 
 

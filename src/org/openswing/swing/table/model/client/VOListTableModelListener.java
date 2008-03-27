@@ -1,6 +1,6 @@
 package org.openswing.swing.table.model.client;
 
-import org.openswing.swing.client.*;
+
 
 
 

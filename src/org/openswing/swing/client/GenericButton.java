@@ -1,13 +1,13 @@
 package org.openswing.swing.client;
 
-import javax.swing.*;
-import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 
-import org.openswing.swing.client.*;
-import org.openswing.swing.util.client.ClientUtils;
-import org.openswing.swing.util.client.ClientSettings;
-import java.awt.Dimension;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+import org.openswing.swing.util.client.*;
 
 
 

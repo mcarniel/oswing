@@ -1,9 +1,8 @@
 package org.openswing.swing.table.columns.client;
 
 
-import java.beans.PropertyEditorSupport;
-
-import java.text.DateFormat;
+import java.beans.*;
+import java.text.*;
 
 
 /**

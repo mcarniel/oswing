@@ -1,20 +1,13 @@
 package org.openswing.swing.table.editors.client;
 
-import java.awt.*;
-import java.text.*;
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.tree.*;
-import java.util.Date;
-import java.text.DateFormat;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
+import java.util.*;
 
-import org.openswing.swing.table.columns.client.Column;
+import java.awt.*;
 import java.awt.event.*;
-import org.openswing.swing.table.client.Grid;
+import javax.swing.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.client.*;
 import org.openswing.swing.util.client.*;
 
 

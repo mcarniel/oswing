@@ -1,32 +1,14 @@
 package org.openswing.swing.client;
 
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.logger.client.Logger;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.text.DecimalFormat;
+import java.math.*;
 import java.text.*;
-import java.math.BigDecimal;
-import java.awt.Container;
-import org.openswing.swing.form.client.Form;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
-import org.openswing.swing.internationalization.java.*;
-import org.openswing.swing.message.receive.java.ValueObject;
-import javax.swing.JComponent;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.FlowLayout;
-import java.awt.event.FocusListener;
-import java.awt.event.ActionListener;
-import javax.swing.KeyStroke;
-import java.awt.event.KeyListener;
-import java.awt.Dimension;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

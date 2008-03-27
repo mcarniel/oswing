@@ -1,15 +1,11 @@
 package org.openswing.swing.util.client;
 
-import java.awt.event.ComponentAdapter;
-import javax.swing.JComponent;
-import java.awt.event.ComponentEvent;
-import javax.swing.*;
+import java.util.regex.*;
+
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+import javax.swing.*;
+import javax.swing.event.*;
 
 
 /**

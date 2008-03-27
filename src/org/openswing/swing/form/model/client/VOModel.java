@@ -1,15 +1,12 @@
 package org.openswing.swing.form.model.client;
 
-import org.openswing.swing.client.*;
-import java.lang.reflect.Method;
 import java.beans.*;
-import org.openswing.swing.message.receive.java.ValueObject;
-import org.openswing.swing.logger.client.Logger;
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Enumeration;
-import org.openswing.swing.form.client.Form;
+import java.lang.reflect.*;
+import java.util.*;
+
+import org.openswing.swing.form.client.*;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.message.receive.java.*;
 
 
 /**
@@ -378,13 +375,25 @@ public class VOModel {
             else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Integer.class) &&
               value.getClass().equals(java.math.BigDecimal.class))
               value = new Integer(((java.math.BigDecimal)value).intValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Integer.TYPE) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Integer(((java.math.BigDecimal)value).intValue());
             else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Long.class) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Long(((java.math.BigDecimal)value).longValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Long.TYPE) &&
               value.getClass().equals(java.math.BigDecimal.class))
               value = new Long(((java.math.BigDecimal)value).longValue());
             else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Double.class) &&
               value.getClass().equals(java.math.BigDecimal.class))
               value = new Double(((java.math.BigDecimal)value).doubleValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Double.TYPE) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Double(((java.math.BigDecimal)value).doubleValue());
             else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Float.class) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Float(((java.math.BigDecimal)value).floatValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Float.TYPE) &&
               value.getClass().equals(java.math.BigDecimal.class))
               value = new Float(((java.math.BigDecimal)value).floatValue());
           }

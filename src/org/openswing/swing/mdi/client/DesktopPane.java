@@ -1,14 +1,10 @@
 package org.openswing.swing.mdi.client;
 
+import java.beans.*;
+
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.ArrayList;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
 
 import org.openswing.swing.util.client.*;
 

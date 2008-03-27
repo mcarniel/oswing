@@ -1,11 +1,11 @@
 package org.openswing.swing.util.client;
 
+import java.io.*;
+import java.net.*;
+
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.message.send.java.*;
 import com.caucho.hessian.io.*;
-import java.net.URLConnection;
-import org.openswing.swing.message.receive.java.Response;
-import java.io.OutputStream;
-import java.io.InputStream;
-import org.openswing.swing.message.send.java.Command;
 
 
 /**

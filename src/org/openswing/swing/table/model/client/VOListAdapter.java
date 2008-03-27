@@ -1,32 +1,17 @@
 package org.openswing.swing.table.model.client;
 
-import org.openswing.swing.domains.java.*;
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.tree.*;
 import java.lang.reflect.*;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.sql.Timestamp;
-import java.util.Hashtable;
-import org.openswing.swing.table.renderers.client.*;
-import org.openswing.swing.table.editors.client.*;
-import org.openswing.swing.table.columns.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.table.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.client.*;
-import org.openswing.swing.domains.java.*;
+import java.math.*;
+import java.util.*;
 
+import javax.swing.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.java.*;
-import java.util.Enumeration;
-import java.util.HashSet;
-import org.openswing.swing.internationalization.java.Resources;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableCellEditor;
 
 
 /**
@@ -126,13 +111,17 @@ public class VOListAdapter {
         if (attributeName.startsWith("get") && methods[i].getParameterTypes().length==0 &&
             (methods[i].getReturnType().equals(String.class) ||
              methods[i].getReturnType().equals(Long.class) ||
+             methods[i].getReturnType().equals(Long.TYPE) ||
              methods[i].getReturnType().equals(Float.class) ||
+             methods[i].getReturnType().equals(Float.TYPE) ||
              methods[i].getReturnType().equals(Double.class) ||
+             methods[i].getReturnType().equals(Double.TYPE) ||
              methods[i].getReturnType().equals(BigDecimal.class) ||
              methods[i].getReturnType().equals(java.util.Date.class) ||
              methods[i].getReturnType().equals(java.sql.Date.class) ||
              methods[i].getReturnType().equals(java.sql.Timestamp.class) ||
              methods[i].getReturnType().equals(Integer.class) ||
+             methods[i].getReturnType().equals(Integer.TYPE) ||
              methods[i].getReturnType().equals(Character.class) ||
              methods[i].getReturnType().equals(Boolean.class) ||
              methods[i].getReturnType().equals(boolean.class) ||
@@ -329,15 +318,15 @@ public class VOListAdapter {
       if (value!=null && (value instanceof Number || !value.equals("") && value instanceof String)) {
         if (!getter[getter.length-1].getReturnType().equals(value.getClass())) {
             Class attrType = getter[getter.length-1].getReturnType();
-            if (attrType.equals(Integer.class))
+            if (attrType.equals(Integer.class) || attrType.equals(Integer.TYPE))
               value = new Integer(Double.valueOf(value.toString()).intValue());
-            else if (attrType.equals(Double.class))
+            else if (attrType.equals(Double.class) || attrType.equals(Double.TYPE))
               value = new Double(value.toString());
             else if (attrType.equals(BigDecimal.class))
               value = new BigDecimal(value.toString());
-            else if (attrType.equals(Long.class))
+            else if (attrType.equals(Long.class) || attrType.equals(Long.TYPE))
               value = new Long(Double.valueOf(value.toString()).longValue());
-            else if (attrType.equals(Float.class))
+            else if (attrType.equals(Float.class) || attrType.equals(Float.TYPE))
               value = new Float(Double.valueOf(value.toString()).floatValue());
         }
       }

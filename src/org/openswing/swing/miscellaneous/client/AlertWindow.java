@@ -1,18 +1,10 @@
 package org.openswing.swing.miscellaneous.client;
 
-import javax.swing.*;
 import java.awt.*;
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.client.MultiLineLabelControl;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import org.openswing.swing.client.LabelControl;
-import org.openswing.swing.util.client.ClientUtils;
-import javax.swing.JLayeredPane;
-import java.applet.Applet;
-import org.openswing.swing.client.ImagePanel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
+import javax.swing.*;
+
+import org.openswing.swing.client.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

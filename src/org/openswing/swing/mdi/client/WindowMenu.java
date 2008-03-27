@@ -1,16 +1,12 @@
 package org.openswing.swing.mdi.client;
 
-import java.util.Hashtable;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
-import org.openswing.swing.util.client.ClientSettings;
+import java.util.*;
+
+import java.awt.event.*;
+import javax.swing.*;
+
 import org.openswing.swing.logger.client.*;
-import org.openswing.swing.internationalization.java.*;
-import javax.swing.UIManager;
+import org.openswing.swing.util.client.*;
 
 
 /**

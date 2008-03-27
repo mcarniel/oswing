@@ -1,6 +1,6 @@
 package org.openswing.swing.tree.client;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.*;
 
 
 /**

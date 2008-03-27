@@ -1,14 +1,12 @@
 package org.openswing.swing.table.renderers.client;
 
+import java.awt.*;
 import javax.swing.*;
-import java.awt.Component;
-import javax.swing.table.DefaultTableCellRenderer;
-import org.openswing.swing.table.client.*;
+import javax.swing.table.*;
 
+import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import java.awt.Color;
-import java.awt.Font;
 
 
 /**

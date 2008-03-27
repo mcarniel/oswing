@@ -1,27 +1,19 @@
 package org.openswing.swing.export.java;
 
-import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.message.send.java.GridParams;
-import java.util.Hashtable;
-import java.lang.reflect.Method;
+import java.io.*;
+import java.lang.reflect.*;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
+import java.text.*;
+import java.util.*;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
+import java.awt.*;
+
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.message.send.java.*;
+import com.lowagie.text.*;
 import com.lowagie.text.Font;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPTable;
-import java.awt.Color;
-import java.io.ByteArrayOutputStream;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.rtf.RtfWriter;
-import com.lowagie.text.rtf.RtfWriter2;
-import com.lowagie.text.Table;
-import com.lowagie.text.rtf.document.RtfDocument;
-import com.lowagie.text.rtf.table.RtfTable;
+import com.lowagie.text.rtf.*;
 
 
 /**

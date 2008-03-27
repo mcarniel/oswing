@@ -1,10 +1,8 @@
 package org.openswing.swing.server;
 
 import java.sql.*;
-import javax.servlet.ServletContext;
-import java.io.*;
-import javax.servlet.http.HttpServlet;
-import java.util.Properties;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 
 /**

@@ -1,10 +1,9 @@
 package org.openswing.swing.lookup.client;
 
 
-import org.openswing.swing.message.receive.java.ValueObject;
-import java.util.Collection;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
+import java.util.*;
+
+import org.openswing.swing.message.receive.java.*;
 
 
 

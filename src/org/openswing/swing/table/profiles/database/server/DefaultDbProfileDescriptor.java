@@ -1,11 +1,9 @@
 package org.openswing.swing.table.profiles.database.server;
 
-import java.util.Hashtable;
-import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.*;
-import java.sql.PreparedStatement;
-import org.openswing.swing.table.profiles.java.GridProfile;
+import java.util.*;
+
+import org.openswing.swing.table.profiles.java.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

@@ -1,9 +1,8 @@
 package org.openswing.swing.util.java;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Iterator;
-import org.openswing.swing.message.send.java.FilterWhereClause;
+import java.util.*;
+
+import org.openswing.swing.message.send.java.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

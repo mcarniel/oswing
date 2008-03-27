@@ -1,34 +1,20 @@
 package org.openswing.swing.gantt.client;
 
+import java.beans.*;
+import java.math.*;
+import java.text.*;
 import java.util.*;
-import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.form.model.client.*;
-import java.awt.event.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.form.client.*;
 
-import org.openswing.swing.logger.client.Logger;
-import java.beans.Beans;
-import org.openswing.swing.util.client.*;
-import org.openswing.swing.internationalization.java.*;
-import org.openswing.swing.util.java.*;
-import javax.swing.border.Border;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.text.JTextComponent;
-import javax.swing.table.*;
-import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import javax.swing.table.AbstractTableModel;
-import org.openswing.swing.gantt.java.GanttRowVO;
-import org.openswing.swing.gantt.java.Appointment;
-import org.openswing.swing.gantt.java.AppointmentVO;
-import org.openswing.swing.gantt.java.GanttWorkingHours;
-import javax.swing.event.TableModelEvent;
-import java.math.BigDecimal;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.gantt.java.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.util.client.*;
+import org.openswing.swing.util.java.*;
 
 
 /**

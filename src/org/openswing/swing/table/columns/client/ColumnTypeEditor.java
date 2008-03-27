@@ -1,7 +1,6 @@
 package org.openswing.swing.table.columns.client;
 
 import java.beans.*;
-import org.openswing.swing.client.*;
 
 
 /**

@@ -1,16 +1,9 @@
 package org.openswing.swing.client;
 
-import org.openswing.swing.util.client.ClientSettings;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.beans.*;
 import java.text.*;
-import java.beans.Beans;
-import org.openswing.swing.internationalization.java.*;
-import java.math.BigDecimal;
+
+import org.openswing.swing.util.client.*;
 
 
 /**

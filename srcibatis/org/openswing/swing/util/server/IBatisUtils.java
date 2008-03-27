@@ -1,16 +1,10 @@
 package org.openswing.swing.util.server;
 
-import org.openswing.swing.server.QueryUtil;
-import org.openswing.swing.server.UserSessionParameters;
-import java.util.Map;
-import java.util.ArrayList;
+import java.util.*;
+
 import org.openswing.swing.message.receive.java.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Arrays;
-import org.openswing.swing.message.send.java.GridParams;
-import com.ibatis.sqlmap.client.SqlMapClient;
+import org.openswing.swing.message.send.java.*;
+import com.ibatis.sqlmap.client.*;
 
 
 /**

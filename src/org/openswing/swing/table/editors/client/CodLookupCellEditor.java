@@ -1,30 +1,19 @@
 package org.openswing.swing.table.editors.client;
 
-import java.awt.*;
-import java.text.*;
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.tree.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.math.*;
 import java.util.*;
-import java.lang.reflect.*;
-import javax.swing.event.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.table.client.*;
-import org.openswing.swing.table.model.client.*;
-import org.openswing.swing.lookup.client.*;
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.mdi.client.MDIFrame;
 
+import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.lookup.client.*;
+import org.openswing.swing.mdi.client.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
-import java.math.BigDecimal;
-import java.beans.Introspector;
-import javax.swing.SwingUtilities;
 
 
 /**
@@ -224,10 +213,12 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
 
     codBox.addKeyListener(new KeyAdapter() {
       public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode()==e.VK_F1) {
+        if (e.getKeyCode()==ClientSettings.LOOKUP_OPEN_KEY.getKeyCode() &&
+            e.getModifiers()+e.getModifiersEx()==ClientSettings.LOOKUP_OPEN_KEY.getModifiers()) {
           actionPerformed(null);
         }
-        if (e.getKeyCode()==e.VK_F2) {
+        if (e.getKeyCode()==ClientSettings.LOOKUP_CONTROLLER_KEY.getKeyCode() &&
+            e.getModifiers()+e.getModifiersEx()==ClientSettings.LOOKUP_CONTROLLER_KEY.getModifiers()) {
           if (controllerClassName!=null) {
             try {
               Class.forName(controllerClassName).newInstance();
@@ -287,6 +278,12 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
         }
         catch (Exception ex) {
           ex.printStackTrace();
+        }
+        finally {
+          Object c = ClientUtils.getParentFrame(table);
+          if (c!=null && c instanceof MDIFrame) {
+            table.requestFocus();
+          }
         }
 
 //        String getter = "get"+codAttributeName.substring(0,1).toUpperCase();

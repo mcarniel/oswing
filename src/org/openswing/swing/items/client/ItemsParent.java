@@ -1,6 +1,6 @@
 package org.openswing.swing.items.client;
 
-import org.openswing.swing.message.receive.java.ValueObject;
+import org.openswing.swing.message.receive.java.*;
 
 
 /**

@@ -1,7 +1,7 @@
 package org.openswing.swing.permissions.java;
 
-import java.io.Serializable;
-import java.util.Hashtable;
+import java.io.*;
+import java.util.*;
 
 
 /**

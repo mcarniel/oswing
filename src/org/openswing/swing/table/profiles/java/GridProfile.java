@@ -1,11 +1,9 @@
 package org.openswing.swing.table.profiles.java;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.io.Serializable;
-import java.util.Iterator;
-import org.openswing.swing.util.java.Utils;
+import java.io.*;
+import java.util.*;
+
+import org.openswing.swing.util.java.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

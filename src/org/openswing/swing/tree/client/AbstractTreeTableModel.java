@@ -14,8 +14,8 @@ package org.openswing.swing.tree.client;
  * you entered into with Sun.
  */
 
-import javax.swing.tree.*;
 import javax.swing.event.*;
+import javax.swing.tree.*;
 
 /**
  * @version 1.2 10/27/98

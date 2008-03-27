@@ -1,8 +1,6 @@
 package org.openswing.swing.table.profiles.database.server;
 
 import java.sql.*;
-import java.util.Properties;
-import java.util.Hashtable;
 
 
 /**

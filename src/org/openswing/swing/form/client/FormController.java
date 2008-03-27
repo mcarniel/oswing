@@ -1,8 +1,8 @@
 package org.openswing.swing.form.client;
 
-import org.openswing.swing.message.receive.java.*;
 import java.util.*;
-import org.openswing.swing.client.*;
+
+import org.openswing.swing.message.receive.java.*;
 
 
 /**

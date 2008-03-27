@@ -1,11 +1,11 @@
 package org.openswing.swing.table.client;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import com.sun.java.swing.plaf.windows.WindowsScrollBarUI;
-import javax.swing.plaf.ComponentUI;
-import javax.swing.plaf.basic.BasicArrowButton;
+import javax.swing.plaf.*;
+import javax.swing.plaf.basic.*;
+
+import com.sun.java.swing.plaf.windows.*;
 
 
 /**

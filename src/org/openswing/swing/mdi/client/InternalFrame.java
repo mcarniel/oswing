@@ -1,21 +1,12 @@
 package org.openswing.swing.mdi.client;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.util.ArrayList;
-import javax.swing.JInternalFrame;
-import javax.swing.WindowConstants;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.ImageIcon;
-import org.openswing.swing.client.*;
+import java.util.*;
+
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
 
 import org.openswing.swing.util.client.*;
-import java.awt.Graphics;
-import java.beans.*;
-import javax.swing.border.Border;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 
 
 /**

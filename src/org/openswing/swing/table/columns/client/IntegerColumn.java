@@ -1,12 +1,11 @@
 package org.openswing.swing.table.columns.client;
 
-import javax.swing.SwingConstants;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import org.openswing.swing.table.renderers.client.NumericTableCellRenderer;
-import org.openswing.swing.table.client.GridController;
-import org.openswing.swing.table.editors.client.NumericCellEditor;
-import org.openswing.swing.table.client.Grids;
+import javax.swing.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.table.editors.client.*;
+import org.openswing.swing.table.renderers.client.*;
 
 
 /**

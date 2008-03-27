@@ -1,26 +1,17 @@
 package org.openswing.swing.client;
 
+import java.beans.*;
+import java.text.*;
+import java.util.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
-import java.util.*;
-import java.text.*;
-import javax.swing.text.Document;
-import java.beans.Beans;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
-import com.toedter.calendar.*;
-
-import java.awt.Container;
-import org.openswing.swing.form.client.Form;
-import org.openswing.swing.internationalization.java.Resources;
+import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import org.openswing.swing.message.receive.java.ValueObject;
-import org.openswing.swing.logger.client.Logger;
-import java.lang.reflect.*;
+import com.toedter.calendar.*;
 
 
 /**
@@ -687,8 +678,18 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
       setDate(null);
       return;
     }
-    if (e.getKeyCode()==e.VK_F1) {
+    if (e.getKeyCode()==ClientSettings.CALENDAR_CURRENT_DATE_KEY.getKeyCode() &&
+        e.getModifiers()+e.getModifiersEx()==ClientSettings.CALENDAR_CURRENT_DATE_KEY.getModifiers()) {
       setDate(new Date());
+    }
+    if (e.getKeyCode()==ClientSettings.CALENDAR_OPEN_KEY.getKeyCode() &&
+        e.getModifiers()+e.getModifiersEx()==ClientSettings.CALENDAR_OPEN_KEY.getModifiers()) {
+      focusLost(null);
+      calendar.setCalendar(currentDate);
+      calendar.actionPerformed(null);
+      calendar.getJCalendar().requestFocus();
+      calendar.getJCalendar().getDayChooser().requestFocus();
+      calendar.getJCalendar().getDayChooser().setFocus();
     }
 
     int i = date.getCaretPosition();

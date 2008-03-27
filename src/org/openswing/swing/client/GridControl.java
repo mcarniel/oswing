@@ -1,31 +1,25 @@
 package org.openswing.swing.client;
 
 import java.beans.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.event.KeyListener;
-import javax.swing.*;
-import org.openswing.swing.table.columns.client.*;
-import org.openswing.swing.table.model.client.*;
-import org.openswing.swing.form.client.Form;
-import org.openswing.swing.table.client.*;
-import org.openswing.swing.util.client.*;
-import org.openswing.swing.table.java.*;
-import org.openswing.swing.util.java.*;
-import org.openswing.swing.table.filter.client.FilterPanel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.table.profiles.java.GridProfile;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.AncestorEvent;
 import java.io.*;
-import org.openswing.swing.table.profiles.java.GridProfileDescription;
-import javax.swing.table.TableColumnModel;
+import java.util.*;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.form.client.*;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.table.columns.client.*;
+import org.openswing.swing.table.filter.client.*;
+import org.openswing.swing.table.java.*;
+import org.openswing.swing.table.model.client.*;
+import org.openswing.swing.table.profiles.java.*;
+import org.openswing.swing.util.client.*;
+import org.openswing.swing.util.java.*;
 
 
 /**

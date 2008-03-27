@@ -1,31 +1,18 @@
 package org.openswing.swing.client;
 
-import org.openswing.swing.util.client.ClientSettings;
-import javax.swing.JCheckBox;
-import java.awt.Container;
-import java.awt.Container;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import org.openswing.swing.message.receive.java.ValueObject;
-import java.util.ArrayList;
-import java.awt.Color;
-import java.awt.event.FocusListener;
-import java.awt.event.FocusEvent;
-import org.openswing.swing.form.model.client.ValueChangeListener;
-import org.openswing.swing.form.model.client.ValueChangeEvent;
-import org.openswing.swing.logger.client.Logger;
-import javax.swing.UIManager;
-import java.beans.Beans;
-import java.awt.Font;
-import javax.swing.event.ChangeListener;
-import javax.swing.plaf.ActionMapUIResource;
+import java.beans.*;
+import java.util.*;
+
+import java.awt.*;
 import java.awt.event.*;
-import javax.swing.ButtonModel;
-import javax.swing.ButtonGroup;
-import javax.swing.ActionMap;
-import javax.swing.AbstractAction;
-import javax.swing.SwingUtilities;
-import javax.swing.plaf.basic.BasicButtonListener;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.plaf.*;
+import javax.swing.plaf.basic.*;
+
+import org.openswing.swing.form.model.client.*;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

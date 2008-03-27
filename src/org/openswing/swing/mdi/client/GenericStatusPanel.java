@@ -1,7 +1,6 @@
 package org.openswing.swing.mdi.client;
 
-import javax.swing.JTextField;
-import org.openswing.swing.internationalization.java.*;
+import javax.swing.*;
 
 
 /**

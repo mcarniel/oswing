@@ -1,18 +1,8 @@
 package org.openswing.swing.client;
 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import org.openswing.swing.form.client.Form;
-import java.awt.event.*;
-import org.openswing.swing.message.receive.java.ValueObject;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.plaf.UIResource;
-import javax.swing.text.*;
-import java.awt.datatransfer.*;
-import java.awt.im.InputContext;
-import java.io.IOException;
-import java.lang.reflect.*;
 
 
 /**
@@ -58,7 +48,7 @@ public class TextControl extends BaseInputControl implements InputControl {
   private boolean rpadding = false;
 
   /** text field */
-  private TextField textBox = new TextField();
+  protected JTextField textBox = getTextBox();
 
 
   /**
@@ -91,6 +81,14 @@ public class TextControl extends BaseInputControl implements InputControl {
     addFocusListener();
     addKeyListener();
     initListeners();
+  }
+
+
+  /**
+   * @return text box; this method is overrided by PasswordControl
+   */
+  protected JTextField getTextBox() {
+    return new PlainTextField();
   }
 
 
@@ -421,7 +419,7 @@ public class TextControl extends BaseInputControl implements InputControl {
 
   public void processKeyEvent(KeyEvent e) {
     try {
-      textBox.processKeyEvent(e);
+      ((OpenSwingTextField)textBox).processKeyEvent(e);
     }
     catch (Throwable ex) {
     }
@@ -431,7 +429,7 @@ public class TextControl extends BaseInputControl implements InputControl {
   /**
    * @return text box; this method is overrided by PasswordControl
    */
-  class TextField extends JTextField {
+  class PlainTextField extends JTextField implements OpenSwingTextField {
 
     public void processKeyEvent(KeyEvent e) {
       super.processKeyEvent(e);

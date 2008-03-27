@@ -1,7 +1,7 @@
 package org.openswing.swing.message.send.java;
 
-import java.io.Serializable;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 
 /**

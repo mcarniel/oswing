@@ -1,12 +1,7 @@
 package org.openswing.swing.mdi.client;
 
-import javax.swing.*;
-import javax.swing.tree.*;
 import java.awt.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-
+import javax.swing.*;
 
 import org.openswing.swing.util.client.*;
 

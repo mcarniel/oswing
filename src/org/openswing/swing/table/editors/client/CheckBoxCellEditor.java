@@ -1,16 +1,12 @@
 package org.openswing.swing.table.editors.client;
 
+import java.util.*;
+
 import java.awt.*;
-import java.text.*;
-import javax.swing.*;
-import javax.swing.table.*;
 import java.awt.event.*;
-import javax.swing.tree.*;
+import javax.swing.*;
 import javax.swing.plaf.basic.*;
-import java.util.ArrayList;
-import org.openswing.swing.client.*;
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.client.*;
+import javax.swing.table.*;
 
 import org.openswing.swing.util.client.*;
 

@@ -1,7 +1,5 @@
 package org.openswing.swing.table.client;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 

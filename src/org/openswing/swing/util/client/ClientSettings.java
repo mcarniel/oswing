@@ -1,21 +1,18 @@
 package org.openswing.swing.util.client;
 
 
-import org.openswing.swing.domains.java.Domain;
-import java.awt.Color;
-import java.util.Hashtable;
-import java.util.Properties;
+import java.util.*;
+
+import java.awt.*;
 import javax.swing.*;
-import org.openswing.swing.mdi.client.*;
-import org.openswing.swing.permissions.java.ButtonsAuthorizations;
+
+import org.openswing.swing.domains.java.*;
 import org.openswing.swing.internationalization.java.*;
-import java.lang.reflect.*;
-import org.openswing.swing.util.java.Consts;
-import java.awt.Font;
-import java.awt.Dimension;
-import org.openswing.swing.table.profiles.java.GridProfileManager;
-import org.openswing.swing.lookup.client.LookupController;
-import org.openswing.swing.client.GridControl;
+import org.openswing.swing.lookup.client.*;
+import org.openswing.swing.permissions.java.*;
+import org.openswing.swing.table.profiles.java.*;
+import org.openswing.swing.util.java.*;
+import java.awt.event.KeyEvent;
 
 
 /**
@@ -212,6 +209,46 @@ public class ClientSettings {
 
   /** foreground color of tree selected row */
   public static Color TREE_SELECTION_FOREGROUND = Color.black;
+
+  /** shortcut key used to open the calendar popup in date control and date column; default value: KeyStroke.getKeyStroke(KeyEvent.VK_F2,0) */
+  public static KeyStroke CALENDAR_OPEN_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_F2,0);
+
+  /** shortcut key used to set current date in date control and date column; default value: KeyStroke.getKeyStroke(KeyEvent.VK_F1,0) */
+  public static KeyStroke CALENDAR_CURRENT_DATE_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_F1,0);
+
+  /** shortcut key used to open lookup grid in lookup control and lookup column; default value: KeyEvent.VK_F1 */
+  public static KeyStroke LOOKUP_OPEN_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_F1,0);
+
+  /** shortcut key used to open lookup controller frame in lookup control and lookup column; default value: KeyEvent.VK_F2 */
+  public static KeyStroke LOOKUP_CONTROLLER_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_F2,0);
+
+  /** shortcut key used for insert button, within a form or a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_I,KeyEvent.CTRL_MASK) */
+  public static KeyStroke INSERT_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_I,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used for edit button, within a form or a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_E,KeyEvent.CTRL_MASK) */
+  public static KeyStroke EDIT_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_E,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used for copy button, within a form or a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_MASK) */
+  public static KeyStroke COPY_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used for save button, within a form or a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_S,KeyEvent.CTRL_MASK) */
+  public static KeyStroke SAVE_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_S,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used for reload button, within a form or a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_Z,KeyEvent.CTRL_MASK) */
+  public static KeyStroke RELOAD_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_Z,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used for delete button, within a form or a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_D,KeyEvent.CTRL_MASK) */
+  public static KeyStroke DELETE_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_D,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used for export button within a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_X,KeyEvent.CTRL_MASK) */
+  public static KeyStroke EXPORT_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_X,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used for filter button, within a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_MASK) */
+  public static KeyStroke FILTER_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used to show popup menu within a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_Q,KeyEvent.CTRL_MASK) */
+  public static KeyStroke GRID_POPUP_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_Q,KeyEvent.CTRL_MASK);
+
 
 
   /**

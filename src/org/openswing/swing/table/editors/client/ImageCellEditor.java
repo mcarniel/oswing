@@ -1,21 +1,19 @@
 package org.openswing.swing.table.editors.client;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
+import java.io.*;
+import java.util.*;
 
-import org.openswing.swing.util.client.*;
-import org.openswing.swing.client.OptionPane;
-import java.util.ArrayList;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import org.openswing.swing.client.ImagePanel;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import java.awt.event.ActionEvent;
-import org.openswing.swing.mdi.client.MDIFrame;
-import java.io.FileInputStream;
-import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.table.client.Grid;
+import javax.swing.table.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.mdi.client.*;
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

@@ -1,29 +1,14 @@
 package org.openswing.swing.mdi.client;
 
-import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeSelectionModel;
-
-import java.lang.reflect.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.table.renderers.client.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.tree.*;
 
 import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-
+import org.openswing.swing.mdi.java.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.permissions.java.*;
-import org.openswing.swing.mdi.java.ApplicationFunction;
-import org.openswing.swing.internationalization.java.*;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import org.openswing.swing.util.client.ClientUtils;
-import java.util.ArrayList;
 
 
 /**

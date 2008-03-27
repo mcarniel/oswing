@@ -1,9 +1,9 @@
 package org.openswing.swing.gantt.client;
 
+import java.lang.reflect.*;
 import java.util.*;
-import java.io.Serializable;
+
 import org.openswing.swing.message.receive.java.*;
-import java.lang.reflect.Method;
 
 
 /**

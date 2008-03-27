@@ -1,11 +1,6 @@
 package org.openswing.swing.lookup.client;
 
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Collection;
-import org.openswing.swing.message.receive.java.ValueObject;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
+import java.util.*;
 
 
 

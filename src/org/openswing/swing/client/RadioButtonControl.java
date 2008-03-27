@@ -1,24 +1,14 @@
 package org.openswing.swing.client;
 
-import org.openswing.swing.util.client.ClientSettings;
-import javax.swing.JRadioButton;
-import java.awt.Container;
-import org.openswing.swing.form.client.Form;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import org.openswing.swing.message.receive.java.ValueObject;
-import java.util.ArrayList;
-import java.awt.Color;
-import java.awt.event.FocusListener;
-import java.awt.event.FocusEvent;
-import org.openswing.swing.form.model.client.ValueChangeListener;
-import org.openswing.swing.form.model.client.ValueChangeEvent;
-import org.openswing.swing.logger.client.Logger;
-import javax.swing.UIManager;
-import javax.swing.ButtonGroup;
-import java.util.Enumeration;
-import java.beans.Beans;
-import java.awt.Font;
+import java.beans.*;
+import java.util.*;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+import org.openswing.swing.form.model.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

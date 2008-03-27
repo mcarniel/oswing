@@ -1,10 +1,10 @@
 package org.openswing.swing.util.client;
 
-import java.net.URLConnection;
-import org.openswing.swing.message.receive.java.Response;
-import org.openswing.swing.message.send.java.Command;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
+import java.net.*;
+
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.message.send.java.*;
 
 
 /**

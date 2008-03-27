@@ -1,25 +1,18 @@
 package org.openswing.swing.tree.client;
 
 
+import java.lang.reflect.*;
+import java.util.*;
+
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.tree.*;
 import javax.swing.table.*;
+import javax.swing.tree.*;
 
-import java.awt.Dimension;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-
-import java.awt.event.MouseEvent;
-
-import java.util.EventObject;
-import org.openswing.swing.util.client.ClientSettings;
-import java.util.ArrayList;
-import java.lang.reflect.Method;
-import org.openswing.swing.util.client.ClientUtils;
-import org.openswing.swing.message.receive.java.ValueObject;
-import javax.swing.tree.DefaultMutableTreeNode;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

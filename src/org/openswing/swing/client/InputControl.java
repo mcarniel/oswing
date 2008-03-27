@@ -1,6 +1,6 @@
 package org.openswing.swing.client;
 
-import org.openswing.swing.form.model.client.ValueChangeListener;
+import org.openswing.swing.form.model.client.*;
 
 
 /**

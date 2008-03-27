@@ -1,20 +1,15 @@
 package org.openswing.swing.table.renderers.client;
 
+import java.util.*;
+
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.plaf.basic.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.table.client.*;
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.client.*;
+import javax.swing.table.*;
 
+import org.openswing.swing.miscellaneous.client.*;
+import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import org.openswing.swing.miscellaneous.client.ProgressBar;
-import java.util.ArrayList;
 
 
 /**

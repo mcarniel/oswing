@@ -1,16 +1,13 @@
 package org.openswing.swing.client;
 
+import java.beans.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.beans.Beans;
-import org.openswing.swing.client.*;
-import org.openswing.swing.domains.java.*;
 
-import java.awt.Container;
-import org.openswing.swing.form.client.Form;
+import org.openswing.swing.domains.java.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.message.receive.java.ValueObject;
 
 
 /**

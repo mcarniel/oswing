@@ -1,11 +1,10 @@
 package org.openswing.swing.miscellaneous.client;
 
-import javax.swing.*;
 import java.awt.*;
-import org.openswing.swing.miscellaneous.util.client.TipPanelContainer;
-import org.openswing.swing.miscellaneous.util.client.TipPanel;
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.mdi.client.InternalFrame;
+
+import org.openswing.swing.mdi.client.*;
+import org.openswing.swing.miscellaneous.util.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

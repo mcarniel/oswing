@@ -1,14 +1,14 @@
 package org.openswing.swing.client;
 
-import javax.swing.*;
+import java.beans.*;
+import java.io.*;
+
 import java.awt.*;
-import org.openswing.swing.util.client.ClientUtils;
-import java.awt.image.PixelGrabber;
-import java.io.InputStream;
-import java.io.IOException;
-import java.beans.Beans;
-import org.openswing.swing.util.client.ClientSettings;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
+import java.awt.image.*;
+import javax.swing.*;
+
+import org.openswing.swing.util.client.*;
 
 
 /**

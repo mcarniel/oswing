@@ -1,24 +1,16 @@
 package org.openswing.swing.table.editors.client;
 
-import java.awt.*;
-import java.text.*;
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.tree.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.domains.java.*;
+import java.util.*;
 
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
-import java.util.ArrayList;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.util.Hashtable;
-import org.openswing.swing.table.client.GridController;
-import org.openswing.swing.table.columns.client.TypeController;
-import org.openswing.swing.table.columns.client.Column;
-import org.openswing.swing.util.java.Consts;
+import org.openswing.swing.util.java.*;
 
 
 /**

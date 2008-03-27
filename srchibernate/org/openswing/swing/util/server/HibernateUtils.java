@@ -1,23 +1,13 @@
 package org.openswing.swing.util.server;
 
-import org.openswing.swing.server.QueryUtil;
-import org.openswing.swing.server.UserSessionParameters;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.type.Type;
-import org.hibernate.Hibernate;
-import org.hibernate.Query;
-import org.openswing.swing.message.send.java.GridParams;
-import org.hibernate.ScrollableResults;
-import org.openswing.swing.util.client.ClientSettings;
-import org.hibernate.metadata.ClassMetadata;
-import java.util.Map;
-import java.util.ArrayList;
+import java.util.*;
+
+import org.hibernate.*;
+import org.hibernate.metadata.*;
+import org.hibernate.type.*;
 import org.openswing.swing.message.receive.java.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Arrays;
+import org.openswing.swing.message.send.java.*;
+import org.openswing.swing.server.*;
 
 
 /**
@@ -81,6 +71,8 @@ public class HibernateUtils {
     Map attributesMap = new HashMap();
     for(int i=0;i<attrNames.length;i++)
       attributesMap.put(attrNames[i],tableName+"."+attrNames[i]);
+
+    attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
 
     // append filtering and sorting conditions to the base SQL...
     ArrayList filterAttrNames = new ArrayList();

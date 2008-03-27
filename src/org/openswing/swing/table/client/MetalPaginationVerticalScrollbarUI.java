@@ -1,14 +1,9 @@
 package org.openswing.swing.table.client;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import com.sun.java.swing.plaf.motif.MotifScrollBarUI;
-import javax.swing.plaf.ComponentUI;
-import javax.swing.plaf.basic.BasicArrowButton;
-import javax.swing.plaf.metal.MetalScrollBarUI;
-import javax.swing.plaf.metal.MetalScrollButton;
-import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.*;
+import javax.swing.plaf.metal.*;
 
 
 /**

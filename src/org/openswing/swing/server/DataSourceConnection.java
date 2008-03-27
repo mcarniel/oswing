@@ -1,14 +1,10 @@
 package org.openswing.swing.server;
 
 import java.sql.*;
-import javax.servlet.ServletContext;
-import com.rp.database.*;
-import java.io.*;
-import javax.servlet.http.HttpServlet;
-import java.util.Properties;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
+import javax.naming.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.sql.*;
 
 
 /**

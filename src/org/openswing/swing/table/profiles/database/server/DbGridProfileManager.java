@@ -1,23 +1,14 @@
 package org.openswing.swing.table.profiles.database.server;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.StringTokenizer;
-import org.openswing.swing.message.send.java.FilterWhereClause;
-import java.text.SimpleDateFormat;
-import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.Date;
-import org.openswing.swing.table.profiles.java.GridProfileManager;
-import org.openswing.swing.table.profiles.java.GridProfile;
-import org.openswing.swing.table.profiles.java.GridProfileDescription;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.io.*;
+import java.math.*;
 import java.sql.*;
-import java.util.Hashtable;
-import java.util.Enumeration;
+import java.text.*;
+import java.util.*;
+import java.util.Date;
+
+import org.openswing.swing.message.send.java.*;
+import org.openswing.swing.table.profiles.java.*;
 
 
 /**

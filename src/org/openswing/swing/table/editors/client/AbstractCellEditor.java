@@ -1,9 +1,7 @@
 package org.openswing.swing.table.editors.client;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.EventObject;
-import java.io.Serializable;
+import java.util.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
 

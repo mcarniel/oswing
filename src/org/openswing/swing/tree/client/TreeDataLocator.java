@@ -1,12 +1,10 @@
 package org.openswing.swing.tree.client;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.JTree;
-import org.openswing.swing.message.receive.java.Response;
+import java.util.*;
+
+import javax.swing.*;
+
+import org.openswing.swing.message.receive.java.*;
 
 
 /**

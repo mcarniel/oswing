@@ -1,48 +1,24 @@
 package org.openswing.swing.lookup.client;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.lang.reflect.*;
+import java.math.*;
+import java.sql.*;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Enumeration;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-import java.util.HashMap;
-import org.openswing.swing.message.send.java.*;
-import org.openswing.swing.message.receive.java.*;
-import java.awt.*;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import org.openswing.swing.table.columns.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.form.client.*;
-import org.openswing.swing.table.client.*;
-import org.openswing.swing.table.model.client.*;
-import org.openswing.swing.form.model.client.*;
-import org.openswing.swing.lookup.client.*;
-import org.openswing.swing.form.client.*;
-import org.openswing.swing.form.model.client.*;
 
-import org.openswing.swing.util.java.Consts;
-import org.openswing.swing.util.client.*;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+
+import org.openswing.swing.form.client.*;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.table.java.*;
-import org.openswing.swing.internationalization.java.*;
-import org.openswing.swing.tree.client.TreePanel;
-import javax.swing.JSplitPane;
-import org.openswing.swing.tree.client.TreeController;
-import javax.swing.tree.DefaultMutableTreeNode;
-import org.openswing.swing.tree.client.TreeDataLocator;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
+import org.openswing.swing.tree.client.*;
+import org.openswing.swing.util.client.*;
+import org.openswing.swing.util.java.*;
 
 
 /**

@@ -1,16 +1,12 @@
 package org.openswing.swing.table.client;
 
-import java.awt.Color;
-import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.message.send.java.*;
 import java.util.*;
-import org.openswing.swing.client.*;
 
+import java.awt.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.util.java.Consts;
-import org.openswing.swing.table.model.client.VOListAdapter;
-import org.openswing.swing.table.model.client.VOListTableModel;
-import java.awt.Font;
 
 
 /**

@@ -1,11 +1,9 @@
 package org.openswing.swing.table.profiles.java;
 
-import java.util.ArrayList;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import org.openswing.swing.table.columns.client.Column;
+import java.io.*;
+import java.util.*;
+
+import org.openswing.swing.table.columns.client.*;
 
 
 /**

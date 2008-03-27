@@ -1,14 +1,11 @@
 package org.openswing.swing.properties.client;
 
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.JTable;
-import java.awt.Component;
-import org.openswing.swing.client.InputControl;
-import org.openswing.swing.client.BaseInputControl;
-import javax.swing.BorderFactory;
-import org.openswing.swing.util.client.ClientSettings;
-import javax.swing.text.JTextComponent;
-import java.awt.Color;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

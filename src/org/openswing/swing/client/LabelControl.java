@@ -1,11 +1,11 @@
 package org.openswing.swing.client;
 
-import org.openswing.swing.util.client.ClientSettings;
-import javax.swing.JLabel;
-import org.openswing.swing.internationalization.java.*;
-import java.awt.Font;
-import java.beans.Beans;
-import javax.swing.SwingConstants;
+import java.beans.*;
+
+import java.awt.*;
+import javax.swing.*;
+
+import org.openswing.swing.util.client.*;
 
 
 /**

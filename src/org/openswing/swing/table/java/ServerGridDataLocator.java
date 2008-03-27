@@ -1,10 +1,10 @@
 package org.openswing.swing.table.java;
 
+import java.lang.reflect.*;
 import java.util.*;
-import java.io.Serializable;
+
 import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.message.send.java.GridParams;
-import java.lang.reflect.Method;
+import org.openswing.swing.message.send.java.*;
 
 
 /**

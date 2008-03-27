@@ -1,10 +1,9 @@
 package org.openswing.swing.internationalization.java;
 
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
-import java.text.SimpleDateFormat;
-import java.io.Serializable;
-import org.openswing.swing.util.java.Consts;
+import org.openswing.swing.util.java.*;
 
 
 /**

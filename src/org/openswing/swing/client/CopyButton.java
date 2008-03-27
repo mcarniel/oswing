@@ -1,13 +1,9 @@
 package org.openswing.swing.client;
 
-import javax.swing.*;
 import java.awt.*;
-
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
+import javax.swing.*;
 
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.internationalization.java.*;
 
 
 /**

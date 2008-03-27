@@ -1,17 +1,13 @@
 package org.openswing.swing.wizard.client;
 
-import javax.swing.*;
-import java.awt.*;
+import java.beans.*;
+import java.util.*;
 
-import org.openswing.swing.client.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.internationalization.java.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.awt.event.ActionEvent;
-import java.util.Hashtable;
-import java.beans.Beans;
 
 
 /**

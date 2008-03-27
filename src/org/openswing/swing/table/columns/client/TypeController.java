@@ -1,7 +1,6 @@
 package org.openswing.swing.table.columns.client;
 
-import org.openswing.swing.client.GridControl;
-import org.openswing.swing.client.InputControl;
+import org.openswing.swing.client.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

@@ -1,7 +1,8 @@
 package org.openswing.swing.tree.java;
 
-import java.io.Serializable;
-import javax.swing.tree.DefaultMutableTreeNode;
+import java.io.*;
+
+import javax.swing.tree.*;
 
 
 /**

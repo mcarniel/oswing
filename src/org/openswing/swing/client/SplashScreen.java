@@ -2,8 +2,9 @@ package org.openswing.swing.client;
 
 import java.awt.*;
 import javax.swing.*;
-import org.openswing.swing.mdi.client.MDIFrame;
-import org.openswing.swing.util.client.ClientUtils;
+
+import org.openswing.swing.mdi.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

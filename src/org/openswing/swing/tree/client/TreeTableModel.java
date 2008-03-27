@@ -20,7 +20,7 @@ package org.openswing.swing.tree.client;
  *
  */
 
-import javax.swing.tree.TreeModel;
+import javax.swing.tree.*;
 
 /**
  * TreeTableModel is the model used by a JTreeTable. It extends TreeModel

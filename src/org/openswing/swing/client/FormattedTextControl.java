@@ -1,25 +1,11 @@
 package org.openswing.swing.client;
 
-import javax.swing.JFormattedTextField;
-import javax.swing.UIManager;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.Container;
-import org.openswing.swing.form.client.Form;
+import java.text.*;
+
+import java.awt.*;
 import java.awt.event.*;
-import org.openswing.swing.message.receive.java.ValueObject;
-import javax.swing.JComponent;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.FlowLayout;
-import javax.swing.Action;
-import java.text.ParseException;
-import javax.swing.text.Document;
-import javax.swing.InputVerifier;
-import javax.swing.text.DefaultFormatter;
-import javax.swing.text.DefaultFormatterFactory;
-import java.awt.Color;
+import javax.swing.*;
+import javax.swing.text.*;
 
 
 /**

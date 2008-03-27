@@ -1,14 +1,12 @@
 package org.openswing.swing.table.editors.client;
 
-import javax.swing.*;
 import java.awt.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-import org.openswing.swing.client.*;
-
-import org.openswing.swing.util.client.*;
-import javax.swing.table.TableCellEditor;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

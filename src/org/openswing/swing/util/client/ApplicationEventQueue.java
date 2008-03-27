@@ -1,13 +1,9 @@
 package org.openswing.swing.util.client;
 
-import java.util.ArrayList;
-import java.awt.event.KeyListener;
-import java.awt.EventQueue;
-import java.awt.Toolkit;
-import java.awt.AWTEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseEvent;
+import java.util.*;
+
+import java.awt.*;
+import java.awt.event.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

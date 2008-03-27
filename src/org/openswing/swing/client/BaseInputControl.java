@@ -2,15 +2,14 @@ package org.openswing.swing.client;
 
 import java.beans.*;
 import java.util.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.form.model.client.ValueChangeListener;
-import org.openswing.swing.form.model.client.ValueChangeEvent;
-import java.io.*;
-import java.io.*;
+
+import org.openswing.swing.form.model.client.*;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

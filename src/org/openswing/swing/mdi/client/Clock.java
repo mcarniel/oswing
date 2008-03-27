@@ -2,12 +2,13 @@ package org.openswing.swing.mdi.client;
 
 import java.text.*;
 import java.util.*;
+
 import java.awt.event.*;
+import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.JTextField;
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.util.java.Consts;
-import org.openswing.swing.internationalization.java.*;
+
+import org.openswing.swing.util.client.*;
+import org.openswing.swing.util.java.*;
 
 
 /**

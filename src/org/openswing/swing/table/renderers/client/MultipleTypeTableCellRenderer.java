@@ -1,24 +1,16 @@
 package org.openswing.swing.table.renderers.client;
 
+import java.util.*;
+
 import java.awt.*;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import javax.swing.*;
 import javax.swing.table.*;
-import java.math.BigDecimal;
+
 import org.openswing.swing.client.*;
 import org.openswing.swing.table.client.*;
-import org.openswing.swing.client.*;
-
-import org.openswing.swing.table.columns.client.Column;
+import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.util.java.*;
-import org.openswing.swing.table.columns.client.IntegerColumnSettings;
-import org.openswing.swing.table.columns.client.DecimalColumnSettings;
-import org.openswing.swing.table.columns.client.CurrencyColumnSettings;
-import org.openswing.swing.table.columns.client.TypeController;
-import java.util.Hashtable;
 
 
 /**

@@ -1,10 +1,7 @@
 package org.openswing.swing.logger.server;
 
-import java.util.Date;
-import java.io.PrintStream;
-import java.io.OutputStream;
-import java.io.IOException;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 
 /**

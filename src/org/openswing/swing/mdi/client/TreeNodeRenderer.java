@@ -1,23 +1,11 @@
 package org.openswing.swing.mdi.client;
 
-import java.awt.event.*;
-import java.awt.Dimension;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeSelectionModel;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import java.awt.Component;
-import java.awt.Insets;
-import java.lang.reflect.*;
-import java.awt.event.MouseEvent;
+import java.awt.*;
 import javax.swing.*;
-import java.awt.Toolkit;
-import org.openswing.swing.client.*;
+import javax.swing.tree.*;
 
-
+import org.openswing.swing.mdi.java.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.permissions.java.*;
-import org.openswing.swing.mdi.java.ApplicationFunction;
 
 
 /**

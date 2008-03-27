@@ -1,15 +1,13 @@
 package org.openswing.swing.client;
 
-import org.openswing.swing.logger.client.Logger;
-import org.openswing.swing.table.client.Grid;
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.util.client.ClientUtils;
-import javax.swing.*;
-import java.awt.event.*;
+import java.util.*;
+
 import java.awt.*;
-import org.openswing.swing.internationalization.java.*;
-import org.openswing.swing.table.client.Grids;
-import java.util.ArrayList;
+import java.awt.event.*;
+import javax.swing.*;
+
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**

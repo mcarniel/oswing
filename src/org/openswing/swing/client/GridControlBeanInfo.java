@@ -1,8 +1,8 @@
 package org.openswing.swing.client;
 
 import java.beans.*;
-import org.openswing.swing.table.client.*;
-import java.awt.FlowLayout;
+
+import java.awt.*;
 
 
 public class GridControlBeanInfo extends SimpleBeanInfo {

@@ -1,12 +1,7 @@
 package org.openswing.swing.message.send.java;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Map;
-import org.openswing.swing.client.*;
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.client.*;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
 
 
 

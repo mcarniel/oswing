@@ -1,8 +1,9 @@
 package org.openswing.swing.mdi.client;
 
-import javax.swing.*;
 import java.awt.*;
-import org.openswing.swing.util.client.ClientSettings;
+import javax.swing.*;
+
+import org.openswing.swing.util.client.*;
 
 
 /**
@@ -126,6 +127,27 @@ public class StatusBar extends JPanel {
   public void setProgressBarColor(Color progressBarColor) {
     this.progressBarColor = progressBarColor;
     progressBar.setForeground(progressBarColor);
+  }
+
+
+  /**
+   * Set progress bar value. Minimum value is 0 and maximum value is 15.
+   * @param progressBarValue value to set for the progress bar; if specified value is less than 0 then 0 is setted; if specified value is greater than 15 then it is set to 15.
+   */
+  public final void setProgressBarValue(int progressBarValue) {
+    if (progressBarValue<0)
+      progressBarValue = 0;
+    if (progressBarValue>progressBar.getMaximum())
+      progressBarValue = progressBar.getMaximum();
+    progressBar.setValue(progressBarValue);
+  }
+
+
+  /**
+   * @return current value in progress bar; minimum value is 0 and maximum value is 15
+   */
+  public final int getProgressBarValue() {
+    return progressBar.getValue();
   }
 
 

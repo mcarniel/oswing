@@ -1,8 +1,8 @@
 package org.openswing.swing.gantt.client;
 
 import java.util.*;
-import java.io.Serializable;
-import org.openswing.swing.message.receive.java.Response;
+
+import org.openswing.swing.message.receive.java.*;
 
 
 /**

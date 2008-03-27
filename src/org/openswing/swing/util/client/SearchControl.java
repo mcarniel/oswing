@@ -1,6 +1,6 @@
 package org.openswing.swing.util.client;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>

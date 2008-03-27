@@ -1,17 +1,14 @@
 package org.openswing.swing.mdi.client;
 
-import javax.swing.*;
-import java.awt.*;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.beans.*;
-import org.openswing.swing.util.client.ClientSettings;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.*;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+
+import org.openswing.swing.util.client.*;
 
 
 /**

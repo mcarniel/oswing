@@ -1,12 +1,12 @@
 package org.openswing.swing.miscellaneous.client;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import org.openswing.swing.util.client.ClientSettings;
-import java.util.ArrayList;
-import javax.swing.text.html.HTMLEditorKit;
-import org.openswing.swing.client.ImagePanel;
+import javax.swing.*;
+import javax.swing.text.html.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.util.client.*;
 
 
 /**
