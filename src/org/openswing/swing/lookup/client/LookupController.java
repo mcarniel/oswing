@@ -19,6 +19,8 @@ import org.openswing.swing.table.java.*;
 import org.openswing.swing.tree.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 /**
@@ -128,6 +130,9 @@ public class LookupController {
 
   /** flag used by Form.save to check if lookup control is in a valid state */
   private boolean codeValid = true;
+
+  /** maximum number of sorted columns */
+  private int maxSortedColumns = 1;
 
 
   /**
@@ -451,6 +456,7 @@ public class LookupController {
           new ArrayList(),
           Grid.MAIN_GRID
       );
+      table.setMaxSortedColumns(maxSortedColumns);
 
       // create the lookup grid frame...
       lookupGridFrame = new LookupGridFrame(parentFrame,frameTitle, table);
@@ -978,6 +984,23 @@ public class LookupController {
 
 
   /**
+   * Set maximum number of sorted columns.
+   * @param maxSortedColumns maximum number of sorted columns
+   */
+  public final void setMaxSortedColumns(int maxSortedColumns) {
+    this.maxSortedColumns = maxSortedColumns;
+  }
+
+
+  /**
+   * @return maximum number of sorted columns
+   */
+  public final int getMaxSortedColumns() {
+    return this.maxSortedColumns;
+  }
+
+
+  /**
    * Add a link from an attribute of the lookup v.o. to an attribute of the lookup container v.o.
    * @param lookupAttributeName attribute of the lookup v.o.
    * @param parentAttributeName attribute of the lookup container v.o.
@@ -1217,6 +1240,7 @@ class LookupGridFrame extends JDialog {
 
   public LookupGridFrame(JFrame parentFrame,String title,Grids table) {
     super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+    this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
     this.table = table;
     getContentPane().setLayout(new BorderLayout());
     JPanel p = new JPanel();
@@ -1225,7 +1249,13 @@ class LookupGridFrame extends JDialog {
     p.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
     p.add(table,   new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-
+    table.getGrid().addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode()==e.VK_ESCAPE && !LookupGridFrame.this.table.getGrid().isSearchWindowVisible()) {
+          LookupGridFrame.this.setVisible(false);
+        }
+      }
+    });
   }
 
 
@@ -1280,6 +1310,13 @@ class LookupTreeFrame extends JDialog {
     this.treePanel = treePanel;
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(new JScrollPane(treePanel),BorderLayout.CENTER);
+    treePanel.getTree().addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode()==e.VK_ESCAPE) {
+          LookupTreeFrame.this.setVisible(false);
+        }
+      }
+    });
   }
 
 }
@@ -1335,6 +1372,22 @@ class LookupTreeGridFrame extends JDialog {
 //    split.add(new JScrollPane(table),split.RIGHT);
     split.add(table,split.RIGHT);
     split.setDividerLocation(200);
+
+    treePanel.getTree().addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode()==e.VK_ESCAPE) {
+          LookupTreeGridFrame.this.setVisible(false);
+        }
+      }
+    });
+    table.getGrid().addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode()==e.VK_ESCAPE && !LookupTreeGridFrame.this.table.getGrid().isSearchWindowVisible()) {
+          LookupTreeGridFrame.this.setVisible(false);
+        }
+      }
+    });
+
   }
 
 

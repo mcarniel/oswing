@@ -162,6 +162,9 @@ public class Grid extends JTable
   /** cursor to show on dragging */
   private Cursor dragCursor = null;
 
+  /** search window manager */
+  private SearchWindowManager searchWindowManager = null;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -1926,10 +1929,19 @@ public class Grid extends JTable
       }
 
       if (gridType==MAIN_GRID)
-         new SearchWindowManager(this);
+         searchWindowManager = new SearchWindowManager(this);
 
     }
   }
+
+
+  /**
+   * @return <code>true</code> if search window is currently visible, <code>false</code> otherwise
+   */
+  public final boolean isSearchWindowVisible() {
+    return searchWindowManager!=null && searchWindowManager.isSearchWindowVisible();
+  }
+
 
 
 

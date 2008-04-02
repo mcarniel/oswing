@@ -107,6 +107,7 @@ public class MDIFrame extends JFrame implements BusyListener {
   public MDIFrame(MDIController client) {
     super(client.getMDIFrameTitle());
     try {
+      SwingUtilities.updateComponentTreeUI(this);
       this.client = client;
       ClientUtils.addBusyListener(this);
       statusBar.removeAll();
@@ -242,7 +243,7 @@ public class MDIFrame extends JFrame implements BusyListener {
           }
 
           menuBar.add(menu);
-          addSubFunctionsToMenuBar(menu, function);
+          addSubFunctionsToMenuBar(menu, function, mnem);
         }
       }
     }
@@ -277,8 +278,9 @@ public class MDIFrame extends JFrame implements BusyListener {
       ApplicationEventQueue.getInstance().addKeyListener(new KeyAdapter() {
 
         public void keyPressed(KeyEvent e) {
-          if (e.getKeyCode()==KeyEvent.VK_F3) {
-            // F3 key pressed: focus will be setted on this component...
+          if (e.getKeyCode()==ClientSettings.TREE_MENU_KEY.getKeyCode() &&
+              e.getModifiers()+e.getModifiersEx()==ClientSettings.TREE_MENU_KEY.getModifiers()) {
+            // shortcut key pressed: focus will be setted on this component...
             treeMenu.getFindTF().requestFocus();
           }
 
@@ -327,7 +329,7 @@ public class MDIFrame extends JFrame implements BusyListener {
    * @param parentMenu menu item just added
    * @param parentFunction application function to expand, organized as a tree
    */
-  private void addSubFunctionsToMenuBar(JMenuItem parentMenu,ApplicationFunction parentFunction) {
+  private void addSubFunctionsToMenuBar(JMenuItem parentMenu,ApplicationFunction parentFunction,HashSet mnem) {
     JMenuItem menu = null;
     for (int i = 0; i < parentFunction.getChildCount(); i++) {
       final ApplicationFunction function = (ApplicationFunction) parentFunction.getChildAt(i);
@@ -342,14 +344,29 @@ public class MDIFrame extends JFrame implements BusyListener {
             executeFunction(function);
           }
         });
+
         if (function.getFunctionId()!=null&& !function.getFunctionId().trim().equals(""))
           functionsHooks.put(function.getFunctionId(),menu);
       } else {
         menu = new JMenu(function.toString());
       }
 
+      int j=0;
+      try {
+        while (j < menu.getText().length() &&
+               mnem.contains(menu.getText().substring(j, j + 1))) {
+          j++;
+        }
+        if (j < menu.getText().length()) {
+          mnem.add(menu.getText().substring(j, j + 1));
+          menu.setMnemonic(menu.getText().substring(j, j + 1).charAt(0));
+        }
+      }
+      catch (Exception ex1) {
+      }
+
       parentMenu.add(menu);
-      addSubFunctionsToMenuBar(menu, function);
+      addSubFunctionsToMenuBar(menu, function, mnem);
     }
   }
 

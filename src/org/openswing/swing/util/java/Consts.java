@@ -90,6 +90,13 @@ public class Consts {
   /** constant assignable in "filterPanelOnGridPolicy" property of GridControl to hide filter panel by using a padlock button (unpressed as default) */
   public static final int FILTER_PANEL_ON_GRID_USE_PADLOCK_UNPRESSED = 3;
 
+  /** constant used in ClientSetting.BACK_IMAGE_DISPOSITION: it defines that background image in MDI must be drawed centered */
+  public static final int BACK_IMAGE_CENTERED = 0;
 
+  /** constant used in ClientSetting.BACK_IMAGE_DISPOSITION: it defines that background image in MDI must be drawed repeated */
+  public static final int BACK_IMAGE_REPEATED = 1;
+
+  /** constant used in ClientSetting.BACK_IMAGE_DISPOSITION: it defines that background image in MDI must be drawed stretched */
+  public static final int BACK_IMAGE_STRETCHED = 2;
 
 }

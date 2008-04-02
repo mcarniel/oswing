@@ -68,6 +68,18 @@ public class LoginDialog extends JDialog {
   /** flag used in windowClosed method */
   private boolean fromOtherMethod = false;
 
+  /** text to show in login button */
+  private String loginButtonText = null;
+
+  /** text to show in cancel button */
+  private String exitButtonText = null;
+
+  /** text to show in login button */
+  private char loginButtonMnemonic;
+
+  /** text to show in exit button */
+  private char exitButtonMnemonic;
+
 
   static {
     try {
@@ -79,7 +91,6 @@ public class LoginDialog extends JDialog {
   }
 
 
-
   /**
    * Constructor.
    * @param parentFrame parent frame to use as parent of dialog window; could be set to null
@@ -87,8 +98,39 @@ public class LoginDialog extends JDialog {
    * @param loginController login controller
    */
   public LoginDialog(JFrame parentFrame,boolean changeLogin,LoginController loginController) {
-    super(parentFrame==null?new JFrame():parentFrame,"Logon",true);
+    this(parentFrame,changeLogin,loginController,"Logon","Login",'L',"Exit",'E');
+  }
+
+
+  /**
+   * Constructor.
+   * @param parentFrame parent frame to use as parent of dialog window; could be set to null
+   * @param changeLogin flag used to indicate that the login dialog is opened inside the application: if user will click on "Exit" button then the application will not be closed
+   * @param loginController login controller
+   * @param title window title
+    * @param loginButtonText text to show in login button
+    * @param loginButtonMnemonic text to show in login button
+    * @param cancelButtonText text to show in exit button
+    * @param cancelButtonMnemonic text to show in exit button
+    */
+  public LoginDialog(
+      JFrame parentFrame,
+      boolean changeLogin,
+      LoginController loginController,
+      String title,
+      String loginButtonText,
+      char loginButtonMnemonic,
+      String exitButtonText,
+      char exitButtonMnemonic
+    ) {
+    super(parentFrame==null?new JFrame():parentFrame,title,true);
     this.parentFrame = parentFrame;
+
+    this.loginButtonText = loginButtonText;
+    this.loginButtonMnemonic = loginButtonMnemonic;
+    this.exitButtonText = exitButtonText;
+    this.exitButtonMnemonic = exitButtonMnemonic;
+
     Dimension dim = new Dimension(
         (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-190,
         (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-90
@@ -122,11 +164,11 @@ public class LoginDialog extends JDialog {
     passwdTF.setMinimumSize(new Dimension(passwdTF.getFontMetrics(passwdTF.getFont()).stringWidth("               "),passwdTF.getHeight()));
     passwdTF.addActionListener(new LoginDialog_passwdTF_actionAdapter(this));
     mainPanel.setBorder(BorderFactory.createEtchedBorder());
-    exitButton.setMnemonic('E');
-    exitButton.setText("Exit");
+    exitButton.setMnemonic(exitButtonMnemonic);
+    exitButton.setText(exitButtonText);
     exitButton.addActionListener(new LoginDialog_exitButton_actionAdapter(this));
-    loginButton.setMnemonic('L');
-    loginButton.setText("Login");
+    loginButton.setMnemonic(loginButtonMnemonic);
+    loginButton.setText(loginButtonText);
     loginButton.addActionListener(new LoginDialog_loginButton_actionAdapter(this));
     this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     this.addWindowListener(new LoginDialog_this_windowAdapter(this));

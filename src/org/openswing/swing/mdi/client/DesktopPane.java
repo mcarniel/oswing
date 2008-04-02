@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -42,9 +43,6 @@ public class DesktopPane extends JDesktopPane {
   /** background image */
   private Image background = null;
 
-  /** this flag set if the background image is centered on the panel; false = the image will be repeated */
-  private boolean centered = false;
-
 
   public DesktopPane() {
     this.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
@@ -54,7 +52,8 @@ public class DesktopPane extends JDesktopPane {
 
 
   public void init() {
-    background = ClientUtils.getImage(ClientSettings.BACKGROUND);
+    if (ClientSettings.BACKGROUND!=null)
+      background = ClientUtils.getImage(ClientSettings.BACKGROUND);
   }
 
 
@@ -65,28 +64,32 @@ public class DesktopPane extends JDesktopPane {
   public final void paintComponent(Graphics g) {
     super.paintComponent(g);
 
-    if (!centered && background!=null) {
-      // immagine da ripetere...
-      int imgWidth = background.getWidth(this);
-      int imgHeight = background.getHeight(this);
+    if (background!=null) {
+      if (ClientSettings.BACK_IMAGE_DISPOSITION==Consts.BACK_IMAGE_REPEATED) {
+        // image must be repeated...
+        int imgWidth = background.getWidth(this);
+        int imgHeight = background.getHeight(this);
 
-      for(int i=this.getWidth();i>0;i=i-imgWidth)
-        for(int j=0;j<this.getHeight();j=j+imgHeight)
-          g.drawImage(background,i-imgWidth,j,this);
-
-/*
-      for(int i=0;i<this.getWidth();i=i+imgWidth)
-        for(int j=0;j<this.getHeight();j=j+imgHeight)
-          g.drawImage(background,i,j,this);
-*/
-    } else if (centered && background!=null) {
-      // immagine da centrare...
-      int imgWidth = background.getWidth(this);
-      int imgHeight = background.getHeight(this);
-      int x = (this.getWidth()-imgWidth)/2;
-      int y = (this.getHeight()-imgHeight)/2;
-      g.drawImage(background,x,y,this);
+        for(int i=this.getWidth();i>0;i=i-imgWidth)
+          for(int j=0;j<this.getHeight();j=j+imgHeight)
+            g.drawImage(background,i-imgWidth,j,this);
+      } else if (ClientSettings.BACK_IMAGE_DISPOSITION==Consts.BACK_IMAGE_CENTERED) {
+        // image must be centered...
+        int imgWidth = background.getWidth(this);
+        int imgHeight = background.getHeight(this);
+        int x = (this.getWidth()-imgWidth)/2;
+        int y = (this.getHeight()-imgHeight)/2;
+        g.drawImage(background,x,y,this);
+      } else if (ClientSettings.BACK_IMAGE_DISPOSITION==Consts.BACK_IMAGE_STRETCHED) {
+        // image must be streched...
+        g.drawImage(background,0,0,getWidth(),getHeight(),this);
+      }
     }
+
+    if (ClientSettings.BACKGROUND_PAINTER!=null) {
+      ClientSettings.BACKGROUND_PAINTER.paint(this, g);
+    }
+
   }
 
 

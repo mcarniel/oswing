@@ -51,6 +51,7 @@ public class TreeMenu extends JPanel {
   private ImagePanel lockPanel;
   private Image lockImage;
   private Image unlockImage;
+  private Image findImage;
   private boolean locked;
   private GridBagLayout gridBagLayout1 = new GridBagLayout();
   JLabel findLabel = new JLabel();
@@ -103,6 +104,14 @@ public class TreeMenu extends JPanel {
   private void jbInit() throws Exception {
     lockImage = ClientUtils.getImage(ClientSettings.LOCK_ON);
     unlockImage = ClientUtils.getImage(ClientSettings.LOCK_OFF);
+    ImagePanel findFunction = null;
+    if (ClientSettings.FIND_FUNCTION_ICON!=null) {
+      findImage = ClientUtils.getImage(ClientSettings.FIND_FUNCTION_ICON);
+      findFunction = new ImagePanel();
+      findFunction.setImage(findImage);
+      findFunction.setMinimumSize(new Dimension(25,25));
+      findFunction.setScrollBarsPolicy(lockPanel.SCROLLBAR_NEVER);
+    }
 
     lockPanel = new ImagePanel();
     lockPanel.setImage(lockImage);
@@ -134,15 +143,26 @@ public class TreeMenu extends JPanel {
         findTF_actionPerformed(e);
       }
     });
-    titlePanel.add(titleLabel,        new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    if (ClientSettings.SHOW_FUNCTIONS_LABEL)
+      titlePanel.add(titleLabel,        new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0
+              ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     if (ClientSettings.SHOW_PADLOCK_IN_TREE_MENU)
       titlePanel.add(lockPanel,         new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0
               ,GridBagConstraints.EAST, GridBagConstraints.VERTICAL, new Insets(5, 10, 0, 10), 0, 0));
-    titlePanel.add(findLabel,  new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    titlePanel.add(findTF,     new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 0, 5, 5), 100, 0));
+    int pos = 0;
+    if (findFunction!=null)
+      titlePanel.add(findFunction,  new GridBagConstraints(pos++, 0, 1, 1, 0.0, 0.0
+              ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    if (ClientSettings.SHOW_FIND_FUNCTION_LABEL)
+      titlePanel.add(findLabel,  new GridBagConstraints(pos++, 0, 1, 1, 0.0, 0.0
+              ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    titlePanel.add(
+      findTF,
+      new GridBagConstraints(pos++, 0, 1, 1, 1.0, 0.0,
+      GridBagConstraints.WEST,
+      ClientSettings.FILL_FIND_FUNCTION_FIELD ? GridBagConstraints.HORIZONTAL : GridBagConstraints.NONE,
+      new Insets(5, 0, 5, 5), 100, 0)
+    );
     this.add(treeScrollPane,  BorderLayout.CENTER);
     this.add(titlePanel, BorderLayout.NORTH);
 
@@ -298,6 +318,7 @@ public class TreeMenu extends JPanel {
 
     if (currentNode.toString().toUpperCase().indexOf(pattern)!=-1) {
       menuTree.setSelectionPath(path);
+      menuTree.scrollPathToVisible(path);
       currentPath = path;
       return true;
     }

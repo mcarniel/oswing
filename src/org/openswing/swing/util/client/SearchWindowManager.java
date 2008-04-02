@@ -126,7 +126,7 @@ public class SearchWindowManager {
     }
 
     char c = e.getKeyChar();
-    boolean ok = e.getID() == KeyEvent.KEY_TYPED && (Character.isLetterOrDigit(c) || c == '*' || c == '?' || c == '\b' || c == '/' || c =='.' || c==',' || c=='-');
+    boolean ok = e.getID() == KeyEvent.KEY_TYPED && (Character.isLetterOrDigit(c) || c==' ' || c == '*' || c == '?' || c == '\b' || c == '/' || c =='.' || c==',' || c=='-');
     if (ok) {
       if (e.getID() == KeyEvent.KEY_TYPED) {
           if (((e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)) {
@@ -156,13 +156,24 @@ public class SearchWindowManager {
         searchWindow.setLocation(location.x, location.y);
       searchWindow.setVisible(true);
 
-      if (e.getKeyCode() != KeyEvent.VK_ENTER) {
+      if (e.getKeyCode() != KeyEvent.VK_ENTER && e.getKeyCode() != e.VK_ESCAPE) {
           e.consume();
       }
     }
     else if (e.getKeyCode()==e.VK_ESCAPE) {
-      hideSearchWindow();
+      if (searchWindow!=null) {
+        hideSearchWindow();
+        e.consume();
+      }
     }
+  }
+
+
+  /**
+   * @return <code>true</code> if search window is currently visible, <code>false</code> otherwise
+   */
+  public final boolean isSearchWindowVisible() {
+    return searchWindow!=null;
   }
 
 

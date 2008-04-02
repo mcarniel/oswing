@@ -121,8 +121,9 @@ public class WindowMenu extends JMenu {
       this.remove(0);
     }
     InternalFrame frame = null;
-    while(internalFrames.keys().hasMoreElements()) {
-      frame = (InternalFrame)internalFrames.keys().nextElement();
+    Enumeration en = internalFrames.keys();
+    while(en.hasMoreElements()) {
+      frame = (InternalFrame)en.nextElement();
       frame.closeFrame();
     }
     this.menuWindowCloseAll.setEnabled(false);

@@ -730,6 +730,25 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
 
   /**
+   * @return <code>true</code> if there exists at least one input control that has been changed, <code>false</code> otherwise
+   */
+  public final boolean isChanged() {
+    // check changed property for all linked input controls...
+    Enumeration en = bindings.keys();
+    String attrName = null;
+    ArrayList list = null;
+    while(en.hasMoreElements()) {
+      attrName = en.nextElement().toString();
+      list = (ArrayList)bindings.get(attrName);
+      for(int i=0;i<list.size();i++)
+        if (((InputControl)list.get(i)).isChanged())
+          return true;
+    }
+    return false;
+  }
+
+
+  /**
    * Set input controls edit state.
    * @param c components whose edit state must be set
    * @param enabled edit state
@@ -1687,6 +1706,11 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (Beans.isDesignTime())
       return;
     model.setValue(e.getAttributeName(),e.getNewValue());
+
+    ArrayList list = (ArrayList)bindings.get(e.getAttributeName());
+    if (list!=null)
+      for(int i=0;i<list.size();i++)
+        ((InputControl)list.get(i)).setChanged(true);
   }
 
 

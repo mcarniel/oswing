@@ -7,6 +7,15 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.client.OptionPane;
+import java.awt.Component;
+import org.openswing.swing.client.GridControl;
+import org.openswing.swing.form.client.Form;
+import org.openswing.swing.util.java.Consts;
+import java.awt.Container;
+import org.openswing.swing.tree.client.TreePanel;
+import java.awt.event.FocusEvent;
+import java.awt.DefaultKeyboardFocusManager;
 
 
 /**
@@ -45,8 +54,8 @@ public class InternalFrame extends JInternalFrame {
   /** parent frame (optional) */
   private InternalFrame  parentFrame;
 
-  /** used when this window will be closed: if this flag is set to <code>true</code> then a warning dialog will be  showed before close the window to ask if it must be close; default value: <code>false</code> */
-  private boolean askBeforeClose = false;
+  /** used when this window will be closed: if this flag is set to <code>true</code> then a warning dialog will be  showed before close the window to ask if it must be close; default value: ClientSettings.ASK_BEFORE_CLOSE */
+  private boolean askBeforeClose = ClientSettings.ASK_BEFORE_CLOSE;
 
   /** last border of internal frame, before hiding title bar */
   private Border lastBorder = null;
@@ -83,6 +92,53 @@ public class InternalFrame extends JInternalFrame {
 
 
   /**
+   * @return <code>true</code> if there exists a GridControl or a Form panel within this that is in insert/edit mode, <code>false</code> otherwise
+   */
+  private boolean checkComponents(Component[] c) {
+    for(int i=0;i<c.length;i++) {
+      if (c[i] instanceof GridControl) {
+        c[i].transferFocus();
+        if (((GridControl)c[i]).getMode()==Consts.INSERT)
+          return true;
+        if (((GridControl)c[i]).getMode()==Consts.EDIT &&
+          ((GridControl)c[i]).getVOListTableModel().getChangedRowNumbers().length>0) {
+          return true;
+        }
+
+      }
+      else if (c[i] instanceof Form) {
+        try {
+          Component obj = DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+          if (obj!=null)
+            obj.transferFocus();
+        }
+        catch (Exception ex) {
+          ((Form) c[i]).transferFocus();
+        }
+        boolean changed = ((Form)c[i]).isChanged();
+        if (((Form)c[i]).getMode()==Consts.INSERT && changed)
+          return true;
+        if (((Form)c[i]).getMode()==Consts.EDIT && changed)
+          return true;
+      }
+      else if (c[i] instanceof TreePanel) {
+        if (((TreePanel)c[i]).isEnabled())
+          return true;
+      }
+      else if (c[i] instanceof JScrollPane) {
+        if (checkComponents( ((JScrollPane)c[i]).getViewport().getComponents() ))
+          return true;
+      }
+      else if (c[i] instanceof Container) {
+        if (checkComponents( ((Container)c[i]).getComponents() ))
+          return true;
+      }
+    }
+    return false;
+  }
+
+
+  /**
    * This method is called when this window will be closed.
    * The first method calle is beforeCloseFrame; if this will return <code>false</code> then the closing window operation will be interrupted.
    */
@@ -90,7 +146,17 @@ public class InternalFrame extends JInternalFrame {
     if (!beforeCloseFrame())
       return;
     if (askBeforeClose) {
-      /** @todo */
+      // check if this contains a GridControl or a Form panel in insert/edit mode...
+      if (checkComponents(this.getComponents())) {
+        int res = OptionPane.showInternalConfirmDialog(
+          this,
+          "are you sure to close this window?",
+          "confirm window closing",
+          JOptionPane.YES_NO_OPTION
+        );
+        if (res==JOptionPane.NO_OPTION)
+          return;
+      }
     }
     try{
       // close all children windows...
@@ -163,7 +229,7 @@ public class InternalFrame extends JInternalFrame {
 
   /**
    * Define if title bar must be hidden or showed
-   * @param hide flag used to hide/show title bar; <code>true</code> to hide title bar; <code>false</code> to show it
+   * @param hideTitleBar flag used to hide/show title bar; <code>true</code> to hide title bar; <code>false</code> to show it
    */
   public final void setHideTitleBar(boolean hideTitleBar) {
     this.hideTitleBar = hideTitleBar;

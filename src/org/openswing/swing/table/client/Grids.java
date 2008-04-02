@@ -2406,11 +2406,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       return;
     onLoop = true;
 
-    grid.setRowSelectionInterval(0,0);
+//    grid.setRowSelectionInterval(0,0);
     grid.setRowSelectionInterval(startRow,endRow);
     grid.ensureRowIsVisible(startRow);
     if (lockedGrid!=null) {
-      lockedGrid.setRowSelectionInterval(0,0);
+//      lockedGrid.setRowSelectionInterval(0,0);
       lockedGrid.setRowSelectionInterval(startRow,endRow);
       lockedGrid.ensureRowIsVisible(startRow);
     }

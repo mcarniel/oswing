@@ -283,5 +283,12 @@ public class GridFrameController extends GridController implements GridDataLocat
   }
 
 
+  /**
+   * Callback method invoked when the user has selected another row.
+   * @param rowNumber selected row index
+   */
+  public void rowChanged(int rowNumber) {
+  }
+
 
 }

@@ -1,5 +1,31 @@
 
 
+Release Notes 1.5.4
+-------------------
+
+Final release 1.5.4 available
+Improved lookup component: 
+- now ESCAPE key can be used to close lookup window
+- added setMaxSortedColumns to set maximum number of sorted columns in lookup grid window
+Improved InternalFrame by implementing "askBeforeClose" property, used to show a confirm window when closing the frame.
+Added ASK_BEFORE_CLOSE property in ClientSettings to define the default value of "askBeforeClose" property in InternalFrame.
+Added some properties in ClientSettings to customize LoginDialog buttons and title.
+Added some properties in ClientSettings to customize TreeMenu title and search panel.
+Reduced GridControl focus border to 1 pixel.
+Fixed problem in GridControl when selecting a row, two row selection events were fired.
+Improved tree menu panel in MDI frame: now find function feature automatically scrolls the tree until showing the found node.
+Improved menu bar of MDI frame: now a mnemonic char is automatically set for all menu items too.
+Improved TreePanel search utility: 
+- now found node is automatically scrolled to the visible area
+- now shortcut key (F3) used to set focus on the tree search field is customizable, through ClientSettings.TREE_MENU_KEY property
+Improved desktop pane usage of MDI frame: 
+- now background image can be centered/repeated/streched, by means of ClientSettings.BACK_IMAGE_DISPOSITION property
+- background image defined in ClientSettings.BACKGROUND property can be set to null too
+- ClientSettings.BACKGROUND_PAINTER property can be used to do arbitrary backgrounds, by defining a BackgroundPainer interface
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5.3
 -------------------
 

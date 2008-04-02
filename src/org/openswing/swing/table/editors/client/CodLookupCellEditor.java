@@ -357,8 +357,11 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
 
       fireEditingStopped();
 //      stopCellEditing();
-      if (table!=null)
+      if (table!=null) {
         table.repaint();
+        if (!table.hasFocus())
+          table.requestFocus();
+      }
     }
   }
 

@@ -187,6 +187,8 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Operation in progress...","Operation in progress...");
     dictionary.setProperty("close window","Close Window");
     dictionary.setProperty("reduce to icon","Reduce to icon");
+    dictionary.setProperty("are you sure to close this window?","Are you sure to close this window?\nChanges not yet saved will be lost.");
+    dictionary.setProperty("confirm window closing","Confirm window closing");
 
     // server...
     dictionary.setProperty("Client request not supported","Client request not supported");

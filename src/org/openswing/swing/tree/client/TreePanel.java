@@ -891,6 +891,11 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    */
   public final void setSelectedIndex(int index) {
     tree.setSelectionRow(index);
+    try {
+      tree.scrollRowToVisible(index);
+    }
+    catch (Exception ex) {
+    }
   }
 
   /**

@@ -21,6 +21,7 @@ import org.openswing.swing.miscellaneous.client.TipPanelContent;
 import java.math.BigDecimal;
 import org.openswing.swing.table.profiles.client.FileGridProfileManager;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -138,6 +139,7 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.VIEW_BACKGROUND_SEL_COLOR = true;
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.FILTER_PANEL_ON_GRID = true;
+    ClientSettings.ASK_BEFORE_CLOSE = true;
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.Office2003.Office2003LookAndFeel";
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.OfficeXP.OfficeXPLookAndFeel";

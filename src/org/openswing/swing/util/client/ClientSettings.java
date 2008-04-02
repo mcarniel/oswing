@@ -13,6 +13,7 @@ import org.openswing.swing.permissions.java.*;
 import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.util.java.*;
 import java.awt.event.KeyEvent;
+import org.openswing.swing.mdi.client.BackgroundPainter;
 
 
 /**
@@ -51,11 +52,23 @@ public class ClientSettings {
   /** image name for tree menu background */
   public static String TREE_BACK = "treeback.jpg";
 
-  /** image name for opened padlock icon */
+  /** image name for opened padlock icon in tree menu */
   public static String LOCK_ON = "lock_on.gif";
 
-  /** image name for closed padlock icon */
+  /** image name for closed padlock icon in tree menu */
   public static String LOCK_OFF = "lock_off.gif";
+
+  /** image name for "find function" icon in tree menu (optional); default value: null, i.e. do not show any icon */
+  public static String FIND_FUNCTION_ICON = null;
+
+  /** show "find function" label at the left of the search input field of the tree menu */
+  public static boolean SHOW_FIND_FUNCTION_LABEL = true;
+
+  /** fill search input field of the tree menu til the right margin of the panel */
+  public static boolean FILL_FIND_FUNCTION_FIELD = false;
+
+  /** show "functions" label at the bottom of the search input field of the tree menu */
+  public static boolean SHOW_FUNCTIONS_LABEL = true;
 
   /** flag used to show/hide a padlock in the tree menu panel; default value: <code>true</code> */
   public static boolean SHOW_PADLOCK_IN_TREE_MENU = true;
@@ -75,8 +88,14 @@ public class ClientSettings {
   /** image name for tree menu icons */
   public static String PERC_TREE_FOLDER = "folder.gif";
 
-  /** image name for MDI background */
+  /** image name for MDI background; may be null */
   public static String BACKGROUND = "background.jpg";
+
+  /** set how background image in MDI must be drawed: centered, repeated, streched; allowed values: Consts.BACK_IMAGE_xxx; defalut value: Consts.BACK_IMAGE_REPEATED */
+  public static int BACK_IMAGE_DISPOSITION = Consts.BACK_IMAGE_REPEATED;
+
+  /** optional property used within the DekstopPane of the MDI frame to draw background content; default value: null */
+  public static BackgroundPainter BACKGROUND_PAINTER = null;
 
   /** image name for calendar button in date input control */
   public static String CALENDAR = "calendar.gif";
@@ -118,7 +137,7 @@ public class ClientSettings {
   public static Color GRID_FOCUS_BORDER = Color.black;
 
   /** border color of the grid that currently doesn't has the focus */
-  public static Color GRID_NO_FOCUS_BORDER = Color.gray;
+  public static Color GRID_NO_FOCUS_BORDER = Color.lightGray;
 
   /** border color of the form currently has the focus */
   public static Color FORM_FOCUS_BORDER = Color.gray;
@@ -248,6 +267,12 @@ public class ClientSettings {
 
   /** shortcut key used to show popup menu within a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_Q,KeyEvent.CTRL_MASK) */
   public static KeyStroke GRID_POPUP_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_Q,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used to set focus in tree menu; default value: KeyStroke.getKeyStroke(KeyEvent.VK_F3,0) */
+  public static KeyStroke TREE_MENU_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_F3,0);
+
+  /** define if a warning dialog must be showed when closing an internal frame that contains a Form/GridControl in edit/insert mode */
+  public static boolean ASK_BEFORE_CLOSE = false;
 
 
 

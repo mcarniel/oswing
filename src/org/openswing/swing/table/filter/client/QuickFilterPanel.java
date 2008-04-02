@@ -605,7 +605,7 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
      */
     private Object getValue(JComponent value) {
       Object result=null;
-      if (domain!=null) { // se è un dominio
+      if (domain!=null) {
         int idx= ((JList)((JScrollPane)value).getViewport().getComponent(0)).getSelectedIndex();
         DomainPair[] pairs = domain.getDomainPairList();
         return pairs[idx].getCode();

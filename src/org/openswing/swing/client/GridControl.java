@@ -622,12 +622,12 @@ public class GridControl extends JPanel {
         topTable.getGrid().addFocusListener(new FocusListener() {
 
           public void focusGained(FocusEvent e) {
-            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
             Form.setCurrentFocusedForm(null);
           }
 
           public void focusLost(FocusEvent e) {
-            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,1));
           }
         });
 
@@ -635,12 +635,12 @@ public class GridControl extends JPanel {
           topTable.getLockedGrid().addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-              tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+              tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
               Form.setCurrentFocusedForm(null);
             }
 
             public void focusLost(FocusEvent e) {
-              tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+              tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,1));
             }
           });
 
@@ -681,12 +681,12 @@ public class GridControl extends JPanel {
         bottomTable.getGrid().addFocusListener(new FocusListener() {
 
           public void focusGained(FocusEvent e) {
-            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
             Form.setCurrentFocusedForm(null);
           }
 
           public void focusLost(FocusEvent e) {
-            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,1));
           }
         });
 
@@ -694,12 +694,12 @@ public class GridControl extends JPanel {
           bottomTable.getLockedGrid().addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-              tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+              tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
               Form.setCurrentFocusedForm(null);
             }
 
             public void focusLost(FocusEvent e) {
-              tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+              tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,1));
             }
           });
 
@@ -739,12 +739,12 @@ public class GridControl extends JPanel {
       table.getGrid().addFocusListener(new FocusListener() {
 
         public void focusGained(FocusEvent e) {
-          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
           Form.setCurrentFocusedForm(null);
         }
 
         public void focusLost(FocusEvent e) {
-          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+          tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,1));
         }
       });
 
@@ -752,12 +752,12 @@ public class GridControl extends JPanel {
         table.getLockedGrid().addFocusListener(new FocusListener() {
 
           public void focusGained(FocusEvent e) {
-            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
             Form.setCurrentFocusedForm(null);
           }
 
           public void focusLost(FocusEvent e) {
-            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,2));
+            tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,1));
           }
         });
 
@@ -834,6 +834,7 @@ public class GridControl extends JPanel {
 
       itsColumnContainer = null;
 
+      tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,1));
 
 
       table.getVOListTableModel().setMode(mode);
@@ -2028,6 +2029,7 @@ public class GridControl extends JPanel {
    * Add a menu item to the popup menu accessed through the right mouse click onto the grid.
    * @param command menu item text (this text will be translated according to internationalization settings)
    * @param listener ActionListener linked to this menu item
+   * @param enabled flag used to initially enable/disable the menu item
    */
   public final void addPopupCommand(String command,ActionListener listener,boolean enabled) {
     JMenuItem menu = new JMenuItem(ClientSettings.getInstance().getResources().getResource(command));
@@ -2040,6 +2042,7 @@ public class GridControl extends JPanel {
   /**
    * Add a menu item to the popup menu accessed through the right mouse click onto the grid.
    * @param command menu item text (this text will be translated according to internationalization settings)
+   * @param enabled flag used to initially enable/disable the menu item
    * @param icon icon image associated to this menu item
    * @param listener ActionListener linked to this menu item
    */
@@ -2054,8 +2057,9 @@ public class GridControl extends JPanel {
   /**
    * Add a menu item to the popup menu accessed through the right mouse click onto the grid.
    * @param command menu item text (this text will be translated according to internationalization settings)
-   * @param mnemonic mnemonic char associated to this menu item
    * @param listener ActionListener linked to this menu item
+   * @param enabled flag used to initially enable/disable the menu item
+   * @param mnemonic ALT+char key combination that fires the item selection event
    */
   public final void addPopupCommand(String command,ActionListener listener,boolean enabled,int mnemonic) {
     JMenuItem menu = new JMenuItem(ClientSettings.getInstance().getResources().getResource(command),mnemonic);
@@ -2063,6 +2067,25 @@ public class GridControl extends JPanel {
     menu.addActionListener(listener);
     popupCommands.add(menu);
   }
+
+
+  /**
+   * Add a menu item to the popup menu accessed through the right mouse click onto the grid.
+   * @param command menu item text (this text will be translated according to internationalization settings)
+   * @param mnemonic mnemonic char associated to this menu item
+   * @param listener ActionListener linked to this menu item
+   * @param enabled flag used to initially enable/disable the menu item
+   * @param mnemonic ALT+char key combination that fires the item selection event
+   * @param accelerator key combination (e.g. CTRL+key, etc.) that fires the item selection event
+   */
+  public final void addPopupCommand(String command,ActionListener listener,boolean enabled,int mnemonic,KeyStroke accelerator) {
+    JMenuItem menu = new JMenuItem(ClientSettings.getInstance().getResources().getResource(command),mnemonic);
+    menu.setAccelerator(accelerator);
+    menu.setEnabled(enabled);
+    menu.addActionListener(listener);
+    popupCommands.add(menu);
+  }
+
 
 
   /**
