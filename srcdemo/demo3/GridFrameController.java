@@ -9,6 +9,7 @@ import org.openswing.swing.table.java.GridDataLocator;
 import java.awt.Font;
 import org.openswing.swing.client.GridControl;
 import java.math.BigDecimal;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -75,8 +76,19 @@ public class GridFrameController extends GridController implements GridDataLocat
         filter = (FilterWhereClause[])filteredColumns.get("comboValue");
         if (filter!=null) {
           if (filter[0].getValue()!=null) {
-            sql += " and DEMO3.COMBO "+ filter[0].getOperator()+"?";
-            vals.add(filter[0].getValue());
+            if (filter[0].getOperator().equals(Consts.IN)) {
+              sql += " and DEMO3.COMBO "+ filter[0].getOperator()+"(";
+              ArrayList values = (ArrayList)filter[0].getValue();
+              for(int j=0;j<values.size();j++) {
+                sql += "?,";
+                vals.add(values.get(j));
+              }
+              sql = sql.substring(0,sql.length()-1)+")";
+            }
+            else {
+              sql += " and DEMO3.COMBO "+ filter[0].getOperator()+" ?";
+              vals.add(filter[0].getValue());
+            }
           }
           else
             sql += " and DEMO3.COMBO "+ filter[0].getOperator();

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+        <class name="demo17.EmpVO" table="EMPS" >
+                <id name="empCode" column="EMP_CODE" type="java.lang.String">
+                	<generator class="assigned" />
+                </id>
+                <property name="lastName" column="LAST_NAME" type="java.lang.String"/>
+                <property name="firstName" column="FIRST_NAME" type="java.lang.String"/>
+                <many-to-one name="dept" class="demo17.DeptVO" column="DEPT_CODE" lazy="false" fetch="join" />
+                <many-to-one name="task" class="demo17.TaskVO" column="TASK_CODE" fetch="join"  />
+
+                <property name="sex" column="SEX" type="java.lang.String"/>
+                <property name="salary" column="SALARY" type="java.math.BigDecimal"/>
+                <property name="hireDate" column="HIRE_DATE" type="java.sql.Date"/>
+                <property name="note" column="NOTE" type="java.lang.String"/>
+        </class>
+
+</hibernate-mapping>

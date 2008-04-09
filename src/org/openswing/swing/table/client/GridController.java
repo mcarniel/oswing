@@ -7,6 +7,7 @@ import java.awt.*;
 import org.openswing.swing.client.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.table.columns.client.Column;
 
 
 /**
@@ -329,6 +330,30 @@ public class GridController {
     return "";
   }
 
+
+  /**
+   * Callback method invoked by grid before showing quick filter panel.
+   * It allows to reset the initial filter value to show within the quick filter panel:
+   * it is possible to change filtering value passed as argument, by returning another value.
+   * @param attributeName attribute name that identify the column just filtered
+   * @param initialValue initial value to show within the quick filter panel
+   * @return new couple of values to show as initial values within the quick filter panel
+   */
+  public Object getInitialQuickFilterValue(String attributeName,Object initialValue) {
+    return initialValue;
+  }
+
+
+  /**
+   * Callback method invoked by grid when applying a quick filter condition or a filter condition from filter panel:
+   * before executing search it is possible to change filtering value passed as argument, by returning another value.
+   * @param attributeName attribute name that identify the column just filtered
+   * @param value current filtering value
+   * @return new value to use as filter condition
+   */
+  public Object beforeFilterGrid(String attributeName,Object value) {
+    return value;
+  }
 
 
   /************************************************************

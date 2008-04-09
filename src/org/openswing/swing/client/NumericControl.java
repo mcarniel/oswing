@@ -424,6 +424,8 @@ public class NumericControl extends BaseInputControl implements InputControl {
   public void setEnabled(boolean enabled) {
     numBox.setEditable(enabled);
     numBox.setFocusable(enabled);
+    if (!enabled)
+      numBox.setBackground((Color)UIManager.get("TextField.inactiveBackground"));
   }
 
 

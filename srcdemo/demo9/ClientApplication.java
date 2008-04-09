@@ -53,6 +53,8 @@ public class ClientApplication {
         new EnglishOnlyResourceFactory("£",props,true),
         domains
     );
+    ClientSettings.ALLOW_OR_OPERATOR = false;
+    ClientSettings.INCLUDE_IN_OPERATOR = false;
 
     Domain orderStateDomain = new Domain("ORDERSTATE");
     orderStateDomain.addDomainPair("O","opened");

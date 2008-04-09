@@ -9,6 +9,7 @@ import java.util.Date;
 
 import org.openswing.swing.message.send.java.*;
 import org.openswing.swing.table.profiles.java.*;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -341,26 +342,59 @@ public class DbGridProfileManager extends GridProfileManager {
     FilterWhereClause[] filter = new FilterWhereClause[2];
     String filters = rset.getString(rset.getMetaData().getColumnCount()-1);
     StringTokenizer f = new StringTokenizer(filters,"\n");
-    while(f.hasMoreTokens()) { // f = attribute name,operator1,typevalue1,value1[,operator2,typevalue2,value2]
+    ArrayList values = null;
+    String[] tokens = null;
+    while(f.hasMoreTokens()) { // f = attribute name,operator1,typevalue1,value1a\tvalue1b\tvalue1c...[,operator2,typevalue2,value2...]
       st = new StringTokenizer(f.nextToken(),",");
       attributeName = st.nextToken();
       operator1 = st.nextToken();
       typevalue1 = st.nextToken();
       value1 = st.nextToken();
-      if (typevalue1.equals("D"))
-        value1 = sdf.parse(value1.toString());
-      else if (typevalue1.equals("N"))
-        value1 = new BigDecimal(value1.toString());
+
+      tokens = value1.toString().split("\t");
+      if (tokens.length==1 && !operator1.equals(Consts.IN)) {
+        if (typevalue1.equals("D"))
+          value1 = sdf.parse(value1.toString());
+        else if (typevalue1.equals("N"))
+          value1 = new BigDecimal(value1.toString());
+      }
+      else {
+        values = new ArrayList();
+        for(int j=0;j<tokens.length;j++)
+          if (typevalue1.equals("D"))
+            values.add(sdf.parse(tokens[j]));
+          else if (typevalue1.equals("N"))
+            values.add(new BigDecimal(tokens[j]));
+          else
+            values.add(tokens[j]);
+        value1 = values;
+      }
       filter[0] = new FilterWhereClause(attributeName,operator1,value1);
 
       if (st.hasMoreTokens()) {
         operator2 = st.nextToken();
         typevalue2 = st.nextToken();
         value2 = st.nextToken();
-        if (typevalue2.equals("D"))
-          value2 = sdf.parse(value2.toString());
-        else if (typevalue2.equals("N"))
-          value2 = new BigDecimal(value2.toString());
+
+        tokens = value2.toString().split("\t");
+        if (tokens.length==1 && !operator2.equals(Consts.IN)) {
+          if (typevalue2.equals("D"))
+            value1 = sdf.parse(value2.toString());
+          else if (typevalue2.equals("N"))
+            value1 = new BigDecimal(value2.toString());
+        }
+        else {
+          values = new ArrayList();
+          for(int j=0;j<tokens.length;j++)
+            if (typevalue1.equals("D"))
+              values.add(sdf.parse(tokens[j]));
+            else if (typevalue1.equals("N"))
+              values.add(new BigDecimal(tokens[j]));
+            else
+              values.add(tokens[j]);
+          value2 = values;
+        }
+
         filter[1] = new FilterWhereClause(attributeName,operator2,value2);
       }
       else
@@ -454,23 +488,48 @@ public class DbGridProfileManager extends GridProfileManager {
         filter = (FilterWhereClause[])profile.getQuickFilterValues().get(attributeName);
         aux = attributeName+","+filter[0].getOperator()+",";
         if (filter[0].getValue()!=null) {
-          if (filter[0].getValue() instanceof Date)
-            aux += "D,"+sdf.format( filter[0].getValue() );
-          else if (filter[0].getValue() instanceof Number)
-            aux += "N,"+filter[0].getValue();
-          else
-            aux += "T,"+filter[0].getValue();
+
+          if (filter[0].getOperator().equals(Consts.IN) || filter[0].getValue() instanceof ArrayList) {
+            ArrayList values = (ArrayList)filter[0].getValue();
+            for(int j=0;j<values.size();j++)
+              if (values.get(j) instanceof Date)
+                aux += "D,"+sdf.format( values.get(j) )+"\t";
+              else if (filter[0].getValue() instanceof Number)
+                aux += "N,"+values.get(j)+"\t";
+              else
+                aux += "T,"+values.get(j)+"\t";
+          }
+          else {
+            if (filter[0].getValue() instanceof Date)
+              aux += "D,"+sdf.format( filter[0].getValue() );
+            else if (filter[0].getValue() instanceof Number)
+              aux += "N,"+filter[0].getValue();
+            else
+              aux += "T,"+filter[0].getValue();
+          }
         }
 
         if (filter[1]!=null) {
           aux += ","+filter[1].getOperator()+",";
           if (filter[1].getValue()!=null) {
-            if (filter[1].getValue() instanceof Date)
-              aux += sdf.format( filter[1].getValue() );
-            else if (filter[1].getValue() instanceof Number)
-              aux += "N,"+filter[1].getValue();
-            else
-              aux += "T,"+filter[1].getValue();
+            if (filter[1].getOperator().equals(Consts.IN) || filter[1].getValue() instanceof ArrayList) {
+              ArrayList values = (ArrayList)filter[1].getValue();
+              for(int j=0;j<values.size();j++)
+                if (values.get(j) instanceof Date)
+                  aux += "D,"+sdf.format( values.get(j) )+"\t";
+                else if (filter[1].getValue() instanceof Number)
+                  aux += "N,"+values.get(j)+"\t";
+                else
+                  aux += "T,"+values.get(j)+"\t";
+            }
+            else {
+              if (filter[1].getValue() instanceof Date)
+                aux += "D,"+sdf.format( filter[1].getValue() );
+              else if (filter[1].getValue() instanceof Number)
+                aux += "N,"+filter[1].getValue();
+              else
+                aux += "T,"+filter[1].getValue();
+            }
           }
         }
         filters += aux+"\n";

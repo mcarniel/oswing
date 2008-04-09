@@ -4,16 +4,16 @@ package org.openswing.swing.util.client;
 import java.util.*;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 import org.openswing.swing.domains.java.*;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.lookup.client.*;
+import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.permissions.java.*;
 import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.util.java.*;
-import java.awt.event.KeyEvent;
-import org.openswing.swing.mdi.client.BackgroundPainter;
 
 
 /**
@@ -196,6 +196,15 @@ public class ClientSettings {
   /** default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
   public static int DEFAULT_QUICK_FILTER_CRITERIA = Consts.EQUALS;
 
+  /** define if IN operator must be included in quick filter and filter panel; default value: <code>true</code> */
+  public static boolean INCLUDE_IN_OPERATOR = true;
+
+  /** define if OR logical connector is allowable for operators different from IS NULL, IN NOT NULL and IN, within the filter panel; default value: <code>true</code> */
+  public static boolean ALLOW_OR_OPERATOR = true;
+
+  /** SQL operator to use for "like"; for instance in PosgreSQL database this can be replaced with case insensitive "ilke"; default value: "like" */
+  public static String LIKE = "like";
+
   /** <code>true</code> to show pagination buttons in vertical scrollbar of grid; <code>false</code> to do not show them; default value: <code>true</code> */
   public static boolean SHOW_PAGINATION_BUTTONS_ON_GRID = true;
 
@@ -270,6 +279,9 @@ public class ClientSettings {
 
   /** shortcut key used to set focus in tree menu; default value: KeyStroke.getKeyStroke(KeyEvent.VK_F3,0) */
   public static KeyStroke TREE_MENU_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_F3,0);
+
+  /** shortcut key used to remove a filter in quick filter panel; default value: KeyStroke.getKeyStroke(KeyEvent.VK_R,,KeyEvent.CTRL_MASK) */
+  public static KeyStroke REMOVE_FILTER_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_R,KeyEvent.CTRL_MASK);
 
   /** define if a warning dialog must be showed when closing an internal frame that contains a Form/GridControl in edit/insert mode */
   public static boolean ASK_BEFORE_CLOSE = false;

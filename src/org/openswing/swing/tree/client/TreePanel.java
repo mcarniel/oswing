@@ -15,7 +15,6 @@ import org.openswing.swing.tree.java.*;
 import org.openswing.swing.util.client.*;
 
 
-
 /**
  * <p>Title: OpenSwing Framework</p>
  * <p>Description: Panel that contains an expandable tree.
@@ -195,18 +194,18 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
   public void addNotify() {
     super.addNotify();
-    if (firstTime && loadWhenVisibile) {
-      firstTime = false;
-      new Thread() {
-        public void run() {
-          createTree();
-        }
+    if (firstTime) {
+      if (loadWhenVisibile) {
+        firstTime = false;
+        new Thread() {
+          public void run() {
+            createTree();
+          }
+        }.start();
       }
-
-      .start();
+      else
+        recreateTree();
     }
-    else
-      recreateTree();
   }
 
   /**
@@ -279,7 +278,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     tree = new JTree(treeModel) {
 
       public TreePath getNextMatch(String prefix, int startingRow,
-				 Position.Bias bias) {
+                                 Position.Bias bias) {
         try {
           return super.getNextMatch(prefix, startingRow, bias);
         }

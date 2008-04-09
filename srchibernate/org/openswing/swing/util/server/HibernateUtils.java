@@ -87,6 +87,85 @@ public class HibernateUtils {
 
 
   /**
+   * Apply filtering and sorting conditions to the specified baseSQL and return
+   * a new baseSQL that contains those conditions too.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companiesVO order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companiesVO","","customer_code asc","","",...);
+   *
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL"
+   * @param paramTypes parameters types, related to "?" in "baseSQL"
+   * @param tableName table name related to baseSQL and v.o.
+   * @param sessions SessionFactory
+   */
+  public static String applyFiltersAndSorter(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    ArrayList paramValues,
+    ArrayList paramTypes,
+    String tableName,
+    SessionFactory sessions
+  ) throws Exception {
+    // fill in "attributesMap" according to attributes defined in xxx.hdm.xml...
+    ClassMetadata meta = sessions.getClassMetadata(valueObjectType);
+    String[] attrNames = meta.getPropertyNames();
+    Map attributesMap = new HashMap();
+    for(int i=0;i<attrNames.length;i++)
+      attributesMap.put(attrNames[i],tableName+"."+attrNames[i]);
+
+    attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
+
+    // append filtering and sorting conditions to the base SQL...
+    ArrayList filterAttrNames = new ArrayList();
+    String baseSQL = QueryUtil.getSql(
+      new UserSessionParameters(),
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      filterAttrNames,
+      paramValues,
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      attributesMap
+    );
+
+    for(int i=0;i<filterAttrNames.size();i++) {
+      paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+    }
+
+    return baseSQL;
+  }
+
+
+  /**
    * Read the whole result set, by applying filtering and sorting conditions + query parameters.
    * @param filteredColumns filtering conditions
    * @param currentSortedColumns sorting conditions (attribute names)
@@ -122,6 +201,85 @@ public class HibernateUtils {
         currentSortedVersusColumns,
         valueObjectType,
         baseSQL,
+        values,
+        types,
+        tableName,
+        sessions
+    );
+
+    ArrayList gridList = new ArrayList();
+    boolean moreRows = false;
+    int resultSetLength = -1;
+
+    // read the whole result set...
+    List list = sess.createQuery(baseSQL).setParameters(values.toArray(),(Type[])types.toArray(new Type[types.size()])).list();
+    gridList.addAll(list);
+    resultSetLength = gridList.size();
+    return new VOListResponse(gridList,moreRows,resultSetLength);
+  }
+
+
+  /**
+   * Read the whole result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companiesVO order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companiesVO","","customer_code asc","","",...);
+   *
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param paramTypes parameters types, related to "?" in "baseSQL" (optional)
+   * @param tableName table name related to baseSQL and v.o.
+   * @param sessions SessionFactory
+   * @param sess Session
+   */
+  public static Response getAllFromQuery(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    Type[] paramTypes,
+    String tableName,
+    SessionFactory sessions,
+    Session sess
+  ) throws Exception {
+
+    ArrayList values = new ArrayList();
+    values.addAll(Arrays.asList(paramValues));
+    ArrayList types = new ArrayList();
+    types.addAll(Arrays.asList(paramTypes));
+    String baseSQL = applyFiltersAndSorter(
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        valueObjectType,
+        select,
+        from,
+        where,
+        group,
+        having,
+        order,
         values,
         types,
         tableName,
@@ -241,6 +399,89 @@ public class HibernateUtils {
 
 
   /**
+   * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companiesVO order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companiesVO","","customer_code asc","","",...);
+   *
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param paramTypes parameters types, related to "?" in "baseSQL" (optional)
+   * @param tableName table name related to baseSQL and v.o.
+   * @param sessions SessionFactory
+   * @param sess Session
+   */
+  public static Response getBlockFromQuery(
+    int action,
+    int startIndex,
+    int blockSize,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    Type[] paramTypes,
+    String tableName,
+    SessionFactory sessions,
+    Session sess
+  ) throws Exception {
+
+    ArrayList values = new ArrayList();
+    values.addAll(Arrays.asList(paramValues));
+    ArrayList types = new ArrayList();
+    types.addAll(Arrays.asList(paramTypes));
+    String baseSQL = applyFiltersAndSorter(
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        valueObjectType,
+        select,
+        from,
+        where,
+        group,
+        having,
+        order,
+        values,
+        types,
+        tableName,
+        sessions
+    );
+
+    return getBlockFromQuery(
+      action,
+      startIndex,
+      blockSize,
+      sess.createQuery(baseSQL).setParameters(values.toArray(),(Type[])types.toArray(new Type[types.size()])),
+      sess
+    );
+  }
+
+
+  /**
    * Read a block of records from the result set, starting from a Query object.
    * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
    * @param startPos start position of data fetching in result set
@@ -282,7 +523,6 @@ public class HibernateUtils {
       query.setFirstResult(startIndex);
       query.setMaxResults(blockSize+1);
     }
-
     List list = query.list();
     gridList.addAll(list);
     if (gridList.size()>blockSize) {

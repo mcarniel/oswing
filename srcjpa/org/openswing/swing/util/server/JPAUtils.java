@@ -63,7 +63,7 @@ public class JPAUtils {
     if (valueObjectAlias.indexOf(".")!=-1)
       valueObjectAlias = valueObjectAlias.substring(valueObjectAlias.lastIndexOf(".")+1);
     String valueObjectName = valueObjectAlias;
-    
+
     baseSQL = baseSQL.replace('\t',' ').replace('\n',' ').replace('\r',' ')+" ";
     int index = baseSQL.indexOf(" "+valueObjectName+" ")+valueObjectName.length()+2;
     valueObjectAlias = baseSQL.substring(index).trim();
@@ -72,7 +72,7 @@ public class JPAUtils {
         if (tokens[i].length()>0)
             return tokens[i];
     return valueObjectAlias;
-  }    
+  }
 
 
   /**
@@ -105,7 +105,7 @@ public class JPAUtils {
     }
     for(int i=0;i<currentSortedColumns.size();i++)
       attributesMap.put(currentSortedColumns.get(i),valueObjectAlias+"."+currentSortedColumns.get(i));;
-        
+
     // append filtering and sorting conditions to the base SQL...
     ArrayList filterAttrNames = new ArrayList();
     return QueryUtil.getSql(
@@ -121,7 +121,79 @@ public class JPAUtils {
     );
   }
 
-  
+
+  /**
+   * Apply filtering and sorting conditions to the specified baseSQL and return
+   * a new baseSQL that contains those conditions too.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL"
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   */
+  public static String applyFiltersAndSorter(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    ArrayList paramValues,
+    String valueObjectAlias
+  ) throws Exception {
+    BeanInfo info = Introspector.getBeanInfo(valueObjectType);
+    Map attributesMap = new HashMap();
+    Iterator it = filteredColumns.keySet().iterator();
+    Object attrName = null;
+    while(it.hasNext()) {
+      attrName = it.next();
+      attributesMap.put(attrName,valueObjectAlias+"."+attrName);
+    }
+    for(int i=0;i<currentSortedColumns.size();i++)
+      attributesMap.put(currentSortedColumns.get(i),valueObjectAlias+"."+currentSortedColumns.get(i));;
+
+    // append filtering and sorting conditions to the base SQL...
+    ArrayList filterAttrNames = new ArrayList();
+    return QueryUtil.getSql(
+            new UserSessionParameters(),
+            select,
+            from,
+            where,
+            group,
+            having,
+            order,
+            filterAttrNames,
+            paramValues,
+            filteredColumns,
+            currentSortedColumns,
+            currentSortedVersusColumns,
+            attributesMap,
+            true
+    );
+  }
+
+
   /**
    * Read the whole result set, by applying filtering and sorting conditions + query parameters.
    * @param filteredColumns filtering conditions
@@ -149,10 +221,68 @@ public class JPAUtils {
          baseSQL,
          paramValues,
          getValueObjectAlias(valueObjectType,baseSQL),
-         em 
+         em
     );
-  }  
-  
+  }
+
+
+  /**
+   * Read the whole result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param em EntityManager
+   */
+  public static Response getAllFromQuery(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    EntityManager em
+  ) throws Exception {
+    return getAllFromQuery(
+         filteredColumns,
+         currentSortedColumns,
+         currentSortedVersusColumns,
+         valueObjectType,
+         select,
+         from,
+         where,
+         group,
+         having,
+         order,
+         paramValues,
+         getValueObjectAlias(valueObjectType,from),
+         em
+    );
+  }
+
+
 
   /**
    * Read the whole result set, by applying filtering and sorting conditions + query parameters.
@@ -202,7 +332,81 @@ public class JPAUtils {
     return new VOListResponse(gridList,moreRows,resultSetLength);
   }
 
-  
+
+  /**
+   * Read the whole result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   * @param em EntityManager
+   */
+  public static Response getAllFromQuery(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    String valueObjectAlias,
+    EntityManager em
+  ) throws Exception {
+
+    ArrayList values = new ArrayList();
+    values.addAll(Arrays.asList(paramValues));
+    String baseSQL = applyFiltersAndSorter(
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        valueObjectType,
+        select,
+        from,
+        where,
+        group,
+        having,
+        order,
+        values,
+        valueObjectAlias
+    );
+
+    ArrayList gridList = new ArrayList();
+    boolean moreRows = false;
+    int resultSetLength = -1;
+
+    // read the whole result set...
+    Query q = em.createQuery(baseSQL);
+    for(int i=0;i<values.size();i++)
+      q.setParameter(i+1,values.get(i));
+    List list = q.getResultList();
+    gridList.addAll(list);
+    resultSetLength = gridList.size();
+    return new VOListResponse(gridList,moreRows,resultSetLength);
+  }
+
+
   /**
    * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
    * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
@@ -240,10 +444,77 @@ public class JPAUtils {
          baseSQL,
          paramValues,
          getValueObjectAlias(valueObjectType,baseSQL),
-         em 
+         em
     );
-  }  
-  
+  }
+
+
+  /**
+   * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   * @param em EntityManager
+   */
+  public static Response getBlockFromQuery(
+    int action,
+    int startIndex,
+    int blockSize,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    EntityManager em
+  ) throws Exception {
+    return getBlockFromQuery(
+         action,
+         startIndex,
+         blockSize,
+         filteredColumns,
+         currentSortedColumns,
+         currentSortedVersusColumns,
+         valueObjectType,
+         select,
+         from,
+         where,
+         group,
+         having,
+         order,
+         paramValues,
+         getValueObjectAlias(valueObjectType,from),
+         em
+    );
+  }
+
 
   /**
    * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
@@ -288,7 +559,85 @@ public class JPAUtils {
     Query q = em.createQuery(baseSQL);
     for(int i=0;i<values.size();i++)
       q.setParameter(i+1,values.get(i));
-    
+
+    return getBlockFromQuery(
+      action,
+      startIndex,
+      blockSize,
+      q
+    );
+  }
+
+
+  /**
+   * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   * @param em EntityManager
+   */
+  public static Response getBlockFromQuery(
+    int action,
+    int startIndex,
+    int blockSize,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    String valueObjectAlias,
+    EntityManager em
+  ) throws Exception {
+
+    ArrayList values = new ArrayList();
+    values.addAll(Arrays.asList(paramValues));
+    String baseSQL = applyFiltersAndSorter(
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        valueObjectType,
+        select,
+        from,
+        where,
+        group,
+        having,
+        order,
+        values,
+        valueObjectAlias
+    );
+
+    Query q = em.createQuery(baseSQL);
+    for(int i=0;i<values.size();i++)
+      q.setParameter(i+1,values.get(i));
+
     return getBlockFromQuery(
       action,
       startIndex,
@@ -327,7 +676,7 @@ public class JPAUtils {
       for(int i=startIndex;i<list.size();i++)
         gridList.add(list.get(i));
       list.clear();
-      return new VOListResponse(gridList,false,resultSetLength);    
+      return new VOListResponse(gridList,false,resultSetLength);
     } else {
       if (action==GridParams.PREVIOUS_BLOCK_ACTION) {
         action = GridParams.NEXT_BLOCK_ACTION;

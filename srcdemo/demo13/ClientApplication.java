@@ -78,6 +78,8 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.TREE_BACK = "treeback2.jpg";
     ClientSettings.VIEW_BACKGROUND_SEL_COLOR = true;
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
+    ClientSettings.ALLOW_OR_OPERATOR = false;
+    ClientSettings.INCLUDE_IN_OPERATOR = false;
 
     MDIFrame mdi = new MDIFrame(this);
   }

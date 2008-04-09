@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+        <class name="demo17.DeptVO" table="DEPTS" >
+                <id name="deptCode" column="DEPT_CODE" type="java.lang.String">
+                	<generator class="assigned" />
+                </id>
+                <property name="description" column="DESCRIPTION" type="java.lang.String"/>
+                <property name="address" column="ADDRESS" type="java.lang.String"/>
+                <property name="city" column="CITY" type="java.lang.String"/>
+                <property name="state" column="STATE" type="java.lang.String"/>
+                <property name="country" column="COUNTRY" type="java.lang.String"/>
+                <property name="status" column="STATUS" type="java.lang.String"/>
+        </class>
+
+
+</hibernate-mapping>

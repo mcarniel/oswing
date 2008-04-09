@@ -1,5 +1,37 @@
 
 
+Release Notes 1.5.5
+-------------------
+
+Final release 1.5.5 available
+Fixed a problem in several input controls when focus is set on them and save button is pressed: now background color is correctly changed for them.
+Fixed a problem in TreePanel having checkboxes for each node: when focus is resetted to that panel checkbox selections were lost, now this bug has been fixed.
+Improved button type column of GridControl when button is enabled in readonly mode too: now row selection is automatically setted when button has been pressed.
+Improved quick filter panel on grid:
+- added GridController.getInitialQuickFilterValue callback method to replace initial value to propose within the quick filter panel
+- added GridController.beforeFilterGrid callback method to replace filtering condition after pressing filter button
+- now if filtering condition leads to zero rows in grid then filter panel remains open to allow to clear filtering condition
+- now initial value in quick filter panel is setted also for domain type columns
+- filter panel now has the same background color of popup menu container
+- added global property LIKE to ClientSettings to define the SQL like operator; 
+  for instance it can be replaced by "ilike" case insensitive operator for PosgreSQL database
+- added shortcut key to "remove filter" menu item; default value: CTRL+R; customizable via ClientSettings.REMOVE_FILTER_KEY global property
+Improved filter panel on grid:
+- new callback method GridController.beforeFilterGrid can be used both on quick filter and filter panel
+- added IN operator: by pressing TAB key in filter field a new filter field is created next to it; 
+  this is useful to filter for multiple values
+- for operators different from IN,IS NULL,IS NOT NULL: by pressing TAB key in filter field a new filter field is created next to it;
+  this is useful to filter for multiple values using the same operator and with OR logical connector
+- updated grid profile management, according to IN and OR features
+Improved server-side utility classes QueryUtil,HibernateUtils,JPAUtils:
+now filtering/sorting conditions can be applied to a query defined with distinct statements (select, from, where, group by, having, order by).
+This feature can be useful for complex queries (e.g. nested selects, union).
+Added "anchorLastColumn" property to LookupControl, to anchor the last column to the right side of the lookup grid.
+Changed "demo17" sample application (based on Hibernate), by including a grid+detail functionality.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5.4
 -------------------
 

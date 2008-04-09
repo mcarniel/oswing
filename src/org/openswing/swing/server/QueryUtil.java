@@ -109,6 +109,372 @@ public class QueryUtil {
     );
   }
 
+
+  /**
+   * This constructor can be useful when combining OpenSwing with Hibernate, to retrieve attribute names too.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param values binding values related to baseSQL
+   * @param filteredColumns columns to add in the WHERE clause
+   * @param currentSortedColumns columns to add in the ORDER clause
+   * @param currentSortedVersusColumns ordering versus
+   * @param attributesMapping collection of pairs attributeName, corresponding database column (table.column)
+   * @return baseSQL + filtering and ordering conditions
+   */
+  public static String getSql(
+      UserSessionParameters userSessionPars,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList values,
+      Map filteredColumns,
+      ArrayList currentSortedColumns,
+      ArrayList currentSortedVersusColumns,
+      Map attributesMapping
+  ) {
+    return getSql(
+      userSessionPars,
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      new ArrayList(),
+      values,
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      attributesMapping
+    );
+  }
+
+
+  /**
+   * This constructor can be useful when combining OpenSwing with Hibernate, to retrieve attribute names too.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param attrNames attribute names related to filter values
+   * @param values binding values related to baseSQL
+   * @param filteredColumns columns to add in the WHERE clause
+   * @param currentSortedColumns columns to add in the ORDER clause
+   * @param currentSortedVersusColumns ordering versus
+   * @param attributesMapping collection of pairs attributeName, corresponding database column (table.column)
+   * @return baseSQL + filtering and ordering conditions
+   */
+  public static String getSql(
+      UserSessionParameters userSessionPars,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList attrNames,
+      ArrayList values,
+      Map filteredColumns,
+      ArrayList currentSortedColumns,
+      ArrayList currentSortedVersusColumns,
+      Map attributesMapping
+  ) {
+    return getSql(
+      userSessionPars,
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      attrNames,
+      values,
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      attributesMapping,
+      false
+    );
+  }
+
+
+  /**
+   * This constructor can be useful when combining OpenSwing with Hibernate, to retrieve attribute names too.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param attrNames attribute names related to filter values
+   * @param values binding values related to baseSQL
+   * @param filteredColumns columns to add in the WHERE clause
+   * @param currentSortedColumns columns to add in the ORDER clause
+   * @param currentSortedVersusColumns ordering versus
+   * @param attributesMapping collection of pairs attributeName, corresponding database column (table.column)
+   * @param isJPAsyntax flag
+   * @return baseSQL + filtering and ordering conditions
+   */
+  public static String getSql(
+      UserSessionParameters userSessionPars,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList attrNames,
+      ArrayList values,
+      Map filteredColumns,
+      ArrayList currentSortedColumns,
+      ArrayList currentSortedVersusColumns,
+      Map attributesMapping,
+      boolean isJPAsyntax
+  ) {
+    String baseSQL = "";
+    if (select!=null && select.trim().length()>0)
+      baseSQL += "SELECT "+select;
+    baseSQL += " FROM "+from;
+    try {
+      if (where!=null && !where.trim().equals(""))
+        baseSQL += " WHERE "+where;
+
+      int num = values.size()+1;
+      if (filteredColumns.size() > 0) {
+        if (where!=null && !where.trim().equals(""))
+          baseSQL += " AND ";
+        else
+          baseSQL += " WHERE ";
+
+        Iterator keys = filteredColumns.keySet().iterator();
+        String attributeName = null;
+        FilterWhereClause[] filterClauses = null;
+        while (keys.hasNext()) {
+          attributeName = keys.next().toString();
+          filterClauses = (FilterWhereClause[]) filteredColumns.get(attributeName);
+          if (  filterClauses[0].getValue()!=null &&
+              !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
+            if (filterClauses[0].getValue() instanceof ArrayList) {
+              // name IN (...)
+              // (name op value1 OR name op value2 OR ...)
+              if (filterClauses[0].getOperator().equals(Consts.IN)) {
+                // name IN (...)
+                baseSQL +=
+                  attributesMapping.get(attributeName) +
+                  " " + filterClauses[0].getOperator() +
+                  " (";
+                ArrayList inValues = (ArrayList)filterClauses[0].getValue();
+                for(int j=0;j<inValues.size();j++) {
+                  baseSQL += " ?"+(isJPAsyntax?String.valueOf(num++):"")+",";
+                  values.add(inValues.get(j));
+                }
+                baseSQL = baseSQL.substring(0,baseSQL.length()-1);
+                baseSQL += ") AND ";
+              }
+              else {
+                // (name op value1 OR name op value2 OR ...)
+                baseSQL += "(";
+                ArrayList inValues = (ArrayList)filterClauses[0].getValue();
+                for(int j=0;j<inValues.size();j++) {
+                  baseSQL +=
+                      attributesMapping.get(attributeName) +
+                      " " + filterClauses[0].getOperator() +
+                      " ?"+(isJPAsyntax?String.valueOf(num++):"")+" OR ";
+                  values.add(inValues.get(j));
+                }
+                baseSQL = baseSQL.substring(0,baseSQL.length()-3);
+                baseSQL += ") AND ";
+              }
+            } else {
+              // name op value
+              baseSQL +=
+                  attributesMapping.get(attributeName) +
+                  " " + filterClauses[0].getOperator() +
+                  " ?"+(isJPAsyntax?String.valueOf(num++):"")+" AND ";
+              values.add(filterClauses[0].getValue());
+            }
+          }
+          else {
+            // name IS NULL
+            // name IS NOT NULL
+            baseSQL +=
+                  attributesMapping.get(attributeName) +
+                  " " + filterClauses[0].getOperator() + " " +
+                  "AND ";
+          }
+          attrNames.add(filterClauses[0].getAttributeName());
+          if (filterClauses[1] != null) {
+            if (  filterClauses[1].getValue()!=null &&
+                !(filterClauses[1].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[1].getOperator().equals(Consts.IS_NULL))) {
+              if (filterClauses[1].getValue() instanceof ArrayList) {
+                // name IN (...)
+                // (name op value1 OR name op value2 OR ...)
+                if (filterClauses[1].getOperator().equals(Consts.IN)) {
+                  // name IN (...)
+                  baseSQL +=
+                    attributesMapping.get(attributeName) +
+                    " " + filterClauses[1].getOperator() +
+                    " (";
+                  ArrayList inValues = (ArrayList)filterClauses[1].getValue();
+                  for(int j=0;j<inValues.size();j++) {
+                    baseSQL += " ?"+(isJPAsyntax?String.valueOf(num++):"")+",";
+                    values.add(inValues.get(j));
+                  }
+                  baseSQL = baseSQL.substring(0,baseSQL.length()-1);
+                  baseSQL += ") AND ";
+                }
+                else {
+                  // (name op value1 OR name op value2 OR ...)
+                  baseSQL += "(";
+                  ArrayList inValues = (ArrayList)filterClauses[1].getValue();
+                  for(int j=0;j<inValues.size();j++) {
+                    baseSQL +=
+                        attributesMapping.get(attributeName) +
+                        " " + filterClauses[1].getOperator() +
+                        " ?"+(isJPAsyntax?String.valueOf(num++):"")+" OR ";
+                    values.add(inValues.get(j));
+                  }
+                  baseSQL = baseSQL.substring(0,baseSQL.length()-3);
+                  baseSQL += ") AND ";
+                }
+              } else {
+                // name op value
+                baseSQL +=
+                    attributesMapping.get(attributeName) +
+                    " " + filterClauses[1].getOperator() +
+                    " ?"+(isJPAsyntax?String.valueOf(num++):"")+" AND ";
+                values.add(filterClauses[1].getValue());
+              }
+            }
+            else {
+              // name IS NULL
+              // name IS NOT NULL
+              baseSQL +=
+                    attributesMapping.get(attributeName) +
+                    " " + filterClauses[1].getOperator() + " " +
+                    "AND ";
+            }
+            attrNames.add(filterClauses[1].getAttributeName());
+          }
+        }
+        baseSQL = baseSQL.substring(0, baseSQL.length() - 4);
+      }
+
+      if (group!=null && !group.trim().equals(""))
+        baseSQL += " GROUP BY "+group;
+      if (having!=null && !having.trim().equals(""))
+        baseSQL += " HAVING "+having;
+      if (order!=null && !order.trim().equals(""))
+        baseSQL += " ORDER BY "+order;
+
+      if (currentSortedColumns.size() > 0) {
+        if (order!=null && !order.trim().equals(""))
+          baseSQL += ", ";
+        else
+        baseSQL += " ORDER BY ";
+
+        for (int i = 0; i < currentSortedColumns.size(); i++) {
+          baseSQL +=
+              (attributesMapping.get(currentSortedColumns.get(i))==null?currentSortedColumns.get(i):attributesMapping.get(currentSortedColumns.get(i))) +
+              " " +
+              currentSortedVersusColumns.get(i) + ", ";
+        }
+        baseSQL = baseSQL.substring(0, baseSQL.length() - 2);
+      }
+
+    }
+    catch (Throwable ex) {
+      Logger.error(
+          userSessionPars.getUsername(),
+          "org.openswing.swing.server.QueryUtil",
+          "getSql",
+          "Error while composing the SQL:\n"+ex.getMessage(),
+          ex
+      );
+    }
+
+    return baseSQL;
+  }
+
+
   /**
    * This constructor can be useful when combining OpenSwing with Hibernate, to retrieve attribute names too.
    * @param baseSQL SQL to change by adding filter and order clauses
@@ -134,60 +500,71 @@ public class QueryUtil {
       boolean isJPAsyntax
   ) {
     try {
-      int num = values.size()+1;
-      if (filteredColumns.size() > 0) {
-        if (baseSQL.toLowerCase().indexOf("where") == -1) {
-          baseSQL += " WHERE ";
-        }
-        else
-          baseSQL += " AND ";
-        Iterator keys = filteredColumns.keySet().iterator();
-        String attributeName = null;
-        FilterWhereClause[] filterClauses = null;
-        while (keys.hasNext()) {
-          attributeName = keys.next().toString();
-          filterClauses = (FilterWhereClause[]) filteredColumns.get(
-              attributeName);
-          baseSQL +=
-              attributesMapping.get(attributeName) +
-              " " + filterClauses[0].getOperator() + " ";
-          if (filterClauses[0].getValue()!=null &&
-              !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
-            baseSQL += "?"+(isJPAsyntax?String.valueOf(num++):"")+" AND ";
-            values.add(filterClauses[0].getValue());
-          }
-          else
-            baseSQL += "AND ";
-          attrNames.add(filterClauses[0].getAttributeName());
-          if (filterClauses[1] != null) {
-            baseSQL +=
-                attributesMapping.get(attributeName) +
-                " " + filterClauses[1].getOperator() + " ";
-            if (filterClauses[1].getValue()!=null &&
-                !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
-              baseSQL += "?"+(isJPAsyntax?String.valueOf(num++):"")+" AND ";
-              values.add(filterClauses[1].getValue());
-            }
-            else
-              baseSQL += "AND ";
-            attrNames.add(filterClauses[1].getAttributeName());
-          }
-        }
-        baseSQL = baseSQL.substring(0, baseSQL.length() - 4);
+      baseSQL = " "+baseSQL.replace('\n',' ').replace('\r',' ')+" ";
+      String lowerSQL = baseSQL.toLowerCase();
+      int s1 = lowerSQL.indexOf("select "); // may be "" or null for a base SQL written for JPA/ORM layer
+      int f1 = lowerSQL.indexOf(" from ");
+      int w1 = lowerSQL.indexOf(" where ");
+      int g1 = lowerSQL.indexOf(" group by ");
+      int h1 = lowerSQL.indexOf(" having ");
+      int o1 = lowerSQL.indexOf(" order by ");
+      int s2,f2,w2,g2,h2,o2;
+
+      if (o1==-1) {
+        o1 = baseSQL.length()-1;
+        o2 = o1;
+      }
+      else {
+        o2 = o1+10;
+      }
+      if (h1==-1) {
+        h1 = o1;
+        h2 = h1;
+      }
+      else {
+        h2 = h1+8;
+      }
+      if (g1==-1) {
+        g1 = h1;
+        g2 = g1;
+      }
+      else {
+        g2 = g1+10;
+      }
+      if (w1==-1) {
+        w1 = g1;
+        w2 = w1;
+      }
+      else {
+        w2 = w1+7;
+      }
+      f2 = f1+6;
+      if (s1==-1) {
+        s1 = f1;
+        s2 = s1;
+      }
+      else {
+        s2 = s1+7;
       }
 
-      if (currentSortedColumns.size() > 0) {
-        if (baseSQL.toLowerCase().indexOf("order by") == -1) {
-          baseSQL += " ORDER BY ";
-        }
-        for (int i = 0; i < currentSortedColumns.size(); i++) {
-          baseSQL +=
-              (attributesMapping.get(currentSortedColumns.get(i))==null?currentSortedColumns.get(i):attributesMapping.get(currentSortedColumns.get(i))) +
-              " " +
-              currentSortedVersusColumns.get(i) + ", ";
-        }
-        baseSQL = baseSQL.substring(0, baseSQL.length() - 2);
-      }
+      return getSql(
+        userSessionPars,
+        baseSQL.substring(s2,f1).trim(), // select
+        baseSQL.substring(f2,w1).trim(), // from
+        baseSQL.substring(w2,g1).trim(), // where
+        baseSQL.substring(g2,h1).trim(), // group by
+        baseSQL.substring(h2,o1).trim(), // having
+        baseSQL.substring(o2).trim(), // order by
+        attrNames,
+        values,
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        attributesMapping,
+        isJPAsyntax
+      );
+
+
     }
     catch (Throwable ex) {
       Logger.error(
@@ -247,6 +624,86 @@ public class QueryUtil {
 
   /**
    * This method read the WHOLE result set.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param context servlet context; this may be null
+   * @param gridParams grid parameters (filtering/ordering settings, starting row to read, read versus)
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return a list of value objects (in VOListResponse object) or an error response
+   */
+  public static Response getQuery(
+      Connection conn,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      GridParams gridParams,
+      boolean logQuery
+  ) throws Exception {
+    return getQuery(
+      conn,
+      new UserSessionParameters(),
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      values,
+      attribute2dbField,
+      valueObjectClass,
+      booleanTrueValue,
+      booleanFalseValue,
+      null,
+      gridParams,
+      -1,
+      0,
+      logQuery
+    );
+  }
+
+
+  /**
+   * This method read the WHOLE result set.
    * @param baseSQL SQL to change by adding filter and order clauses
    * @param values binding values related to baseSQL
    * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
@@ -290,6 +747,88 @@ public class QueryUtil {
 
 
   /**
+   * This method read the WHOLE result set.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param context servlet context; this may be null
+   * @param gridParams grid parameters (filtering/ordering settings, starting row to read, read versus)
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return a list of value objects (in VOListResponse object) or an error response
+   */
+  public static Response getQuery(
+      Connection conn,
+      UserSessionParameters userSessionPars,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      ServletContext context,
+      GridParams gridParams,
+      boolean logQuery
+  ) throws Exception {
+    return getQuery(
+      conn,
+      userSessionPars,
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      values,
+      attribute2dbField,
+      valueObjectClass,
+      booleanTrueValue,
+      booleanFalseValue,
+      context,
+      gridParams,
+      -1,
+      0,
+      logQuery
+    );
+  }
+
+
+  /**
    * This method read a block of record from the result set.
    * @param baseSQL SQL to change by adding filter and order clauses
    * @param values binding values related to baseSQL
@@ -318,6 +857,87 @@ public class QueryUtil {
       conn,
       new UserSessionParameters(),
       baseSQL,
+      values,
+      attribute2dbField,
+      valueObjectClass,
+      booleanTrueValue,
+      booleanFalseValue,
+      null,
+      gridParams,
+      blockSize,
+      1,
+      logQuery
+    );
+  }
+
+
+  /**
+   * This method read a block of record from the result set.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param gridParams grid parameters (filtering/ordering settings, starting row to read, read versus)
+   * @param blockSize number of rows to read
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return a list of value objects  (in VOListResponse object) or an error response
+   */
+  public static Response getQuery(
+      Connection conn,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      GridParams gridParams,
+      int blockSize,
+      boolean logQuery
+  ) throws Exception {
+    return getQuery(
+      conn,
+      new UserSessionParameters(),
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
       values,
       attribute2dbField,
       valueObjectClass,
@@ -379,6 +999,90 @@ public class QueryUtil {
 
 
   /**
+   * This method read a block of record from the result set.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param context servlet context; this may be null
+   * @param gridParams grid parameters (filtering/ordering settings, starting row to read, read versus)
+   * @param blockSize number of rows to read
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return a list of value objects  (in VOListResponse object) or an error response
+   */
+  public static Response getQuery(
+      Connection conn,
+      UserSessionParameters userSessionPars,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      ServletContext context,
+      GridParams gridParams,
+      int blockSize,
+      boolean logQuery
+  ) throws Exception {
+    return getQuery(
+      conn,
+      userSessionPars,
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      values,
+      attribute2dbField,
+      valueObjectClass,
+      booleanTrueValue,
+      booleanFalseValue,
+      context,
+      gridParams,
+      blockSize,
+      1,
+      logQuery
+    );
+  }
+
+
+  /**
    * @param baseSQL SQL to change by adding filter and order clauses
    * @param values binding values related to baseSQL
    * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
@@ -402,6 +1106,82 @@ public class QueryUtil {
         conn,
         new UserSessionParameters(),
         baseSQL,
+        values,
+        attribute2dbField,
+        valueObjectClass,
+        booleanTrueValue,
+        booleanFalseValue,
+        null,
+        new GridParams(),
+        -1,
+        2,
+        logQuery
+    );
+  }
+
+
+  /**
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return one value object (in VOResponse object) or an error response
+   */
+  public static Response getQuery(
+      Connection conn,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      boolean logQuery
+  ) throws Exception {
+    return getQuery(
+        conn,
+        new UserSessionParameters(),
+        select,
+        from,
+        where,
+        group,
+        having,
+        order,
         values,
         attribute2dbField,
         valueObjectClass,
@@ -458,6 +1238,85 @@ public class QueryUtil {
 
 
   /**
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param context servlet context; this may be null
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return one value object (in VOResponse object) or an error response
+   */
+  public static Response getQuery(
+      Connection conn,
+      UserSessionParameters userSessionPars,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      ServletContext context,
+      boolean logQuery
+  ) throws Exception {
+    return getQuery(
+        conn,
+        userSessionPars,
+        select,
+        from,
+        where,
+        group,
+        having,
+        order,
+        values,
+        attribute2dbField,
+        valueObjectClass,
+        booleanTrueValue,
+        booleanFalseValue,
+        context,
+        new GridParams(),
+        -1,
+        2,
+        logQuery
+    );
+  }
+
+
+  /**
    * @param baseSQL SQL to change by adding filter and order clauses
    * @param values binding values related to baseSQL
    * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
@@ -486,12 +1345,162 @@ public class QueryUtil {
       int rowsToRead,
       boolean logQuery
   ) throws Exception {
+    baseSQL = getSql(
+      userSessionPars,
+      baseSQL,
+      values,
+      gridParams.getFilteredColumns(),
+      gridParams.getCurrentSortedColumns(),
+      gridParams.getCurrentSortedVersusColumns(),
+      attribute2dbField
+    );
+    return getQuery(
+      conn,
+      userSessionPars,
+      baseSQL,
+      values,
+      attribute2dbField,
+      valueObjectClass,
+      booleanTrueValue,
+      booleanFalseValue,
+      context,
+      blockSize,
+      rowsToRead,
+      logQuery,
+      gridParams.getAction(),
+      gridParams.getStartPos()
+    );
+  }
+
+
+  /**
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   *
+   * Example: following query
+   *
+   * select customer_code,customername from
+   * (select customer_code,corporate_name as customername from companies
+   * union
+   * select customer_code,name as customername from privates)
+   * order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,customername","(select customer_code,corporate_name as customername from companies union select customer_code,name as customername from privates)","","customer_code asc","","",...);
+   *
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param context servlet context; this may be null
+   * @param gridParams grid parameters (filtering/ordering settings, starting row to read, read versus)
+   * @param blockSize number of rows to read
+   * @param rowsToRead 0 = all rows, 1 = a block of rows, 2 = only one row
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return a list of value objects or an error response
+   */
+  private static Response getQuery(
+      Connection conn,
+      UserSessionParameters userSessionPars,
+      String select,
+      String from,
+      String where,
+      String group,
+      String having,
+      String order,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      ServletContext context,
+      GridParams gridParams,
+      int blockSize,
+      int rowsToRead,
+      boolean logQuery
+  ) throws Exception {
+    // add filtering/ordering clauses...
+    String baseSQL = getSql(
+      userSessionPars,
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      values,
+      gridParams.getFilteredColumns(),
+      gridParams.getCurrentSortedColumns(),
+      gridParams.getCurrentSortedVersusColumns(),
+      attribute2dbField
+    );
+    return getQuery(
+      conn,
+      userSessionPars,
+      baseSQL,
+      values,
+      attribute2dbField,
+      valueObjectClass,
+      booleanTrueValue,
+      booleanFalseValue,
+      context,
+      blockSize,
+      rowsToRead,
+      logQuery,
+      gridParams.getAction(),
+      gridParams.getStartPos()
+    );
+  }
+
+
+  /**
+   * @param baseSQL SQL that already contains filtering and sorting conditions
+   * @param values binding values related to baseSQL
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields is the select clause
+   * @param valueObjectClass value object class to use to generate the result
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param context servlet context; this may be null
+   * @param blockSize number of rows to read
+   * @param rowsToRead 0 = all rows, 1 = a block of rows, 2 = only one row
+   * @param logQuery <code>true</code> to log the query, <code>false</code> to no log the query
+   * @return a list of value objects or an error response
+   */
+  private static Response getQuery(
+      Connection conn,
+      UserSessionParameters userSessionPars,
+      String baseSQL,
+      ArrayList values,
+      Map attribute2dbField,
+      Class valueObjectClass,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      ServletContext context,
+      int blockSize,
+      int rowsToRead,
+      boolean logQuery,
+      int action,
+      int startPos
+  ) throws Exception {
     PreparedStatement pstmt = null;
     String params = "";
     try {
-      // add filtering/ordering clauses...
-      baseSQL = getSql(userSessionPars,baseSQL,values,gridParams.getFilteredColumns(),gridParams.getCurrentSortedColumns(),gridParams.getCurrentSortedVersusColumns(),attribute2dbField);
-
       // prepare the collection of pairs database column (table.column), attributeName - for ALL fields is the select clause
       Iterator it = attribute2dbField.keySet().iterator();
       String attributeName = null;
@@ -570,8 +1579,6 @@ public class QueryUtil {
 
       int rowCount = 0;
       int resultSetLength = -1;
-      int action = gridParams.getAction();
-      int startPos = gridParams.getStartPos();
       if (rowsToRead==1) {
         // read a block of rows...
 

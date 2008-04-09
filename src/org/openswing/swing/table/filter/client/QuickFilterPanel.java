@@ -231,10 +231,20 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         Vector couple = null;
         DomainPair[] pairs = domain.getDomainPairList();
         Object[] items = new Object[pairs.length];
+        int selIndex = -1;
         for(int i=0;i<items.length;i++) {
           items[i] = ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription());
+          if (initValue!=null && pairs[i].getCode().equals(initValue))
+            selIndex = i;
         }
-        JList list=new JList(items);
+        final JList list=new JList(items);
+        final int selectedIndex = selIndex;
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            list.setSelectedIndex(selectedIndex);
+            list.ensureIndexIsVisible(selectedIndex);
+          }
+        });
         list.setToolTipText("");
         list.setVisibleRowCount(1);
         JScrollPane scrollPane=new JScrollPane();
@@ -712,12 +722,21 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
      * Method called when user click the filter buttons.
      */
     private void filter() {
+      int type = colProperties.getColumnType();
       if (filterType==FILTER_TYPE_VALUE) {
         Object value = getValue1();
         if (value!=null &&
             value.toString().indexOf("%")==-1 &&
             opType.getSelectedIndex()>0 &&
-            domain==null) {
+            domain==null &&
+            !(type==Column.TYPE_DATE ||
+              type==Column.TYPE_DATE_TIME ||
+              type==Column.TYPE_TIME ||
+              type==Column.TYPE_INT ||
+              type==Column.TYPE_DEC ||
+              type==Column.TYPE_PERC ||
+              type==Column.TYPE_CURRENCY)
+        ) {
           if (opType.getSelectedValue().equals(CONTAINS))
             value = "%"+value+"%";
           else if (opType.getSelectedValue().equals(STARTS_WITH))

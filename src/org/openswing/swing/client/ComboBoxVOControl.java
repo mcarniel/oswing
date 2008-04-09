@@ -534,6 +534,8 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
   public void setEnabled(boolean enabled) {
     combo.setEnabled(enabled);
     combo.setFocusable(enabled);
+    if (!enabled)
+      combo.setBackground((Color)UIManager.get("TextField.inactiveBackground"));
   }
 
 

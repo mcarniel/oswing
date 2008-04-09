@@ -57,11 +57,28 @@ public class ClientApplication implements MDIController,LoginController {
       );
 
       Properties props = new Properties();
+      props.setProperty("firstName","First Name");
+      props.setProperty("lastName","Last Name");
+      props.setProperty("deptDescription","Dept. Description");
+      props.setProperty("dept.deptCode","Dept. Code");
+      props.setProperty("dept.description","Dept. Description");
+      props.setProperty("taskDescription","Task Description");
+      props.setProperty("task.taskCode","Task Code");
+      props.setProperty("task.description","Task Description");
+      props.setProperty("hire date","Hire Date");
+      props.setProperty("sex","Sex");
+      props.setProperty("male","Male");
+      props.setProperty("female","Female");
+      props.setProperty("salary","Salary");
+      props.setProperty("empCode","Employee Code");
       props.setProperty("deptCode","Dept Code");
       props.setProperty("description","Description");
       props.setProperty("address","Address");
       props.setProperty("tasks","Tasks");
-      props.setProperty("departments","departments");
+      props.setProperty("city","City");
+      props.setProperty("state","State");
+      props.setProperty("country","Country");
+      props.setProperty("departments","Departments");
       props.setProperty("taskCode","Task Code");
       props.setProperty("firstName","First Name");
       props.setProperty("lastName","Last Name");
@@ -252,8 +269,12 @@ public class ClientApplication implements MDIController,LoginController {
     DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Administration",null);
-    ApplicationFunction n13 = new ApplicationFunction("Tasks","EMP","appicon.gif","getTasks");
+    ApplicationFunction n13 = new ApplicationFunction("Tasks","TASKS","appicon.gif","getTasks");
+    ApplicationFunction n14 = new ApplicationFunction("Departments","DEPT","appicon.gif","getDepts");
+    ApplicationFunction n15 = new ApplicationFunction("Emps","EMP","appicon.gif","getEmps");
     n1.add(n13);
+    n1.add(n14);
+    n1.add(n15);
     root.add(n1);
 
     return model;
@@ -278,6 +299,18 @@ public class ClientApplication implements MDIController,LoginController {
 
         for(int i=0;i<200;i++) {
           stmt = conn.prepareStatement("insert into TASKS values('CODE"+i+"','Description"+i+"','E')");
+          stmt.execute();
+        }
+        stmt.close();
+
+        for(int i=0;i<10;i++) {
+          stmt = conn.prepareStatement("insert into DEPTS values('D"+i+"','Description"+i+"','Fifth Av. "+i+"','New York','NY','USA','E')");
+          stmt.execute();
+        }
+        stmt.close();
+
+        for(int i=0;i<10;i++) {
+          stmt = conn.prepareStatement("insert into EMPS(EMP_CODE,FIRST_NAME,LAST_NAME,DEPT_CODE,SEX,SALARY,HIRE_DATE,NOTE,TASK_CODE) values('"+i+"','Name"+i+"','Surname"+i+"','D0','M',1233"+i+",null,null,'CODE0')");
           stmt.execute();
         }
         stmt.close();

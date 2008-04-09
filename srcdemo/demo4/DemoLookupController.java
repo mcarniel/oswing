@@ -128,6 +128,7 @@ public class DemoLookupController extends LookupController {
     this.addLookup2ParentLink("lookupValue", "lookupValue");
     this.addLookup2ParentLink("descrLookupValue", "descrLookupValue");
     this.setAllColumnVisible(true);
+    this.setAnchorLastColumn(true);
     this.setPreferredWidthColumn("descrLookupValue", 200);
   }
 

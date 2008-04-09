@@ -1,7 +1,6 @@
 package org.openswing.swing.client;
 
-import org.openswing.swing.domains.java.*;
-import org.openswing.swing.lookup.client.RestoreFocusOnInvalidCodeException;
+import org.openswing.swing.lookup.client.*;
 
 
 /**

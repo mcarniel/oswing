@@ -38,7 +38,7 @@ import org.openswing.swing.util.client.*;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ButtonCellEditor extends AbstractCellEditor implements TableCellEditor {
+public class ButtonCellEditor extends AbstractCellEditor implements TableCellEditor,ActionListener {
 
   /** button inside the editable cell */
   private JButton field = new JButton();
@@ -48,6 +48,15 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
 
   /** current value */
   private Object value = null;
+
+  /** list of ActionListeners linked to the button */
+  private ArrayList actionListeners = null;
+
+  /** table that contains this button */
+  private JTable table = null;
+
+  /** current selected row*/
+  private int row = -1;
 
 
   /**
@@ -61,8 +70,17 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
       this.field.setText(ClientSettings.getInstance().getResources().getResource(text));
     if (icon!=null)
       field.setIcon(icon);
-    for(int i=0;i<actionListeners.size();i++)
-      field.addActionListener((ActionListener)actionListeners.get(i));
+    this.actionListeners = actionListeners;
+    field.addActionListener(this);
+  }
+
+
+  public final void actionPerformed(ActionEvent e) {
+    if (row!=-1)
+        table.setRowSelectionInterval(row,row);
+    if (actionListeners!=null)
+      for(int i=0;i<actionListeners.size();i++)
+        ((ActionListener)actionListeners.get(i)).actionPerformed(e);
   }
 
 
@@ -113,6 +131,8 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
   public final Component getTableCellEditorComponent(JTable table, Object value,
                                                boolean isSelected, int row,
                                                int column) {
+    this.table = table;
+    this.row = row;
     return _prepareEditor(value);
   }
 

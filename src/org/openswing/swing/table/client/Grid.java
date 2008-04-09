@@ -165,6 +165,8 @@ public class Grid extends JTable
   /** search window manager */
   private SearchWindowManager searchWindowManager = null;
 
+  private RightClickMouseListener rightClickMouseListener;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -177,6 +179,7 @@ public class Grid extends JTable
    * @param modelAdapter grid model adapter
    * @param gridController grid controller
    * @param lockedGrid locked grid (optional)
+   * @param anchorLastColumn define if last column must be anchored to the right margin
    * @param gridType type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID
    */
   public Grid(
@@ -190,6 +193,7 @@ public class Grid extends JTable
       VOListAdapter modelAdapter,
       GridController gridController,
       boolean lockedGrid,
+      boolean anchorLastColumn,
       int gridType) {
     super();
     this.grids = grids;
@@ -203,7 +207,7 @@ public class Grid extends JTable
     this.gridController = gridController;
     this.lockedGrid = lockedGrid;
     this.setShowGrid(true);
-    if (grids==null || grids.getGridControl()==null || !grids.getGridControl().isAnchorLastColumn())
+    if (!anchorLastColumn)
       this.setAutoResizeMode(this.AUTO_RESIZE_OFF);
     this.setRowHeight(ClientSettings.CELL_HEIGHT);
     this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -242,7 +246,9 @@ public class Grid extends JTable
 
       // add mouse listener to capture righe mouse click event, used to show the popup menu...
       if (gridType==MAIN_GRID) {
-        this.addMouseListener(new RightClickMouseListener());
+        if (rightClickMouseListener==null)
+          rightClickMouseListener = new RightClickMouseListener();
+        this.addMouseListener(rightClickMouseListener);
 
         // add mouse listener to capture double click event in the selected row...
         this.addMouseListener(new MouseAdapter() {
@@ -1346,8 +1352,16 @@ public class Grid extends JTable
   /**
    * Configure quick filter.
    */
-  private void configQuickFilter() {
+  private void configQuickFilter(int x,int y) {
     int modelColIndex = this.getSelectedColumn()==-1 ? -1 : this.getColumnModel().getColumn(this.getSelectedColumn()).getModelIndex();
+
+    if (modelColIndex==-1) {
+      Point tablexy=this.getLocationOnScreen();
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      int xOverflow = x+(int)tablexy.getX()+grids.getPopup().getWidth()-(int)screenSize.getWidth();
+      int popupX = xOverflow>0?x-xOverflow-20:x;
+      modelColIndex = this.getColumnModel().getColumnIndexAtX(popupX);
+    }
 
     if (modelColIndex!=-1 &&
         colProps[modelColIndex].isColumnFilterable()) {// &&
@@ -1367,13 +1381,20 @@ public class Grid extends JTable
        else
         grids.getRemovefilterItem().setVisible(false);
 
-       grids.setFilterPanel( new QuickFilterPanel(
-           grids.getDefaultQuickFilterCriteria(),
-           this,
-           filterType,
-           colProps[modelColIndex],
-           this.getSelectedRow()>=0?this.getModel().getValueAt(this.getSelectedRow(),modelColIndex):null
-       ));
+       Object initialValue = this.getSelectedRow()>=0?this.getModel().getValueAt(this.getSelectedRow(),modelColIndex):null;
+       if (gridController!=null)
+         initialValue = gridController.getInitialQuickFilterValue(colProps[modelColIndex].getColumnName(),initialValue);
+
+       QuickFilterPanel quickFilterPanel = new QuickFilterPanel(
+          grids.getDefaultQuickFilterCriteria(),
+          this,
+          filterType,
+          colProps[modelColIndex],
+          initialValue
+       );
+       quickFilterPanel.setBackground(grids.getRemovefilterItem().getBackground());
+       grids.setFilterPanel(quickFilterPanel);
+
        grids.getFilterPanel().setVisible(colProps[modelColIndex].isColumnFilterable());
     } else
       grids.setFilterPanel(null);
@@ -1464,7 +1485,7 @@ public class Grid extends JTable
       grids.getPopup().removeAll();
 
       // add quick filter to popup menu...
-      configQuickFilter();
+      configQuickFilter(x,y);
       if (grids.getFilterPanel()!=null) {
         grids.getFilterPanel().setParentPopup(grids.getPopup());
         grids.getPopup().add(grids.getFilterPanel());
@@ -1476,10 +1497,8 @@ public class Grid extends JTable
             int modelColIndex = getSelectedColumn()==-1 ? -1 :getColumnModel().getColumn(getSelectedColumn()).getModelIndex();
             if (modelColIndex==-1) {
               int xOverflow = x+(int)tablexy.getX()+grids.getPopup().getWidth()-(int)screenSize.getWidth();
-              int yOverflow = y+(int)tablexy.getY()+grids.getPopup().getHeight()-(int)screenSize.getHeight();
               int popupX = xOverflow>0?x-xOverflow-20:x;
-              int popupY = yOverflow>0?y-yOverflow-20:y;
-              modelColIndex = columnAtPoint(new Point(popupX,popupY));
+              modelColIndex = getColumnModel().getColumnIndexAtX(popupX);
             }
 
             if (modelColIndex!=-1) {
@@ -1836,7 +1855,14 @@ public class Grid extends JTable
       Container gp = p.getParent();
       if (gp instanceof JScrollPane) {
         scrollPane = (JScrollPane)gp;
-        scrollPane.addMouseListener(new RightClickMouseListener());
+        if (rightClickMouseListener==null)
+          rightClickMouseListener = new RightClickMouseListener();
+        try {
+          scrollPane.removeMouseListener(rightClickMouseListener);
+        }
+        catch (Exception ex) {
+        }
+        scrollPane.addMouseListener(rightClickMouseListener);
         createVerticalScrollBarListener(scrollPane);
 
         JViewport viewport = scrollPane.getViewport();
@@ -1988,6 +2014,12 @@ public class Grid extends JTable
   public void filter(Column colProps,Object value1,Object value2) {
     if(colProps==null) return;
 
+    if (gridController!=null) {
+      value1 = gridController.beforeFilterGrid(colProps.getColumnName(),value1);
+      if (value2!=null)
+        value2 = gridController.beforeFilterGrid(colProps.getColumnName(),value2);
+    }
+
     FilterWhereClause[] values = null;
 
     if (value2!=null)
@@ -2006,7 +2038,7 @@ public class Grid extends JTable
         grids.getQuickFilterValues().put(
             colProps.getColumnName(),
             values = new FilterWhereClause[] {
-              new FilterWhereClause(colProps.getColumnName(),"like",value1),
+              new FilterWhereClause(colProps.getColumnName(),ClientSettings.LIKE,value1),
               null
             }
         );

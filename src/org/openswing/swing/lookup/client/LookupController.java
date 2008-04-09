@@ -134,6 +134,9 @@ public class LookupController {
   /** maximum number of sorted columns */
   private int maxSortedColumns = 1;
 
+  /** flag used to anchor the last column on the right margin of the lookup grid, only when all columns width is lesser than grid width */
+  private boolean anchorLastColumn = false;
+
 
   /**
    * Execute the code validation.
@@ -454,6 +457,7 @@ public class LookupController {
           new HashMap(),
           true,
           new ArrayList(),
+          anchorLastColumn,
           Grid.MAIN_GRID
       );
       table.setMaxSortedColumns(maxSortedColumns);
@@ -598,6 +602,7 @@ public class LookupController {
           new HashMap(),
           true,
           new ArrayList(),
+          anchorLastColumn,
           Grid.MAIN_GRID
       );
 
@@ -1198,6 +1203,23 @@ public class LookupController {
    */
   public final boolean isCodeValid() {
     return codeValid;
+  }
+
+
+  /**
+   * @return define if the last column must be to anchored on the right margin of the grid, only when all columns width is lesser than grid width
+   */
+  public boolean isAnchorLastColumn() {
+    return anchorLastColumn;
+  }
+
+
+  /**
+   * Define if the last column must be anchored on the right margin of the grid, only when all columns width is lesser than grid width. Default value: <code>false</code>
+   * @param anchorLastColumn flag used to anchor the last column on the right margin of the grid, only when all columns width is lesser than grid width
+   */
+  public void setAnchorLastColumn(boolean anchorLastColumn) {
+    this.anchorLastColumn = anchorLastColumn;
   }
 
 

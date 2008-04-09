@@ -122,8 +122,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   private GridPopup popup = new GridPopup();
 
   /** menu item for removing column filtering */
-  private JMenuItem removefilterItem = new JMenuItem(ClientSettings.getInstance().
-      getResources().getResource("Remove Filter"),
+  private JMenuItem removefilterItem = new JMenuItem(
+      ClientSettings.getInstance().getResources().getResource("Remove Filter"),
       new ImageIcon(ClientUtils.getImage("filter-undo.gif")));
 
   /** hashtable which contains the associations: attribute name, new FilterWhereClause[2] {FilterWhereClause,FilterWhereClause}) */
@@ -191,6 +191,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @param statusPanel bottom panel included into the grid; used to view selected row numbers
    * @param colorsInReadOnlyMode flag used to define if background and foreground colors must be setted according to GridController definition only in READONLY mode
    * @param popupCommands list of custom commands added to the popup menu accessed by right mouse click on grid
+   * @param anchorLastColumn define if last column must be anchored to the right margin of the grid
    * @param gridType type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID
    */
   public Grids(
@@ -204,6 +205,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       Map otherGridParams,
       boolean colorsInReadOnlyMode,
       ArrayList popupCommands,
+      boolean anchorLastColumn,
       int gridType
   ) {
     this.gridControl = gridControl;
@@ -240,6 +242,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         modelAdapter,
         gridController,
         false,
+        anchorLastColumn,
         gridType
     );
 
@@ -257,6 +260,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           modelAdapter,
           gridController,
           true,
+          anchorLastColumn,
           gridType
       );
       this.lockedGrid.setReorderingAllowed(false);
@@ -285,6 +289,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
     setNavBar(new NavigatorBar());
+
+    removefilterItem.setAccelerator(ClientSettings.REMOVE_FILTER_KEY);
 
   }
 
@@ -2671,6 +2677,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   }
 
 
+  /**
+   * @return grid controller, used to listen grid events
+   */
+  public final GridController getGridController() {
+    return gridController;
+  }
 
 
 

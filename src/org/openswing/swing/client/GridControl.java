@@ -321,6 +321,7 @@ public class GridControl extends JPanel {
           otherGridParams,
           colorsInReadOnlyMode,
           popupCommands,
+          anchorLastColumn,
           Grid.MAIN_GRID
           );
       for (int i = 0; i < columnProperties.length; i++) {
@@ -608,6 +609,7 @@ public class GridControl extends JPanel {
             otherGridParams,
             colorsInReadOnlyMode,
             new ArrayList(),
+            anchorLastColumn,
             Grid.TOP_GRID
         );
         topTable.setReorderingAllowed(reorderingAllowed);
@@ -667,6 +669,7 @@ public class GridControl extends JPanel {
             otherGridParams,
             colorsInReadOnlyMode,
             new ArrayList(),
+            anchorLastColumn,
             Grid.BOTTOM_GRID
         );
         bottomTable.setReorderingAllowed(reorderingAllowed);
@@ -809,8 +812,13 @@ public class GridControl extends JPanel {
             if (split.getDividerLocation()<=split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20)
               return;
 
-            filterPanel.init();
-            if (split.getLastDividerLocation()>0 && split.getLastDividerLocation()<filterPanel.getPreferredSize().getWidth())
+            if (!(filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_PRESSED && filterPanel.isLocked()) &&
+                !(filterPanelOnGridPolicy==Consts.FILTER_PANEL_ON_GRID_USE_PADLOCK_UNPRESSED && filterPanel.isLocked()))
+              filterPanel.init();
+
+            if (split.getLastDividerLocation()>0 &&
+                split.getLastDividerLocation()<filterPanel.getPreferredSize().getWidth() &&
+                filterPanel.getPreferredSize().getWidth()<300)
               split.setDividerLocation(split.getLastDividerLocation());
             else
               split.setDividerLocation(split.getWidth()-(int)filterPanel.getPreferredSize().getWidth()-20);

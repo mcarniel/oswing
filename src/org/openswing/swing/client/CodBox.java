@@ -1,18 +1,13 @@
 package org.openswing.swing.client;
 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.math.BigDecimal;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-import org.openswing.swing.client.*;
-import org.openswing.swing.domains.java.*;
-import java.awt.Dimension;
-import javax.swing.SwingUtilities;
-import org.openswing.swing.lookup.client.RestoreFocusOnInvalidCodeException;
+import java.beans.*;
+import java.math.*;
 
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+import org.openswing.swing.lookup.client.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -60,7 +55,12 @@ public class CodBox extends JTextField {
 
 
   public CodBox() {
+
+    if (Beans.isDesignTime())
+      return;
+
     this.addKeyListener(new KeyAdapter() {
+
       public void keyTyped(KeyEvent e) {
         if (e.getKeyChar()=='\n') {
           if (isEnabled() && isEditable())
@@ -134,17 +134,28 @@ public class CodBox extends JTextField {
 
   public void setEnabled(boolean enabled) {
     setEditable(enabled);
-    if (enabled) {
-      setForeground(UIManager.getColor("TextField.foreground"));
-      setBackground(UIManager.getColor("TextField.background"));
-    }
-    else {
-      setForeground(UIManager.getColor("TextField.foreground"));
-      setBackground(UIManager.getColor("TextField.inactiveBackground"));
-    }
     if (this.container!=null)
       this.container.setEnabled(enabled);
   }
+
+
+  public final void setEditable(boolean enabled) {
+    super.setEditable(enabled);
+    try {
+      if (enabled) {
+        setForeground(UIManager.getColor("TextField.foreground"));
+        setBackground(UIManager.getColor("TextField.background"));
+      }
+      else {
+        setForeground(UIManager.getColor("TextField.foreground"));
+        setBackground(UIManager.getColor("TextField.inactiveBackground"));
+      }
+    }
+    catch (Exception ex) {
+    }
+  }
+
+
 
 
   /**

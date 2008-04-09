@@ -42,6 +42,9 @@ public class ApplicationEventQueue {
   /** list of mouse listeners */
   private ArrayList mouseListeners = new ArrayList();
 
+  /** event queue */
+  private InternalEventQueue eventQueue = new InternalEventQueue();
+
   /** single istance */
   private static ApplicationEventQueue applicationEventQueue = null;
 
@@ -93,7 +96,21 @@ public class ApplicationEventQueue {
 
 
   private ApplicationEventQueue() {
-    Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
+    Toolkit.getDefaultToolkit().getSystemEventQueue().push(eventQueue);
+//    getRootPane().putClientProperty("defeatSystemEventQueueCheck",Boolean.TRUE);
+  }
+
+
+  /**
+   * Send an AWT event.
+   * @param AWTEvent to send
+   */
+  public final void dispatchEvent(AWTEvent e) {
+    eventQueue.dispatchEvent(e);
+  }
+
+
+  class InternalEventQueue extends EventQueue {
 
       protected void dispatchEvent(AWTEvent e) {
         try {
@@ -125,9 +142,6 @@ public class ApplicationEventQueue {
             ((KeyListener)keyListeners.get(i)).keyTyped((KeyEvent)e);
       }
 
-    });
-//    getRootPane().putClientProperty("defeatSystemEventQueueCheck",Boolean.TRUE);
-
-  }
+  } // end inner class
 
 }

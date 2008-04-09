@@ -66,7 +66,8 @@ public class ClientApplication {
       orderStateDomain.getDomainId(),
       orderStateDomain
     );
-
+    ClientSettings.ALLOW_OR_OPERATOR = false;
+    ClientSettings.INCLUDE_IN_OPERATOR = false;
 
     createConnection();
 

@@ -240,6 +240,14 @@ public class TextControl extends BaseInputControl implements InputControl {
    * @param enabled flag used to set abilitation of control
    */
   public final void setEnabled(boolean enabled) {
+    try {
+      if (!enabled) {
+        textBox.setForeground(UIManager.getColor("TextField.foreground"));
+        textBox.setBackground(UIManager.getColor("TextField.inactiveBackground"));
+      }
+    }
+    catch (Exception ex) {
+    }
     textBox.setEditable(enabled);
     textBox.setFocusable(enabled);
   }
