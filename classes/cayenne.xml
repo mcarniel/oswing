@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<domains project-version="2.0">
+<domain name="demo36">
+	<property name="cayenne.DataDomain.sharedCache" value="false"/>
+
+	<map name="demo36Map" location="demo36Map.map.xml"/>
+
+	<node name="demo36Node"
+		 datasource="demo36Node.driver.xml"
+		 factory="org.apache.cayenne.conf.DriverDataSourceFactory">
+			<map-ref name="demo36Map"/>
+	 </node>
+</domain>
+</domains>

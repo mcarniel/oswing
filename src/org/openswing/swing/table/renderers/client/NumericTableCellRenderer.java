@@ -232,13 +232,19 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
     }
 
 
-    if(value.getClass() == Double.class) {
+    if(value.getClass() == Double.class || value.getClass() == Double.TYPE) {
       val = ((Double)value).doubleValue();
     }
-    else if(value.getClass() == Long.class) {
+    if(value.getClass() == Float.class || value.getClass() == Float.TYPE) {
+      val = ((Float)value).doubleValue();
+    }
+    if(value.getClass() == Short.class || value.getClass() == Short.TYPE) {
+      val = ((Short)value).doubleValue();
+    }
+    else if(value.getClass() == Long.class || value.getClass() == Long.TYPE) {
       val = (double)((Long)value).longValue();
     }
-    else if(value.getClass() == Integer.class) {
+    else if(value.getClass() == Integer.class || value.getClass() == Integer.TYPE) {
       val = ((Integer)value).doubleValue();
     }
     else if(value.getClass() == BigDecimal.class) {

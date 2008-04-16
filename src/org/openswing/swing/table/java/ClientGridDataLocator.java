@@ -81,13 +81,15 @@ public class ClientGridDataLocator implements GridDataLocator {
         return "abc";
       if (type.equals(Date.class))
         return new Date();
-      if (type.equals(Long.class))
+      if (type.equals(Long.class) || type.equals(Long.TYPE))
         return new Long(1);
-      if (type.equals(Integer.class))
+      if (type.equals(Integer.class) || type.equals(Integer.TYPE))
         return new Integer(1);
-      if (type.equals(Float.class))
+      if (type.equals(Short.class) || type.equals(Short.TYPE))
+        return Short.valueOf("1");
+      if (type.equals(Float.class) || type.equals(Float.TYPE))
         return new Float(1.2);
-      if (type.equals(Double.class))
+      if (type.equals(Double.class) || type.equals(Double.TYPE))
         return new Double(1.2);
       if (type.equals(java.math.BigDecimal.class))
         return new java.math.BigDecimal(1.2);

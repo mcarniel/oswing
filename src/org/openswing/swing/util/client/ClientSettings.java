@@ -286,6 +286,8 @@ public class ClientSettings {
   /** define if a warning dialog must be showed when closing an internal frame that contains a Form/GridControl in edit/insert mode */
   public static boolean ASK_BEFORE_CLOSE = false;
 
+  /** define whether showing image/text on default buttons (insert, edit, ...); allowed values: Consts.BUTTON_IMAGE_ONLY, Consts.BUTTON_TEXT_ONLY, Consts.BUTTON_IMAGE_AND_TEXT; default value: Consts.BUTTON_IMAGE_ONLY */
+  public static int BUTTON_BEHAVIOR = Consts.BUTTON_IMAGE_ONLY;
 
 
   /**

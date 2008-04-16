@@ -372,16 +372,24 @@ public class VOListTableModel extends AbstractTableModel {
       if (value!=null && value instanceof BigDecimal && oldValue!=null && this.fieldAdapter.getFieldClass(column).equals(BigDecimal.class)) {
         value = new BigDecimal(value.toString()).setScale(((BigDecimal)oldValue).scale());
       }
-      else if (value!=null && value instanceof BigDecimal && this.fieldAdapter.getFieldClass(column).equals(Integer.class)) {
+      else if (value!=null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Integer.class) || this.fieldAdapter.getFieldClass(column).equals(Integer.TYPE))) {
         value = new Integer(value.toString());
       }
-      else if (value!=null && value instanceof BigDecimal && this.fieldAdapter.getFieldClass(column).equals(Double.class)) {
+      else if (value!=null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Double.class) || this.fieldAdapter.getFieldClass(column).equals(Double.TYPE))) {
         value = new Double(value.toString());
       }
-      else if (value!=null && value instanceof BigDecimal && this.fieldAdapter.getFieldClass(column).equals(Long.class)) {
+      else if (value!=null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Long.class) || this.fieldAdapter.getFieldClass(column).equals(Long.TYPE))) {
         value = new Long(value.toString());
       }
-      else if (value!=null && value instanceof BigDecimal && this.fieldAdapter.getFieldClass(column).equals(Float.class)) {
+      else if (value!=null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Short.class) || this.fieldAdapter.getFieldClass(column).equals(Short.TYPE))) {
+        value = new Short(value.toString());
+      }
+      else if (value!=null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Float.class) || this.fieldAdapter.getFieldClass(column).equals(Float.TYPE))) {
         value = new Float(value.toString());
       }
       if (oldValue==null && value!=null ||

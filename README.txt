@@ -30,6 +30,7 @@ Note: to run the "demo19" sample you have to include in the classpath iBatis lib
 
 Note: to run the "demo35" sample you have to use Java 5 EE and include in the classpath an Entity Manager implementation, such as javaee.jar file of GlassFish A.S. (see README.xxt file within demo35 source folder)
 
+Note: to run the "demo36" sample you have to include in the classpath Apache Cayenne library too (see runDemo36.bat/sh). "demo36" sample app has been tested with Cayenne 2.0.4
 
 
 2. Directory Structure
@@ -44,11 +45,14 @@ srchibernate    source files of OpenSwing framework specifically related to iBat
 
 srcjpa          source files of OpenSwing framework specifically related to JPA/TopLink embedding; to compile these classes you have to use Java 5 EE and include in classpath an Entity Manager implementation, such as that included in GlassFish A.S. (NOT provided in OpenSwing distribution)
 
+srccayenne      source files of OpenSwing framework specifically related to Apache Cayenne embedding; to compile these classes you have to include in classpath cayenne.jar too (NOT provided in OpenSwing distribution)
+
 srcdemo		source files of demos included in the distribution; 
                 "demo17" subfolder requires Hibernate jars too (NOT provided in OpenSwing distribution)
                 "demo18" subfolder requires Spring jars too (NOT provided in OpenSwing distribution)
                 "demo19" subfolder requires iBatis jars too (NOT provided in OpenSwing distribution)
                 "demo35" subfolder requires Java 5 EE and an Entity Manager implementation such as that included in GlassFish A.S. (NOT provided in OpenSwing distribution)
+		"demo36" subfolder require cayenne.jar library too (NOT provided in OpenSwing distribution)
 
 build		jar files 
 

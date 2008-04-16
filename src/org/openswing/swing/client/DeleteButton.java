@@ -38,10 +38,7 @@ public class DeleteButton extends GenericButton {
 
   public DeleteButton() {
     super(new ImageIcon(ClientUtils.getImage("del.gif")));
-    setPreferredSize(new Dimension(32,32));
   }
-
-  public void setText(String t) { }
 
 
   /**

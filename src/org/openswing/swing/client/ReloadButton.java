@@ -38,11 +38,7 @@ public class ReloadButton extends GenericButton {
 
   public ReloadButton() {
     super(new ImageIcon(ClientUtils.getImage("reload.gif")));
-    setPreferredSize(new Dimension(32,32));
   }
-
-
-  public void setText(String t) { }
 
 
   /**

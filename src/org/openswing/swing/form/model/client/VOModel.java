@@ -289,18 +289,28 @@ public class VOModel {
       }
       try {
         Method[] readMethods = (Method[])voGetterMethods.get(attributeName);
+        Method[] writeMethods = (Method[])voSetterMethods.get(attributeName);
+        String[] attrs = attributeName.split("\\.");
+
         if (readMethods != null) {
           Object obj = getValueObject();
+          Object lastObj = null;
           if (obj!=null)
             for(int i=0;i<readMethods.length-1;i++) {
+              lastObj = obj;
               obj = readMethods[i].invoke(obj,new Object[0]);
 
               // check if the inner v.o. is null...
               if(obj == null) {
                 if (!createInnerVO)
                   return null;
-                else
+                else {
                   obj = (ValueObject)readMethods[i].getReturnType().newInstance();
+                  lastObj.getClass().getMethod(
+                    "set"+attrs[i].substring(0,1).toUpperCase()+attrs[i].substring(1),
+                    new Class[]{readMethods[i].getReturnType()}
+                  ).invoke(lastObj,new Object[]{obj});
+                }
               }
             }
           return obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;

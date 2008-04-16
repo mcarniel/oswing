@@ -38,10 +38,7 @@ public class ExportButton extends GenericButton {
 
   public ExportButton() {
     super(new ImageIcon(ClientUtils.getImage("export.gif")));
-    setPreferredSize(new Dimension(32,32));
   }
-
-  public void setText(String t) { }
 
 
   /**

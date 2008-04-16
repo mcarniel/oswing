@@ -37,6 +37,10 @@
   <object key="To value" value="To value" />
   <object key="Filter by" value="Filter by" />
   <object key="From value" value="From value" />
+  <object key="equals" value="equals" />
+  <object key="contains" value="contains" />
+  <object key="starts with" value="starts with" />
+  <object key="ends with" value="ends with" />
 
 <!-- lookup -->
   <object key="Code is not correct." value="Code is not correct." />
@@ -63,7 +67,15 @@
   <object key="Load the next block of records" value="Load the next block of records" />
   <object key="Load the last block of records" value="Load the last block of records" />
 
-
+  <object key="Insert" value="Insert" />
+  <object key="edit" value="edit" />
+  <object key="Copy" value="Copy" />
+  <object key="Delete" value="Delete" />
+  <object key="Save" value="Save" />
+  <object key="Reload" value="Reload" />
+  <object key="Export" value="Export" />
+  <object key="Filter" value="Filter" />
+  
 <!-- binding messages -->
   <object key="value must be of type " value="Value must be of type " />
   <object key="decimal number" value="decimal number" />

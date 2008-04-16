@@ -38,11 +38,7 @@ public class CopyButton extends GenericButton {
 
   public CopyButton() {
     super(new ImageIcon(ClientUtils.getImage("copy.gif")));
-    setPreferredSize(new Dimension(32,32));
   }
-
-  public void setText(String t) { }
-
 
 
   /**

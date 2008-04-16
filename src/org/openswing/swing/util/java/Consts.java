@@ -100,4 +100,13 @@ public class Consts {
   /** constant used in ClientSetting.BACK_IMAGE_DISPOSITION: it defines that background image in MDI must be drawed stretched */
   public static final int BACK_IMAGE_STRETCHED = 2;
 
+  /** used in ClientSettings.BUTTON_BEHAVIOR global property to show image on default buttons (insert, edit, ...) ) */
+  public static final int BUTTON_IMAGE_ONLY = 0;
+
+  /** used in ClientSettings.BUTTON_BEHAVIOR global property to show text on default buttons (insert, edit, ...) ) */
+  public static final int BUTTON_TEXT_ONLY = 1;
+
+  /** used in ClientSettings.BUTTON_BEHAVIOR global property to show image and text on default buttons (insert, edit, ...) ) */
+  public static final int BUTTON_IMAGE_AND_TEXT = 2;
+
 }

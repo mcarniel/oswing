@@ -160,7 +160,14 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
         ));
 
 
-        calendar.setLocale(new Locale(ClientSettings.getInstance().getResources().getLanguageId()));
+        String id = ClientSettings.getInstance().getResources().getLanguageId();
+        String language = id;
+        String country = "";
+        if (id.length()==5) {
+          language = id.substring(0,1);
+          country = id.substring(3);
+        }
+        calendar.setLocale(new Locale(language,country));
 
         initListeners();
       }

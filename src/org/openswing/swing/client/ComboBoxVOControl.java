@@ -342,9 +342,14 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
               methods[i].getReturnType().equals(java.sql.Timestamp.class) ||
               methods[i].getReturnType().equals(Integer.class) ||
               methods[i].getReturnType().equals(Long.class) ||
+              methods[i].getReturnType().equals(Short.class) ||
               methods[i].getReturnType().equals(Double.class) ||
               methods[i].getReturnType().equals(Float.class) ||
-              methods[i].getReturnType().equals(Short.class) ||
+              methods[i].getReturnType().equals(Integer.TYPE) ||
+              methods[i].getReturnType().equals(Long.TYPE) ||
+              methods[i].getReturnType().equals(Short.TYPE) ||
+              methods[i].getReturnType().equals(Double.TYPE) ||
+              methods[i].getReturnType().equals(Float.TYPE) ||
               methods[i].getReturnType().equals(Boolean.class))
         )
           count++;
@@ -363,9 +368,14 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
               methods[i].getReturnType().equals(java.sql.Timestamp.class) ||
               methods[i].getReturnType().equals(Integer.class) ||
               methods[i].getReturnType().equals(Long.class) ||
+              methods[i].getReturnType().equals(Short.class) ||
               methods[i].getReturnType().equals(Double.class) ||
               methods[i].getReturnType().equals(Float.class) ||
-              methods[i].getReturnType().equals(Short.class) ||
+              methods[i].getReturnType().equals(Integer.TYPE) ||
+              methods[i].getReturnType().equals(Long.TYPE) ||
+              methods[i].getReturnType().equals(Short.TYPE) ||
+              methods[i].getReturnType().equals(Double.TYPE) ||
+              methods[i].getReturnType().equals(Float.TYPE) ||
               methods[i].getReturnType().equals(Boolean.class))
         ) {
           attributeNames[count] = methods[i].getName().substring(3);
@@ -374,9 +384,12 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
           colType = methods[i].getReturnType();
           if (colType.equals(String.class))
             colProperties[count] = new TextColumn();
-          else if (colType.equals(Integer.class) || colType.equals(Long.class))
+          else if (colType.equals(Integer.class) || colType.equals(Long.class) || colType.equals(Short.class) ||
+                   colType.equals(Integer.TYPE)  || colType.equals(Long.TYPE)  || colType.equals(Short.TYPE))
             colProperties[count] = new IntegerColumn();
-          else if (colType.equals(BigDecimal.class) || colType.equals(Double.class) || colType.equals(Float.class))
+          else if (colType.equals(BigDecimal.class) ||
+                   colType.equals(Double.class) || colType.equals(Float.class) ||
+                   colType.equals(Double.TYPE)  || colType.equals(Float.TYPE))
             colProperties[count] = new DecimalColumn();
           else if (colType.equals(Boolean.class))
             colProperties[count] = new CheckBoxColumn();

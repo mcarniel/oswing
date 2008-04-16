@@ -38,10 +38,7 @@ public class SaveButton extends GenericButton {
 
   public SaveButton() {
     super(new ImageIcon(ClientUtils.getImage("save.gif")));
-    setPreferredSize(new Dimension(32,32));
   }
-
-  public void setText(String t) { }
 
 
   /**

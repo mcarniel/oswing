@@ -120,7 +120,6 @@ public class DetailFrame extends JFrame {
     descrLookupControl.setEnabledOnEdit(false);
     controlDate.setCanCopy(true);
     controlDate.setRequired(false);
-    copyButton.setText("copyButton1");
     controlCheck.setCanCopy(true);
     controlTA.setAttributeName("taValue");
     this.getContentPane().add(buttonsPanel,  BorderLayout.NORTH);

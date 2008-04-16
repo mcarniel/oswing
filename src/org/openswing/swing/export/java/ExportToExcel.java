@@ -283,12 +283,18 @@ public class ExportToExcel {
         }
         else if (value instanceof BigDecimal ||
                  value instanceof Double ||
-                 value instanceof Float) {
+                 value instanceof Float ||
+                 value.getClass()==Double.TYPE ||
+                 value.getClass()==Float.TYPE) {
           c.setCellValue(Double.parseDouble(value.toString()));
           c.setCellStyle(csDecNum);
         }
         else if (value instanceof Integer ||
-                 value instanceof Long) {
+                 value instanceof Short ||
+                 value instanceof Long ||
+                 value.getClass()==Integer.TYPE ||
+                 value.getClass()==Short.TYPE ||
+                 value.getClass()==Long.TYPE) {
           c.setCellValue(Double.parseDouble(value.toString()));
           c.setCellStyle(csIntNum);
         }

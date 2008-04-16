@@ -1679,6 +1679,11 @@ public class QueryUtil {
             if (value!=null)
               value = new Long(((BigDecimal)value).longValue());
           }
+          else if (parType.equals(Short.class) || parType==Short.TYPE) {
+            value = rset.getBigDecimal(i+1);
+            if (value!=null)
+              value = new Long(((BigDecimal)value).longValue());
+          }
           else if (parType.equals(java.util.Date.class) ||
                    parType.equals(java.sql.Date.class))
             value = rset.getDate(i+1);

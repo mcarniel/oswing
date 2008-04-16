@@ -277,12 +277,18 @@ public class PropertyGridControl extends JScrollPane implements DataController {
             props[i].getPropertyType().equals(java.sql.Timestamp.class))
           inputControl = new DateControl();
         else if (props[i].getPropertyType().equals(Integer.class) ||
-                 props[i].getPropertyType().equals(Long.class)) {
+                 props[i].getPropertyType().equals(Short.class) ||
+                 props[i].getPropertyType().equals(Long.class) ||
+                 props[i].getPropertyType().equals(Integer.TYPE) ||
+                 props[i].getPropertyType().equals(Short.TYPE) ||
+                 props[i].getPropertyType().equals(Long.TYPE)) {
           inputControl = new NumericControl();
           ((NumericControl)inputControl).setDecimals(0);
         }
         else if (props[i].getPropertyType().equals(Float.class) ||
                  props[i].getPropertyType().equals(Double.class) ||
+                 props[i].getPropertyType().equals(Float.TYPE) ||
+                 props[i].getPropertyType().equals(Double.TYPE) ||
                  props[i].getPropertyType().equals(java.math.BigDecimal.class)) {
           inputControl = new NumericControl();
           ((NumericControl)inputControl).setDecimals(5);
@@ -354,13 +360,20 @@ public class PropertyGridControl extends JScrollPane implements DataController {
                   obj = new java.sql.Timestamp(((java.util.Date)obj).getTime());
               }
               else if (Number.class.isAssignableFrom(obj.getClass())) {
-                if (props[i].getPropertyType().equals(Integer.class))
+                if (props[i].getPropertyType().equals(Integer.class) ||
+                    props[i].getPropertyType().equals(Integer.TYPE))
                   obj = new Integer(((Number)obj).intValue());
-                else if (props[i].getPropertyType().equals(Long.class))
+                else if (props[i].getPropertyType().equals(Long.class) ||
+                         props[i].getPropertyType().equals(Long.TYPE))
                   obj = new Long(((Number)obj).longValue());
-                else if (props[i].getPropertyType().equals(Float.class))
+                else if (props[i].getPropertyType().equals(Short.class) ||
+                         props[i].getPropertyType().equals(Short.TYPE))
+                  obj = new Short(((Number)obj).shortValue());
+                else if (props[i].getPropertyType().equals(Float.class) ||
+                         props[i].getPropertyType().equals(Float.TYPE))
                   obj = new Float(((Number)obj).floatValue());
-                else if (props[i].getPropertyType().equals(Double.class))
+                else if (props[i].getPropertyType().equals(Double.class) ||
+                         props[i].getPropertyType().equals(Double.TYPE))
                   obj = new Double(((Number)obj).doubleValue());
                 else if (props[i].getPropertyType().equals(java.math.BigDecimal.class))
                   obj = new java.math.BigDecimal(((Number)obj).doubleValue());

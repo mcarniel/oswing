@@ -9,6 +9,7 @@ import org.openswing.swing.util.client.*;
 import org.openswing.swing.permissions.java.ButtonsAuthorizations;
 import org.openswing.swing.internationalization.java.*;
 import java.awt.Color;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -61,6 +62,7 @@ public class ClientApplication {
     );
     ClientSettings.ALLOW_OR_OPERATOR = false;
     ClientSettings.INCLUDE_IN_OPERATOR = false;
+    ClientSettings.BUTTON_BEHAVIOR = Consts.BUTTON_IMAGE_AND_TEXT;
 
     Domain orderStateDomain = new Domain("ORDERSTATE");
     orderStateDomain.addDomainPair("O","opened");

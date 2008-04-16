@@ -78,6 +78,4 @@ public class OneLanguageResourcesFactory extends ResourcesFactory{
   }
 
 
-
-
 }

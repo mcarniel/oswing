@@ -39,10 +39,7 @@ public class InsertButton extends GenericButton {
 
   public InsertButton() {
     super(new ImageIcon(ClientUtils.getImage("new.gif")));
-    setPreferredSize(new Dimension(32,32));
   }
-
-  public void setText(String t) { }
 
 
   public void processFocusEvent(FocusEvent e) {

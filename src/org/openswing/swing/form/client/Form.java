@@ -1064,7 +1064,12 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             attributeValue = vo.getClass().getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]).invoke(vo,new Object[0]);
             }
             catch (NoSuchMethodException ex) {
+              try {
               attributeValue = vo.getClass().getMethod("is"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]).invoke(vo,new Object[0]);
+              }
+              catch (NoSuchMethodException exx) {
+                attributeValue = getVOModel().getValue(attributeName,vo);
+              }
             }
             model.setValue(attributeName,attributeValue);
           }

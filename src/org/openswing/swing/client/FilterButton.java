@@ -38,10 +38,7 @@ public class FilterButton extends GenericButton {
 
   public FilterButton() {
     super(new ImageIcon(ClientUtils.getImage("filter.gif")));
-    setPreferredSize(new Dimension(32,32));
   }
-
-  public void setText(String t) { }
 
 
   /**

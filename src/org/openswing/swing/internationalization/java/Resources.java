@@ -95,6 +95,7 @@ public class Resources implements Serializable {
    * @param dateFormat date format
    * @param timeFormat time format; possibile values: HH_MM, H_MM_AAA
    * @param languageId language identifier
+   * @param showResourceNotFoundWarning define if log when a resource is not found
    */
   public Resources(
       Properties dictionary,

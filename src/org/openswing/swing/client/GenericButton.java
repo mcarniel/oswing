@@ -8,6 +8,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.util.java.Consts;
 
 
 
@@ -53,7 +54,6 @@ public class GenericButton extends JButton {
 
 
   public GenericButton() {
-    setPreferredSize(new Dimension(32,32));
     super.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (!executeAsThread)
@@ -70,20 +70,64 @@ public class GenericButton extends JButton {
 
 
   public GenericButton(ImageIcon imageIcon) {
-    super(imageIcon);
-    setPreferredSize(new Dimension(32,32));
-    super.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        if (!executeAsThread)
-          execute();
-        else new Thread() {
-            public void run() {
-              execute();
-            }
-          }.start();
+    this();
+    if (ClientSettings.BUTTON_BEHAVIOR==Consts.BUTTON_IMAGE_ONLY) {
+      super.setIcon(imageIcon);
+      setPreferredSize(new Dimension(32,32));
+    }
+    else {
+     boolean defaultButton = true;
+      if (this instanceof InsertButton)
+        setText("Insert");
+      else if (this instanceof EditButton)
+        setText("Edit");
+      else if (this instanceof CopyButton)
+        setText("Copy");
+      else if (this instanceof DeleteButton)
+        setText("Delete");
+      else if (this instanceof ReloadButton)
+        setText("Reload");
+      else if (this instanceof SaveButton)
+        setText("Save");
+      else if (this instanceof FilterButton)
+        setText("Filter");
+      else if (this instanceof ExportButton)
+        setText("Export");
+      else
+        defaultButton = false;
+
+      int w = this.getFontMetrics(this.getFont()).stringWidth(getText());
+      if (defaultButton) {
+        w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Insert")));
+        w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Edit")));
+        w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Copy")));
+        w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Delete")));
+        w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Save")));
+        w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Reload")));
+        w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Export")));
+        w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Filter")));
       }
-    });
-    this.setFocusable(false);
+
+      w += +this.getMargin().left+this.getMargin().right+5;
+      if (ClientSettings.BUTTON_BEHAVIOR==Consts.BUTTON_TEXT_ONLY) {
+        setPreferredSize(new Dimension(w,32));
+      }
+      else {
+        setHorizontalTextPosition(CENTER);
+        setVerticalTextPosition(BOTTOM);
+        super.setIcon(imageIcon);
+
+        setPreferredSize(new Dimension(
+          w,
+          this.getFontMetrics(this.getFont()).getHeight()+this.getMargin().top+this.getMargin().bottom+32));
+      }
+    }
+  }
+
+
+  public void setText(String t) {
+    if (ClientSettings.BUTTON_BEHAVIOR!=Consts.BUTTON_IMAGE_ONLY)
+      super.setText(ClientSettings.getInstance().getResources().getResource(t));
   }
 
 

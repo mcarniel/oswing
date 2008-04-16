@@ -8,6 +8,7 @@ import org.openswing.swing.message.send.java.Command;
 import org.openswing.swing.message.send.java.GridParams;
 import org.openswing.springframework.web.servlet.handler.OpenSwingHandlerMapping;
 import org.openswing.springframework.web.servlet.view.OpenSwingViewResolver;
+import org.springframework.dao.*;
 
 
 /**
@@ -23,13 +24,19 @@ public class LoadEmpsController implements Controller {
 
   public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
     ModelAndView mav = new ModelAndView();
-    Command command = (Command)request.getAttribute(OpenSwingHandlerMapping.COMMAND_ATTRIBUTE_NAME);
-    mav.addObject(
-      OpenSwingViewResolver.RESPONSE_PROPERTY_NAME,
-      facade.getEmpsList((GridParams)command.getInputParam())
-    );
-    return mav;
 
+    try {
+      Command command = (Command) request.getAttribute(OpenSwingHandlerMapping.
+          COMMAND_ATTRIBUTE_NAME);
+      mav.addObject(
+          OpenSwingViewResolver.RESPONSE_PROPERTY_NAME,
+          facade.getEmpsList( (GridParams) command.getInputParam())
+          );
+      return mav;
+    }
+    catch (Throwable ex) {
+      return mav;
+    }
   }
 
 

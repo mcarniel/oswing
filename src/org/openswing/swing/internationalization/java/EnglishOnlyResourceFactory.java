@@ -125,6 +125,14 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Load the next block of records","Load the next block of records");
     dictionary.setProperty("Load the last block of records","Load the last block of records");
 
+    dictionary.setProperty("Insert","Insert");
+    dictionary.setProperty("Edit","Edit");
+    dictionary.setProperty("Copy","Copy");
+    dictionary.setProperty("Delete","Delete");
+    dictionary.setProperty("Save","Save");
+    dictionary.setProperty("Reload","Reload");
+    dictionary.setProperty("Export","Export");
+    dictionary.setProperty("Filter","Filter");
 
     // binding messages...
     dictionary.setProperty("value must be of type ","Value must be of type ");
@@ -281,6 +289,7 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     throw new UnsupportedOperationException("Language identifier not supported.");
     return resources;
   }
+
 
 
 }

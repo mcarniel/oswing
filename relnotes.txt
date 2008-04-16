@@ -1,5 +1,19 @@
 
 
+Release Notes 1.5.6
+-------------------
+
+Final release 1.5.6 available
+Added support for Apache Cayenne ORM. Added "demo36" sample application to show how to use Cayenne and OpenSwing together.
+Improved date control/column by supporting language expressed as "xx_YY".
+Added to ClientSettings a new global property: BUTTON_BEHAVIOR, to define whether showing image and/or text in default buttons (insert, edit, ...).
+Fixed a problem in quick filter panel when applying a filter that returns zero rows: now it is possible to reopen quick filter with CTRL+Q shortcut too.
+Fixed a problem in Form panel when using inner v.o. and the main v.o. is created in insert mode.
+Improved value object usage: now Short type and primitives types are supported as attribute type.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5.5
 -------------------
 

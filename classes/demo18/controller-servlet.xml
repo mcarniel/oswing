@@ -2,12 +2,14 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
 
 <beans>
-
+<!--
     <bean id="hessianObjectReceiver" class="org.openswing.swing.util.server.HessianObjectReceiver">
     </bean>
-
+-->
     <bean id="handlerMapping" class="org.openswing.springframework.web.servlet.handler.OpenSwingHandlerMapping">
+<!--
         <property name="objectReceiver" ref="hessianObjectReceiver"/>          
+-->        
 <!--
         <property name="interceptors">
             <list>
@@ -32,7 +34,7 @@
 <!-- ========================= VIEW DEFINITIONS ========================= -->
 
     <bean id="swingViewResolver" class="org.openswing.springframework.web.servlet.view.OpenSwingViewResolver">
-        <property name="objectReceiver" ref="hessianObjectReceiver"/>          
+<!--        <property name="objectReceiver" ref="hessianObjectReceiver"/>          -->
     </bean>
 
 <!-- ========================= DEFINITIONS OF PUBLIC CONTROLLERS ========================= -->

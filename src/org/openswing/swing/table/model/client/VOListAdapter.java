@@ -114,6 +114,8 @@ public class VOListAdapter {
              methods[i].getReturnType().equals(Long.TYPE) ||
              methods[i].getReturnType().equals(Float.class) ||
              methods[i].getReturnType().equals(Float.TYPE) ||
+             methods[i].getReturnType().equals(Short.class) ||
+             methods[i].getReturnType().equals(Short.TYPE) ||
              methods[i].getReturnType().equals(Double.class) ||
              methods[i].getReturnType().equals(Double.TYPE) ||
              methods[i].getReturnType().equals(BigDecimal.class) ||
@@ -326,6 +328,8 @@ public class VOListAdapter {
               value = new BigDecimal(value.toString());
             else if (attrType.equals(Long.class) || attrType.equals(Long.TYPE))
               value = new Long(Double.valueOf(value.toString()).longValue());
+            else if (attrType.equals(Short.class) || attrType.equals(Short.TYPE))
+              value = new Short(Double.valueOf(value.toString()).shortValue());
             else if (attrType.equals(Float.class) || attrType.equals(Float.TYPE))
               value = new Float(Double.valueOf(value.toString()).floatValue());
         }

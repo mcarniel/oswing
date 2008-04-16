@@ -38,7 +38,7 @@ public class ClientApplicationWithLogin implements MDIController,LoginController
 
 
   public ClientApplicationWithLogin() {
-    ClientUtils.setObjectSender(new HessianObjectSender());
+//    ClientUtils.setObjectSender(new HessianObjectSender());
 
     clientFacade = new DemoClientFacade();
 

@@ -46,7 +46,7 @@ public class XMLResourcesFactory extends ResourcesFactory {
   /** collection of pairs: language identifier, Resources object */
   private Hashtable allResources = new Hashtable();
 
-  /** collection of pairs: language identifier, xml file path (relative to classpath or absolute) */
+  /** collection of pairs: language identifier (e.g. "en","it") or language+country (e.g. "en_UK","it_IT"), xml file path (relative to classpath or absolute) */
   private Hashtable xmlFiles = null;
 
   /** warn when no resource key not found */
@@ -71,8 +71,6 @@ public class XMLResourcesFactory extends ResourcesFactory {
   }
 
 
-
-
   /**
    * Load dictionary, according to the specified language identifier.
    * @param langId language identifier
@@ -93,7 +91,7 @@ public class XMLResourcesFactory extends ResourcesFactory {
 
     String xmlFile = (String)xmlFiles.get(langId);
     if (xmlFile==null) {
-      throw new UnsupportedOperationException("Language identifier unknown '"+langId+"'");
+      throw new UnsupportedOperationException("Language unknown '"+langId+"'");
     }
     else {
       try {
@@ -166,7 +164,10 @@ public class XMLResourcesFactory extends ResourcesFactory {
         return resources;
       }
       catch (Throwable ex) {
-        System.err.println("Error while loading internationalization settings for language identifier '"+langId+"'\nin file: "+new File(xmlFile).getAbsolutePath());
+        String msg =
+          "Error while loading internationalization settings for language '"+langId+"'"+
+          "\nin file: "+new File(xmlFile).getAbsolutePath();
+        System.err.println(msg);
         ex.printStackTrace();
         return this.resources;
       }

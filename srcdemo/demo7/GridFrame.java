@@ -85,7 +85,6 @@ public class GridFrame extends JFrame {
     textColumn1.setColumnName("descrLookupValue");
     textColumn1.setPreferredWidth(150);
     colCheck.setColumnName("checkValue");
-    insertButton.setText("insertButton1");
     insertButton.addActionListener(new GridFrame_insertButton_actionAdapter(this));
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);

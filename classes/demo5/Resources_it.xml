@@ -36,6 +36,10 @@
   <object key="To value" value="Al val." />
   <object key="Filter by" value="Filtro per" />
   <object key="From value" value="Dal val." />
+  <object key="equals" value="uguale a" />
+  <object key="contains" value="contiene" />
+  <object key="starts with" value="inizia con" />
+  <object key="ends with" value="finisce con" />
 
 <!-- lookup -->
   <object key="Code is not correct." value="Codice non valido." />
@@ -61,6 +65,15 @@
   <object key="Load the previous block of records" value="Carica il precedente blocco di record" />
   <object key="Load the next block of records" value="Carica il successivo blocco di record" />
   <object key="Load the last block of records" value="Carica l'ultimo blocco di record" />
+
+  <object key="Insert" value="Nuovo" />
+  <object key="edit" value="Modifica" />
+  <object key="Copy" value="Copia" />
+  <object key="Delete" value="Elimina" />
+  <object key="Save" value="Salva" />
+  <object key="Reload" value="Ricarica" />
+  <object key="Export" value="Exporta" />
+  <object key="Filter" value="Filtra" />
 
 <!-- binding messages -->
   <object key="value must be of type " value="Il valore deve essere di tipo " />

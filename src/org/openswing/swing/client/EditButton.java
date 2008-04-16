@@ -38,11 +38,7 @@ public class EditButton extends GenericButton {
 
   public EditButton() {
     super(new ImageIcon(ClientUtils.getImage("edit.gif")));
-    setPreferredSize(new Dimension(32,32));
   }
-
-  public void setText(String t) { }
-
 
 
   /**

@@ -3,7 +3,7 @@ package org.openswing.swing.client;
 /**
  * <p>Title: OpenSwing Framework</p>
  * <p>Description: Editor used in design time to select an attribute name from the value object,
-* filtering by Integer/Long/Float/BigDecimal/Double attribute types.</p>
+ * filtering by Short/Integer/Long/Float/BigDecimal/Double attribute types and primitive types.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -36,8 +36,8 @@ public class NumericAttributeNameEditor extends AttributeNameEditor {
 
 
   /**
-   * @param attrType tipo dell'attributo
-   * @return "true" se i due tipi sono compatibili, "false" altrimenti
+   * @param attrType attribute type
+   * @return <code>true</code> if attrType is compatible with a numeric control, <code>false</code> otherwise
    */
   protected boolean isCompatible(Class attrType) {
     try {
@@ -46,7 +46,12 @@ public class NumericAttributeNameEditor extends AttributeNameEditor {
           attrType.equals(Float.class) ||
           attrType.equals(Double.class) ||
           attrType.equals(java.math.BigDecimal.class) ||
-          attrType.equals(Long.class)
+          attrType.equals(Short.class) ||
+          attrType.equals(Integer.TYPE) ||
+          attrType.equals(Long.TYPE) ||
+          attrType.equals(Float.TYPE) ||
+          attrType.equals(Double.TYPE) ||
+          attrType.equals(Short.TYPE)
       ) {
         return true;
       }

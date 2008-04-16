@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map project-version="2.0">
+	<property name="defaultPackage" value="demo36"/>
+	<db-entity name="dept" catalog="test">
+		<db-attribute name="ADDRESS" type="VARCHAR" length="100"/>
+		<db-attribute name="DEPT_CODE" type="VARCHAR" isPrimaryKey="true" isMandatory="true" length="20"/>
+		<db-attribute name="DESCRIPTION" type="VARCHAR" length="255"/>
+		<db-attribute name="STATUS" type="CHAR" length="1"/>
+	</db-entity>
+	<db-entity name="emp" catalog="test">
+		<db-attribute name="DEPT_CODE" type="VARCHAR" length="20"/>
+		<db-attribute name="EMP_CODE" type="VARCHAR" isPrimaryKey="true" isMandatory="true" length="20"/>
+		<db-attribute name="FIRST_NAME" type="VARCHAR" length="20"/>
+		<db-attribute name="HIRE_DATE" type="DATE" length="10"/>
+		<db-attribute name="LAST_NAME" type="VARCHAR" length="20"/>
+		<db-attribute name="NOTE" type="VARCHAR" length="2000"/>
+		<db-attribute name="SALARY" type="DECIMAL" length="10" precision="2"/>
+		<db-attribute name="SEX" type="CHAR" length="1"/>
+		<db-attribute name="TASK_CODE" type="VARCHAR" length="20"/>
+	</db-entity>
+	<db-entity name="tasks" catalog="test">
+		<db-attribute name="DESCRIPTION" type="VARCHAR" length="255"/>
+		<db-attribute name="STATUS" type="CHAR" length="1"/>
+		<db-attribute name="TASK_CODE" type="VARCHAR" isPrimaryKey="true" isMandatory="true" length="20"/>
+	</db-entity>
+	<obj-entity name="Dept" className="demo36.DeptVO" dbEntityName="dept">
+		<obj-attribute name="address" type="java.lang.String" db-attribute-path="ADDRESS"/>
+		<obj-attribute name="deptCode" type="java.lang.String" db-attribute-path="DEPT_CODE"/>
+		<obj-attribute name="description" type="java.lang.String" db-attribute-path="DESCRIPTION"/>
+		<obj-attribute name="status" type="java.lang.String" db-attribute-path="STATUS"/>
+	</obj-entity>
+	<obj-entity name="Emp" className="demo36.EmpVO" dbEntityName="emp">
+		<obj-attribute name="empCode" type="java.lang.String" db-attribute-path="EMP_CODE"/>
+		<obj-attribute name="firstName" type="java.lang.String" db-attribute-path="FIRST_NAME"/>
+		<obj-attribute name="hireDate" type="java.util.Date" db-attribute-path="HIRE_DATE"/>
+		<obj-attribute name="lastName" type="java.lang.String" db-attribute-path="LAST_NAME"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="salary" type="java.math.BigDecimal" db-attribute-path="SALARY"/>
+		<obj-attribute name="sex" type="java.lang.String" db-attribute-path="SEX"/>
+		<obj-attribute name="deptCode" type="java.lang.String" db-attribute-path="DEPT_CODE"/>
+		<obj-attribute name="taskCode" type="java.lang.String" db-attribute-path="TASK_CODE"/>
+	</obj-entity>
+	<obj-entity name="Tasks" className="demo36.TasksVO" dbEntityName="tasks">
+		<obj-attribute name="description" type="java.lang.String" db-attribute-path="DESCRIPTION"/>
+		<obj-attribute name="status" type="java.lang.String" db-attribute-path="STATUS"/>
+		<obj-attribute name="taskCode" type="java.lang.String" db-attribute-path="TASK_CODE"/>
+	</obj-entity>
+</data-map>

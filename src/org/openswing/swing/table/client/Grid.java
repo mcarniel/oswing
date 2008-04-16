@@ -346,18 +346,21 @@ public class Grid extends JTable
               Grid.this.grids.export();
             else if (e.getKeyCode()==ClientSettings.GRID_POPUP_KEY.getKeyCode() &&
                      e.getModifiers()+e.getModifiersEx()==ClientSettings.GRID_POPUP_KEY.getModifiers() &&
-                     getMode()==Consts.READONLY && getRowCount()>0 &&
+                     getMode()==Consts.READONLY &&
                      getColumnModel().getColumnCount()>0) {
               if (getSelectedColumn()==-1)
                 setColumnSelectionInterval(0,0);
-              if (getSelectedRow()==-1)
+              if (getSelectedRow()==-1 && getRowCount()>0)
                 setRowSelectionInterval(0,0);
+              int row = getSelectedRow();
+              if (row==-1)
+                row = 0;
               int x = 0;
               for(int i=0;i<getSelectedColumn();i++)
                 x += getColumnModel().getColumn(i).getWidth();
               showPopupMenu(
                   x+getColumnModel().getColumn(getSelectedColumn()).getWidth()/2,
-                  getSelectedRow()*getRowHeight()+getRowHeight()/2
+                  row*getRowHeight()+getRowHeight()/2
               );
             }
 
