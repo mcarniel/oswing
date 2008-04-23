@@ -161,6 +161,7 @@ public class ExportToExcel {
           r = s.createRow(rownum++);
           for(short i=0;i<opt.getExportColumns().size();i++) {
             c = r.createCell(i);
+            c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
             c.setCellValue(opt.getExportColumns().get(i).toString());
             c.setCellStyle(csTitle);
           }

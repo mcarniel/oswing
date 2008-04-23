@@ -42,7 +42,6 @@ public class ClientApplication implements MDIController,LoginController {
   public ClientApplication() {
 
     try {
-      // create the SessionFactory from hibernate.cfg.xml
       DataContext context = DataContext.createDataContext();
       clientFacade = new DemoClientFacade(context);
 
@@ -94,7 +93,7 @@ public class ClientApplication implements MDIController,LoginController {
       props.setProperty("department","Department");
 
       ClientSettings clientSettings = new ClientSettings(
-          new EnglishOnlyResourceFactory("$",props,true),
+          new EnglishOnlyResourceFactory("$",props,false),
           domains
       );
 

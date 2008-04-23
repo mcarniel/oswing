@@ -81,45 +81,6 @@ public class DeptLookupController extends LookupController {
           List list = DeptLookupController.this.context.performQuery(select);
 
           return new VOListResponse(new ArrayList(list),false,list.size());
-
-
-//      READ WHOLE RESULT-SET...
-//      Response res = HibernateUtils.getAllFromQuery(
-//        filteredColumns,
-//        currentSortedColumns,
-//        currentSortedVersusColumns,
-//        valueObjectType,
-//        baseSQL,
-//        new Object[0],
-//        new Type[0],
-//        "DeptDetailVO",
-//        sessions,
-//        sess
-//      );
-//      sess.close();
-//      return res;
-//      END READ WHOLE RESULT-SET...
-
-
-//    READ A BLOCK OF DATA FROM RESULT-SET...
-//          Response res = HibernateUtils.getBlockFromQuery(
-//            action,
-//            startIndex,
-//            50, // block size...
-//            filteredColumns,
-//            currentSortedColumns,
-//            currentSortedVersusColumns,
-//            valueObjectType,
-//            baseSQL,
-//            new Object[0],
-//            new Type[0],
-//            "DeptVO",
-//            DeptLookupController.this.sessions,
-//            sess
-//          );
-//          sess.close();
-//          return res;
-//    END READ A BLOCK OF DATA FROM RESULT-SET...
         }
         catch (Exception ex) {
           ex.printStackTrace();
@@ -140,8 +101,7 @@ public class DeptLookupController extends LookupController {
     });
 
     this.setLookupValueObjectClassName("demo36.DeptVO");
-    this.addLookup2ParentLink("deptCode", "dept.deptCode");
-    this.addLookup2ParentLink("description", "dept.description");
+    this.addLookup2ParentLink("dept");
     this.setAllColumnVisible(false);
     this.setVisibleColumn("deptCode",true);
     this.setVisibleColumn("description",true);

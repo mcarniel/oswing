@@ -70,44 +70,6 @@ public class TaskGridFrameController extends GridController implements GridDataL
           new HashMap(),
           context
       );
-
-//      READ WHOLE RESULT-SET...
-//      Response res = HibernateUtils.getAllFromQuery(
-//        filteredColumns,
-//        currentSortedColumns,
-//        currentSortedVersusColumns,
-//        valueObjectType,
-//        baseSQL,
-//        new Object[0],
-//        new Type[0],
-//        "TASKS",
-//        sessions,
-//        sess
-//      );
-//      sess.close();
-//      return res;
-//      END READ WHOLE RESULT-SET...
-
-
-//    READ A BLOCK OF DATA FROM RESULT-SET...
-//      Response res = HibernateUtils.getBlockFromQuery(
-//        action,
-//        startIndex,
-//        50, // block size...
-//        filteredColumns,
-//        currentSortedColumns,
-//        currentSortedVersusColumns,
-//        valueObjectType,
-//        baseSQL,
-//        new Object[0],
-//        new Type[0],
-//        "TASKS",
-//        sessions,
-//        sess
-//      );
-//      sess.close();
-//      return res;
-//    END READ A BLOCK OF DATA FROM RESULT-SET...
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -128,6 +90,7 @@ public class TaskGridFrameController extends GridController implements GridDataL
       DataObject vo = null;
       for(int i=0;i<newValueObjects.size();i++) {
         vo = (DataObject) newValueObjects.get(i);
+        ((TasksVO)vo).setStatus("Y");
         context.registerNewObject(vo);
       }
       context.commitChanges();

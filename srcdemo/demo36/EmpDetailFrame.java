@@ -83,7 +83,7 @@ public class EmpDetailFrame extends InternalFrame {
       setSize(590,600);
       setMinimumSize(new Dimension(590,600));
 
-      mainPanel.setCreateInnerVO(true);
+      mainPanel.setCreateInnerVO(false);
 
     }
     catch(Exception e) {

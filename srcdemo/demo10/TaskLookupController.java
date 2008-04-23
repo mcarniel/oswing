@@ -1,16 +1,17 @@
 package demo10;
 
-import org.openswing.swing.lookup.client.LookupController;
-import org.openswing.swing.lookup.client.LookupDataLocator;
-import org.openswing.swing.message.receive.java.*;
 import java.sql.*;
 import java.util.*;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import org.openswing.swing.server.QueryUtil;
-import org.openswing.swing.message.send.java.GridParams;
-import org.openswing.swing.tree.java.OpenSwingTreeNode;
+
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+
+import org.openswing.swing.lookup.client.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.message.send.java.*;
+import org.openswing.swing.server.*;
+import org.openswing.swing.tree.java.*;
 
 
 /**
@@ -197,7 +198,16 @@ public class TaskLookupController extends LookupController {
     this.addLookup2ParentLink("taskCode", "taskCode");
     this.addLookup2ParentLink("description", "taskDescription");
     this.setAllColumnVisible(true);
+    this.setVisibleColumn("status",false);
     this.setPreferredWidthColumn("description", 200);
+    this.setFramePreferedSize(new Dimension(350,500));
+    this.setFilterableColumn("taskCode",true);
+    this.setSortableColumn("taskCode",true);
+    this.setSortableColumn("description",true);
+
+    this.setCodeSelectionWindow(super.GRID_AND_PANEL_FRAME);
+    this.setCustomPanel(new TaskFilterPanel());
+
   }
 
 

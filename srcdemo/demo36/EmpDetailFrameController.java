@@ -70,8 +70,8 @@ public class EmpDetailFrameController extends FormController {
 //    vo.setDept(new DeptVO());
 //    vo.setTask(new TasksVO());
 
-    vo.writePropertyDirectly("dept",new DeptVO());
-    vo.writePropertyDirectly("task",new TasksVO());
+//    vo.writePropertyDirectly("dept",new DeptVO());
+//    vo.writePropertyDirectly("task",new TasksVO());
 
   }
 
@@ -98,20 +98,6 @@ public class EmpDetailFrameController extends FormController {
       List list = context.performQuery(select2);
       EmpVO vo = (EmpVO)list.get(0);
 
-      qualifier2 = ExpressionFactory.likeIgnoreCaseExp(
-                      DeptVO.DEPT_CODE_PROPERTY,
-                      vo.getDeptCode());
-      select2 = new SelectQuery(DeptVO.class, qualifier2);
-      list = context.performQuery(select2);
-      vo.setDept((DeptVO)list.get(0));
-
-      qualifier2 = ExpressionFactory.likeIgnoreCaseExp(
-                      TasksVO.TASK_CODE_PROPERTY,
-                      vo.getTaskCode());
-      select2 = new SelectQuery(TasksVO.class, qualifier2);
-      list = context.performQuery(select2);
-      vo.setTask((TasksVO)list.get(0));
-
       return new VOResponse(vo);
     }
     catch (Exception ex) {
@@ -129,11 +115,6 @@ public class EmpDetailFrameController extends FormController {
   public Response insertRecord(ValueObject newPersistentObject) throws Exception {
     try {
       EmpVO vo = (EmpVO)newPersistentObject;
-      context.registerNewObject(vo);
-      ArrayList toUnregister = new ArrayList();
-      toUnregister.add(vo.getTask());
-      toUnregister.add(vo.getDept());
-      context.unregisterObjects(toUnregister);
       context.commitChanges();
       return new VOResponse(newPersistentObject);
     }

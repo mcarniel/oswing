@@ -17,6 +17,7 @@ import org.openswing.swing.message.send.java.GridParams;
 import org.openswing.swing.util.client.ClientSettings;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.query.SelectQuery;
+import org.openswing.swing.util.server.CayenneUtils;
 
 
 /**
@@ -63,45 +64,15 @@ public class DeptGridFrameController extends GridController implements GridDataL
       SelectQuery select = new SelectQuery(DeptVO.class);
       List list = context.performQuery(select);
 
-      return new VOListResponse(new ArrayList(list),false,list.size());
-
-//      READ WHOLE RESULT-SET...
-//      Response res = HibernateUtils.getAllFromQuery(
-//        filteredColumns,
-//        currentSortedColumns,
-//        currentSortedVersusColumns,
-//        valueObjectType,
-//        baseSQL,
-//        new Object[0],
-//        new Type[0],
-//        "DeptVO",
-//        sessions,
-//        sess
-//      );
-//      sess.close();
-//      return res;
-//      END READ WHOLE RESULT-SET...
-
-
-//    READ A BLOCK OF DATA FROM RESULT-SET...
-//      Response res = HibernateUtils.getBlockFromQuery(
-//        action,
-//        startIndex,
-//        50, // block size...
-//        filteredColumns,
-//        currentSortedColumns,
-//        currentSortedVersusColumns,
-//        valueObjectType,
-//        baseSQL,
-//        new Object[0],
-//        new Type[0],
-//        "DeptVO",
-//        context,
-//        sess
-//      );
-//      sess.close();
-//      return res;
-//    END READ A BLOCK OF DATA FROM RESULT-SET...
+      return CayenneUtils.getAllFromQuery(
+          filteredColumns,
+          currentSortedColumns,
+          currentSortedVersusColumns,
+          valueObjectType,
+          new SelectQuery(DeptVO.class),
+          new HashMap(),
+          context
+      );
     }
     catch (Exception ex) {
       ex.printStackTrace();

@@ -1612,8 +1612,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         }
 
           // fill in the table model with data fetched from the grid controller...
-        for (int i = 0; i < data.size(); i++)
-          model.addObject( (ValueObject) data.get(i));
+        try {
+          for (int i = 0; i < data.size(); i++) {
+            model.addObject( (ValueObject) data.get(i));
+          }
+        }
+        catch (ClassCastException ex1) {
+          Logger.error(this.getClass().getName(), "loadData", "Error while fetching data: value object is not an instance of ValueObject class.",null);
+          throw ex1;
+        }
 
         grid.revalidate();
         grid.repaint();

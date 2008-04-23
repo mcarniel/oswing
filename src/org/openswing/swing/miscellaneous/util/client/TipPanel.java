@@ -128,6 +128,8 @@ public class TipPanel extends JPanel {
   void buttonPrev_actionPerformed(ActionEvent e) {
     if (index==0 && tipPanelContent.getTips().length>0)
       index = tipPanelContent.getTips().length-1;
+    else if (index>0)
+      index--;
     showTip();
   }
 
@@ -135,6 +137,8 @@ public class TipPanel extends JPanel {
   void buttonNext_actionPerformed(ActionEvent e) {
     if (index==tipPanelContent.getTips().length-1 && tipPanelContent.getTips().length>0)
       index = 0;
+    else if (index<tipPanelContent.getTips().length-1)
+      index++;
     showTip();
   }
 

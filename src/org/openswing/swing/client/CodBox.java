@@ -61,6 +61,21 @@ public class CodBox extends JTextField {
 
     this.addKeyListener(new KeyAdapter() {
 
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode()==e.VK_TAB) {
+          CodBox.this.transferFocus();
+          if (CodBox.this.getText().trim().length()>0 &&
+              container instanceof CodLookupControl)
+            // cod box is empty: focus is automatically setted to the component next to lookup button
+            SwingUtilities.invokeLater(new Runnable() {
+              public void run() {
+                FocusManager.getCurrentManager().getFocusOwner().transferFocus();
+              }
+            });
+        }
+      }
+
+
       public void keyTyped(KeyEvent e) {
         if (e.getKeyChar()=='\n') {
           if (isEnabled() && isEditable())
@@ -93,6 +108,8 @@ public class CodBox extends JTextField {
       getPreferredSize().height
     ));
 
+    // disable transfer focus management: in this way TAB event will be listened...
+    setFocusTraversalKeysEnabled(false);
   }
 
 

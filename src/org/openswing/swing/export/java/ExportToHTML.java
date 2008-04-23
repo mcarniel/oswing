@@ -86,7 +86,7 @@ public class ExportToHTML {
     sb.append("<TR>").append(newline);
     for(int i=0;i<opt.getExportColumns().size();i++) {
       sb.append("\t<TD bgcolor=92C3EE align=CENTER><FONT face=\"Verdana, Arial, Helvetica, sans-serif\">").
-         append(opt.getExportColumns().get(i)).
+         append(encodeText(opt.getExportColumns().get(i).toString())).
          append("</FONT></TD>").
          append(newline);
     }

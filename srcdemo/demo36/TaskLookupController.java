@@ -136,8 +136,7 @@ public class TaskLookupController extends LookupController {
     });
 
     this.setLookupValueObjectClassName("demo36.TasksVO");
-    this.addLookup2ParentLink("taskCode", "task.taskCode");
-    this.addLookup2ParentLink("description", "task.description");
+    this.addLookup2ParentLink("task");
     this.setAllColumnVisible(false);
     this.setVisibleColumn("taskCode", true);
     this.setVisibleColumn("description", true);

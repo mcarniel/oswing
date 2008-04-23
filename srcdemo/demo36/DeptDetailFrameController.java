@@ -98,6 +98,7 @@ public class DeptDetailFrameController extends FormController {
    */
   public Response insertRecord(ValueObject newPersistentObject) throws Exception {
     try {
+      ((DeptVO)newPersistentObject).setStatus("Y");
       context.registerNewObject((DataObject)newPersistentObject);
       context.commitChanges();
       return new VOResponse(newPersistentObject);

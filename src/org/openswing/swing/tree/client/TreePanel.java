@@ -172,6 +172,9 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   /** define if a check-box must be showed for leaves nodes too; default value: <code>true</code> */
   private boolean showCheckBoxesOnLeaves = true;
 
+  /** list of ItemListener objects added to the check-box tree */
+  private ArrayList itemListeners = new ArrayList();
+
 
   /**
    * Constructor.
@@ -197,11 +200,11 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     if (firstTime) {
       if (loadWhenVisibile) {
         firstTime = false;
-        new Thread() {
+        SwingUtilities.invokeLater(new Runnable() {
           public void run() {
             createTree();
           }
-        }.start();
+        });
       }
       else
         recreateTree();
@@ -212,7 +215,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * Force tree reloading.
    */
   public final void reloadTree() {
-    new Thread() {
+   SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         if (!loadWhenVisibile && firstTime) {
           firstTime = false;
@@ -232,9 +235,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
             expandAllNodes();
         }
       }
-    }
-
-    .start();
+    });
   }
 
 
@@ -1256,6 +1257,33 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     mouseListeners.remove(listener);
   }
 
+
+  /**
+   * Add an Item Listener to the tree, that listen for check-box selections.
+   * @param listener ItemListener to add
+   */
+  public final void addItemListener(ItemListener listener) {
+    itemListeners.add(listener);
+  }
+
+
+  /**
+   * Remove an ItemListener from the tree.
+   * @param listener ItemListener to remove
+   */
+  public final void removeItemListener(ItemListener listener) {
+     itemListeners.remove(listener);
+  }
+
+
+  /**
+   * @return ItemListener objects added to this check-box tree
+   */
+  public final ItemListener[] getItemListeners() {
+     return (ItemListener[])itemListeners.toArray(new ItemListener[itemListeners.size()]);
+  }
+
+
   /**
    * @return define if a check-box must be showed for each node
    */
@@ -1314,17 +1342,16 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     HashSet set = new HashSet();
     if (showCheckBoxesOnLeaves) {
       Iterator it = checkedNodes.iterator();
-      Object node = null;
+      TreeNode node = null;
       while(it.hasNext()) {
-        node = it.next();
-        if (checkedNodes.contains(node))
+        node = (TreeNode)it.next();
+        if (checkedNodes.contains(node) && node.isLeaf())
           set.add(node);
       }
     }
     else {
       Iterator it = checkedNodes.iterator();
       TreeNode node = null;
-      Object leaf = null;
       while(it.hasNext()) {
         node = (TreeNode)it.next();
         if (checkedNodes.contains(node)) {

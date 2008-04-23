@@ -1,5 +1,29 @@
 
 
+Release Notes 1.5.7
+-------------------
+
+Final release 1.5.7 available
+Improved lookup control: 
+- now TAB key pressing inside the code field moves focus to next component instead of the lookup button if code field is not empty.
+- added BeanInfo class for LookupController and added two property editors to use in UI designer: one for lookup frame type and the other for defining action to execute when code is not valid
+- added LOOKUP_FRAME_CONTENT global property to ClientSettings class: it defines default lookup frame type for a lookup
+- added new lookup frames: filter panel + grid, custom panel + grid, tree + filter panel + grid, tree + custom panel + grid; these panes, showed above the grid,
+  allow to filter lookup grid and it is useful with large result sets.
+- available a CustomFilterPanel class, to use with "custom panel + grid" or "tree + custom panel + grid" windows, that customize the panel to show above the grid
+Changed "demo10" sample application to show how to use filter panel above the lookup grid and a custom filter panel above the grid (see lookups within employee detail frame).
+Fixed a problem on closing internal frame with AskBeforeClose flag activated.
+Fixed a problem in tips of day panel when scrolling tips.
+Fixed a problem when exporting data in xls/html formats: now text's column headers supports unicode characters.
+Added addItemListener method to (check-box) TreePanel to listen for check-box selection events.
+Fixed problem in TreePanel on rendering long node descriptions.
+Improved "demo36" sample application to show how to use Cayenne ORM relations with OpenSwing lookups.
+Changed LoginDialog constructor: now it is possible to store/retrieve account credentials in local machine, to the purpose of avoiding to provide account info, using a "store account" check-box.
+Changed build.xml file to build core classes of OpenSwing using Ant, now located in root dir of SVN repository/zip distribution.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5.6
 -------------------
 

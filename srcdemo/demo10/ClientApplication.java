@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import org.openswing.swing.table.profiles.client.FileGridProfileManager;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
 import org.openswing.swing.util.java.Consts;
+import org.openswing.swing.lookup.client.LookupController;
 
 
 /**
@@ -105,6 +106,9 @@ public class ClientApplication implements MDIController,LoginController {
 
 
     // tips...
+    props.setProperty("shortcuts are customizable","Shortcuts are customizable");
+    props.setProperty("shortcuts can be customized using ClientSettings class","Shortcuts can be customized using ClientSettings class");
+
     props.setProperty("shortcuts in grid and form controls","Shortcuts in grid and form controls");
     props.setProperty("quick filter and other features in grid control","Quick filter and other features in grid control");
     props.setProperty(
@@ -146,6 +150,7 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.VisualStudio2005.VisualStudio2005LookAndFeel";
 
 //    ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
+    ClientSettings.LOOKUP_FRAME_CONTENT = LookupController.GRID_AND_FILTER_FRAME;
 
     MDIFrame mdi = new MDIFrame(this);
 
@@ -175,7 +180,7 @@ public class ClientApplication implements MDIController,LoginController {
       public String[] getTitles() {
         return new String[] {
             "shortcuts in grid and form controls",
-
+            "shortcuts are customizable",
             "quick filter and other features in grid control"
         };
       }
@@ -190,7 +195,7 @@ public class ClientApplication implements MDIController,LoginController {
             "press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
             "press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
             "press ctrl+d to switch to delete records in a grid or in a form panel.\n",
-
+            "shortcuts can be customized using ClientSettings class",
             "<html><body>you may right click with the mouse button inside a grid to show\n"+
             "a popup menu that allows to:\n"+
             "<ul><li>filter data of the current selected column</li>\n"+

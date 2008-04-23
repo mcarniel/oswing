@@ -181,6 +181,8 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("changemnemonic","L");
     dictionary.setProperty("cancelmnemonic","C");
     dictionary.setProperty("cancel","Cancel");
+    dictionary.setProperty("yes","Yes");
+    dictionary.setProperty("no","No");
     dictionary.setProperty("Functions","Functions");
     dictionary.setProperty("Error while executing function","Error while executing function");
     dictionary.setProperty("Error","Error");

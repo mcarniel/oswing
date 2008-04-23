@@ -177,3 +177,6 @@ Java-Bean: True
 
 Name: org/openswing/swing/client/LinkButton.class
 Java-Bean: True
+
+Name: org/openswing/swing/lookup/client/LookupController.class
+Java-Bean: True

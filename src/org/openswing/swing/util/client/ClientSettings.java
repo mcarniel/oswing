@@ -289,6 +289,9 @@ public class ClientSettings {
   /** define whether showing image/text on default buttons (insert, edit, ...); allowed values: Consts.BUTTON_IMAGE_ONLY, Consts.BUTTON_TEXT_ONLY, Consts.BUTTON_IMAGE_AND_TEXT; default value: Consts.BUTTON_IMAGE_ONLY */
   public static int BUTTON_BEHAVIOR = Consts.BUTTON_IMAGE_ONLY;
 
+  /** define default content for lookup frame; allowed values are: GRID_FRAME, TREE_FRAME, TREE_GRID_FRAME, GRID_AND_FILTER_FRAME, TREE_GRID_AND_FILTER_FRAME, GRID_AND_PANEL_FRAME, TREE_GRID_AND_PANEL_FRAME; default value: LookupController.GRID_FRAME */
+  public static int LOOKUP_FRAME_CONTENT = LookupController.GRID_FRAME;
+
 
   /**
    * Contains application settings.

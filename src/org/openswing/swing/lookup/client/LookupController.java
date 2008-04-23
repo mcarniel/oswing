@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.Date;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.tree.*;
 
@@ -15,12 +16,11 @@ import org.openswing.swing.logger.client.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.columns.client.*;
+import org.openswing.swing.table.filter.client.*;
 import org.openswing.swing.table.java.*;
 import org.openswing.swing.tree.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 
 /**
@@ -95,17 +95,29 @@ public class LookupController {
   /** lookup data source */
   private LookupDataLocator lookupDataLocator = null;
 
-  /** constant used in "codeSelectionWindow" to view a grid frame when pressing the lookup button */
+  /** constant used in "codeSelectionWindow" property to view a grid frame when pressing the lookup button */
   public static final int GRID_FRAME = 0;
 
-  /** constant used in "codeSelectionWindow" to view a tree frame when pressing the lookup button */
+  /** constant used in "codeSelectionWindow" property to view a tree frame when pressing the lookup button */
   public static final int TREE_FRAME = 1;
 
-  /** constant used in "codeSelectionWindow" to view a tree+grid frame when pressing the lookup button */
+  /** constant used in "codeSelectionWindow" property to view a tree+grid frame when pressing the lookup button */
   public static final int TREE_GRID_FRAME = 2;
 
-  /** this flag is used to set the code selection window; three values are allowed: GRID_FRAME, TREE_FRAME and TREE_GRID_FRAME */
-  private int codeSelectionWindow = GRID_FRAME;
+  /** constant used in "codeSelectionWindow" property to view a frame that contains a grid and a filter panel when pressing the lookup button */
+  public static final int GRID_AND_FILTER_FRAME = 3;
+
+  /** constant used in "codeSelectionWindow" property to view a frame that contains a tree+grid and a filter panel when pressing the lookup button */
+  public static final int TREE_GRID_AND_FILTER_FRAME = 4;
+
+  /** constant used in "codeSelectionWindow" property to view a frame that contains a grid and a custom panel when pressing the lookup button */
+  public static final int GRID_AND_PANEL_FRAME = 5;
+
+  /** constant used in "codeSelectionWindow" property to view a frame that contains a tree+grid and a custom panel when pressing the lookup button */
+  public static final int TREE_GRID_AND_PANEL_FRAME = 6;
+
+  /** this flag is used to set the code selection window; allowed values are: GRID_FRAME, TREE_FRAME, TREE_GRID_FRAME, GRID_AND_FILTER_FRAME, TREE_GRID_AND_FILTER_FRAME, GRID_AND_PANEL_FRAME, TREE_GRID_AND_PANEL_FRAME; default value is defined through global property ClientSettings.LOOKUP_FRAME_CONTENT that is setted to GRID_FRAME */
+  private int codeSelectionWindow = ClientSettings.LOOKUP_FRAME_CONTENT;
 
   /** this flag is used when codeSelectionWindow is set to TREE_FRAME: it means that user can select only leaves (by double clicking) */
   private boolean allowTreeLeafSelectionOnly = true;
@@ -136,6 +148,12 @@ public class LookupController {
 
   /** flag used to anchor the last column on the right margin of the lookup grid, only when all columns width is lesser than grid width */
   private boolean anchorLastColumn = false;
+
+  /** lookup value object class name */
+  private String lookupValueObjectClassName = null;
+
+  /** custom filter panel to show on top of the lookup grid (optional); null as default value */
+  private CustomFilterPanel customPanel = null;
 
 
   /**
@@ -279,7 +297,7 @@ public class LookupController {
    * @param lookupParent lookup container
    */
   private void updateParentModel(LookupParent lookupParent) {
-    if (lookupVO!=null && lookupMapper!=null) {
+    if (lookupValueObjectClassName!=null && lookupMapper!=null) {
       try {
         // update lookup container vo from lookup vo values...
         Enumeration lookupAttributes = lookupMapper.getLookupChangedAttributes();
@@ -294,7 +312,7 @@ public class LookupController {
             if (!lookupMapper.setParentAttribute(
                 lookupParent,
                 lookupAttributeName,
-                lookupVO.getClass(),
+                Class.forName(lookupValueObjectClassName),
                 lookupVO))
               Logger.error(this.getClass().getName(), "updateParentModel", "Error while setting lookup container value object.", null);
             else if (form!=null) {
@@ -303,7 +321,7 @@ public class LookupController {
                  form.pull(attrName);
              }
          }
-         else {
+         else if (lookupVO!=null) {
            lookupMethodName = "get" + String.valueOf(Character.toUpperCase(lookupAttributeName.charAt(0))) + lookupAttributeName.substring(1);
            lookupMethod = lookupVO.getClass().getMethod(lookupMethodName, new Class[0]);
            if (!lookupMapper.setParentAttribute(
@@ -319,6 +337,9 @@ public class LookupController {
                 form.pull(attrName);
             }
          }
+         else {
+           Logger.error(this.getClass().getName(),"updateParentModel","Error: lookup value object is null.",null);
+         }
         }
 
       }
@@ -332,7 +353,7 @@ public class LookupController {
       fireCodeChangedEvent(lookupParent.getValueObject());
 
     } else {
-      Logger.error(this.getClass().getName(),"updateParentModel","You must set 'lookupMapper' property",null);
+      Logger.error(this.getClass().getName(),"updateParentModel","You must set 'lookupValueObjectClassName' property",null);
     }
   }
 
@@ -354,7 +375,9 @@ public class LookupController {
    * @param lookupParent lookup container
    */
   public final void openLookupFrame(JFrame parentFrame,final LookupParent lookupParent) {
-    if (codeSelectionWindow==GRID_FRAME)
+    if (codeSelectionWindow==GRID_FRAME ||
+        codeSelectionWindow==GRID_AND_FILTER_FRAME ||
+        codeSelectionWindow==GRID_AND_PANEL_FRAME)
       createLookupGrid(
         parentFrame,
         lookupParent
@@ -364,7 +387,9 @@ public class LookupController {
         parentFrame,
         lookupParent
       );
-    else if (codeSelectionWindow==TREE_GRID_FRAME)
+    else if (codeSelectionWindow==TREE_GRID_FRAME ||
+             codeSelectionWindow==TREE_GRID_AND_FILTER_FRAME ||
+             codeSelectionWindow==TREE_GRID_AND_PANEL_FRAME)
       createLookupTreeGrid(
         parentFrame,
         lookupParent
@@ -419,8 +444,8 @@ public class LookupController {
   private boolean createLookupGrid(JFrame parentFrame,final LookupParent lookupParent,GridDataLocator dataLocator) {
     fireLookupActionEvent(lookupParent.getValueObject());
     selectedRow = -1;
-    if (lookupVO==null) {
-      Logger.error(this.getClass().getName(),"createLookupGrid","You must set 'lookupVO' property",null);
+    if (lookupValueObjectClassName==null) {
+      Logger.error(this.getClass().getName(),"createLookupGrid","You must set 'lookupValueObjectClassName' property",null);
       return false;
     }
     try {
@@ -449,7 +474,7 @@ public class LookupController {
       Grids table = new Grids(
           null,
           0,
-          lookupVO.getClass().getName(),
+          lookupValueObjectClassName,
           colProperties,
           container,
           new GridStatusPanel(),
@@ -488,8 +513,8 @@ public class LookupController {
    */
   private boolean createLookupTree(JFrame parentFrame,final LookupParent lookupParent) {
     fireLookupActionEvent(lookupParent.getValueObject());
-    if (lookupVO==null) {
-      Logger.error(this.getClass().getName(),"createLookupTree","You must set 'lookupVO' property",null);
+    if (lookupValueObjectClassName==null) {
+      Logger.error(this.getClass().getName(),"createLookupTree","You must set 'lookupValueObjectClassName' property",null);
       return false;
     }
     try {
@@ -545,8 +570,8 @@ public class LookupController {
   private boolean createLookupTreeGrid(JFrame parentFrame,final LookupParent lookupParent) {
     fireLookupActionEvent(lookupParent.getValueObject());
     selectedRow = -1;
-    if (lookupVO==null) {
-      Logger.error(this.getClass().getName(),"createLookupTreeGrid","You must set 'lookupVO' property",null);
+    if (lookupValueObjectClassName==null) {
+      Logger.error(this.getClass().getName(),"createLookupTreeGrid","You must set 'lookupValueObjectClassName' property",null);
       return false;
     }
     try {
@@ -574,7 +599,7 @@ public class LookupController {
       final Grids table = new Grids(
           null,
           0,
-          lookupVO.getClass().getName(),
+          lookupValueObjectClassName,
           colProperties,
           gridContainer,
           new GridStatusPanel(),
@@ -644,10 +669,32 @@ public class LookupController {
    */
   private void createVoidLookupVO() {
     try {
-      if (this.lookupVO==null)
-        Logger.error(this.getClass().getName(),"createVoidLookupVO","Error while creating lookup value object: 'lookupVO' is null.",null);
-      else
-        this.lookupVO = (ValueObject) Class.forName(this.lookupVO.getClass().getName()).getConstructor(new Class[0]).newInstance(new Object[0]);
+      // check if there has been defined a link between the whole lookup v.o. and an attribute in the container v.o.
+      // related to an inner v.o.
+      Enumeration lookupAttributes = lookupMapper.getLookupChangedAttributes();
+      String lookupAttributeName;
+      int mappingCount = 0;
+      boolean setToNull = false;
+      while (lookupAttributes.hasMoreElements()) {
+        lookupAttributeName = (String) lookupAttributes.nextElement();
+        mappingCount++;
+        if (lookupAttributeName.length()==0)
+          setToNull = true;
+      }
+      setToNull = setToNull && mappingCount==1;
+
+      if (setToNull) {
+        // lookup v.o. is set to null
+        this.lookupVO = null;
+      }
+      else {
+        if (this.lookupValueObjectClassName==null)
+          Logger.error(this.getClass().getName(),"createVoidLookupVO","Error while creating lookup value object: 'lookupValueObjectClassName' property is null.",null);
+        else
+        // lookup v.o. is created and its attributes are all null
+        this.lookupVO = (ValueObject) Class.forName(lookupValueObjectClassName).newInstance();
+      }
+
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -1047,21 +1094,27 @@ public class LookupController {
    * @param lookupValeuObjectClassName value object class name associated to the lookup
    */
   public final void setLookupValueObjectClassName(String lookupValueObjectClassName) {
+    this.lookupValueObjectClassName = lookupValueObjectClassName;
     initLookupVO(lookupValueObjectClassName);
   }
 
 
   /**
-   * Method called by setLookupValueObjectClassName:
-   * - it creates an empty lookup v.o
-   * - it initializes lookup grid column properties.
+   * @return value object class name associated to the lookup
+   */
+  public final String getLookupValueObjectClassName() {
+    return lookupValueObjectClassName;
+  }
+
+
+
+  /**
+   * Method called by setLookupValueObjectClassName: it initializes lookup grid column properties.
    * @param lookupValueObjectClassName lookup value object class name
    */
   private void initLookupVO(String lookupValueObjectClassName) {
     try {
-      this.lookupVO = (ValueObject) Class.forName(lookupValueObjectClassName).getConstructor(new Class[0]).newInstance(new Object[0]);
-
-      Method[] methods = lookupVO.getClass().getMethods();
+      Method[] methods = Class.forName(lookupValueObjectClassName).getMethods();
       int count = 0;
       for(int i=0;i<methods.length;i++) {
         if (methods[i].getName().startsWith("get") &&
@@ -1242,202 +1295,312 @@ public class LookupController {
   }
 
 
-}
-
-
-/**
- * <p>Title: OpenSwing Framework</p>
- * <p>Description: Lookup Grid Frame.</p>
- * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
- *
- * <p> This file is part of OpenSwing Framework.
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the (LGPL) Lesser General Public
- * License as published by the Free Software Foundation;
- *
- *                GNU LESSER GENERAL PUBLIC LICENSE
- *                 Version 2.1, February 1999
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- *       The author may be contacted at:
- *           maurocarniel@tin.it</p>
- *
- * @author Mauro Carniel
- * @version 1.0
- */
-class LookupGridFrame extends JDialog {
-
-  /** lookup grid */
-  private Grids table = null;
-
-
-  public LookupGridFrame(JFrame parentFrame,String title,Grids table) {
-    super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
-    this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
-    this.table = table;
-    getContentPane().setLayout(new BorderLayout());
-    JPanel p = new JPanel();
-    getContentPane().add(p,BorderLayout.CENTER);
-    p.setLayout(new GridBagLayout());
-    p.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
-    p.add(table,   new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    table.getGrid().addKeyListener(new KeyAdapter() {
-      public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode()==e.VK_ESCAPE && !LookupGridFrame.this.table.getGrid().isSearchWindowVisible()) {
-          LookupGridFrame.this.setVisible(false);
-        }
-      }
-    });
+  /**
+   * @return custom filter panel to show on top of the lookup grid
+   */
+  public final CustomFilterPanel getCustomPanel() {
+    return customPanel;
   }
 
 
   /**
-   * @return lookup grid
+   * Set the return custom filter panel to show on top of the lookup grid; this panel is showed only if "codeSelectionWindow" property is set to "xxx_AND_PANEL_FRAME"
+   * @param customPanel return custom filter panel to show on top of the lookup grid
    */
-  public final Grids getTable() {
-    return table;
-  }
-}
-
-
-
-
-
-/**
- * <p>Title: OpenSwing Framework</p>
- * <p>Description: Lookup Tree Frame.</p>
- * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
- *
- * <p> This file is part of OpenSwing Framework.
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the (LGPL) Lesser General Public
- * License as published by the Free Software Foundation;
- *
- *                GNU LESSER GENERAL PUBLIC LICENSE
- *                 Version 2.1, February 1999
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- *       The author may be contacted at:
- *           maurocarniel@tin.it</p>
- *
- * @author Mauro Carniel
- * @version 1.0
- */
-class LookupTreeFrame extends JDialog {
-
-  /** lookup tree */
-  private TreePanel treePanel = null;
-
-
-  public LookupTreeFrame(JFrame parentFrame,String title,TreePanel treePanel) {
-    super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
-    this.treePanel = treePanel;
-    getContentPane().setLayout(new BorderLayout());
-    getContentPane().add(new JScrollPane(treePanel),BorderLayout.CENTER);
-    treePanel.getTree().addKeyListener(new KeyAdapter() {
-      public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode()==e.VK_ESCAPE) {
-          LookupTreeFrame.this.setVisible(false);
-        }
-      }
-    });
+  public final void setCustomPanel(CustomFilterPanel customPanel) {
+    this.customPanel = customPanel;
   }
 
-}
 
 
 
-
-/**
- * <p>Title: OpenSwing Framework</p>
- * <p>Description: Lookup Tree+Grid Frame.</p>
- * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
- *
- * <p> This file is part of OpenSwing Framework.
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the (LGPL) Lesser General Public
- * License as published by the Free Software Foundation;
- *
- *                GNU LESSER GENERAL PUBLIC LICENSE
- *                 Version 2.1, February 1999
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- *       The author may be contacted at:
- *           maurocarniel@tin.it</p>
- *
- * @author Mauro Carniel
- * @version 1.0
- */
-class LookupTreeGridFrame extends JDialog {
-
-  /** filter tree */
-  private TreePanel treePanel = null;
-
-  /** lookup grid */
-  private Grids table = null;
-
-
-  public LookupTreeGridFrame(JFrame parentFrame,String title,TreePanel treePanel,Grids table) {
-    super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
-    this.treePanel = treePanel;
-    this.table = table;
-    getContentPane().setLayout(new BorderLayout());
-    JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    getContentPane().add(split,BorderLayout.CENTER);
-    split.add(new JScrollPane(treePanel),split.LEFT);
-//    split.add(new JScrollPane(table),split.RIGHT);
-    split.add(table,split.RIGHT);
-    split.setDividerLocation(200);
-
-    treePanel.getTree().addKeyListener(new KeyAdapter() {
-      public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode()==e.VK_ESCAPE) {
-          LookupTreeGridFrame.this.setVisible(false);
-        }
-      }
-    });
-    table.getGrid().addKeyListener(new KeyAdapter() {
-      public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode()==e.VK_ESCAPE && !LookupTreeGridFrame.this.table.getGrid().isSearchWindowVisible()) {
-          LookupTreeGridFrame.this.setVisible(false);
-        }
-      }
-    });
-
-  }
 
 
   /**
-   * @return lookup grid
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Lookup Grid Frame.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   *
+   * <p> This file is part of OpenSwing Framework.
+   * This library is free software; you can redistribute it and/or
+   * modify it under the terms of the (LGPL) Lesser General Public
+   * License as published by the Free Software Foundation;
+   *
+   *                GNU LESSER GENERAL PUBLIC LICENSE
+   *                 Version 2.1, February 1999
+   *
+   * This library is distributed in the hope that it will be useful,
+   * but WITHOUT ANY WARRANTY; without even the implied warranty of
+   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   * Library General Public License for more details.
+   *
+   * You should have received a copy of the GNU Library General Public
+   * License along with this library; if not, write to the Free
+   * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+   *
+   *       The author may be contacted at:
+   *           maurocarniel@tin.it</p>
+   *
+   * @author Mauro Carniel
+   * @version 1.0
    */
-  public final Grids getTable() {
-    return table;
-  }
+  class LookupGridFrame extends JDialog {
+
+    /** lookup grid */
+    private Grids table = null;
+
+
+    public LookupGridFrame(JFrame parentFrame,String title,Grids table) {
+      super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+      this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
+      this.table = table;
+      getContentPane().setLayout(new BorderLayout());
+      final JPanel p = new JPanel();
+      getContentPane().add(p,BorderLayout.CENTER);
+      p.setLayout(new GridBagLayout());
+      p.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
+
+      JSplitPane split2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+      split2.add(table,split2.BOTTOM);
+      split2.setDividerLocation(0);
+
+      p.add(split2,   new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+              ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+
+
+      Action exitAction = new AbstractAction() {
+          public void actionPerformed(ActionEvent e) {
+            if (!LookupGridFrame.this.table.getGrid().isSearchWindowVisible()) {
+              p.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0));
+              p.getActionMap().remove("exitAction");
+
+              LookupGridFrame.this.setVisible(false);
+            }
+          }
+      };
+      p.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),"exitAction");
+      p.getActionMap().put("exitAction",exitAction);
+
+      table.getGrid().addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          if (e.getKeyCode()==e.VK_ESCAPE && !LookupGridFrame.this.table.getGrid().isSearchWindowVisible()) {
+            p.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0));
+            p.getActionMap().remove("exitAction");
+
+            LookupGridFrame.this.setVisible(false);
+          }
+        }
+      });
+
+      if (codeSelectionWindow==GRID_AND_FILTER_FRAME) {
+        // filter panel is added on top of the window...
+        FilterPanel f = new FilterPanel(colProperties,table,Consts.FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT);
+        f.init();
+        split2.add(f,split2.TOP);
+        split2.setDividerLocation(f.getPreferredSize().height);
+
+      }
+
+      if (codeSelectionWindow==GRID_AND_PANEL_FRAME && customPanel!=null) {
+        // a custom panel is added on top of the window...
+        split2.add(customPanel,split2.TOP);
+        customPanel.setLookupGrid(table);
+        customPanel.init();
+        split2.setDividerLocation(customPanel.getPreferredSize().height);
+      }
+
+    }
+
+
+    /**
+     * @return lookup grid
+     */
+    public final Grids getTable() {
+      return table;
+    }
+
+  } // end inner class
+
+
+
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Lookup Tree Frame.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   *
+   * <p> This file is part of OpenSwing Framework.
+   * This library is free software; you can redistribute it and/or
+   * modify it under the terms of the (LGPL) Lesser General Public
+   * License as published by the Free Software Foundation;
+   *
+   *                GNU LESSER GENERAL PUBLIC LICENSE
+   *                 Version 2.1, February 1999
+   *
+   * This library is distributed in the hope that it will be useful,
+   * but WITHOUT ANY WARRANTY; without even the implied warranty of
+   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   * Library General Public License for more details.
+   *
+   * You should have received a copy of the GNU Library General Public
+   * License along with this library; if not, write to the Free
+   * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+   *
+   *       The author may be contacted at:
+   *           maurocarniel@tin.it</p>
+   *
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class LookupTreeFrame extends JDialog {
+
+    /** lookup tree */
+    private TreePanel treePanel = null;
+
+
+    public LookupTreeFrame(JFrame parentFrame,String title,TreePanel treePanel) {
+      super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+      this.treePanel = treePanel;
+      getContentPane().setLayout(new BorderLayout());
+      getContentPane().add(new JScrollPane(treePanel),BorderLayout.CENTER);
+      treePanel.getTree().addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          if (e.getKeyCode()==e.VK_ESCAPE) {
+            LookupTreeFrame.this.setVisible(false);
+          }
+        }
+      });
+    }
+
+  } // end inner class
+
+
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Lookup Tree+Grid Frame.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   *
+   * <p> This file is part of OpenSwing Framework.
+   * This library is free software; you can redistribute it and/or
+   * modify it under the terms of the (LGPL) Lesser General Public
+   * License as published by the Free Software Foundation;
+   *
+   *                GNU LESSER GENERAL PUBLIC LICENSE
+   *                 Version 2.1, February 1999
+   *
+   * This library is distributed in the hope that it will be useful,
+   * but WITHOUT ANY WARRANTY; without even the implied warranty of
+   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   * Library General Public License for more details.
+   *
+   * You should have received a copy of the GNU Library General Public
+   * License along with this library; if not, write to the Free
+   * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+   *
+   *       The author may be contacted at:
+   *           maurocarniel@tin.it</p>
+   *
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class LookupTreeGridFrame extends JDialog {
+
+    /** filter tree */
+    private TreePanel treePanel = null;
+
+    /** lookup grid */
+    private Grids table = null;
+
+
+    public LookupTreeGridFrame(JFrame parentFrame,String title,TreePanel treePanel,Grids table) {
+      super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+      this.treePanel = treePanel;
+      this.table = table;
+      getContentPane().setLayout(new BorderLayout());
+      JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+      getContentPane().add(split,BorderLayout.CENTER);
+      split.add(new JScrollPane(treePanel),split.LEFT);
+  //    split.add(new JScrollPane(table),split.RIGHT);
+
+      final JPanel p = new JPanel();
+      p.setLayout(new GridBagLayout());
+
+      split.add(p,split.RIGHT);
+      split.setDividerLocation(200);
+
+      JSplitPane split2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+      split2.add(table,split2.BOTTOM);
+      split2.setDividerLocation(0);
+
+      p.add(split2,   new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+              ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+
+      treePanel.getTree().addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          if (e.getKeyCode()==e.VK_ESCAPE) {
+            p.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0));
+            p.getActionMap().remove("exitAction");
+
+            LookupTreeGridFrame.this.setVisible(false);
+          }
+        }
+      });
+      table.getGrid().addKeyListener(new KeyAdapter() {
+        public void keyPressed(KeyEvent e) {
+          if (e.getKeyCode()==e.VK_ESCAPE && !LookupTreeGridFrame.this.table.getGrid().isSearchWindowVisible()) {
+            p.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0));
+            p.getActionMap().remove("exitAction");
+
+            LookupTreeGridFrame.this.setVisible(false);
+          }
+        }
+      });
+
+      Action exitAction = new AbstractAction() {
+          public void actionPerformed(ActionEvent e) {
+            if (!LookupTreeGridFrame.this.table.getGrid().isSearchWindowVisible()) {
+              p.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0));
+              p.getActionMap().remove("exitAction");
+
+              LookupTreeGridFrame.this.setVisible(false);
+            }
+          }
+      };
+      p.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),"exitAction");
+      p.getActionMap().put("exitAction",exitAction);
+
+      if (codeSelectionWindow==TREE_GRID_AND_FILTER_FRAME) {
+        // filter panel is added on top of the window...
+        FilterPanel f = new FilterPanel(colProperties,table,Consts.FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT);
+        f.init();
+        split2.add(f,split.TOP);
+        split2.setDividerLocation(f.getPreferredSize().height);
+      }
+
+      if (codeSelectionWindow==TREE_GRID_AND_PANEL_FRAME && customPanel!=null) {
+        // a custom panel is added on top of the window...
+        split2.add(customPanel,split.TOP);
+        customPanel.setLookupGrid(table);
+        customPanel.init();
+        split2.setDividerLocation(customPanel.getPreferredSize().height);
+      }
+
+    }
+
+
+    /**
+     * @return lookup grid
+     */
+    public final Grids getTable() {
+      return table;
+    }
+
+
+  } // end inner class
+
 
 
 }

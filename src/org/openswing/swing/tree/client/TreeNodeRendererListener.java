@@ -1,12 +1,9 @@
 package org.openswing.swing.tree.client;
 
-import java.awt.event.MouseListener;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.SwingUtilities;
-import javax.swing.tree.TreeNode;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -88,7 +85,12 @@ public class TreeNodeRendererListener implements MouseListener,KeyListener {
   public void mouseClicked(MouseEvent e) {
     if (treePanel.isEnabled() && SwingUtilities.isLeftMouseButton(e) && e.getClickCount()==1) {
       try {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)treePanel.getTree().getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
+        TreePath path = treePanel.getTree().getPathForLocation(e.getX(), e.getY());
+        if (path==null)
+          return;
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
+        if (node==null)
+          return;
         if (treePanel.isShowCheckBoxesOnLeaves() || !node.isLeaf())
           checkChanged(node);
       }
@@ -139,14 +141,42 @@ public class TreeNodeRendererListener implements MouseListener,KeyListener {
     if (treePanel.getCheckedNodes().contains(node)) {
       treePanel.getCheckedNodes().remove(node);
       updateCheckboxesOnSubTree(node,false);
-      while((node=(DefaultMutableTreeNode)node.getParent())!=null)
-        if (areAllDeselectedCheckBox(node))
-          treePanel.getCheckedNodes().remove(node);
+      DefaultMutableTreeNode aux = node;
+      while((aux=(DefaultMutableTreeNode)aux.getParent())!=null)
+        if (areAllDeselectedCheckBox(aux))
+          treePanel.getCheckedNodes().remove(aux);
     }
     else {
       treePanel.getCheckedNodes().add(node);
       updateCheckboxesOnSubTree(node,true);
+
+      // check if all parent's node children are selected...
+      if (node.getParent()!=null &&
+          !node.getParent().equals(node.getRoot()) &&
+          !treePanel.getCheckedNodes().contains(node.getParent())) {
+        DefaultMutableTreeNode aux = null;
+        boolean selectParent = true;
+        for(int i=0;i<node.getParent().getChildCount();i++) {
+          aux = (DefaultMutableTreeNode)node.getParent().getChildAt(i);
+          if (!treePanel.getCheckedNodes().contains(aux)) {
+            selectParent = false;
+            break;
+          }
+        }
+        if (selectParent)
+          treePanel.getCheckedNodes().add(node.getParent());
+      }
+
+
     }
+    ItemListener[] ll = treePanel.getItemListeners();
+    for(int i=0;i<ll.length;i++)
+      ll[i].itemStateChanged(new ItemEvent(
+        new JCheckBox(),
+        ItemEvent.ITEM_STATE_CHANGED,
+        node,
+        treePanel.getCheckedNodes().contains(node)?ItemEvent.SELECTED:ItemEvent.DESELECTED
+      ));
     treePanel.getTree().repaint();
   }
 

@@ -557,11 +557,20 @@ public class MDIFrame extends JFrame implements BusyListener {
    * Method called when closing the MDI Frame
    */
   private void onWindowClosing() {
-    if (JOptionPane.showConfirmDialog(
+    Object[] opt = new Object[]{
+        ClientSettings.getInstance().getResources().getResource("yes"),
+        ClientSettings.getInstance().getResources().getResource("no")
+    };
+    if (JOptionPane.showOptionDialog(
         this,
         ClientSettings.getInstance().getResources().getResource("are you sure to quit application?"),
         ClientSettings.getInstance().getResources().getResource("quit application"),
-        JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)  {
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        opt,
+        opt[0]
+    )==0)  {
       client.stopApplication();
     }
   }
