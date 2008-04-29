@@ -18,6 +18,7 @@ import org.hibernate.ScrollableResults;
 import org.openswing.swing.util.client.ClientSettings;
 import org.hibernate.metadata.ClassMetadata;
 import org.openswing.swing.util.server.HibernateUtils;
+import org.openswing.swing.lookup.client.LookupGridController;
 
 
 /**
@@ -28,14 +29,28 @@ import org.openswing.swing.util.server.HibernateUtils;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class TaskGridFrameController extends GridController implements GridDataLocator {
+public class TaskGridFrameController extends LookupGridController implements GridDataLocator {
 
   private TaskGridFrame grid = null;
   private SessionFactory sessions = null;
 
   public TaskGridFrameController(SessionFactory sessions) {
     this.sessions = sessions;
+  }
+
+
+  public final void createGrid() {
     grid = new TaskGridFrame(this);
+  }
+
+
+  /**
+   * Callback method invoked when the user has clicked on the insert button
+   * @param valueObject empty value object just created: the user can manage it to fill some attribute values
+   */
+  public void createValueObject(ValueObject valueObject) throws Exception {
+    TaskVO vo = (TaskVO)valueObject;
+    vo.setStatus("E");
   }
 
 

@@ -64,7 +64,7 @@ public class BaseInputControl extends JPanel implements InputControl {
   private LabelControl linkedLabel = null;
 
   /** mandatory symbol */
-  private JLabel requiredIcon =  new JLabel("*");
+  private JLabel requiredIcon = new JLabel("*");
 
   /** old input control value */
   protected Object oldValue;
@@ -86,11 +86,6 @@ public class BaseInputControl extends JPanel implements InputControl {
    * Constructor.
    */
   public BaseInputControl() {
-    // prepare mandatory symbol...
-    requiredIcon.setForeground(Color.red);
-    requiredIcon.setFont(new Font(requiredIcon.getFont().getFontName(),Font.PLAIN,20));
-    requiredIcon.setPreferredSize(new Dimension(15, 15));
-    requiredIcon.setFocusable(false);
 
     addFocusListener(new FocusListener() {
       public void focusGained(FocusEvent e) {
@@ -101,6 +96,18 @@ public class BaseInputControl extends JPanel implements InputControl {
       public void focusLost(FocusEvent e) {
       }
     });
+
+    if (Beans.isDesignTime()) {
+      requiredIcon.setForeground(Color.red);
+      requiredIcon.setFont(new Font(requiredIcon.getFont().getFontName(),Font.PLAIN,20));
+      requiredIcon.setPreferredSize(new Dimension(15, 15));
+      requiredIcon.setFocusable(false);
+    }
+    else {
+      requiredIcon.setText("");
+      requiredIcon.setIcon(new ImageIcon(ClientUtils.getImage("obl.gif")));
+    }
+
 
   }
 

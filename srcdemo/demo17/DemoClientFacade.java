@@ -22,7 +22,8 @@ public class DemoClientFacade implements ClientFacade {
 
 
   public void getTasks() {
-    new TaskGridFrameController(sessions);
+    TaskGridFrameController c = new TaskGridFrameController(sessions);
+    c.createGrid();
   }
 
 

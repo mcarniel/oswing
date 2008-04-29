@@ -12,6 +12,7 @@ import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.*;
 import org.openswing.swing.server.*;
 import org.openswing.swing.tree.java.*;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -30,6 +31,25 @@ public class DeptLookupController extends LookupController {
 
   public DeptLookupController(Connection conn) {
     this.conn = conn;
+
+    this.setLookupGridController(new LookupGridController() {
+
+      /**
+       * Method used to define the background color for each cell of the grid.
+       * @param rowNumber selected row index
+       * @param attributeName attribute name related to the column currently selected
+       * @param value object contained in the selected cell
+       * @return background color of the selected cell
+       */
+      public Color getBackgroundColor(int row,String attributeName,Object value) {
+        DeptVO vo = (DeptVO)model.getObjectForRow(row);
+        if (vo.getDeptCode().equals("S"))
+          return Color.orange;
+        return super.getBackgroundColor(row,attributeName,value);
+      }
+
+    });
+
     this.setLookupDataLocator(new LookupDataLocator() {
 
       /**

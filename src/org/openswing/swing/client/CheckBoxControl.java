@@ -115,7 +115,7 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
   public final void setToolTipText(String toolTipText) {
     this.toolTipText = toolTipText;
     if (!Beans.isDesignTime())
-      setToolTipText(ClientSettings.getInstance().getResources().getResource(toolTipText));
+      super.setToolTipText(ClientSettings.getInstance().getResources().getResource(toolTipText));
   }
 
 

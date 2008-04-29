@@ -11,6 +11,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.tree.*;
 
+import org.openswing.swing.client.*;
 import org.openswing.swing.form.client.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.message.receive.java.*;
@@ -65,14 +66,8 @@ public class LookupController {
   /** lookup frame frame size; default: 300 x 400 pixels */
   private Dimension framePreferredSize = new Dimension(300,400);
 
-  /** lookup grid frame reference */
-  private LookupGridFrame lookupGridFrame = null;
-
-  /** lookup tree frame reference */
-  private LookupTreeFrame lookupTreeFrame = null;
-
-  /** lookup tree+grid frame reference */
-  private LookupTreeGridFrame lookupTreeGridFrame = null;
+  /** lookup frame reference */
+  private LookupFrame lookupFrame = null;
 
   /** selected row on lookup grid */
   private int selectedRow = -1;
@@ -154,6 +149,27 @@ public class LookupController {
 
   /** custom filter panel to show on top of the lookup grid (optional); null as default value */
   private CustomFilterPanel customPanel = null;
+
+  /** grid controller used with lookup grid or tree+grid frame */
+  private LookupGridController lookupGridController = new LookupGridController();
+
+  /** define if an insert button has to be added on top of the lookup grid; default value: <code>false</code>; if set to <code>true</code>, then the GridLookupController instance must define insertRecords method */
+  private boolean gridInsertButton = false;
+
+  /** define if an edit button has to be added on top of the lookup grid; default value: <code>false</code>; if set to <code>true</code>, then the GridLookupController instance must define updateRecords method */
+  private boolean gridEditButton = false;
+
+  /** define if a copy button has to be added on top of the lookup grid; default value: <code>false</code>; if set to <code>true</code>, then the GridLookupController instance must define insertRecords method */
+  private boolean gridCopyButton = false;
+
+  /** define if a delete button has to be added on top of the lookup grid; default value: <code>false</code>; if set to <code>true</code>, then the GridLookupController instance must define deleteRecords method */
+  private boolean gridDeleteButton = false;
+
+  /** define if a filter button has to be added on top of the lookup grid; default value: <code>false</code> */
+  private boolean gridFilterButton = false;
+
+  /** define if an export button has to be added on top of the lookup grid; default value: <code>false</code> */
+  private boolean gridExportButton = false;
 
 
   /**
@@ -433,15 +449,27 @@ public class LookupController {
   }
 
 
+  /**
+   * This method is automatically invoked by LookupGridController.doubleClick() method.
+   */
+  public final void doubleClick(int rowNumber,LookupParent lookupParent) {
+    selectedRow = rowNumber;
+    lookupVO = (ValueObject) lookupFrame.getTable().getVOListTableModel().getObjectForRow(selectedRow);
+    updateParentModel(lookupParent);
+    lookupFrame.setVisible(false);
+    lookupFrame.dispose();
+    codeValid = true;
+  }
+
 
   /**
    * Method called by openLookupGrid methods to open lookup grid frame.
    * @param parentFrame parent frame
-   * @param parentVO lookup container v.o. (which is updated when user will select a grid row)
+   * @param lookupParent lookup container (whose value object will be updated when grid row has been selected)
    * @param dataLocator data source used to fetching data for lookup grid
    * @return <code>true</code> if grid frame was correcly opened, <code>false</code> otherwise
    */
-  private boolean createLookupGrid(JFrame parentFrame,final LookupParent lookupParent,GridDataLocator dataLocator) {
+  private boolean createLookupGrid(JFrame parentFrame,LookupParent lookupParent,GridDataLocator dataLocator) {
     fireLookupActionEvent(lookupParent.getValueObject());
     selectedRow = -1;
     if (lookupValueObjectClassName==null) {
@@ -449,34 +477,21 @@ public class LookupController {
       return false;
     }
     try {
-      if (lookupGridFrame!=null) {
-        lookupGridFrame.setVisible(false);
-        lookupGridFrame.dispose();
+      if (lookupFrame!=null) {
+        lookupFrame.setVisible(false);
+        lookupFrame.dispose();
       }
     }
     catch (Exception ex) {
       ex.printStackTrace();
     }
     try {
-      GridController container = new GridController() {
-
-        public void enterButton(int rowNumber,ValueObject valueObject) { doubleClick(rowNumber,valueObject); }
-        public void doubleClick(int rowNumber,ValueObject valueObject) {
-          selectedRow = rowNumber;
-          lookupVO = (ValueObject) lookupGridFrame.getTable().getVOListTableModel().getObjectForRow(selectedRow);
-          updateParentModel(lookupParent);
-          lookupGridFrame.setVisible(false);
-          lookupGridFrame.dispose();
-          codeValid = true;
-        }
-      };
-
       Grids table = new Grids(
           null,
           0,
           lookupValueObjectClassName,
           colProperties,
-          container,
+          lookupGridController,
           new GridStatusPanel(),
           dataLocator,
           new HashMap(),
@@ -485,14 +500,16 @@ public class LookupController {
           anchorLastColumn,
           Grid.MAIN_GRID
       );
+      lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);
+
       table.setMaxSortedColumns(maxSortedColumns);
 
       // create the lookup grid frame...
-      lookupGridFrame = new LookupGridFrame(parentFrame,frameTitle, table);
-      lookupGridFrame.setSize(framePreferredSize);
+      lookupFrame = new LookupGridFrame(parentFrame,frameTitle, table);
+      lookupFrame.setSize(framePreferredSize);
       table.reload();
-      ClientUtils.centerDialog(parentFrame,lookupGridFrame);
-      lookupGridFrame.setVisible(true);
+      ClientUtils.centerDialog(parentFrame,lookupFrame);
+      lookupFrame.setVisible(true);
 
 
       return true;
@@ -518,9 +535,9 @@ public class LookupController {
       return false;
     }
     try {
-      if (lookupTreeFrame!=null) {
-        lookupTreeFrame.setVisible(false);
-        lookupTreeFrame.dispose();
+      if (lookupFrame!=null) {
+        lookupFrame.setVisible(false);
+        lookupFrame.dispose();
       }
     }
     catch (Exception ex) {
@@ -536,8 +553,8 @@ public class LookupController {
             return;
           lookupVO = (ValueObject)node.getUserObject();
           updateParentModel(lookupParent);
-          lookupTreeFrame.setVisible(false);
-          lookupTreeFrame.dispose();
+          lookupFrame.setVisible(false);
+          lookupFrame.dispose();
         }
       };
 
@@ -546,10 +563,10 @@ public class LookupController {
       treePanel.setTreeDataLocator(lookupDataLocator);
 
       // create the lookup tree frame...
-      lookupTreeFrame = new LookupTreeFrame(parentFrame,frameTitle, treePanel);
-      lookupTreeFrame.setSize(framePreferredSize);
-      ClientUtils.centerDialog(parentFrame,lookupTreeFrame);
-      lookupTreeFrame.setVisible(true);
+      lookupFrame = new LookupTreeFrame(parentFrame,frameTitle, treePanel);
+      lookupFrame.setSize(framePreferredSize);
+      ClientUtils.centerDialog(parentFrame,lookupFrame);
+      lookupFrame.setVisible(true);
 
       return true;
     }
@@ -575,33 +592,21 @@ public class LookupController {
       return false;
     }
     try {
-      if (lookupTreeGridFrame!=null) {
-        lookupTreeGridFrame.setVisible(false);
-        lookupTreeGridFrame.dispose();
+      if (lookupFrame!=null) {
+        lookupFrame.setVisible(false);
+        lookupFrame.dispose();
       }
     }
     catch (Exception ex) {
       ex.printStackTrace();
     }
     try {
-      GridController gridContainer = new GridController() {
-
-        public void enterButton(int rowNumber,ValueObject valueObject) { doubleClick(rowNumber,valueObject); }
-        public void doubleClick(int rowNumber,ValueObject valueObject) {
-          selectedRow = rowNumber;
-          lookupVO = (ValueObject) lookupTreeGridFrame.getTable().getVOListTableModel().getObjectForRow(selectedRow);
-          updateParentModel(lookupParent);
-          lookupTreeGridFrame.setVisible(false);
-          lookupTreeGridFrame.dispose();
-        }
-      };
-
       final Grids table = new Grids(
           null,
           0,
           lookupValueObjectClassName,
           colProperties,
-          gridContainer,
+          lookupGridController,
           new GridStatusPanel(),
           new GridDataLocator() {
 
@@ -630,6 +635,7 @@ public class LookupController {
           anchorLastColumn,
           Grid.MAIN_GRID
       );
+      lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);
 
       TreeController treeContainer = new TreeController() {
 
@@ -649,11 +655,11 @@ public class LookupController {
       treePanel.setTreeDataLocator(lookupDataLocator);
 
       // create the lookup tree grid frame...
-      lookupTreeGridFrame = new LookupTreeGridFrame(parentFrame,frameTitle,treePanel,table);
-      lookupTreeGridFrame.setSize(framePreferredSize);
+      lookupFrame = new LookupTreeGridFrame(parentFrame,frameTitle,treePanel,table);
+      lookupFrame.setSize(framePreferredSize);
 //      table.reload();
-      ClientUtils.centerDialog(parentFrame,lookupTreeGridFrame);
-      lookupTreeGridFrame.setVisible(true);
+      ClientUtils.centerDialog(parentFrame,lookupFrame);
+      lookupFrame.setVisible(true);
 
       return true;
     }
@@ -1036,6 +1042,51 @@ public class LookupController {
 
 
   /**
+   * Define if a column is editable in insert mode.
+   * @param lookupAttributeName attribute name that identifies the column
+   * @param editable <code>true</code> if the column is editable in insert mode, <code>false</code> otherwise
+   */
+  public final void setColumnEditableOnInsert(String lookupAttributeName,boolean editable) {
+    for(int i=0;i<colProperties.length;i++)
+      if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
+        colProperties[i].setEditableOnInsert(editable);
+        return;
+      }
+    Logger.error(this.getClass().getName(),"setColumnEditableOnInsert","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);
+  }
+
+
+  /**
+   * Define if a column is editable in edit mode.
+   * @param lookupAttributeName attribute name that identifies the column
+   * @param editable <code>true</code> if the column is editable in edit mode, <code>false</code> otherwise
+   */
+  public final void setColumnEditableOnEdit(String lookupAttributeName,boolean editable) {
+    for(int i=0;i<colProperties.length;i++)
+      if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
+        colProperties[i].setEditableOnEdit(editable);
+        return;
+      }
+    Logger.error(this.getClass().getName(),"setColumnEditableOnEdit","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);
+  }
+
+
+  /**
+   * Define if an editable column is required in insert/edit mode.
+   * @param lookupAttributeName attribute name that identifies the column
+   * @param required <code>true</code> if the editable column is required, <code>false</code> otherwise
+   */
+  public final void setColumnRequired(String lookupAttributeName,boolean required) {
+    for(int i=0;i<colProperties.length;i++)
+      if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
+        colProperties[i].setColumnRequired(required);
+        return;
+      }
+    Logger.error(this.getClass().getName(),"setColumnRequired","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);
+  }
+
+
+  /**
    * Set maximum number of sorted columns.
    * @param maxSortedColumns maximum number of sorted columns
    */
@@ -1312,7 +1363,172 @@ public class LookupController {
   }
 
 
+  /**
+   * @return grid controller used with lookup grid or tree+grid frame
+   */
+  public final LookupGridController getLookupGridController() {
+    return lookupGridController;
+  }
 
+
+  /**
+   * Set grid controller used with lookup grid or tree+grid frame.
+   * @param lookupGridController grid controller used with lookup grid or tree+grid frame
+   */
+  public final void setLookupGridController(LookupGridController lookupGridController) {
+    this.lookupGridController = lookupGridController;
+  }
+
+
+  /**
+   * @return define if a copy button has to be added on top of the lookup grid; if set to <code>true</code>, then the GridLookupController instance must define insertRecords method
+   */
+  public final boolean isGridCopyButton() {
+    return gridCopyButton;
+  }
+
+
+  /**
+   * @return define if a delete button has to be added on top of the lookup grid; if set to <code>true</code>, then the GridLookupController instance must define deleteRecords method
+   */
+  public final boolean isGridDeleteButton() {
+    return gridDeleteButton;
+  }
+
+
+  /**
+   * @return define if an edit button has to be added on top of the lookup grid; if set to <code>true</code>, then the GridLookupController instance must define updateRecords method
+   */
+  public final boolean isGridEditButton() {
+    return gridEditButton;
+  }
+
+
+  /**
+   * @return define if an export button has to be added on top of the lookup grid
+   */
+  public final boolean isGridExportButton() {
+    return gridExportButton;
+  }
+
+
+  /**
+   * @return define if a filter button has to be added on top of the lookup grid
+   */
+  public final boolean isGridFilterButton() {
+    return gridFilterButton;
+  }
+
+
+  /**
+   * @return define if an insert button has to be added on top of the lookup grid; if set to <code>true</code>, then the GridLookupController instance must define insertRecords method
+   */
+  public final boolean isGridInsertButton() {
+    return gridInsertButton;
+  }
+
+
+  /**
+   * Define if an insert button has to be added on top of the lookup grid; if set to <code>true</code>, then the GridLookupController instance must define insertRecords method.
+   * @param gridInsertButton define if an insert button has to be added on top of the lookup grid
+   */
+  public final void setGridInsertButton(boolean gridInsertButton) {
+    this.gridInsertButton = gridInsertButton;
+  }
+
+
+  /**
+   * Define if a filter button has to be added on top of the lookup grid.
+   * @param gridFilterButton define if a filter button has to be added on top of the lookup grid
+   */
+  public final void setGridFilterButton(boolean gridFilterButton) {
+    this.gridFilterButton = gridFilterButton;
+  }
+
+
+  /**
+   * Define if an export button has to be added on top of the lookup grid.
+   * @param gridExportButton define if an export button has to be added on top of the lookup grid
+   */
+  public final void setGridExportButton(boolean gridExportButton) {
+    this.gridExportButton = gridExportButton;
+  }
+
+
+  /**
+   * Define if an edit button has to be added on top of the lookup grid; if set to <code>true</code>, then the GridLookupController instance must define updateRecords method.
+   * @param gridEditButton define if an edit button has to be added on top of the lookup grid
+   */
+  public final void setGridEditButton(boolean gridEditButton) {
+    this.gridEditButton = gridEditButton;
+  }
+
+
+  /**
+   * Define if a delete button has to be added on top of the lookup grid; if set to <code>true</code>, then the GridLookupController instance must define deleteRecords method.
+   * @param gridDeleteButton define if a delete button has to be added on top of the lookup grid
+   */
+  public final void setGridDeleteButton(boolean gridDeleteButton) {
+    this.gridDeleteButton = gridDeleteButton;
+  }
+
+
+  /**
+   * Define if a copy button has to be added on top of the lookup grid; if set to <code>true</code>, then the GridLookupController instance must define insertRecords method.
+   * @param gridCopyButton define if a copy button has to be added on top of the lookup grid
+   */
+  public final void setGridCopyButton(boolean gridCopyButton) {
+    this.gridCopyButton = gridCopyButton;
+  }
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Base lookup frame.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   *
+   * <p> This file is part of OpenSwing Framework.
+   * This library is free software; you can redistribute it and/or
+   * modify it under the terms of the (LGPL) Lesser General Public
+   * License as published by the Free Software Foundation;
+   *
+   *                GNU LESSER GENERAL PUBLIC LICENSE
+   *                 Version 2.1, February 1999
+   *
+   * This library is distributed in the hope that it will be useful,
+   * but WITHOUT ANY WARRANTY; without even the implied warranty of
+   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   * Library General Public License for more details.
+   *
+   * You should have received a copy of the GNU Library General Public
+   * License along with this library; if not, write to the Free
+   * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+   *
+   *       The author may be contacted at:
+   *           maurocarniel@tin.it</p>
+   *
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class LookupFrame extends JDialog {
+
+    /** lookup grid */
+    protected Grids table = null;
+
+
+    public LookupFrame(JFrame parent,String title,boolean modal) {
+      super(parent,title,modal);
+    }
+
+
+    /**
+     * @return lookup grid
+     */
+    public final Grids getTable() {
+      return table;
+    }
+
+  }
 
 
 
@@ -1344,10 +1560,7 @@ public class LookupController {
    * @author Mauro Carniel
    * @version 1.0
    */
-  class LookupGridFrame extends JDialog {
-
-    /** lookup grid */
-    private Grids table = null;
+  class LookupGridFrame extends LookupFrame {
 
 
     public LookupGridFrame(JFrame parentFrame,String title,Grids table) {
@@ -1361,6 +1574,7 @@ public class LookupController {
       p.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,2));
 
       JSplitPane split2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+      split2.setDividerSize(0);
       split2.add(table,split2.BOTTOM);
       split2.setDividerLocation(0);
 
@@ -1392,32 +1606,79 @@ public class LookupController {
         }
       });
 
+      JPanel topPanel = new JPanel();
+      BorderLayout borderLayout = new BorderLayout();
+      topPanel.setLayout(borderLayout);
+
+      split2.add(topPanel,split2.TOP);
+      int h = 0;
       if (codeSelectionWindow==GRID_AND_FILTER_FRAME) {
         // filter panel is added on top of the window...
         FilterPanel f = new FilterPanel(colProperties,table,Consts.FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT);
         f.init();
-        split2.add(f,split2.TOP);
-        split2.setDividerLocation(f.getPreferredSize().height);
+        topPanel.add(f,BorderLayout.CENTER);
+        h = f.getPreferredSize().height;
 
       }
 
       if (codeSelectionWindow==GRID_AND_PANEL_FRAME && customPanel!=null) {
         // a custom panel is added on top of the window...
-        split2.add(customPanel,split2.TOP);
+        topPanel.add(customPanel,BorderLayout.CENTER);
         customPanel.setLookupGrid(table);
         customPanel.init();
-        split2.setDividerLocation(customPanel.getPreferredSize().height);
+        h = customPanel.getPreferredSize().height;
       }
 
+      JPanel toolbarPanel = new JPanel();
+      FlowLayout flowLayout1 = new FlowLayout(FlowLayout.LEFT,5,5);
+      toolbarPanel.setLayout(flowLayout1);
+      if (gridInsertButton) {
+        InsertButton b = new InsertButton();
+        toolbarPanel.add(b,null);
+        table.setInsertButton(b);
+      }
+      if (gridEditButton) {
+        EditButton b = new EditButton();
+        toolbarPanel.add(b,null);
+        table.setEditButton(b);
+      }
+      if (gridCopyButton) {
+        CopyButton b = new CopyButton();
+        toolbarPanel.add(b,null);
+        table.setCopyButton(b);
+      }
+      if (gridInsertButton || gridEditButton || gridCopyButton) {
+        SaveButton sb = new SaveButton();
+        toolbarPanel.add(sb,null);
+        table.setSaveButton(sb);
+        ReloadButton rb = new ReloadButton();
+        toolbarPanel.add(rb,null);
+        table.setReloadButton(rb);
+      }
+      if (gridDeleteButton) {
+        DeleteButton b = new DeleteButton();
+        toolbarPanel.add(b,null);
+        table.setDeleteButton(b);
+      }
+      if (gridFilterButton) {
+        FilterButton b = new FilterButton();
+        toolbarPanel.add(b,null);
+        table.setFilterButton(b);
+      }
+      if (gridExportButton) {
+        ExportButton b = new ExportButton();
+        toolbarPanel.add(b,null);
+        table.setExportButton(b);
+      }
+
+      if (toolbarPanel.getComponentCount()>0) {
+        topPanel.add(toolbarPanel, BorderLayout.SOUTH);
+        h += toolbarPanel.getPreferredSize().height;
+      }
+
+      split2.setDividerLocation(h);
     }
 
-
-    /**
-     * @return lookup grid
-     */
-    public final Grids getTable() {
-      return table;
-    }
 
   } // end inner class
 
@@ -1453,7 +1714,7 @@ public class LookupController {
    * @author Mauro Carniel
    * @version 1.0
    */
-  class LookupTreeFrame extends JDialog {
+  class LookupTreeFrame extends LookupFrame {
 
     /** lookup tree */
     private TreePanel treePanel = null;
@@ -1506,13 +1767,10 @@ public class LookupController {
    * @author Mauro Carniel
    * @version 1.0
    */
-  class LookupTreeGridFrame extends JDialog {
+  class LookupTreeGridFrame extends LookupFrame {
 
     /** filter tree */
     private TreePanel treePanel = null;
-
-    /** lookup grid */
-    private Grids table = null;
 
 
     public LookupTreeGridFrame(JFrame parentFrame,String title,TreePanel treePanel,Grids table) {
@@ -1532,6 +1790,7 @@ public class LookupController {
       split.setDividerLocation(200);
 
       JSplitPane split2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+      split2.setDividerSize(0);
       split2.add(table,split2.BOTTOM);
       split2.setDividerLocation(0);
 
@@ -1572,30 +1831,80 @@ public class LookupController {
       p.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),"exitAction");
       p.getActionMap().put("exitAction",exitAction);
 
+      JPanel topPanel = new JPanel();
+      BorderLayout borderLayout = new BorderLayout();
+      topPanel.setLayout(borderLayout);
+
+      split2.add(topPanel,split2.TOP);
+      int h = 0;
+
       if (codeSelectionWindow==TREE_GRID_AND_FILTER_FRAME) {
         // filter panel is added on top of the window...
         FilterPanel f = new FilterPanel(colProperties,table,Consts.FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT);
         f.init();
-        split2.add(f,split.TOP);
-        split2.setDividerLocation(f.getPreferredSize().height);
+
+        topPanel.add(f,BorderLayout.CENTER);
+        h = f.getPreferredSize().height;
       }
 
       if (codeSelectionWindow==TREE_GRID_AND_PANEL_FRAME && customPanel!=null) {
         // a custom panel is added on top of the window...
-        split2.add(customPanel,split.TOP);
         customPanel.setLookupGrid(table);
         customPanel.init();
-        split2.setDividerLocation(customPanel.getPreferredSize().height);
+
+        topPanel.add(customPanel,BorderLayout.CENTER);
+        h = customPanel.getPreferredSize().height;
       }
 
-    }
+      JPanel toolbarPanel = new JPanel();
+      FlowLayout flowLayout1 = new FlowLayout(FlowLayout.LEFT,5,5);
+      toolbarPanel.setLayout(flowLayout1);
+      if (gridInsertButton) {
+        InsertButton b = new InsertButton();
+        toolbarPanel.add(b,null);
+        table.setInsertButton(b);
+      }
+      if (gridEditButton) {
+        EditButton b = new EditButton();
+        toolbarPanel.add(b,null);
+        table.setEditButton(b);
+      }
+      if (gridCopyButton) {
+        CopyButton b = new CopyButton();
+        toolbarPanel.add(b,null);
+        table.setCopyButton(b);
+      }
+      if (gridInsertButton || gridEditButton || gridCopyButton) {
+        SaveButton sb = new SaveButton();
+        toolbarPanel.add(sb,null);
+        table.setSaveButton(sb);
+        ReloadButton rb = new ReloadButton();
+        toolbarPanel.add(rb,null);
+        table.setReloadButton(rb);
+      }
+      if (gridDeleteButton) {
+        DeleteButton b = new DeleteButton();
+        toolbarPanel.add(b,null);
+        table.setDeleteButton(b);
+      }
+      if (gridFilterButton) {
+        FilterButton b = new FilterButton();
+        toolbarPanel.add(b,null);
+        table.setFilterButton(b);
+      }
+      if (gridExportButton) {
+        ExportButton b = new ExportButton();
+        toolbarPanel.add(b,null);
+        table.setExportButton(b);
+      }
 
+      if (toolbarPanel.getComponentCount()>0) {
+        topPanel.add(toolbarPanel, BorderLayout.SOUTH);
+        h += toolbarPanel.getPreferredSize().height;
+      }
 
-    /**
-     * @return lookup grid
-     */
-    public final Grids getTable() {
-      return table;
+      split2.setDividerLocation(h);
+
     }
 
 

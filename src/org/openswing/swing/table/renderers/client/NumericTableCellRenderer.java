@@ -235,10 +235,10 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
     if(value.getClass() == Double.class || value.getClass() == Double.TYPE) {
       val = ((Double)value).doubleValue();
     }
-    if(value.getClass() == Float.class || value.getClass() == Float.TYPE) {
+    else if(value.getClass() == Float.class || value.getClass() == Float.TYPE) {
       val = ((Float)value).doubleValue();
     }
-    if(value.getClass() == Short.class || value.getClass() == Short.TYPE) {
+    else if(value.getClass() == Short.class || value.getClass() == Short.TYPE) {
       val = ((Short)value).doubleValue();
     }
     else if(value.getClass() == Long.class || value.getClass() == Long.TYPE) {

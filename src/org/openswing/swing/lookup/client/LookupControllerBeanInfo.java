@@ -30,6 +30,7 @@ public class LookupControllerBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _framePreferedSize = new PropertyDescriptor("framePreferedSize", beanClass, "getFramePreferedSize", "setFramePreferedSize");
       PropertyDescriptor _frameTitle = new PropertyDescriptor("frameTitle", beanClass, "getFrameTitle", "setFrameTitle");
       PropertyDescriptor _lookupDataLocator = new PropertyDescriptor("lookupDataLocator", beanClass, "getLookupDataLocator", "setLookupDataLocator");
+      PropertyDescriptor _lookupGridController = new PropertyDescriptor("lookupGridController", beanClass, "getLookupGridController", "setLookupGridController");
       PropertyDescriptor _lookupValueObjectClassName = new PropertyDescriptor("lookupValueObjectClassName", beanClass, "getLookupValueObjectClassName", "setLookupValueObjectClassName");
       PropertyDescriptor _maxSortedColumns = new PropertyDescriptor("maxSortedColumns", beanClass, "getMaxSortedColumns", "setMaxSortedColumns");
       PropertyDescriptor _onInvalidCode = new PropertyDescriptor("onInvalidCode", beanClass, "getOnInvalidCode", "setOnInvalidCode");
@@ -45,6 +46,7 @@ public class LookupControllerBeanInfo extends SimpleBeanInfo {
         _framePreferedSize,
         _frameTitle,
         _lookupDataLocator,
+        _lookupGridController,
         _lookupValueObjectClassName,
         _maxSortedColumns,
         _onInvalidCode};

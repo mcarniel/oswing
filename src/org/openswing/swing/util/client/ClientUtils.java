@@ -98,6 +98,9 @@ public class ClientUtils extends JApplet {
    * @return Image object
    */
   public static Image getImage(String imageName) {
+    if (Beans.isDesignTime())
+      return new ImageIcon(MDIFrame.class.getResource("/images/"+imageName)).getImage();
+
     try {
       Image i = null;
 

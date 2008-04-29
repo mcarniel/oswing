@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.plaf.basic.BasicGraphicsUtils;
 import java.util.ArrayList;
+import java.awt.FontMetrics;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -169,7 +170,16 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
       ex.printStackTrace();
     }
     JLabel l = (JLabel)this;
-//    setBounds(0,0,350,l.getHeight());
+    if (value!=null && value.toString()!=null) {
+      FontMetrics fm = l.getFontMetrics(l.getFont());
+      int w = 0;
+      try {
+        w = fm.stringWidth(value.toString());
+      }
+      catch (Exception ex2) {
+      }
+      setBounds(0,0,w,l.getHeight());
+    }
 
     DefaultMutableTreeNode node = null;
     ValueObject vo = null;

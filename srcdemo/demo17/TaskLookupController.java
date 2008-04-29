@@ -33,6 +33,7 @@ public class TaskLookupController extends LookupController {
 
   public TaskLookupController(SessionFactory sessions) {
     this.sessions = sessions;
+
     this.setLookupDataLocator(new LookupDataLocator() {
 
       /**
@@ -148,7 +149,20 @@ public class TaskLookupController extends LookupController {
     this.addLookup2ParentLink("taskCode", "task.taskCode");
     this.addLookup2ParentLink("description", "task.description");
     this.setAllColumnVisible(true);
+    this.setVisibleColumn("status",false);
     this.setPreferredWidthColumn("description", 200);
+    this.setGridInsertButton(true);
+    this.setGridEditButton(true);
+    this.setGridDeleteButton(true);
+    this.setGridExportButton(true);
+    this.setGridCopyButton(true);
+    this.setColumnEditableOnInsert("taskCode",true);
+    this.setColumnEditableOnInsert("description",true);
+    this.setColumnEditableOnEdit("taskCode",true);
+    this.setColumnEditableOnEdit("description",true);
+    this.setColumnRequired("taskCode",true);
+    this.setColumnRequired("description",true);
+    this.setLookupGridController(new TaskGridFrameController(sessions));
   }
 
 

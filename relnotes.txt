@@ -1,5 +1,22 @@
 
 
+Release Notes 1.5.8
+-------------------
+
+Final release 1.5.8 available
+Fixed bug in numeric/currency column: with double or float data types a ??? was showed instead of the correct data.
+Improved code snippets readability in the web site documentation.
+Added a Flash tutorial to web site, that shows how to create an MDI application having editable grid and master/detail functionalities.
+Improved lookup controller: 
+- now it is possible to customize lookup grid frame and lookup tree+grid frame, by specifying an ad hoc GridController class for grid
+- a buttons panel can be added on top of the lookup grid frame to insert/edit/delete/export/filter data directly from lookup grid
+Fixed problem in TreePanel on rendering long node descriptions, using java 1.6.
+Fixed problem with tooltip property in check-box/radio button controls.
+Change mandatory red simbol, by using an image instead of a "*" char: this normalize the dimension of mandatory symbol in all JVMs.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5.7
 -------------------
 
