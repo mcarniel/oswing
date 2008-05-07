@@ -32,6 +32,17 @@
   <object key="columns to export" value="Colonne da esportare" />
   <object key="export type" value="Formato di export" />
 
+<!-- import -->
+  <object key="Import records (CTRL+M)" value="Importazione dati (CTRL+M)" />
+  <object key="grid import" value="Importazione dati su griglia" />
+  <object key="import" value="Importazione" />
+  <object key="importmnemonic" value="M" />
+  <object key="columns to import" value="Colonne da importare" />
+  <object key="import type" value="Formato file da importare" />
+  <object key="file to import" value="File da importare" />
+  <object key="error while importing data" value="Errore durante l'importazione di dati" />
+  <object key="import completed" value="Importazione completata" />
+    
 <!-- quick filter -->
   <object key="To value" value="Al val." />
   <object key="Filter by" value="Filtro per" />

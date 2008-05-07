@@ -109,6 +109,9 @@ public class GridControl extends JPanel {
   /** export button */
   private ExportButton exportButton = null;
 
+  /** import button */
+  private ImportButton importButton = null;
+
   /** filter/sort button */
   private FilterButton filterButton = null;
 
@@ -332,7 +335,10 @@ public class GridControl extends JPanel {
         try {
           // compare current and last digests...
           String lastDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridDigest(functionId);
-          String currentDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getCurrentGridDigest(columnProperties,functionId);
+          String[] columnNames = new String[columnProperties.length];
+          for(int i=0;i<columnProperties.length;i++)
+            columnNames[i] = columnProperties[i].getColumnName();
+          String currentDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getCurrentGridDigest(columnNames,functionId);
           if (!currentDigest.equals(lastDigest)) {
             // restore grid digest and remove all grid profiles...
             ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridDigest(functionId,currentDigest);
@@ -555,6 +561,8 @@ public class GridControl extends JPanel {
         table.setInsertButton(insertButton);
       if (exportButton != null)
         table.setExportButton(exportButton);
+      if (importButton != null)
+        table.setImportButton(importButton);
       if (filterButton != null)
         table.setFilterButton(filterButton);
       if (copyButton != null)
@@ -1091,6 +1099,14 @@ public class GridControl extends JPanel {
 
 
   /**
+   * @return import button
+   */
+  public final ImportButton getImportButton() {
+    return importButton;
+  }
+
+
+  /**
    * @return filter button
    */
   public final FilterButton getFilterButton() {
@@ -1142,7 +1158,7 @@ public class GridControl extends JPanel {
 
   /**
    * Set the export button.
-   * @param insertButton export button
+   * @param exportButton export button
    */
   public final void setExportButton(ExportButton exportButton) {
     if (exportButton!=null)
@@ -1150,6 +1166,19 @@ public class GridControl extends JPanel {
     this.exportButton = exportButton;
     if (this.table!=null)
       this.table.setExportButton(exportButton);
+  }
+
+
+  /**
+   * Set the import button.
+   * @param importButton import button
+   */
+  public final void setImportButton(ImportButton importButton) {
+    if (importButton!=null)
+      importButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Import records (CTRL+M)"));
+    this.importButton = importButton;
+    if (this.table!=null)
+      this.table.setImportButton(importButton);
   }
 
 

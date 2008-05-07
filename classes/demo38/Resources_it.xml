@@ -1,0 +1,211 @@
+<objects>
+
+<!-- grid -->
+  <object key="Remove Filter" value="Rimuovi il filtro" />
+  <object key="This column is not sorteable" value="Questa colonna non &#232; ordinabile" />
+  <object key="Sorting not allowed" value="Ordinamento non consentito" />
+  <object key="Maximum number of sorted columns" value="Raggiunto massimo numero di colonne ordinate" />
+  <object key="Sorting not applicable" value="Ordinamento non applicabile" />
+  <object key="Selected Row" value="Riga selezionata" />
+  <object key="Selected Rows" value="Righe selezionate" />
+  <object key="Cancel changes and reload data?" value="Annullare le modifiche e ricaricare i dati?" />
+  <object key="Attention" value="Attenzione" />
+  <object key="Loading data..." value="Caricamento dati in corso..." />
+  <object key="Error while loading data" value="Errore durante il caricamento dei dati" />
+  <object key="Loading Data Error" value="Errore di caricamento" />
+  <object key="Delete Rows?" value="Cancellare le righe selezionate?" />
+  <object key="Delete Confirmation" value="Conferma cancellazione" />
+  <object key="Error while deleting rows." value="Errore durante la cancellazione delle righe." />
+  <object key="Deleting Error" value="Errore di cancellazione" />
+  <object key="Error while saving" value="Errore durante il salvataggio" />
+  <object key="Saving Error" value="Errore di salvataggio" />
+  <object key="A mandatory column is empty." value="Una colonna obbligatoria ha una cella vuota." />
+  <object key="Value not valid" value="Valore non valido" />
+  <object key="Select the previous row in grid" value="Seleziona la riga precedente in griglia" />
+  <object key="Select the next row in grid" value="Seleziona la riga successiva in griglia" />
+  
+<!-- export -->
+  <object key="grid export" value="Esportazione dati in griglia" />
+  <object key="export" value="Esportazione" />
+  <object key="exportmnemonic" value="E" />
+  <object key="column" value="Colonna" />
+  <object key="sel." value="Sel." />
+  <object key="you must select at least one column" value="E' necessario selezionare almeno una colonna" />
+  <object key="columns to export" value="Colonne da esportare" />
+  <object key="export type" value="Formato di export" />
+
+<!-- import -->
+  <object key="Import records (CTRL+M)" value="Importazione dati (CTRL+M)" />
+  <object key="grid import" value="Importazione dati su griglia" />
+  <object key="import" value="Importazione" />
+  <object key="importmnemonic" value="M" />
+  <object key="columns to import" value="Colonne da importare" />
+  <object key="import type" value="Formato file da importare" />
+  <object key="file to import" value="File da importare" />
+  <object key="error while importing data" value="Errore durante l'importazione di dati" />
+  <object key="import completed" value="Importazione completata" />
+    
+<!-- quick filter -->
+  <object key="To value" value="Al val." />
+  <object key="Filter by" value="Filtro per" />
+  <object key="From value" value="Dal val." />
+  <object key="equals" value="uguale a" />
+  <object key="contains" value="contiene" />
+  <object key="starts with" value="inizia con" />
+  <object key="ends with" value="finisce con" />
+
+<!-- lookup -->
+  <object key="Code is not correct." value="Codice non valido." />
+  <object key="Code Validation" value="Validazione Codice" />
+  <object key="Code Selection" value="Selezione Codice" />
+
+<!-- form -->
+  <object key="Confirm deliting data?" value="Conferma cancellazione dati?" />
+  <object key="Error while saving: incorrect data." value="Errore durante il salvataggio: dati non corretti." />
+  <object key="Error on deleting:" value="Errore durante la cancellazione:" />
+  <object key="Error on Loading" value="Errore di caricamento" />
+  <object key="Error while loading data:" value="Errore durante il caricamento dati:" />
+
+<!-- toolbar buttons -->
+  <object key="Delete record (CTRL+D)" value="Elimina record (CTRL+D)" />
+  <object key="Edit record (CTRL+E)" value="Modifica record (CTRL+E)" />
+  <object key="New record (CTRL+I)" value="Nuovo record (CTRL+I)" />
+  <object key="Reload record/Cancel current operation (CTRL+Z)" value="Ricarica/Annulla modifiche (CTRL+Z)" />
+  <object key="Save record (CTRL+S)" value="Salva record (CTRL+S)" />
+  <object key="Copy record (CTRL+C)" value="Duplica record (CTRL+C)" />
+  <object key="Export record (CTRL+X)" value="Esporta i dati (CTRL+X)" />
+  <object key="Load the first block of records" value="Carica il primo blocco di record" />
+  <object key="Load the previous block of records" value="Carica il precedente blocco di record" />
+  <object key="Load the next block of records" value="Carica il successivo blocco di record" />
+  <object key="Load the last block of records" value="Carica l'ultimo blocco di record" />
+
+  <object key="Insert" value="Nuovo" />
+  <object key="edit" value="Modifica" />
+  <object key="Copy" value="Copia" />
+  <object key="Delete" value="Elimina" />
+  <object key="Save" value="Salva" />
+  <object key="Reload" value="Ricarica" />
+  <object key="Export" value="Exporta" />
+  <object key="Filter" value="Filtra" />
+  
+<!-- binding messages -->
+  <object key="value must be of type " value="Il valore deve essere di tipo " />
+  <object key="decimal number" value="numerico decimale " />
+  <object key="value is " value="Il valore &#232; " />
+  <object key="optional" value="opzionale" />
+  <object key="minimum value is " value="Il minimo valore &#232; " />
+  <object key="required" value="obbligatorio" />
+  <object key="contains a value not valid" value="contiene un valore non valido" />
+  <object key="text" value="testo" />
+  <object key="Date" value="data" />
+  <object key="Value is required" value="IL valore &#232; obbligatorio" />
+  <object key="maximum value is " value="Il massimo valore &#232; " />
+  <object key="yes/no" value="si/no" />
+  <object key="long number" value="numerico lungo" />
+  <object key="integer number" value="numerico intero" />
+  <object key="Cannot assign component value" value="Impossibile assegnare il valore" />
+
+<!-- ClientUtils -->
+  <object key="Server Comunication Error" value="Errore di comunicazione con il server" />
+  <object key="Server Error" value="Errore sul server" />
+
+<!-- MDI Frame -->
+  <object key="file" value="File" />
+  <object key="exit" value="Esci" />
+  <object key="filemnemonic" value="F" />
+  <object key="exitmnemonic" value="E" />
+  <object key="change user" value="Cambio Utente" />
+  <object key="changeusermnemonic" value="U" />
+  <object key="changelanguagemnemonic" value="L" />
+  <object key="help" value="Help" />
+  <object key="about" value="Informazioni" />
+  <object key="helpmnemonic" value="H" />
+  <object key="aboutmnemonic" value="I" />
+  <object key="are you sure to quit application?" value="Uscire dall'applicazione?" />
+  <object key="quit application" value="Uscita dall'applicazione" />
+  <object key="about" value="Informazioni" />
+  <object key="forcegcmnemonic" value="F" />
+  <object key="Force GC" value="Forza GC" />
+  <object key="Info" value="Info" />
+  <object key="About" value="Informazioni" />
+  <object key="Java Heap" value="Java Heap" />
+  <object key="used" value="usata" />
+  <object key="allocated" value="allocata" />
+  <object key="change language" value="Cambio lingua" />
+  <object key="changemnemonic" value="L" />
+  <object key="cancelmnemonic" value="A" />
+  <object key="cancel" value="Annulla" />
+  <object key="Functions" value="Funzioni" />
+  <object key="Error while executing function" value="Errore durante l'esecuzione della funzione" />
+  <object key="Error" value="Errore" />
+  <object key="infoPanel" value="Informazioni" />
+  <object key="imageButton" value="Logo" />
+  <object key="Window" value="Finestre" />
+  <object key="windowmnemonic" value="N" />
+  <object key="Close All" value="Chiudi tutto" />
+  <object key="closeallmnemonic" value="T" />
+  <object key="Press ENTER to find function" value= "Premere ENTER per trovare la funzione" />
+  <object key="Find Function" value= "Trova Funzione" />
+  <object key="Operation in progress..." value="Elaborazione in corso..." />
+  <object key="close window" value="Chiudi finestra" />
+  <object key="reduce to icon" value="Riduci ad icona" />
+
+<!-- server -->
+
+  <object key="Client request not supported" value="La richiesta del client non &#232; supportata" />
+  <object key="User disconnected" value="Utente disconnnesso" />
+
+<!-- wizard -->
+
+  <object key="back" value="Indietro" />
+  <object key="next" value="Avanti" />
+  <object key="finish" value="Fine" />
+
+<!-- image panel -->
+
+  <object key="image selection" value="Importa immagine" />
+
+<!-- tip panel -->
+  <object key="show 'tip of the day' after launching" value="Visualizza il 'tip of the day' ad ogni avvio" />
+  <object key="previous tip" value="Tip precedente" />
+  <object key="next tip" value="Tip successivo" />
+  <object key="close" value="Chiudi" />    
+  <object key="tip of the day" value="Tip of the day" /> 
+
+<!-- search box -->
+  <object key="search" value="Trova"/> 
+  <object key="not found" value="Non trovato"/> 
+        
+  
+<!-- grid profile -->
+  <object key="grid profile management" value="Gestione profilo in griglia"/> 
+  <object key="restore default grid profile" value="Ripristina profilo predefinito"/> 
+  <object key="create new grid profile" value="Crea nuovo profilo"/> 
+  <object key="profile description" value="Descrizione nuovo profilo"/> 
+  <object key="remove current grid profile" value="Rimuove profilo corrente"/>   
+  <object key="select grid profile" value="Selezione profilo"/>   
+  <object key="default profile" value="Profilo predefinito"/>   
+
+<!-- application translations -->
+      <object key="users" value="Utenti" />
+      <object key="username" value="Username" />
+      <object key="password" value="Password" />
+      <object key="description" value="Descrizione" />
+      <object key="Authentication" value="Autenticazione" />
+      <object key="Login" value="Login" />
+      <object key="L" value="L" />
+      <object key="Exit" value="Annulla" />
+      <object key="E" value="A" />
+      <object key="Store Account" value="Memorizza Account" />
+      <object key="DEMO38" value="DEMO38" />      
+
+
+  <currencySymbol>E</currencySymbol>
+  <decimalSymbol>,</decimalSymbol>
+  <groupingSymbol>.</groupingSymbol>
+  <dateFormat>DMY</dateFormat>
+  <showCenturyInDateFormat>true</showCenturyInDateFormat>
+  <dateFormatSeparator>/</dateFormatSeparator>
+  <timeFormat>HH:mm</timeFormat>
+
+</objects>

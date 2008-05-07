@@ -7,6 +7,7 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.tree.*;
 
 import org.openswing.swing.message.receive.java.*;
@@ -51,7 +52,7 @@ public class TreeGridPanel extends JPanel {
   private ArrayList gridColumnSizes = new ArrayList();
 
   /** expandable tree */
-  private TreeGrid tree = new TreeGrid(new TreeGridModel(),"",gridColumnSizes,ClientSettings.PERC_TREE_FOLDER,ClientSettings.PERC_TREE_NODE);
+  private TreeGrid tree = new TreeGrid(new TreeGridModel(),"",gridColumnSizes,ClientSettings.PERC_TREE_FOLDER,ClientSettings.PERC_TREE_NODE,null);
 
   /** tree root */
   private DefaultMutableTreeNode treeRoot;
@@ -110,15 +111,15 @@ public class TreeGridPanel extends JPanel {
   }
 
 
-  public void addNotify() {
+  public final void addNotify() {
     super.addNotify();
     if (firstTime && loadWhenVisibile) {
       firstTime = false;
-      new Thread() {
+       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
           createTree();
         }
-      }.start();
+      });
     }
   }
 
@@ -127,13 +128,15 @@ public class TreeGridPanel extends JPanel {
    * Force tree reloading.
    */
   public final void reloadTree() {
-    new Thread() {
+    SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         if (!loadWhenVisibile && firstTime) {
           firstTime = false;
           createTree();
           if (expandAllNodes)
             expandAllNodes();
+          else
+            tree.getTree().collapseRow(0);
         }
         else {
           Response response = treeDataLocator.getTreeModel(tree.getTree());
@@ -144,9 +147,11 @@ public class TreeGridPanel extends JPanel {
           recreateTree();
           if (expandAllNodes)
             expandAllNodes();
+          else
+            tree.getTree().collapseRow(0);
         }
       }
-    }.start();
+    });
   }
 
 
@@ -217,7 +222,20 @@ public class TreeGridPanel extends JPanel {
   private void recreateTree() {
 
     treePane.getViewport().remove(tree);
-    tree = new TreeGrid(new TreeGridModel(treeRoot),gridColumns.get(0).toString(),gridColumnSizes,folderIconName,leavesImageName);
+
+    TreeExpansionListener[] l1 = tree.getTree().getTreeExpansionListeners();
+    TreeWillExpandListener[] l2 = tree.getTree().getTreeWillExpandListeners();
+    TreeSelectionListener[] l3 = tree.getTree().getTreeSelectionListeners();
+
+    tree = new TreeGrid(new TreeGridModel(treeRoot),gridColumns.get(0).toString(),gridColumnSizes,folderIconName,leavesImageName,(Format)columnFormatters.get(0));
+    tree.getTree().setShowsRootHandles(true);
+    for(int i=0;i<l1.length;i++)
+      tree.getTree().addTreeExpansionListener(l1[i]);
+    for(int i=0;i<l2.length;i++)
+      tree.getTree().addTreeWillExpandListener(l2[i]);
+    for(int i=0;i<l3.length;i++)
+      tree.getTree().addTreeSelectionListener(l3[i]);
+
     tree.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
 //    tree.getTree().setShowsRootHandles(true);
@@ -246,6 +264,11 @@ public class TreeGridPanel extends JPanel {
       }
     };
     tree.addMouseListener(ml);
+
+    if (expandAllNodes)
+      expandAllNodes();
+    else
+      tree.getTree().collapseRow(0);
   }
 
 

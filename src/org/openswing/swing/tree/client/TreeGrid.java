@@ -2,6 +2,7 @@ package org.openswing.swing.tree.client;
 
 
 import java.lang.reflect.*;
+import java.text.*;
 import java.util.*;
 
 import java.awt.*;
@@ -52,11 +53,12 @@ public class TreeGrid extends JTable {
 
     private String attributeName;
 
-    public TreeGrid(TreeTableModel treeTableModel,String attributeName,ArrayList gridColumnSizes,String folderIconName,String leavesImageName) {
+
+    public TreeGrid(TreeTableModel treeTableModel,String attributeName,ArrayList gridColumnSizes,String folderIconName,String leavesImageName,Format formatter) {
       super();
       this.attributeName = attributeName;
 
-      treeRenderer = new TreeGridNodeRenderer(folderIconName,leavesImageName);
+      treeRenderer = new TreeGridNodeRenderer(folderIconName,leavesImageName,formatter);
 
       // Create the tree. It will be used as a renderer and editor.
       tree = new TreeTableCellRenderer(treeTableModel);
@@ -94,6 +96,7 @@ public class TreeGrid extends JTable {
       setForeground(ClientSettings.GRID_CELL_FOREGROUND);
       setSelectionForeground(ClientSettings.GRID_SELECTION_FOREGROUND);
       setSelectionBackground(ClientSettings.GRID_SELECTION_BACKGROUND);
+
     }
 
 
@@ -245,14 +248,18 @@ public class TreeGrid extends JTable {
       ImageIcon leafIcon = null;
       TreePanel treePanel;
 
+      /** formatter to use for this column (optional, may be null) */
+      private Format formatter;
+
 
       /**
        * Costructor.
        * @param tree node container
        */
-      public TreeGridNodeRenderer(String folderIconName,String leavesImageName) {
+      public TreeGridNodeRenderer(String folderIconName,String leavesImageName,Format formatter) {
         try {
           this.treePanel = treePanel;
+          this.formatter = formatter;
           folderIcon = new ImageIcon(ClientUtils.getImage(folderIconName));
           leafIcon = new ImageIcon(ClientUtils.getImage(leavesImageName));
           this.setOpaque(false);
@@ -292,6 +299,8 @@ public class TreeGrid extends JTable {
             Method getter = vo.getClass().getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]);
             value = getter.invoke(vo,new Object[0]);
             if (value!=null) {
+              if (formatter!=null)
+                value = formatter.format(value);
               l.setText(value.toString());
             }
           }

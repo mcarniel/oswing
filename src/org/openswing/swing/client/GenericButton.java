@@ -52,6 +52,9 @@ public class GenericButton extends JButton {
   /** flag used to execute the action event in a separated thread (useful for heavy server executions); default value: false */
   private boolean executeAsThread = false;
 
+  /** define whether showing image/text on default buttons (insert, edit, ...); allowed values: Consts.BUTTON_IMAGE_ONLY, Consts.BUTTON_TEXT_ONLY, Consts.BUTTON_IMAGE_AND_TEXT; default value: ClientSettings.BUTTON_BEHAVIOR */
+  private int buttonBehavior = ClientSettings.BUTTON_BEHAVIOR;
+
 
   public GenericButton() {
     super.addActionListener(new ActionListener() {
@@ -71,7 +74,7 @@ public class GenericButton extends JButton {
 
   public GenericButton(ImageIcon imageIcon) {
     this();
-    if (ClientSettings.BUTTON_BEHAVIOR==Consts.BUTTON_IMAGE_ONLY) {
+    if (buttonBehavior==Consts.BUTTON_IMAGE_ONLY) {
       super.setIcon(imageIcon);
       setPreferredSize(new Dimension(32,32));
     }
@@ -109,7 +112,7 @@ public class GenericButton extends JButton {
       }
 
       w += +this.getMargin().left+this.getMargin().right+5;
-      if (ClientSettings.BUTTON_BEHAVIOR==Consts.BUTTON_TEXT_ONLY) {
+      if (buttonBehavior==Consts.BUTTON_TEXT_ONLY) {
         setPreferredSize(new Dimension(w,32));
       }
       else {
@@ -126,7 +129,7 @@ public class GenericButton extends JButton {
 
 
   public void setText(String t) {
-    if (ClientSettings.BUTTON_BEHAVIOR!=Consts.BUTTON_IMAGE_ONLY)
+    if (buttonBehavior!=Consts.BUTTON_IMAGE_ONLY)
       super.setText(ClientSettings.getInstance().getResources().getResource(t));
   }
 
@@ -235,6 +238,23 @@ public class GenericButton extends JButton {
    */
   public final void setExecuteAsThread(boolean executeAsThread) {
     this.executeAsThread = executeAsThread;
+  }
+
+
+  /**
+   * @return define whether showing image/text on default buttons (insert, edit, ...); allowed values: Consts.BUTTON_IMAGE_ONLY, Consts.BUTTON_TEXT_ONLY, Consts.BUTTON_IMAGE_AND_TEXT
+   */
+  public final int getButtonBehavior() {
+    return buttonBehavior;
+  }
+
+
+  /**
+   * Define whether showing image/text on default buttons (insert, edit, etc.)
+   * @param buttonBehavior allowed values: Consts.BUTTON_IMAGE_ONLY, Consts.BUTTON_TEXT_ONLY, Consts.BUTTON_IMAGE_AND_TEXT
+   */
+  public final void setButtonBehavior(int buttonBehavior) {
+    this.buttonBehavior = buttonBehavior;
   }
 
 

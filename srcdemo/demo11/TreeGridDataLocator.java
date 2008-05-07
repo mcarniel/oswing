@@ -23,7 +23,6 @@ public class TreeGridDataLocator extends TreeDataLocator {
 
 
   public TreeGridDataLocator() {
-    this.setNodeNameAttribute("itemCode");
   }
 
 

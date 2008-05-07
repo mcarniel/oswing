@@ -1,5 +1,33 @@
 
 
+Release Notes 1.5.9
+-------------------
+
+Final release 1.5.9 available
+Created "import data" button, that can be linked to a grid control and allows to import records in grid starting from an XLS or CSV file.
+Updated "demo10" sample application to show how to link new import button to an editable grid.
+Improved LoginDialog:
+- added constructor to support language selection in login dialog
+- added constructor to support password encryption, based on PBEWithMD5AndDES algorithm, to allow encrypted password storing (e.g. in database)
+Created CryptUtils utility class, to support encryption and decryption of bytes[] or String objects.
+Added "demo38" to show how to configure a LoginDialog with language selection, password encryption, encrypted password storing in database and account storing in local file system.
+Added "buttonBehavior" property to generic buttons, so it is possible to override the global property ClientSettings.BUTTON_BEHAVIOR
+to redefine button content: image only, text only or image and text.
+Improved TreeGridPanel:
+- by allowing to use some listeners in tree: TreeExpansionListener, TreeWillExpandListener and TreeSelectionListener
+- by supporting data formatting in the first column of the grid
+Added "demo37" sample application, to show how to use the TreeGridPanel component, whose tree nodes are dinamically fetched,
+when expanding a single node.
+Applied little change to algorithm that assigns mnemonics to menu items in MDI's menu bar: now it applies only letters or digits.
+Added support for hiperlink navigation in about dialog when its content is HTML based.
+Fixed a bug in date control when language identifier is in form "xx_yy".
+Fixed a bug in grid profile management.
+Change default behavior of lookup control, using new global property ClientSettings.FORCE_FOCUS_ON_LOOKUP_CONTROL: 
+now as default value (false) the focus is not automatically set over lookup button if code field is filled and user press TAB.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5.8
 -------------------
 

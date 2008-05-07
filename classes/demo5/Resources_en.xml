@@ -33,6 +33,17 @@
   <object key="columns to export" value="Columns to export" />
   <object key="export type" value="Export format" />
 
+<!-- import -->
+  <object key="Import records (CTRL+M)" value="Import records (CTRL+M)" />
+  <object key="grid import" value="Grid import" />
+  <object key="import" value="Import" />
+  <object key="importmnemonic" value="M" />
+  <object key="columns to import" value="Columns to import" />
+  <object key="import type" value="Import file format" />
+  <object key="file to import" value="File to import" />
+  <object key="error while importing data" value="Error while importing data" />
+  <object key="import completed" value="Import completed" />
+    
 <!-- quick filter -->
   <object key="To value" value="To value" />
   <object key="Filter by" value="Filter by" />

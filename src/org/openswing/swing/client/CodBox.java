@@ -8,6 +8,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import org.openswing.swing.lookup.client.*;
+import org.openswing.swing.util.client.ClientSettings;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -62,7 +63,7 @@ public class CodBox extends JTextField {
     this.addKeyListener(new KeyAdapter() {
 
       public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode()==e.VK_TAB) {
+        if (e.getKeyCode()==e.VK_TAB && ClientSettings.FORCE_FOCUS_ON_LOOKUP_CONTROL) {
           CodBox.this.transferFocus();
           if (CodBox.this.getText().trim().length()>0 &&
               container instanceof CodLookupControl)
@@ -108,8 +109,9 @@ public class CodBox extends JTextField {
       getPreferredSize().height
     ));
 
-    // disable transfer focus management: in this way TAB event will be listened...
-    setFocusTraversalKeysEnabled(false);
+    if (ClientSettings.FORCE_FOCUS_ON_LOOKUP_CONTROL)
+      // disable transfer focus management: in this way TAB event will be listened...
+      setFocusTraversalKeysEnabled(false);
   }
 
 

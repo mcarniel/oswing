@@ -22,9 +22,12 @@ public class GenericButtonBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
-      PropertyDescriptor _enabled = new PropertyDescriptor("enabled", beanClass, null, "setEnabled");
+      PropertyDescriptor _buttonBehavior = new PropertyDescriptor("buttonBehavior", beanClass, "getButtonBehavior", "setButtonBehavior");
+      _buttonBehavior.setPropertyEditorClass(org.openswing.swing.client.ButtonBehaviorEditor.class);
+      PropertyDescriptor _enabled = new PropertyDescriptor("enabled", beanClass, "isEnabled", "setEnabled");
       PropertyDescriptor _executeAsThread = new PropertyDescriptor("executeAsThread", beanClass, "isExecuteAsThread", "setExecuteAsThread");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _buttonBehavior,
         _enabled,
         _executeAsThread};
       return pds;

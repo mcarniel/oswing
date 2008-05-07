@@ -3,8 +3,6 @@ package org.openswing.swing.table.profiles.java;
 import java.io.*;
 import java.util.*;
 
-import org.openswing.swing.table.columns.client.*;
-
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -108,11 +106,11 @@ public abstract class GridProfileManager {
    * @return retrieve the "grid digest", i.e. a value that globally identify the current grid configuration; this digest is used to check if grid columns have been changed from last grid execution: in this case all grid profiles will be deleted
    * @throws Throwable throwed if fetching operation does not correctly accomplished
    */
-  public final String getCurrentGridDigest(Column[] columnProperties,String functionId) throws Throwable {
+  public final String getCurrentGridDigest(String[] columnNames,String functionId) throws Throwable {
     try {
       String colsName = "";
-      for(int i=0;i<columnProperties.length;i++)
-        colsName += columnProperties[i].getColumnName()+",";
+      for(int i=0;i<columnNames.length;i++)
+        colsName += columnNames[i]+",";
       colsName += functionId;
 
       return colsName;

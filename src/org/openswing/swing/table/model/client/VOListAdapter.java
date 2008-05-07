@@ -467,7 +467,16 @@ public class VOListAdapter {
 
 
   /**
-   * @param colIndex indice della colonna del modello dati
+   * @param colIndex column index in table model
+   * @return column type
+   */
+  public final int getFieldType(int colIndex) {
+    return colProperties[colIndex].getColumnType();
+  }
+
+
+  /**
+   * @param colIndex column index in table model
    * @return column preferred width
    */
   public final int getFieldPreferredWidth(int colIndex) {
@@ -476,7 +485,7 @@ public class VOListAdapter {
 
 
   /**
-   * @param colIndex indice della colonna del modello dati
+   * @param colIndex column index in table model
    * @return column minimum width
    */
   public final int getFieldMinWidth(int colIndex) {
@@ -485,7 +494,7 @@ public class VOListAdapter {
 
 
   /**
-   * @param colIndex indice della colonna del modello dati
+   * @param colIndex column index in table model
    * @return column maximum width
    */
   public final int getFieldMaxWidth(int colIndex) {
@@ -494,7 +503,7 @@ public class VOListAdapter {
 
 
   /**
-   * @param colIndex indice della colonna del modello dati
+   * @param colIndex column index in table model
    * @return column maximum width
    */
   public final Column getFieldColumn(int colIndex) {

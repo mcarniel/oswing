@@ -3,7 +3,7 @@ package org.openswing.swing.table.client;
 
 import java.io.*;
 import java.util.*;
-
+import java.text.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -11,6 +11,7 @@ import javax.swing.*;
 import org.openswing.swing.client.*;
 import org.openswing.swing.export.client.*;
 import org.openswing.swing.export.java.*;
+import org.openswing.swing.importdata.client.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.*;
@@ -20,6 +21,7 @@ import org.openswing.swing.table.java.*;
 import org.openswing.swing.table.model.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import org.openswing.swing.importdata.java.*;
 
 
 /**
@@ -75,6 +77,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
   /** button linked to the grid, used to export data */
   private ExportButton exportButton = null;
+
+  /** button linked to the grid, used to import data */
+  private ImportButton importButton = null;
 
   /** button linked to the grid, used to set INSERT mode (copy the previous row on grid) */
   private CopyButton copyButton = null;
@@ -161,7 +166,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** collection of GenericButton objects to disable when the specified attribute will be setted to the specified value; pairs of type (GenericButton object, List of GenericButtonController objects) */
   private Hashtable buttonsToDisable = new Hashtable();
 
-      /** maximum number of rows to insert by pressing "down" key; default value: 1 */
+  /** maximum number of rows to insert by pressing "down" key; default value: 1 */
   private int maxNumberOfRowsOnInsert = 1;
 
   /** current number of new rows  */
@@ -541,6 +546,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           insertButton.setEnabled(false);
         if (exportButton!=null)
           exportButton.setEnabled(false);
+        if (importButton!=null)
+          importButton.setEnabled(false);
         if (copyButton!=null)
           copyButton.setEnabled(false);
         if (editButton!=null)
@@ -895,10 +902,18 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
-   * @return exportbutton linked to grid
+   * @return export button linked to grid
    */
   public ExportButton getExportButton() {
     return exportButton;
+  }
+
+
+  /**
+   * @return import button linked to grid
+   */
+  public ImportButton getImportButton() {
+    return importButton;
   }
 
 
@@ -954,6 +969,19 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     this.exportButton = exportButton;
     if (exportButton != null)
       exportButton.addDataController(this);
+  }
+
+
+  /**
+   * Set import button linked to grid.
+   * @param importButton import button linked to grid
+   */
+  public void setImportButton(ImportButton importButton) {
+    if (this.importButton != null)
+      this.importButton.removeDataController(this);
+    this.importButton = importButton;
+    if (importButton != null)
+      importButton.addDataController(this);
   }
 
 
@@ -1109,6 +1137,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           getInsertButton().setEnabled(false);
         if (getExportButton()!=null)
           getExportButton().setEnabled(false);
+        if (importButton!=null)
+          importButton.setEnabled(false);
         if (getCopyButton()!=null)
           getCopyButton().setEnabled(false);
         if (getEditButton()!=null)
@@ -1200,6 +1230,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               getInsertButton().setEnabled(false);
             if (getExportButton()!=null)
               getExportButton().setEnabled(false);
+            if (getImportButton()!=null)
+              getImportButton().setEnabled(false);
             if (getCopyButton()!=null)
               getCopyButton().setEnabled(false);
             if (getEditButton()!=null)
@@ -1317,6 +1349,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             getInsertButton().setEnabled(false);
           if (getExportButton()!=null)
             getExportButton().setEnabled(false);
+          if (getImportButton()!=null)
+            getImportButton().setEnabled(false);
           if (getCopyButton()!=null)
             getCopyButton().setEnabled(false);
           if (getEditButton()!=null)
@@ -1423,6 +1457,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           getInsertButton().setEnabled(false);
         if (getExportButton()!=null)
           getExportButton().setEnabled(false);
+        if (getImportButton()!=null)
+          getImportButton().setEnabled(false);
         if (getCopyButton()!=null)
           getCopyButton().setEnabled(false);
         if (getEditButton()!=null)
@@ -1530,6 +1566,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         getInsertButton().setEnabled(true);
       if (getExportButton()!=null)
         getExportButton().setEnabled(true);
+      if (getImportButton()!=null)
+        getImportButton().setEnabled(true);
       if (getCopyButton()!=null)
         getCopyButton().setEnabled(true);
       this.gridController.afterReloadGrid();
@@ -1634,6 +1672,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         getInsertButton().setEnabled(true);
       if (getExportButton()!=null)
         getExportButton().setEnabled(true);
+      if (getImportButton()!=null)
+        getImportButton().setEnabled(true);
       if (getCopyButton()!=null)
         getCopyButton().setEnabled(model.getRowCount()>0);
       if (getEditButton()!=null)
@@ -1742,6 +1782,26 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       Logger.error(this.getClass().getName(),"export","You cannot export data: grid must be in read only mode.",null);
   }
 
+
+  /**
+   * Method called when user clicks on import button.
+   */
+  public final void importData() {
+    if (getMode()==Consts.READONLY) {
+      HashSet colsVisible = new HashSet();
+      for(int i=0;i<colProps.length;i++)
+        if (colProps[i].isVisible())
+          colsVisible.add(colProps[i].getColumnName());
+
+      ImportDialog d = new ImportDialog(
+          ClientUtils.getParentFrame(this),
+          this,
+          colsVisible
+      );
+    }
+    else
+      Logger.error(this.getClass().getName(),"export","You cannot import data: grid must be in read only mode.",null);
+  }
 
 
 
@@ -1899,6 +1959,183 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
+   * Method called by ImportDDialog to import data.
+   * @param columnTypes column types
+   * @param importAttrColumns attribute names related to the columns to import
+   */
+  public final void importData(ArrayList columnTypes,ArrayList importAttrColumns,String importType) {
+    JFileChooser f = new JFileChooser();
+    f.setDialogTitle(ClientSettings.getInstance().getResources().getResource("file to import"));
+    f.setApproveButtonText(ClientSettings.getInstance().getResources().getResource("import"));
+    f.setApproveButtonMnemonic(ClientSettings.getInstance().getResources().getResource("importmnemonic").charAt(0));
+    if (importType.equals(ImportOptions.XLS_FORMAT)) {
+      f.setFileFilter(new javax.swing.filechooser.FileFilter() {
+
+        public boolean accept(File f) {
+          return f.isDirectory() || f.getName().toLowerCase().endsWith(".xls");
+        }
+
+        public String getDescription() {
+          return "Excel documents (*.xls)";
+        }
+
+      });
+    }
+    else if (importType.equals(ImportOptions.CSV_FORMAT1) || importType.equals(ImportOptions.CSV_FORMAT2))
+      f.setFileFilter(new javax.swing.filechooser.FileFilter() {
+
+        public boolean accept(File f) {
+          return f.isDirectory() || f.getName().toLowerCase().endsWith(".csv") || f.getName().toLowerCase().endsWith(".txt");
+        }
+
+        public String getDescription() {
+          return "Comma separated documents (*.csv;*.txt)";
+        }
+
+      });
+
+    int res = f.showOpenDialog(ClientUtils.getParentFrame(this));
+    if (res==f.APPROVE_OPTION) {
+      File file = f.getSelectedFile();
+      InputStream in = null;
+      try {
+        in = new FileInputStream(file);
+      }
+      catch (Exception ex2) {
+        Logger.error(this.getClass().getName(), "import", "Error while importing data:\n"+ex2.getMessage(), ex2);
+        OptionPane.showMessageDialog(
+          ClientUtils.getParentFrame(this),
+          ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+ex2.getMessage(),
+          "Error",
+          JOptionPane.ERROR_MESSAGE
+        );
+        return;
+      }
+      ArrayList rows = null;
+      try {
+        if (importType.equals(ImportOptions.XLS_FORMAT))
+
+          // import the Excel document...
+          rows = new ImportFromExcel().importData(importAttrColumns.size(),in);
+        else if (importType.equals(ImportOptions.CSV_FORMAT1) || importType.equals(ImportOptions.CSV_FORMAT2)) {
+          int[] colTypes = new int[columnTypes.size()];
+          for(int i=0;i<columnTypes.size();i++)
+            colTypes[i] = ((Integer)columnTypes.get(i)).intValue();
+
+          SimpleDateFormat sdfdate = new SimpleDateFormat(ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE));
+          SimpleDateFormat sdftime = new SimpleDateFormat(ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_TIME));
+          SimpleDateFormat sdfdatetime = new SimpleDateFormat(ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE_TIME));
+
+          rows = new ImportFromCSV(importType,sdfdate,sdftime,sdfdatetime).importData(colTypes,importAttrColumns,in);
+        }
+      } catch (Throwable ex) {
+        Logger.error(this.getClass().getName(), "import",
+                     "Error while importing data:\n" + ex.getMessage(), ex);
+        OptionPane.showMessageDialog(
+          ClientUtils.getParentFrame(this),
+          ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+ex.getMessage(),
+          "Error",
+          JOptionPane.ERROR_MESSAGE
+        );
+        return;
+      }
+      finally {
+        try {
+          if (in != null)
+            in.close();
+        }
+        catch (Exception ex1) {
+        }
+      }
+      try {
+
+        ValueObject vo = null;
+        String attrName = null;
+        Object[] row = null;
+        ArrayList vos = new ArrayList();
+        int[] rowNumbers = new int[rows.size()];
+        while(rows.size()>0) {
+          rowNumbers[rowNumbers.length-rows.size()] = rowNumbers.length-rows.size();
+          row = (Object[])rows.get(0);
+          rows.remove(0);
+          vo = (ValueObject)model.getValueObjectType().newInstance();
+          gridController.createValueObject(vo);
+          model.insertObjectAt(vo,0);
+          for(int j=0;j<importAttrColumns.size();j++) {
+            attrName = importAttrColumns.get(j).toString();
+            model.setValueAt(row[j],0,modelAdapter.getFieldIndex(attrName));
+          }
+          vos.add(vo);
+        }
+
+        if (maxNumberOfRowsOnInsert==1) {
+          Response result = null;
+          ArrayList singleVO = new ArrayList();
+          int[] singleIndex = new int[] {0};
+          for(int j=0;j<rowNumbers.length;j++) {
+            singleIndex[0] = rowNumbers[j];
+            singleVO.clear();
+            singleVO.add(vos.get(j));
+            result = gridController.insertRecords(singleIndex,singleVO);
+            if (result.isError()) {
+              OptionPane.showMessageDialog(
+                ClientUtils.getParentFrame(this),
+                ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+result.getErrorMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+              );
+              for(int i=j;i<rowNumbers.length;i++)
+                model.removeObjectAt(0);
+              lastIndex = lastIndex+j;
+              return;
+            }
+          }
+          lastIndex = lastIndex+rowNumbers.length;
+          OptionPane.showMessageDialog(
+            ClientUtils.getParentFrame(this),
+            ClientSettings.getInstance().getResources().getResource("import completed"),
+            "import",
+            JOptionPane.INFORMATION_MESSAGE
+          );
+        }
+        else {
+          Response result = gridController.insertRecords(rowNumbers,vos);
+          if (result.isError()) {
+            OptionPane.showMessageDialog(
+              ClientUtils.getParentFrame(this),
+              ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+result.getErrorMessage(),
+              "Error",
+              JOptionPane.ERROR_MESSAGE
+            );
+            for(int i=0;i<rowNumbers.length;i++)
+              model.removeObjectAt(0);
+          }
+          else {
+            lastIndex = lastIndex+rowNumbers.length;
+            OptionPane.showMessageDialog(
+              ClientUtils.getParentFrame(this),
+              ClientSettings.getInstance().getResources().getResource("import completed"),
+              "import",
+              JOptionPane.INFORMATION_MESSAGE
+            );
+          }
+        }
+      }
+      catch (Throwable ex) {
+        Logger.error(this.getClass().getName(), "import",
+                     "Error while importing data:\n" + ex.getMessage(), ex);
+        OptionPane.showMessageDialog(
+          ClientUtils.getParentFrame(this),
+          ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+ex.getMessage(),
+          "Error",
+          JOptionPane.ERROR_MESSAGE
+        );
+      }
+    }
+  }
+
+
+  /**
    * Method called when user clicks on copy button.
    */
   public final void copy() {
@@ -1918,6 +2155,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         }
         if (getExportButton() != null) {
           getExportButton().setEnabled(false);
+        }
+        if (getImportButton() != null) {
+          getImportButton().setEnabled(false);
         }
         if (getCopyButton() != null) {
           getCopyButton().setEnabled(false);
@@ -2001,6 +2241,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         getInsertButton().setEnabled(false);
       if (getExportButton()!=null)
         getExportButton().setEnabled(false);
+      if (getImportButton() != null)
+        getImportButton().setEnabled(false);
       if (getCopyButton()!=null)
         getCopyButton().setEnabled(false);
       if (getDeleteButton()!=null)
@@ -2129,7 +2371,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     Response response = null;
     if (getMode()!=Consts.READONLY) {
       try {
-        // all columns are validated: if a validation error occours then saving is interrupted...
+        // check whether all columns are valid: if a validation error occours then saving operation is interrupted...
         if (!validateRows())
           return false;
       }
@@ -2186,6 +2428,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             getInsertButton().setEnabled(getInsertButton().getOldValue());
           if (getExportButton()!=null)
             getExportButton().setEnabled(getExportButton().getOldValue());
+          if (getImportButton()!=null)
+            getImportButton().setEnabled(getImportButton().getOldValue());
           if (getCopyButton()!=null)
             getCopyButton().setEnabled(getCopyButton().getOldValue());
 
@@ -2245,6 +2489,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         getInsertButton().setEnabled(false);
       if (getExportButton()!=null)
         getExportButton().setEnabled(false);
+      if (getImportButton()!=null)
+        getImportButton().setEnabled(false);
       if (getCopyButton()!=null)
         getCopyButton().setEnabled(false);
       if (getEditButton()!=null)
@@ -2530,6 +2776,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       deleteButton.setEnabled(false);
     if (exportButton!=null && isButtonDisabled(exportButton))
       exportButton.setEnabled(false);
+    if (importButton!=null && isButtonDisabled(importButton))
+      importButton.setEnabled(false);
   }
 
 

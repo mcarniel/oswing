@@ -354,7 +354,7 @@ public class MDIFrame extends JFrame implements BusyListener {
       int j=0;
       try {
         while (j < menu.getText().length() &&
-               mnem.contains(menu.getText().substring(j, j + 1))) {
+               (mnem.contains(menu.getText().substring(j, j + 1)) || !Character.isLetterOrDigit(menu.getText().charAt(j)))) {
           j++;
         }
         if (j < menu.getText().length()) {

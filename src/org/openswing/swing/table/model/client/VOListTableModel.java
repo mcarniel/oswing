@@ -96,6 +96,15 @@ public class VOListTableModel extends AbstractTableModel {
 
 
   /**
+   * @param column index of the column
+   * @return column type
+   */
+  public final int getColumnType(int column) {
+    return(fieldAdapter.getFieldType(column));
+  }
+
+
+  /**
    * Add a ValueObject to TableModel.
    * @param object <code>ValueObject</code> to add
    */

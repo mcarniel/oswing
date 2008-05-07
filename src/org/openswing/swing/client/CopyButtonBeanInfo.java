@@ -39,4 +39,16 @@ public class CopyButtonBeanInfo extends SimpleBeanInfo {
     }
     return null;
   }
+
+  public BeanInfo[] getAdditionalBeanInfo() {
+    Class superclass = beanClass.getSuperclass();
+    try {
+      BeanInfo superBeanInfo = Introspector.getBeanInfo(superclass);
+      return new BeanInfo[] { superBeanInfo };
+    }
+    catch(IntrospectionException ex) {
+      ex.printStackTrace();
+      return null;
+    }
+  }
 }

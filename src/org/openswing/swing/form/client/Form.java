@@ -1726,6 +1726,12 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
 
   /**
+   * Method called when user has clicked on import button: not supported.
+   */
+  public final void importData() {}
+
+
+  /**
    * Method called when used has clicked on filter button: not supported.
    */
   public void filterSort() {}

@@ -50,6 +50,9 @@ public interface LoginController {
    * Method called by LoginDialog to authenticate the user.
    * @param loginInfo login information, like username, password, ...
    * @return <code>true</code> if user is correcly authenticated, <code>false</code> otherwise
+   * NOTE: if this class is used in combination with LoginDialog and CryptUtils classes,
+   * than Map argument contains an entry named "password" with associated value tpye byte[] (encrypted password)
+   * otherwise Map argument contains an entry named "password" with associated value type String (clear password)
    */
   public boolean authenticateUser(Map loginInfo) throws Exception;
 
@@ -57,6 +60,9 @@ public interface LoginController {
   /**
    * Method called by LoginDialog to notify the sucessful login.
    * @param loginInfo login information, like username, password, ...
+   * NOTE: if this class is used in combination with LoginDialog and CryptUtils classes,
+   * than Map argument contains an entry named "password" with associated value tpye byte[] (encrypted password)
+   * otherwise Map argument contains an entry named "password" with associated value type String (clear password)
    */
   public void loginSuccessful(Map loginInfo);
 

@@ -344,6 +344,11 @@ public class Grid extends JTable
                      Grid.this.grids.getExportButton()!=null &&
                 Grid.this.grids.getExportButton().isEnabled())
               Grid.this.grids.export();
+            else if (e.getKeyCode()==ClientSettings.IMPORT_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.IMPORT_BUTTON_KEY.getModifiers() &&
+                     Grid.this.grids.getImportButton()!=null &&
+                Grid.this.grids.getImportButton().isEnabled())
+              Grid.this.grids.importData();
             else if (e.getKeyCode()==ClientSettings.GRID_POPUP_KEY.getKeyCode() &&
                      e.getModifiers()+e.getModifiersEx()==ClientSettings.GRID_POPUP_KEY.getModifiers() &&
                      getMode()==Consts.READONLY &&

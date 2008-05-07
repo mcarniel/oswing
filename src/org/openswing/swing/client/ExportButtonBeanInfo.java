@@ -12,7 +12,7 @@ import java.beans.*;
  */
 
 public class ExportButtonBeanInfo extends SimpleBeanInfo {
-  Class beanClass = EditButton.class;
+  Class beanClass = ExportButton.class;
   String iconColor16x16Filename = "ExportButton16.png";
   String iconColor32x32Filename = "ExportButton.png";
   String iconMono16x16Filename = "ExportButton16.png";
@@ -36,5 +36,17 @@ public class ExportButtonBeanInfo extends SimpleBeanInfo {
         return iconMono32x32Filename != null ? loadImage(iconMono32x32Filename) : null;
     }
     return null;
+  }
+
+  public BeanInfo[] getAdditionalBeanInfo() {
+    Class superclass = beanClass.getSuperclass();
+    try {
+      BeanInfo superBeanInfo = Introspector.getBeanInfo(superclass);
+      return new BeanInfo[] { superBeanInfo };
+    }
+    catch(IntrospectionException ex) {
+      ex.printStackTrace();
+      return null;
+    }
   }
 }

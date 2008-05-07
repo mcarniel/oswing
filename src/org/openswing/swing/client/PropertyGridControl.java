@@ -722,6 +722,14 @@ public class PropertyGridControl extends JScrollPane implements DataController {
   public void export() {
   }
 
+
+  /**
+   * import
+   */
+  public void importData() {
+  }
+
+
   /**
    * getFunctionId
    *

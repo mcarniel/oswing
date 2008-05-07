@@ -87,6 +87,16 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("columns to export","Columns to export");
     dictionary.setProperty("export type","Export format");
 
+    // import...
+    dictionary.setProperty("grid import","Grid Import");
+    dictionary.setProperty("file to import","File to import");
+    dictionary.setProperty("import","Import");
+    dictionary.setProperty("importmnemonic","M");
+    dictionary.setProperty("columns to import","Columns to import");
+    dictionary.setProperty("import type","Import format");
+    dictionary.setProperty("error while importing data","Error while importing data");
+    dictionary.setProperty("import completed","Import completed.");
+
     // quick filter...
     dictionary.setProperty("To value","To value");
     dictionary.setProperty("Filter by","Filter by");
@@ -117,7 +127,8 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Reload record/Cancel current operation (CTRL+Z)","Reload record/Cancel current operation (CTRL+Z)");
     dictionary.setProperty("Save record (CTRL+S)","Save record (CTRL+S)");
     dictionary.setProperty("Copy record (CTRL+C)","Copy record (CTRL+C)");
-    dictionary.setProperty("Export record (CTRL+X)","Export record (CTRL+X)");
+    dictionary.setProperty("Export record (CTRL+X)","Export records (CTRL+X)");
+    dictionary.setProperty("Import records (CTRL+M)","Import records (CTRL+M)");
     dictionary.setProperty("Load the first block of records","Load the first block of records");
     dictionary.setProperty("Select the previous row in grid","Select the previous row in grid");
     dictionary.setProperty("Select the next row in grid","Select the next row in grid");

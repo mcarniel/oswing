@@ -271,6 +271,9 @@ public class ClientSettings {
   /** shortcut key used for export button within a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_X,KeyEvent.CTRL_MASK) */
   public static KeyStroke EXPORT_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_X,KeyEvent.CTRL_MASK);
 
+  /** shortcut key used for import button within a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_M,KeyEvent.CTRL_MASK) */
+  public static KeyStroke IMPORT_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_M,KeyEvent.CTRL_MASK);
+
   /** shortcut key used for filter button, within a grid control; default value: KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_MASK) */
   public static KeyStroke FILTER_BUTTON_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_MASK);
 
@@ -291,6 +294,9 @@ public class ClientSettings {
 
   /** define default content for lookup frame; allowed values are: GRID_FRAME, TREE_FRAME, TREE_GRID_FRAME, GRID_AND_FILTER_FRAME, TREE_GRID_AND_FILTER_FRAME, GRID_AND_PANEL_FRAME, TREE_GRID_AND_PANEL_FRAME; default value: LookupController.GRID_FRAME */
   public static int LOOKUP_FRAME_CONTENT = LookupController.GRID_FRAME;
+
+  /** define if a lookup control must set focus over lookup button when pressing TAB on code field and field is correctly filled; default value: <code>false</code> */
+  public static boolean FORCE_FOCUS_ON_LOOKUP_CONTROL = false;
 
 
   /**

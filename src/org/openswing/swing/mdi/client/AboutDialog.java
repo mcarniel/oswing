@@ -5,6 +5,10 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import org.openswing.swing.util.client.*;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
+import javax.swing.text.html.HTMLDocument;
 
 
 /**
@@ -71,8 +75,11 @@ public class AboutDialog extends JDialog {
         setSize(400,300);
       }
       setMem();
-      if (aboutText.toLowerCase().trim().startsWith("<html>"))
+      if (aboutText.toLowerCase().trim().startsWith("<html>")) {
         text.setContentType("text/html");
+        text.addHyperlinkListener(new Hyperactive());
+
+      }
       text.setText(aboutText);
       ClientUtils.centerDialog(frame,this);
       setVisible(true);
@@ -132,7 +139,30 @@ public class AboutDialog extends JDialog {
     setVisible(false);
   }
 
+
+  class Hyperactive implements HyperlinkListener {
+
+         public void hyperlinkUpdate(HyperlinkEvent e) {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+               JEditorPane pane = (JEditorPane) e.getSource();
+               if (e instanceof HTMLFrameHyperlinkEvent) {
+                   HTMLFrameHyperlinkEvent  evt = (HTMLFrameHyperlinkEvent)e;
+                   HTMLDocument doc = (HTMLDocument)pane.getDocument();
+                   doc.processHTMLFrameHyperlinkEvent(evt);
+               } else {
+                   try {
+                pane.setPage(e.getURL());
+                   } catch (Throwable t) {
+                t.printStackTrace();
+                   }
+               }
+            }
+        }
+     }
+
+
 }
+
 
 class AboutDialog_gcButton_actionAdapter implements java.awt.event.ActionListener {
   AboutDialog adaptee;

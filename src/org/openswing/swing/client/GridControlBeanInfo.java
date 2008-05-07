@@ -27,6 +27,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _filterPanelOnGridPolicy = new PropertyDescriptor("filterPanelOnGridPolicy", beanClass, "getFilterPanelOnGridPolicy", "setFilterPanelOnGridPolicy");
       _filterPanelOnGridPolicy.setPropertyEditorClass(org.openswing.swing.client.FilterPanelOnGridPolicyEditor.class);
       PropertyDescriptor _gridDataLocator = new PropertyDescriptor("gridDataLocator", beanClass, "getGridDataLocator", "setGridDataLocator");
+      PropertyDescriptor _importButton = new PropertyDescriptor("importButton", beanClass, "getImportButton", "setImportButton");
       PropertyDescriptor _insertButton = new PropertyDescriptor("insertButton", beanClass, "getInsertButton", "setInsertButton");
       PropertyDescriptor _exportButton = new PropertyDescriptor("exportButton", beanClass, "getExportButton", "setExportButton");
       PropertyDescriptor _filterButton = new PropertyDescriptor("filterButton", beanClass, "getFilterButton", "setFilterButton");
@@ -65,6 +66,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _filterPanelOnGridPolicy,
         _functionId,
         _gridDataLocator,
+        _importButton,
         _intercellSpacing,
         _lockedColumns,
         _lockedRowsOnTop,

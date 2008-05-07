@@ -59,6 +59,7 @@ public class ClientApplication implements MDIController,LoginController {
     frame.setFloatableOnToolBar(false);
     frame.setRolloverOnToolBar(false);
     new SplashScreen(frame,"about.jpg",getMDIFrameTitle(),5);
+    frame.getMenuItem("F2").setMnemonic('2');
   }
 
 
@@ -128,6 +129,7 @@ public class ClientApplication implements MDIController,LoginController {
         "<html><body><p style='font-family: Arial,sans-serif;font-size:12'>This is an MDI Frame demo application<br>"+
         "<br>"+
         "Copyright: Copyright (C) 2006 Mauro Carniel<br>"+
+        "<a href='http://oswing.sourceforge.net'>OpenSwing home page</a><br>"+
         "Author: Mauro Carniel</body></html>";
   }
 

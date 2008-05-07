@@ -98,4 +98,9 @@ public interface DataController {
   public void filterSort();
 
 
+  /**
+   * Method called when used has clicked on import button.
+   */
+  public void importData();
+
 }

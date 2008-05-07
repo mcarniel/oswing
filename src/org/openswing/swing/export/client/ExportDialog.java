@@ -16,7 +16,7 @@ import org.openswing.swing.util.client.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: Export dialog window: used to select grid columns to export in XLS format.</p>
+ * <p>Description: Export dialog window: used to select grid columns to export in several formats.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.

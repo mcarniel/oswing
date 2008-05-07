@@ -35,6 +35,7 @@ public class TaskGridFrame extends InternalFrame {
   SaveButton saveButton = new SaveButton();
   CopyButton copyButton = new CopyButton();
   ExportButton exportButton = new ExportButton();
+  ImportButton importButton1 = new ImportButton();
 
 
   public TaskGridFrame(Connection conn,TaskGridFrameController controller) {
@@ -61,6 +62,7 @@ public class TaskGridFrame extends InternalFrame {
 
   private void jbInit() throws Exception {
     grid.setFunctionId("getTasks");
+    grid.setImportButton(importButton1);
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     grid.setCopyButton(copyButton);
@@ -93,6 +95,7 @@ public class TaskGridFrame extends InternalFrame {
     buttonsPanel.add(editButton, null);
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(saveButton, null);
+    buttonsPanel.add(importButton1, null);
     buttonsPanel.add(exportButton, null);
     buttonsPanel.add(deleteButton, null);
     grid.getColumnContainer().add(colDeptCode, null);

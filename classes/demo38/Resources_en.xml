@@ -1,0 +1,213 @@
+<objects>
+
+<!-- grid -->
+  <object key="Remove Filter" value="Remove Filter" />
+  <object key="This column is not sorteable" value="This column is not sorteable" />
+  <object key="Sorting not allowed" value="Sorting not allowed" />
+  <object key="Maximum number of sorted columns" value="Maximum number of sorted columns" />
+  <object key="Sorting not applicable" value="Sorting not applicable" />
+  <object key="Selected Row" value="Selected Row" />
+  <object key="Selected Rows" value="Selected Rows" />
+  <object key="Cancel changes and reload data?" value="Cancel changes and reload data?" />
+  <object key="Attention" value="Attention" />
+  <object key="Loading data..." value="Loading data..." />
+  <object key="Error while loading data" value="Error while loading data" />
+  <object key="Loading Data Error" value="Loading Data Error" />
+  <object key="Delete Rows?" value="Delete Rows?" />
+  <object key="Delete Confirmation" value="Delete Confirmation" />
+  <object key="Error while deleting rows." value="Error while deleting rows." />
+  <object key="Deleting Error" value="Deleting Error" />
+  <object key="Error while deleting rows." value="Error while deleting rows." />
+  <object key="Error while saving" value="Error while saving" />
+  <object key="Saving Error" value="Saving Error" />
+  <object key="A mandatory column is empty." value="A mandatory column is empty." />
+  <object key="Value not valid" value="Value not valid" />
+  <object key="Select the previous row in grid" value="Select the previous row in grid" />
+  <object key="Select the next row in grid" value="Select the next row in grid" />
+    
+<!-- export -->
+  <object key="grid export" value="Grid Export" />
+  <object key="export" value="Export" />
+  <object key="exportmnemonic" value="X" />
+  <object key="column" value="Column" />
+  <object key="sel." value="Sel." />
+  <object key="you must select at least one column" value="You must select at least one column" />
+  <object key="columns to export" value="Columns to export" />
+  <object key="export type" value="Export format" />
+
+<!-- import -->
+  <object key="Import records (CTRL+M)" value="Import records (CTRL+M)" />
+  <object key="grid import" value="Grid import" />
+  <object key="import" value="Import" />
+  <object key="importmnemonic" value="M" />
+  <object key="columns to import" value="Columns to import" />
+  <object key="import type" value="Import file format" />
+  <object key="file to import" value="File to import" />
+  <object key="error while importing data" value="Error while importing data" />
+  <object key="import completed" value="Import completed" />
+    
+<!-- quick filter -->
+  <object key="To value" value="To value" />
+  <object key="Filter by" value="Filter by" />
+  <object key="From value" value="From value" />
+  <object key="equals" value="equals" />
+  <object key="contains" value="contains" />
+  <object key="starts with" value="starts with" />
+  <object key="ends with" value="ends with" />
+
+<!-- lookup -->
+  <object key="Code is not correct." value="Code is not correct." />
+  <object key="Code Validation" value="Code Validation" />
+  <object key="Code Selection" value="Code Selection" />
+
+<!-- form -->
+  <object key="Confirm deliting data?" value="Confirm deliting data?" />
+  <object key="Error while saving: incorrect data." value="Error while saving: incorrect data." />
+  <object key="Error on deleting:" value="Error on deleting:" />
+  <object key="Error on Loading" value="Error on Loading" />
+  <object key="Error while loading data:" value="Error while loading data:" />
+
+<!-- toolbar buttons -->
+  <object key="Delete record (CTRL+D)" value="Delete record (CTRL+D)" />
+  <object key="Edit record (CTRL+E)" value="Edit record (CTRL+E)" />
+  <object key="New record (CTRL+I)" value="New record (CTRL+I)" />
+  <object key="Reload record/Cancel current operation (CTRL+Z)" value="Reload record/Cancel current operation (CTRL+Z)" />
+  <object key="Save record (CTRL+S)" value="Save record (CTRL+S)" />
+  <object key="Copy record (CTRL+C)" value="Copy record (CTRL+C)" />
+  <object key="Export record (CTRL+X)" value="Export record (CTRL+X)" />
+  <object key="Load the first block of records" value="Load the first block of records" />
+  <object key="Load the previous block of records" value="Load the previous block of records" />
+  <object key="Load the next block of records" value="Load the next block of records" />
+  <object key="Load the last block of records" value="Load the last block of records" />
+
+  <object key="Insert" value="Insert" />
+  <object key="edit" value="edit" />
+  <object key="Copy" value="Copy" />
+  <object key="Delete" value="Delete" />
+  <object key="Save" value="Save" />
+  <object key="Reload" value="Reload" />
+  <object key="Export" value="Export" />
+  <object key="Filter" value="Filter" />
+
+<!-- binding messages -->
+  <object key="value must be of type " value="Value must be of type " />
+  <object key="decimal number" value="decimal number" />
+  <object key="value is " value="Value is " />
+  <object key="optional" value="optional" />
+  <object key="minimum value is " value="Minimum value is " />
+  <object key="required" value="required" />
+  <object key="contains a value not valid" value="contains a value not valid" />
+  <object key="text" value="text" />
+  <object key="Date" value="date" />
+  <object key="Value is required" value="Value is required" />
+  <object key="maximum value is " value="Maximum value is " />
+  <object key="yes/no" value="yes/no" />
+  <object key="long number" value="long number" />
+  <object key="integer number" value="integer number" />
+  <object key="Cannot assign component value" value="Cannot assign component value" />
+
+<!-- ClientUtils -->
+  <object key="Server Comunication Error" value="Server Comunication Error" />
+  <object key="Server Error" value="Server Error" />
+
+<!-- MDI Frame -->
+  <object key="file" value="File" />
+  <object key="exit" value="Exit" />
+  <object key="filemnemonic" value="F" />
+  <object key="exitmnemonic" value="E" />
+  <object key="change user" value="Change User" />
+  <object key="changeusermnemonic" value="U" />
+  <object key="changelanguagemnemonic" value="L" />
+  <object key="help" value="Help" />
+  <object key="about" value="About" />
+  <object key="helpmnemonic" value="H" />
+  <object key="aboutmnemonic" value="A" />
+  <object key="are you sure to quit application?" value="Are you sure to quit application?" />
+  <object key="quit application" value="Quit Application" />
+  <object key="about" value="About" />
+  <object key="forcegcmnemonic" value="F" />
+  <object key="Force GC" value="Force GC" />
+  <object key="Info" value="Info" />
+  <object key="About" value="About" />
+  <object key="Java Heap" value="Java Heap" />
+  <object key="used" value="used" />
+  <object key="allocated" value="allocated" />
+  <object key="change language" value="Change Language" />
+  <object key="changemnemonic" value="L" />
+  <object key="cancelmnemonic" value="C" />
+  <object key="cancel" value="Cancel" />
+  <object key="Functions" value="Functions" />
+  <object key="Error while executing function" value="Error while executing function" />
+  <object key="Error" value="Error" />
+  <object key="infoPanel" value="Info" />
+  <object key="imageButton" value="About" />
+  <object key="Window" value="Window" />
+  <object key="windowmnemonic" value="W" />
+  <object key="Close All" value="Close All" />
+  <object key="closeallmnemonic" value="A" />
+  <object key="Press ENTER to find function" value= "Press ENTER to find function" />
+  <object key="Find Function" value= "Find Function" />
+  <object key="Operation in progress..." value="Work in progress..." />
+  <object key="close window" value="Close Window" />
+  <object key="reduce to icon" value="Reduce to icon" />
+
+<!-- server -->
+
+  <object key="Client request not supported" value="Client request not supported" />
+  <object key="User disconnected" value="User disconnected" />
+  <object key="" value="" />
+
+<!-- wizard -->
+
+  <object key="back" value="Back" />
+  <object key="next" value="Next" />
+  <object key="finish" value="Finish" />
+
+<!-- image panel -->
+
+  <object key="image selection" value="Image selection" />
+
+<!-- tip panel -->
+  <object key="show 'tip of the day' after launching" value="Show 'tip of the day' after launching" />
+  <object key="previous tip" value="Previous tip" />
+  <object key="next tip" value="Next tip" />
+  <object key="close" value="Close" />    
+  <object key="tip of the day" value="Tip of the day" /> 
+  
+  
+<!-- grid profile -->
+  <object key="grid profile management" value="Grid profile management"/> 
+  <object key="restore default grid profile" value="Restore default grid profile"/> 
+  <object key="create new grid profile" value="Create new grid profile"/> 
+  <object key="profile description" value="Profile description"/> 
+  <object key="remove current grid profile" value="Remove current grid profile"/> 
+  <object key="select grid profile" value="Select grid profile"/>       
+  <object key="default profile" value="Default profile"/>     
+      
+<!-- search box -->
+  <object key="search" value="Search"/> 
+  <object key="not found" value="Not found"/> 
+        
+<!-- application translations -->
+
+      <object key="users" value="Users" />
+      <object key="username" value="Username" />
+      <object key="password" value="Password" />
+      <object key="description" value="Description" />
+      <object key="Authentication" value="Authentication" />
+      <object key="Login" value="Login" />
+      <object key="L" value="L" />
+      <object key="Exit" value="Exit" />
+      <object key="E" value="E" />
+      <object key="Store Account" value="Store Account" />
+      <object key="DEMO38" value="DEMO38" />      
+
+  <currencySymbol>E</currencySymbol>
+  <decimalSymbol>.</decimalSymbol>
+  <groupingSymbol>,</groupingSymbol>
+  <dateFormat>YMD</dateFormat>
+  <showCenturyInDateFormat>true</showCenturyInDateFormat>
+  <dateFormatSeparator>/</dateFormatSeparator>
+  <timeFormat>h:mm aaa</timeFormat>
+
+</objects>

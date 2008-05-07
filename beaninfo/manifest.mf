@@ -31,6 +31,9 @@ Java-Bean: True
 Name: org/openswing/swing/client/ExportButton.class
 Java-Bean: True
 
+Name: org/openswing/swing/client/ImportButton.class
+Java-Bean: True
+
 Name: org/openswing/swing/client/GenericButton.class
 Java-Bean: True
 
