@@ -1,22 +1,12 @@
 package org.openswing.swing.util.server;
 
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import org.openswing.swing.server.QueryUtil;
-import org.openswing.swing.server.UserSessionParameters;
-import org.openswing.swing.message.send.java.GridParams;
-import org.openswing.swing.util.client.ClientSettings;
-import java.util.Map;
-import java.util.ArrayList;
+import java.beans.*;
+import java.util.*;
+import javax.persistence.*;
+
 import org.openswing.swing.message.receive.java.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Arrays;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import org.openswing.swing.message.send.java.*;
+import org.openswing.swing.server.*;
 
 
 /**
