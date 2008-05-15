@@ -1,6 +1,5 @@
 package org.openswing.swing.util.client;
 
-
 import java.util.*;
 
 import java.awt.*;

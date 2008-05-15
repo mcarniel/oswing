@@ -148,6 +148,34 @@
   <object key="close window" value="Chiudi Finestra" />
   <object key="reduce to icon" value="Reduci ad icona" />
 
+  <object key="switch" value="Passa a" />
+  <object key="switchmnemonic" value="P" />
+  <object key="window name" value="Nome finestra" />
+  <object key="opened windows" value="Finestre aperte" />
+  <object key="tile horizontally" value="Affianca orizzontalmente" />
+  <object key="tilehorizontallymnemonic" value="O" />
+  <object key="tile vertically" value="Affianca verticalmente" />
+  <object key="tileverticallymnemonic" value="V" />
+  <object key="cascade" value="Affianca in cascata" />
+  <object key="cascademnemonic" value="C" />
+  <object key="minimize" value="Riduci ad icona" />
+  <object key="minimizemnemonic" value="I" />
+  <object key="minimize all" value="Riduci tutte le finestre ad icona" />
+  <object key="minimizeallmnemonic" value="T" />
+
+
+<!-- select/deselect all -->
+  <object key="select all" value="Seleziona tutto" />
+  <object key="deselect all" value="Deseleziona tutto" />
+
+
+<!-- copy/cut/paste -->
+  <object key="copy" value="Copia" />
+  <object key="copymnemonic" value="C" />
+  <object key="cut" value="Taglia" />
+  <object key="cutmnemonic" value="T" />
+  <object key="paste" value="Incolla" />
+  <object key="pastemnemonic" value="I" />
 <!-- server -->
 
   <object key="Client request not supported" value="La richiesta del client non &#232; supportata" />

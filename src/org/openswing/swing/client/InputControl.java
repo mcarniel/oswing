@@ -159,4 +159,11 @@ public interface InputControl {
    */
   public boolean isEnabled();
 
+
+  /**
+   * @return ValueChangeListener listeners added to this input control
+   */
+  public ValueChangeListener[] getValueChangeListeners();
+
+
 }

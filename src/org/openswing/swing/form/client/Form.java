@@ -510,7 +510,27 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   private boolean loadData() {
     try {
       // data loading...
-      Response answer = formController.loadData(model.getValueObjectType());
+      ClientUtils.fireBusyEvent(true);
+      try {
+        ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        ClientUtils.getParentFrame(this).getToolkit().sync();
+      }
+      catch (Exception ex1) {
+      }
+
+      Response answer = null;
+      try {
+        answer = formController.loadData(model.getValueObjectType());
+      }
+      finally {
+        try {
+          ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+          ClientUtils.getParentFrame(this).getToolkit().sync();
+        }
+        catch (Exception ex2) {
+        }
+        ClientUtils.fireBusyEvent(false);
+      }
 
       // set the form model with data just loaded...
       if (!answer.isError()) {

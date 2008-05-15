@@ -27,15 +27,20 @@ public class CheckBoxColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _allowNullValue = new PropertyDescriptor("allowNullValue", beanClass, "isAllowNullValue", "setAllowNullValue");
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(BooleanAttributeNameEditor.class);
+      PropertyDescriptor _showDeSelectAllInPopupMenu = new PropertyDescriptor("showDeSelectAllInPopupMenu", beanClass, "isShowDeSelectAllInPopupMenu", "setShowDeSelectAllInPopupMenu");
+      PropertyDescriptor _deSelectAllCells = new PropertyDescriptor("deSelectAllCells", beanClass, "isDeSelectAllCells", "setDeSelectAllCells");
       PropertyDescriptor _enableInReadOnlyMode = new PropertyDescriptor("enableInReadOnlyMode", beanClass, "isEnableInReadOnlyMode", "setEnableInReadOnlyMode");
       PropertyDescriptor _negativeValue = new PropertyDescriptor("negativeValue", beanClass, "getNegativeValue", "setNegativeValue");
       PropertyDescriptor _positiveValue = new PropertyDescriptor("positiveValue", beanClass, "getPositiveValue", "setPositiveValue");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
               _allowNullValue,
               _columnName,
+              _deSelectAllCells,
               _enableInReadOnlyMode,
-	      _negativeValue,
-	      _positiveValue};
+              _negativeValue,
+              _positiveValue,
+              _showDeSelectAllInPopupMenu
+      };
       return pds;
     }
     catch(IntrospectionException ex) {

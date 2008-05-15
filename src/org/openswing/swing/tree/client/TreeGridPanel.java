@@ -51,8 +51,14 @@ public class TreeGridPanel extends JPanel {
   /** grid columns sizes */
   private ArrayList gridColumnSizes = new ArrayList();
 
+  /** grid columns alignments: collection of pairs <attribute name,alingment: Integer> */
+  private Hashtable gridColumnAlignments = new Hashtable();
+
+  /** determines whether or not the root node from the <code>TreeModel</code> is visible; default value: <code>true<code> */
+  private boolean rootVisible = true;
+
   /** expandable tree */
-  private TreeGrid tree = new TreeGrid(new TreeGridModel(),"",gridColumnSizes,ClientSettings.PERC_TREE_FOLDER,ClientSettings.PERC_TREE_NODE,null);
+  private TreeGrid tree = new TreeGrid(new TreeGridModel(),"",gridColumnSizes,gridColumnAlignments,ClientSettings.PERC_TREE_FOLDER,ClientSettings.PERC_TREE_NODE,null,rootVisible);
 
   /** tree root */
   private DefaultMutableTreeNode treeRoot;
@@ -121,6 +127,30 @@ public class TreeGridPanel extends JPanel {
         }
       });
     }
+  }
+
+
+  /**
+   * Determines whether or not the root node from
+   * the <code>TreeModel</code> is visible.
+   *
+   * @param rootVisible true if the root node of the tree is to be displayed
+   * @see #rootVisible
+   * @beaninfo
+   *        bound: true
+   *  description: Whether or not the root node
+   *               from the TreeModel is visible.
+   */
+  public final void setRootVisible(boolean rootVisible) {
+    this.rootVisible = rootVisible;
+  }
+
+
+  /**
+   * @return determines whether or not the root node from the <code>TreeModel</code> is visible
+   */
+  public final boolean isRootVisible() {
+    return rootVisible;
   }
 
 
@@ -227,8 +257,9 @@ public class TreeGridPanel extends JPanel {
     TreeWillExpandListener[] l2 = tree.getTree().getTreeWillExpandListeners();
     TreeSelectionListener[] l3 = tree.getTree().getTreeSelectionListeners();
 
-    tree = new TreeGrid(new TreeGridModel(treeRoot),gridColumns.get(0).toString(),gridColumnSizes,folderIconName,leavesImageName,(Format)columnFormatters.get(0));
+    tree = new TreeGrid(new TreeGridModel(treeRoot),gridColumns.get(0).toString(),gridColumnSizes,gridColumnAlignments,folderIconName,leavesImageName,(Format)columnFormatters.get(0),rootVisible);
     tree.getTree().setShowsRootHandles(true);
+
     for(int i=0;i<l1.length;i++)
       tree.getTree().addTreeExpansionListener(l1[i]);
     for(int i=0;i<l2.length;i++)
@@ -268,7 +299,7 @@ public class TreeGridPanel extends JPanel {
     if (expandAllNodes)
       expandAllNodes();
     else
-      tree.getTree().collapseRow(0);
+      tree.getTree().expandRow(0);
   }
 
 
@@ -492,8 +523,9 @@ public class TreeGridPanel extends JPanel {
 
 
   /**
-   * Set the attribute names to used to show grid columns.
-   * @param gridColumns attribute names to used to show grid columns
+   * Add a column to tree+grid component and specifies attribute to map and column size.
+   * @param attributeName attribute name to map to this column
+   * @param colSize column size
    */
   public final void addGridColumn(String attributeName,int colSize) {
     this.gridColumns.add(attributeName);
@@ -519,12 +551,31 @@ public class TreeGridPanel extends JPanel {
    * Set the column header for the column identified by the specified attribute name.
    * @param attributeName column identifier
    * @param description description to translate and set as column header
+   * @param gridColumnAlignment column alignments; allowed values:
    */
   public final void setColumnHeader(String attributeName,String description) {
     int index = gridColumns.indexOf(attributeName);
     if (index!=-1)
       columnHeaders.set(index,description);
- }
+  }
+
+
+  /**
+   * Set the column alingment for the column identified by the specified attribute name.
+   * @param attributeName column identifier
+   * @param alignment  One of the following constants
+   *           defined in <code>SwingConstants</code>:
+   *           <code>LEFT</code>,
+   *           <code>CENTER</code> (the default for image-only labels),
+   *           <code>RIGHT</code>,
+   *           <code>LEADING</code> (the default for text-only labels) or
+   *           <code>TRAILING</code>.
+   */
+  public final void setColumnAlignment(String attributeName,int alignment) {
+    int index = gridColumns.indexOf(attributeName);
+    if (index!=-1)
+      this.gridColumnAlignments.put(attributeName,new Integer(alignment));
+  }
 
 
   /**
@@ -545,6 +596,22 @@ public class TreeGridPanel extends JPanel {
 
     public TreeGridModel(DefaultMutableTreeNode root) {
       super(root);
+    }
+
+
+    /**
+     * Returns <code>true</code> if <code>node</code> is a leaf.
+     * It is possible for this method to return <code>false</code>
+     * even if <code>node</code> has no children.
+     * A directory in a filesystem, for example,
+     * may contain no files; the node representing
+     * the directory is not a leaf, but it also has no children.
+     *
+     * @param   node  a node in the tree, obtained from this data source
+     * @return  true if <code>node</code> is a leaf
+     */
+    public boolean isLeaf(Object node) {
+      return !((TreeNode)node).getAllowsChildren();
     }
 
 

@@ -39,6 +39,9 @@ public class TreeGridFrame extends JFrame {
       treePanel.addGridColumn("description",200);
       treePanel.addGridColumn("qty",40);
       treePanel.addGridColumn("price",80);
+      treePanel.setColumnAlignment("qty",SwingConstants.RIGHT);
+      treePanel.setColumnAlignment("price",SwingConstants.RIGHT);
+      treePanel.setRootVisible(false);
       NumberFormat nf = NumberFormat.getCurrencyInstance();
       nf.setCurrency(Currency.getInstance(Locale.ITALY));
       nf.setGroupingUsed(true);

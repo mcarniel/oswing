@@ -149,6 +149,36 @@
   <object key="close window" value="Close Window" />
   <object key="reduce to icon" value="Reduce to icon" />
 
+  <object key="switch" value="Switch" />
+  <object key="switchmnemonic" value="S" />
+  <object key="window name" value="Window name" />
+  <object key="opened windows" value="Opened windows" />
+  <object key="tile horizontally" value="Tile horizontally" />
+  <object key="tilehorizontallymnemonic" value="H" />
+  <object key="tile vertically" value="Tile vertically" />
+  <object key="tileverticallymnemonic" value="V" />
+  <object key="cascade" value="Cascade" />
+  <object key="cascademnemonic" value="C" />
+  <object key="minimize" value="Minimize" />
+  <object key="minimizemnemonic" value="M" />
+  <object key="minimize all" value="Minimize all" />
+  <object key="minimizeallmnemonic" value="A" />
+
+
+<!-- select/deselect all -->
+  <object key="select all" value="Select all" />
+  <object key="deselect all" value="Deselect all" />
+
+
+<!-- copy/cut/paste -->
+  <object key="copy" value="Copy" />
+  <object key="copymnemonic" value="C" />
+  <object key="cut" value="Cut" />
+  <object key="cutmnemonic" value="T" />
+  <object key="paste" value="Paste" />
+  <object key="pastemnemonic" value="P" />
+    
+    
 <!-- server -->
 
   <object key="Client request not supported" value="Client request not supported" />
@@ -187,6 +217,8 @@
 <!-- search box -->
   <object key="search" value="Search"/> 
   <object key="not found" value="Not found"/>       
+      
+      
       
 <!-- application translations -->
 

@@ -464,6 +464,14 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
 
 
   /**
+   * @return value changed listeners list
+   */
+  public final ValueChangeListener[] getValueChangeListeners() {
+    return (ValueChangeListener[])valueChangedListeners.toArray(new ValueChangeListener[valueChangedListeners.size()]);
+  }
+
+
+  /**
    * <p>Title: OpenSwing Framework</p>
    * <p>Description: Inner class used to support three states: Boolean.TRUE, Boolean.FALSE and null</p>
    * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>

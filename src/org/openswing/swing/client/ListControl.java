@@ -58,10 +58,16 @@ public class ListControl extends BaseInputControl implements InputControl,Search
   private JList list = new JList() {
 
     public void addMouseListener(MouseListener listener) {
-      if (listener.equals(ListControl.this))
-        super.addMouseListener(listener);
-      else
-        mouseListeners.add(listener);
+      try {
+        if (listener.equals(ListControl.this)) {
+          super.addMouseListener(listener);
+        }
+        else {
+          mouseListeners.add(listener);
+        }
+      }
+      catch (Exception ex) {
+      }
     }
 
   };

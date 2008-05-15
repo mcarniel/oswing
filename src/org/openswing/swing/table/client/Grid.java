@@ -351,7 +351,6 @@ public class Grid extends JTable
               Grid.this.grids.importData();
             else if (e.getKeyCode()==ClientSettings.GRID_POPUP_KEY.getKeyCode() &&
                      e.getModifiers()+e.getModifiersEx()==ClientSettings.GRID_POPUP_KEY.getModifiers() &&
-                     getMode()==Consts.READONLY &&
                      getColumnModel().getColumnCount()>0) {
               if (getSelectedColumn()==-1)
                 setColumnSelectionInterval(0,0);
@@ -1492,59 +1491,124 @@ public class Grid extends JTable
 
       grids.getPopup().removeAll();
 
-      // add quick filter to popup menu...
-      configQuickFilter(x,y);
-      if (grids.getFilterPanel()!=null) {
-        grids.getFilterPanel().setParentPopup(grids.getPopup());
-        grids.getPopup().add(grids.getFilterPanel());
-        // add menu item to remove filter setting on the popup menu...
-        grids.getRemovefilterItem().setToolTipText(ClientSettings.getInstance().getResources().getResource("Remove Filter"));
-        grids.getRemovefilterItem().removeAll();
-        grids.getRemovefilterItem().addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            int modelColIndex = getSelectedColumn()==-1 ? -1 :getColumnModel().getColumn(getSelectedColumn()).getModelIndex();
-            if (modelColIndex==-1) {
-              int xOverflow = x+(int)tablexy.getX()+grids.getPopup().getWidth()-(int)screenSize.getWidth();
-              int popupX = xOverflow>0?x-xOverflow-20:x;
-              modelColIndex = getColumnModel().getColumnIndexAtX(popupX);
+      if (getMode()==Consts.READONLY) {
+        // menu items to show only in read only mode:
+
+        // add quick filter to popup menu...
+        configQuickFilter(x,y);
+        if (grids.getFilterPanel()!=null) {
+          grids.getFilterPanel().setParentPopup(grids.getPopup());
+          grids.getPopup().add(grids.getFilterPanel());
+          // add menu item to remove filter setting on the popup menu...
+          grids.getRemovefilterItem().setToolTipText(ClientSettings.getInstance().getResources().getResource("Remove Filter"));
+          grids.getRemovefilterItem().removeAll();
+          grids.getRemovefilterItem().addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              int modelColIndex = getSelectedColumn()==-1 ? -1 :getColumnModel().getColumn(getSelectedColumn()).getModelIndex();
+              if (modelColIndex==-1) {
+                int xOverflow = x+(int)tablexy.getX()+grids.getPopup().getWidth()-(int)screenSize.getWidth();
+                int popupX = xOverflow>0?x-xOverflow-20:x;
+                modelColIndex = getColumnModel().getColumnIndexAtX(popupX);
+              }
+
+              if (modelColIndex!=-1) {
+                removeQuickFilter(modelAdapter.getFieldName(modelColIndex));
+              }
             }
+          });
+          grids.getPopup().add(grids.getRemovefilterItem());
 
-            if (modelColIndex!=-1) {
-              removeQuickFilter(modelAdapter.getFieldName(modelColIndex));
-            }
-          }
-        });
-        grids.getPopup().add(grids.getRemovefilterItem());
-
-        grids.getPopup().add(new JSeparator());
-      }
-
-      // add optional command to popup menu...
-      for(int i=0;i<grids.getPopupCommands().size();i++)
-        grids.getPopup().add((JMenuItem)grids.getPopupCommands().get(i));
-      if (grids.getPopupCommands().size()>0)
-        grids.getPopup().add(new JSeparator());
-
-      // add selectable columns to popup menu...
-      JCheckBoxMenuItem cbMenuItem;
-      for(int i=0;i<colProps.length;i++)
-        if (colProps[i].isColumnSelectable()) {
-          if (colProps[i].getHeaderColumnName()!=null &&
-              colProps[i].getHeaderColumnName().length()>0)
-            cbMenuItem = new JCheckBoxMenuItem(ClientSettings.getInstance().getResources().getResource(colProps[i].getHeaderColumnName()));
-          else
-            cbMenuItem = new JCheckBoxMenuItem(ClientSettings.getInstance().getResources().getResource(colProps[i].getColumnName()));
-          if (colProps[i].isColumnVisible())
-            cbMenuItem.setState(true);
-          cbMenuItem.addActionListener(new CheckboxMenuItem(i));
-          grids.getPopup().add(cbMenuItem);
+          grids.getPopup().add(new JSeparator());
         }
 
+        // add optional command to popup menu...
+        for(int i=0;i<grids.getPopupCommands().size();i++)
+          grids.getPopup().add((JMenuItem)grids.getPopupCommands().get(i));
+        if (grids.getPopupCommands().size()>0)
+          grids.getPopup().add(new JSeparator());
+
+      } // end menu items to show only in read only mode
+
+
+      // add "select all" and "deselect all" commands in case of check-box column...
+      int modelColIndex = getSelectedColumn()==-1 ? -1 :getColumnModel().getColumn(getSelectedColumn()).getModelIndex();
+      if (modelColIndex==-1) {
       int xOverflow = x+(int)tablexy.getX()+grids.getPopup().getWidth()-(int)screenSize.getWidth();
-      int yOverflow = y+(int)tablexy.getY()+grids.getPopup().getHeight()-(int)screenSize.getHeight();
       int popupX = xOverflow>0?x-xOverflow-20:x;
-      int popupY = yOverflow>0?y-yOverflow-20:y;
-      grids.getPopup().show(this,popupX,popupY);
+      modelColIndex = getColumnModel().getColumnIndexAtX(popupX);
+      }
+      if (modelColIndex!=-1 &&
+          colProps[modelColIndex].getColumnType()==Column.TYPE_CHECK &&
+          ((CheckBoxColumn)colProps[modelColIndex]).isShowDeSelectAllInPopupMenu() &&
+          (getMode()!=Consts.READONLY || ((CheckBoxColumn)colProps[modelColIndex]).isEnableInReadOnlyMode())
+          ) {
+
+        JMenuItem selMenu = new JMenuItem(
+          ClientSettings.getInstance().getResources().getResource("select all"),
+          ClientSettings.getInstance().getResources().getResource("select all").charAt(0)
+        );
+        final int index = modelColIndex;
+        selMenu.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            for(int i=0;i<model.getRowCount();i++)
+              if (((CheckBoxColumn)colProps[index]).isDeSelectAllCells() || model.isCellEditable(i,index))
+                model.setValue(
+                  ((CheckBoxColumn)colProps[index]).getPositiveValue(),
+                  i,
+                  index
+                );
+          }
+        });
+        grids.getPopup().add(selMenu);
+
+        JMenuItem deselMenu = new JMenuItem(
+          ClientSettings.getInstance().getResources().getResource("deselect all"),
+          ClientSettings.getInstance().getResources().getResource("deselect all").charAt(0)
+        );
+        deselMenu.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            for(int i=0;i<model.getRowCount();i++)
+              if (((CheckBoxColumn)colProps[index]).isDeSelectAllCells() || model.isCellEditable(i,index))
+                model.setValue(
+                  ((CheckBoxColumn)colProps[index]).getNegativeValue(),
+                  i,
+                  index
+                );
+          }
+        });
+        grids.getPopup().add(deselMenu);
+
+        if (getMode()==Consts.READONLY)
+          grids.getPopup().add(new JSeparator());
+      }
+
+
+      if (getMode()==Consts.READONLY) {
+        // menu items to show only in read only mode:
+
+        // add selectable columns to popup menu...
+        JCheckBoxMenuItem cbMenuItem;
+        for(int i=0;i<colProps.length;i++)
+          if (colProps[i].isColumnSelectable()) {
+            if (colProps[i].getHeaderColumnName()!=null &&
+                colProps[i].getHeaderColumnName().length()>0)
+              cbMenuItem = new JCheckBoxMenuItem(ClientSettings.getInstance().getResources().getResource(colProps[i].getHeaderColumnName()));
+            else
+              cbMenuItem = new JCheckBoxMenuItem(ClientSettings.getInstance().getResources().getResource(colProps[i].getColumnName()));
+            if (colProps[i].isColumnVisible())
+              cbMenuItem.setState(true);
+            cbMenuItem.addActionListener(new CheckboxMenuItem(i));
+            grids.getPopup().add(cbMenuItem);
+          }
+      } // end menu items to show only in read only mode
+
+      if (grids.getPopup().getComponentCount()>0) {
+        int xOverflow = x+(int)tablexy.getX()+grids.getPopup().getWidth()-(int)screenSize.getWidth();
+        int yOverflow = y+(int)tablexy.getY()+grids.getPopup().getHeight()-(int)screenSize.getHeight();
+        int popupX = xOverflow>0?x-xOverflow-20:x;
+        int popupY = yOverflow>0?y-yOverflow-20:y;
+        grids.getPopup().show(this,popupX,popupY);
+      }
     }
     catch (Throwable ex) {
       Logger.error(this.getClass().getName(),"showPopupMenu","Error while constructing grids.getPopup() menu.",ex);
@@ -1991,9 +2055,9 @@ public class Grid extends JTable
 
     public void mouseClicked(MouseEvent e) {
       if (e.getClickCount()==1 &&
-          SwingUtilities.isRightMouseButton(e) &&
+          SwingUtilities.isRightMouseButton(e)
 //          getSelectedColumn()!=-1 &&
-          model.getMode()==Consts.READONLY) {
+          ) {
 
         if (Grid.this.columnAtPoint(e.getPoint())>=0)
           Grid.this.setColumnSelectionInterval(

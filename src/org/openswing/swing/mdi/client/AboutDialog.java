@@ -151,7 +151,8 @@ public class AboutDialog extends JDialog {
                    doc.processHTMLFrameHyperlinkEvent(evt);
                } else {
                    try {
-                pane.setPage(e.getURL());
+//                pane.setPage(e.getURL());
+                     ClientUtils.displayURL(e.getURL().toExternalForm());
                    } catch (Throwable t) {
                 t.printStackTrace();
                    }

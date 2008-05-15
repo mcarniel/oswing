@@ -171,6 +171,14 @@ public class RadioButtonControl extends JRadioButton implements InputControl {
 
 
   /**
+   * @return value changed listeners list
+   */
+  public final ValueChangeListener[] getValueChangeListeners() {
+    return (ValueChangeListener[])valueChangedListeners.toArray(new ValueChangeListener[valueChangedListeners.size()]);
+  }
+
+
+  /**
    * Method called by the sub-class to fire a value changed event.
    */
   protected void maybeFireValueChangedEvent() {

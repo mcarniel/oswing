@@ -1600,16 +1600,37 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       grid.getSelectionModel().setSelectionMode(grid.getSelectionModel().SINGLE_SELECTION);
       if (gridType==Grid.MAIN_GRID)
         statusPanel.setText(ClientSettings.getInstance().getResources().getResource("Loading data..."));
+
       // data fetching is dispached to the grid controller...
-      Response answer = gridDataLocator.loadData(
-          action,
-          startIndex,
-          quickFilterValues,
-          currentSortedColumns,
-          currentSortedVersusColumns,
-          modelAdapter.getValueObjectType(),
-          otherGridParams
-      );
+      ClientUtils.fireBusyEvent(true);
+      try {
+        ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        ClientUtils.getParentFrame(this).getToolkit().sync();
+      }
+      catch (Exception ex3) {
+      }
+
+      Response answer = null;
+      try {
+        answer = gridDataLocator.loadData(
+            action,
+            startIndex,
+            quickFilterValues,
+            currentSortedColumns,
+            currentSortedVersusColumns,
+            modelAdapter.getValueObjectType(),
+            otherGridParams
+            );
+      }
+      finally {
+        try {
+          ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+          ClientUtils.getParentFrame(this).getToolkit().sync();
+        }
+        catch (Exception ex2) {
+        }
+        ClientUtils.fireBusyEvent(false);
+      }
 
       // crear table model...
       model.clear();

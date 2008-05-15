@@ -7,7 +7,8 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
-
+import javax.swing.event.TreeWillExpandListener;
+import javax.swing.event.TreeExpansionEvent;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -17,7 +18,7 @@ import org.openswing.swing.tree.java.OpenSwingTreeNode;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class TreeFrameController extends TreeDataLocator implements TreeController {
+public class TreeFrameController extends TreeDataLocator implements TreeController,TreeWillExpandListener {
 
   private TreeFrame tree = null;
 
@@ -34,6 +35,8 @@ public class TreeFrameController extends TreeDataLocator implements TreeControll
    * @return Response
    */
   public Response getTreeModel(JTree tree) {
+    tree.addTreeWillExpandListener(this);
+
     DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
 
@@ -239,6 +242,22 @@ public class TreeFrameController extends TreeDataLocator implements TreeControll
    */
   public boolean rightClick(DefaultMutableTreeNode node) {
     return true;
+  }
+
+  /**
+   * treeWillCollapse
+   *
+   * @param event TreeExpansionEvent
+   */
+  public void treeWillCollapse(TreeExpansionEvent event) {
+  }
+
+  /**
+   * treeWillExpand
+   *
+   * @param event TreeExpansionEvent
+   */
+  public void treeWillExpand(TreeExpansionEvent event) {
   }
 
 }

@@ -51,17 +51,22 @@ public class TreeGrid extends JTable {
 
     private TreeGridNodeRenderer treeRenderer;
 
+    /** grid columns alignments: collection of pairs <attribute name,alingment: Integer> */
+    private Hashtable gridColumnAlignments = new Hashtable();
+
+    /** attribute name that identifies the column containing the tree */
     private String attributeName;
 
-
-    public TreeGrid(TreeTableModel treeTableModel,String attributeName,ArrayList gridColumnSizes,String folderIconName,String leavesImageName,Format formatter) {
+    public TreeGrid(TreeTableModel treeTableModel,String attributeName,ArrayList gridColumnSizes,Hashtable gridColumnAlignments,String folderIconName,String leavesImageName,Format formatter,boolean rootVisible) {
       super();
       this.attributeName = attributeName;
+      this.gridColumnAlignments = gridColumnAlignments;
 
       treeRenderer = new TreeGridNodeRenderer(folderIconName,leavesImageName,formatter);
 
       // Create the tree. It will be used as a renderer and editor.
       tree = new TreeTableCellRenderer(treeTableModel);
+      tree.setRootVisible(rootVisible);
       tree.setCellRenderer(treeRenderer);
 
       // Install a tableModel representing the visible rows in the tree.
@@ -112,8 +117,7 @@ public class TreeGrid extends JTable {
         }
         // Use the tree's default foreground and background colors in the
         // table.
-        LookAndFeel.installColorsAndFont(this, "Tree.background",
-                                         "Tree.foreground", "Tree.font");
+        LookAndFeel.installColorsAndFont(this, "Tree.background", "Tree.foreground", "Tree.font");
     }
 
     /* Workaround for BasicTableUI anomaly. Make sure the UI never tries to
@@ -144,6 +148,12 @@ public class TreeGrid extends JTable {
         return tree;
     }
 
+
+
+
+
+
+
     /**
      * A TreeCellRenderer that displays a JTree.
      */
@@ -171,10 +181,8 @@ public class TreeGrid extends JTable {
                 // exception to be thrown if the border selection color is
                 // null.
                 // dtcr.setBorderSelectionColor(null);
-                dtcr.setTextSelectionColor(UIManager.getColor
-                                           ("Table.selectionForeground"));
-                dtcr.setBackgroundSelectionColor(UIManager.getColor
-                                                ("Table.selectionBackground"));
+                dtcr.setTextSelectionColor(UIManager.getColor("Table.selectionForeground"));
+                dtcr.setBackgroundSelectionColor(UIManager.getColor("Table.selectionBackground"));
             }
         }
 
@@ -302,6 +310,12 @@ public class TreeGrid extends JTable {
               if (formatter!=null)
                 value = formatter.format(value);
               l.setText(value.toString());
+
+              if (gridColumnAlignments.get(attributeName)!=null) {
+                ((JLabel)this).setHorizontalAlignment( ((Integer)gridColumnAlignments.get(attributeName)).intValue() );
+              }
+
+
             }
           }
 
@@ -464,8 +478,7 @@ public class TreeGrid extends JTable {
                     if(min != -1 && max != -1) {
                         for(int counter = min; counter <= max; counter++) {
                             if(listSelectionModel.isSelectedIndex(counter)) {
-                                TreePath     selPath = tree.getPathForRow
-                                                            (counter);
+                                TreePath selPath = tree.getPathForRow(counter);
 
                                 if(selPath != null) {
                                     addSelectionPath(selPath);

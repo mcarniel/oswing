@@ -224,7 +224,29 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
             expandAllNodes();
         }
         else {
-          Response response = treeDataLocator.getTreeModel(tree);
+
+          ClientUtils.fireBusyEvent(true);
+          try {
+            ClientUtils.getParentFrame(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+            ClientUtils.getParentFrame(TreePanel.this).getToolkit().sync();
+          }
+          catch (Exception ex) {
+          }
+
+          Response response = null;
+          try {
+            response = treeDataLocator.getTreeModel(tree);
+          }
+          finally {
+            try {
+              ClientUtils.getParentFrame(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+              ClientUtils.getParentFrame(TreePanel.this).getToolkit().sync();
+            }
+            catch (Exception ex1) {
+            }
+            ClientUtils.fireBusyEvent(false);
+          }
+
           if (response.isError())
             treeModel = new DefaultTreeModel(new OpenSwingTreeNode());
           else
@@ -337,7 +359,28 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * Fill in the tree.
    */
   private void createTree() {
-    Response response = treeDataLocator.getTreeModel(tree);
+    ClientUtils.fireBusyEvent(true);
+    try {
+      ClientUtils.getParentFrame(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+      ClientUtils.getParentFrame(TreePanel.this).getToolkit().sync();
+    }
+    catch (Exception ex) {
+    }
+
+    Response response = null;
+    try {
+      response = treeDataLocator.getTreeModel(tree);
+    }
+    finally {
+      try {
+        ClientUtils.getParentFrame(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        ClientUtils.getParentFrame(TreePanel.this).getToolkit().sync();
+      }
+      catch (Exception ex1) {
+      }
+      ClientUtils.fireBusyEvent(false);
+    }
+
     if (response.isError())
       treeModel = new DefaultTreeModel(new OpenSwingTreeNode());
     else

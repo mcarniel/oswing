@@ -56,6 +56,12 @@ public class CheckBoxColumn extends Column {
   /** define if null value is alloed (i.e. distinct from Boolean.FALSE value); default value: <code>false</code> */
   private boolean allowNullValue = false;
 
+  /** define whether "select all" and "deselect all" menu items have to be added to popup menu when right clicking on this check-box column; default value: <code>false</code> */
+  private boolean showDeSelectAllInPopupMenu = false;
+
+  /** define whether "select all" and "deselect all" commands must be applied on editable cells or on all cells, independently from cells editability; default value: <code>false</code>, i.e. do not select all cells independently from cells editability; note: this flag is used only when "showDeSelectAllInPopupMenu" property is set to <code>true</code> */
+  private boolean deSelectAllCells = false;
+
 
   public CheckBoxColumn() {
     setTextAlignment(SwingConstants.CENTER);
@@ -172,6 +178,42 @@ public class CheckBoxColumn extends Column {
    */
   public final void setAllowNullValue(boolean allowNullValue) {
     this.allowNullValue = allowNullValue;
+  }
+
+
+  /**
+   * @return define whether "select all" and "deselect all" commands must be applied on editable cells or on all cells, independently from cells editability; default value: <code>false</code>, i.e. do not select all cells independently from cells editability
+   */
+  public final boolean isDeSelectAllCells() {
+    return deSelectAllCells;
+  }
+
+
+  /**
+   * @return define whether "select all" and "deselect all" menu items have to be added to popup menu when right clicking on this check-box column
+   */
+  public final boolean isShowDeSelectAllInPopupMenu() {
+    return showDeSelectAllInPopupMenu;
+  }
+
+
+  /**
+   * Define whether "select all" and "deselect all" menu items have to be added to popup menu when right clicking on this check-box column.
+   * Default value: <code>false</code>
+   * @param showDeSelectAllInPopupMenu define whether "select all" and "deselect all" menu items have to be added to popup menu when right clicking on this check-box column
+   */
+  public final void setShowDeSelectAllInPopupMenu(boolean showDeSelectAllInPopupMenu) {
+    this.showDeSelectAllInPopupMenu = showDeSelectAllInPopupMenu;
+  }
+
+
+  /**
+   * Define whether "select all" and "deselect all" commands must be applied on editable cells or on all cells, independently from cells editability; default value: <code>false</code>, i.e. do not select all cells independently from cells editability.
+   * Note: this flag is used only when "showDeSelectAllInPopupMenu" property is set to <code>true</code>.
+   * @param deSelectAllCells define whether "select all" and "deselect all" commands must be applied on editable cells or on all cells, independently from cells editability; default value: <code>false</code>, i.e. do not select all cells independently from cells editability
+   */
+  public final void setDeSelectAllCells(boolean deSelectAllCells) {
+    this.deSelectAllCells = deSelectAllCells;
   }
 
 

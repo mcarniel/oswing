@@ -312,11 +312,12 @@ public class ClientUtils extends JApplet {
     try {
       if (url.toLowerCase().startsWith("file://"))
         url = url.substring(7);
+
       Object desktop = Class.forName("java.awt.Desktop").getMethod("getDesktop", new Class[0]).invoke(null, new Object[0]);
       desktop.getClass().getMethod("open",new Class[]{java.io.File.class}).invoke(desktop,new Object[]{new java.io.File(url)});
     }
     catch (Throwable ex1) {
-      if (!url.toLowerCase().startsWith("file://"))
+      if (!url.toLowerCase().startsWith("file://") && !url.toLowerCase().startsWith("http://"))
         url = "file://"+url;
       boolean windows = false;
       String os = System.getProperty("os.name");

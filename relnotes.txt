@@ -1,5 +1,28 @@
 
 
+Release Notes 1.6
+-----------------
+
+Final release 1.6 available
+Changed Form panel, grid control and TreePanel components: now a wait cursor is showed when loading data on these components.
+Added commands "select all" and "deselect all" to popup menu in grid, for check-box type columns.
+Added commands for copy/cut/paste to a popup menu showed over an input control when right mouse clicking on it.
+Improved "window" menu in MDI menu bar: 
+- added "switch..." menu item to open a window dialog showing all opened internal windows and select a window to set to front
+- added numeric mnemonic (1, 2, 3, ... 9) at the left of menu items related to internal opened windows
+- added "reduce to icon" and "reduce all to icon" menu items
+- added "cascade", "tile horizontally/verically" menu items
+Improved TreeGridPanel:
+- now a leaf can be directly expanded using TreeWillExpandListener listener
+- added "setColumnAlignment" method to specify column alignment
+- added "rootVisible" property to show/hide root node
+Created ItalianOnlyResourceFactory class, that can be used to create italian based applications: it contains all OpenSwing translations, as with EnglishOnlyResourceFactory.
+Fixed NullPointerException bug, fired when using ListControl.
+Changed AboutDialog: if about text contains a link, then when clicking on it, default browser will be opened.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.5.9
 -------------------
 

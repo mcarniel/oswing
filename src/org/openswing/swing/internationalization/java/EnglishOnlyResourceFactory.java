@@ -1,7 +1,7 @@
 package org.openswing.swing.internationalization.java;
 
 import java.util.*;
-import java.io.*;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -106,6 +106,17 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("starts with","starts with");
     dictionary.setProperty("ends with","ends with");
 
+    // select/deselect all
+    dictionary.setProperty("select all","Select all");
+    dictionary.setProperty("deselect all","Deselect all");
+
+    // copy/cut/paste
+    dictionary.setProperty("copy","Copy");
+    dictionary.setProperty("copymnemonic","C");
+    dictionary.setProperty("cut","Cut");
+    dictionary.setProperty("cutmnemonic","U");
+    dictionary.setProperty("paste","Paste");
+    dictionary.setProperty("pastemnemonic","P");
 
     // lookup...
     dictionary.setProperty("Code is not correct.","Code is not correct.");
@@ -210,6 +221,21 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("reduce to icon","Reduce to icon");
     dictionary.setProperty("are you sure to close this window?","Are you sure to close this window?\nChanges not yet saved will be lost.");
     dictionary.setProperty("confirm window closing","Confirm window closing");
+
+    dictionary.setProperty("switch","Switch");
+    dictionary.setProperty("switchmnemonic","S");
+    dictionary.setProperty("window name","Window name");
+    dictionary.setProperty("opened windows","Opened windows");
+    dictionary.setProperty("tile horizontally","Tile horizontally");
+    dictionary.setProperty("tilehorizontallymnemonic","H");
+    dictionary.setProperty("tile vertically","Tile vertically");
+    dictionary.setProperty("tileverticallymnemonic","V");
+    dictionary.setProperty("cascade","Cascade");
+    dictionary.setProperty("cascademnemonic","C");
+    dictionary.setProperty("minimize","Minimize");
+    dictionary.setProperty("minimizemnemonic","M");
+    dictionary.setProperty("minimize all","Minimize all");
+    dictionary.setProperty("minimizeallmnemonic","A");
 
     // server...
     dictionary.setProperty("Client request not supported","Client request not supported");

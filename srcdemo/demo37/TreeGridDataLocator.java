@@ -21,6 +21,8 @@ import javax.swing.event.TreeExpansionEvent;
  */
 public class TreeGridDataLocator extends TreeDataLocator implements TreeWillExpandListener {
 
+  JTree t  = null;
+
 
   public TreeGridDataLocator() {
   }
@@ -33,6 +35,7 @@ public class TreeGridDataLocator extends TreeDataLocator implements TreeWillExpa
    * @return a VOReponse containing a DefaultTreeModel object
    */
   public Response getTreeModel(JTree tree) {
+    t = tree;
     tree.removeTreeWillExpandListener(this);
     tree.addTreeWillExpandListener(this);
 
@@ -42,6 +45,7 @@ public class TreeGridDataLocator extends TreeDataLocator implements TreeWillExpa
     vo.setItemCode("XXX");
     vo.setPrice(new BigDecimal(110));
     vo.setQty(new BigDecimal(1));
+    vo.setHasChildren(true);
     DefaultMutableTreeNode root = new OpenSwingTreeNode(vo);
     DefaultTreeModel model = new DefaultTreeModel(root);
 
@@ -76,24 +80,20 @@ public class TreeGridDataLocator extends TreeDataLocator implements TreeWillExpa
    */
   public void treeWillExpand(TreeExpansionEvent event) {
     DefaultMutableTreeNode nodeToExpand = (DefaultMutableTreeNode)event.getPath().getLastPathComponent();
-    DefaultMutableTreeNode currentNode = null;
-    TestVO vo,parentVO;
-    for(int c=0;c<nodeToExpand.getChildCount();c++) {
-      currentNode = (DefaultMutableTreeNode )nodeToExpand.getChildAt(c);
-      parentVO = (TestVO)currentNode.getUserObject();
-      if (parentVO.isHasChildren() && currentNode.getChildCount()==0) {
-        for(int i=1;i<=10;i++) {
-          vo = new TestVO();
-          vo.setDescription("Component "+parentVO.getItemCode()+"."+i);
-          vo.setItemCode(parentVO.getItemCode()+"."+i);
-          vo.setHasChildren(currentNode.getLevel()<5);
-          vo.setPrice(new BigDecimal(Math.ceil(Math.random()*10)));
-          vo.setQty(new BigDecimal(i));
-          DefaultMutableTreeNode node = new OpenSwingTreeNode(vo);
-          currentNode.add(node);
-        }
+    TestVO parentVO = (TestVO)nodeToExpand.getUserObject();
+
+    TestVO vo;
+    if (parentVO.isHasChildren() && nodeToExpand.getChildCount()==0)
+      for(int i=1;i<=10;i++) {
+        vo = new TestVO();
+        vo.setDescription("Component "+parentVO.getItemCode()+"."+i);
+        vo.setItemCode(parentVO.getItemCode()+"."+i);
+        vo.setHasChildren(nodeToExpand.getLevel()<5);
+        vo.setPrice(new BigDecimal(Math.ceil(Math.random()*10)));
+        vo.setQty(new BigDecimal(i));
+        DefaultMutableTreeNode node = new OpenSwingTreeNode(vo);
+        nodeToExpand.add(node);
       }
-    }
   }
 
 }

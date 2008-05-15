@@ -81,6 +81,9 @@ public class BaseInputControl extends JPanel implements InputControl {
   /** column text horizontal alignment */
   private int textAlignment = SwingConstants.LEFT;
 
+  /** popup menu */
+  private InputControlPopupMenu inputControlPopupMenu;
+
 
   /**
    * Constructor.
@@ -107,7 +110,6 @@ public class BaseInputControl extends JPanel implements InputControl {
       requiredIcon.setText("");
       requiredIcon.setIcon(new ImageIcon(ClientUtils.getImage("obl.gif")));
     }
-
 
   }
 
@@ -141,6 +143,7 @@ public class BaseInputControl extends JPanel implements InputControl {
       });
     }
 
+    inputControlPopupMenu = new InputControlPopupMenu(this);
   }
 
 
