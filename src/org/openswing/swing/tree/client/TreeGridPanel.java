@@ -58,7 +58,7 @@ public class TreeGridPanel extends JPanel {
   private boolean rootVisible = true;
 
   /** expandable tree */
-  private TreeGrid tree = new TreeGrid(new TreeGridModel(),"",gridColumnSizes,gridColumnAlignments,ClientSettings.PERC_TREE_FOLDER,ClientSettings.PERC_TREE_NODE,null,rootVisible);
+  private TreeGrid tree = new TreeGrid(new TreeGridModel(),"",new ArrayList(),gridColumnSizes,gridColumnAlignments,ClientSettings.PERC_TREE_FOLDER,ClientSettings.PERC_TREE_NODE,null,rootVisible);
 
   /** tree root */
   private DefaultMutableTreeNode treeRoot;
@@ -101,6 +101,9 @@ public class TreeGridPanel extends JPanel {
 
   /** column data formatters; as default settings all columns are converted into String objects */
   private ArrayList columnFormatters = new ArrayList();
+
+  /** define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>; default value: <code>true</code> */
+  private boolean expandRoot = true;
 
 
   /**
@@ -257,7 +260,7 @@ public class TreeGridPanel extends JPanel {
     TreeWillExpandListener[] l2 = tree.getTree().getTreeWillExpandListeners();
     TreeSelectionListener[] l3 = tree.getTree().getTreeSelectionListeners();
 
-    tree = new TreeGrid(new TreeGridModel(treeRoot),gridColumns.get(0).toString(),gridColumnSizes,gridColumnAlignments,folderIconName,leavesImageName,(Format)columnFormatters.get(0),rootVisible);
+    tree = new TreeGrid(new TreeGridModel(treeRoot),gridColumns.get(0).toString(),gridColumns,gridColumnSizes,gridColumnAlignments,folderIconName,leavesImageName,(Format)columnFormatters.get(0),rootVisible);
     tree.getTree().setShowsRootHandles(true);
 
     for(int i=0;i<l1.length;i++)
@@ -298,7 +301,7 @@ public class TreeGridPanel extends JPanel {
 
     if (expandAllNodes)
       expandAllNodes();
-    else
+    else if (expandRoot && rootVisible)
       tree.getTree().expandRow(0);
   }
 
@@ -327,12 +330,10 @@ public class TreeGridPanel extends JPanel {
    */
   public final void treeDoubleClick(MouseEvent e,JTree tree) {
     try {
-      int selRow = tree.getRowForLocation(e.getX(), e.getY());
       javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
       if (selPath != null) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)(selPath.getPathComponent(selPath.getPathCount()-1));
         treeController.doubleClick(node);
-
       }
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -576,6 +577,30 @@ public class TreeGridPanel extends JPanel {
     if (index!=-1)
       this.gridColumnAlignments.put(attributeName,new Integer(alignment));
   }
+
+
+  /**
+   * @return define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>
+   */
+  public final boolean isExpandRoot() {
+    return expandRoot;
+  }
+
+
+  /**
+   * Define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>; default value: <code>true</code>.
+   * @param expandRoot define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>
+   */
+  public final void setExpandRoot(boolean expandRoot) {
+    this.expandRoot = expandRoot;
+  }
+
+
+
+
+
+
+
 
 
   /**

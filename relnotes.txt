@@ -1,5 +1,22 @@
 
 
+Release Notes 1.6.1
+-------------------
+
+Final release 1.6.1 available
+Added code auto completition to lookup component; this feature can be enabled using global property ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME
+or lookup property "autoCompletitionWaitTime".
+Updated "demo10" sample application to show how to use this new feature.
+Added "expandRoot" property to TreePanel and TreeGridPanel to define is auto expand root's children when "expandAllNodes" property is set to "false".
+Fixed problem in TreeGridPanel with horizontal alignment setting.
+Improved ComboBoxVOControl, by adding "reloadItems" method to force items reloading.
+Fixed problem on loading images and "demo2" sample application.
+Fixed problem with internal sorting in grid, when using characters set dependent on Locale.
+Updated "demo3", "demo20", "demo24" sample applications by filling in formatted text columns in database table.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.6
 -----------------
 

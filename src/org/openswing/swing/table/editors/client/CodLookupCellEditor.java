@@ -14,6 +14,11 @@ import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.client.AutoCompletitionListener;
+import org.openswing.swing.client.InputControl;
+import org.openswing.swing.client.LabelControl;
+import org.openswing.swing.form.model.client.ValueChangeListener;
+import org.openswing.swing.client.AutoCompletitionInputControl;
 
 
 /**
@@ -136,6 +141,8 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
    * @param codBoxEditable flag used to disable code editability
    * @param controllerClassName class name of the controller that must be invoked by pressing the "+" button
    * @param controllerMethodName method name defined in ClientFacade class, related to the controller that must be invoked by pressing the "+" button
+   * @param autoCompletitionWaitTime wait time (expressed in ms) before showing code auto completition feature for lookup controls; default value: ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME
+   * @param codAttributeName attribute name linked to the code
    */
   public CodLookupCellEditor(
       int maxCharacters,
@@ -145,12 +152,15 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
       boolean codBoxVisible,
       boolean codBoxEditable,
       final String controllerClassName,
-      final String controllerMethodName) {
+      final String controllerMethodName,
+      final long autoCompletitionWaitTime,
+      String codAttributeName) {
     this.lookupController = lookupController;
     this.required = required;
     this.numericValue = numericValue;
     this.codBoxVisible = codBoxVisible;
     this.codBoxEditable = codBoxEditable;
+    this.codAttributeName = codAttributeName;
     codBox.setColumns(maxCharacters);
     codBox.setEnabled(codBoxEditable);
     panel.setLayout(new GridBagLayout());
@@ -211,6 +221,20 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
 
     });
 
+    if (autoCompletitionWaitTime>=0 && codAttributeName!=null) {
+      codBox.addKeyListener(
+        new AutoCompletitionListener(
+          new VirtualInputControl(),
+          new LookupAutoCompletitionDataLocator(
+            lookupController,
+            codAttributeName
+          ),
+          autoCompletitionWaitTime
+        )
+      );
+    }
+
+
     codBox.addKeyListener(new KeyAdapter() {
       public void keyReleased(KeyEvent e) {
         if (e.getKeyCode()==ClientSettings.LOOKUP_OPEN_KEY.getKeyCode() &&
@@ -249,13 +273,13 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
     lookupController.addLookupListener(new LookupListener() {
 
       public void codeChanged(ValueObject parentVO,Collection parentChangedAttributes) {
-        if (codAttributeName==null)
+        if (CodLookupCellEditor.this.codAttributeName==null)
           return;
 
         try {
           String attrName;
           Object newValue = null;
-          attrName = codAttributeName;
+          attrName = CodLookupCellEditor.this.codAttributeName;
           if (parentVO != null) {
             String aux = attrName;
             Object obj = parentVO;
@@ -311,7 +335,7 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
     codBox.addKeyListener(new KeyAdapter() {
 
       public void keyPressed(KeyEvent e) {
-        if (table!=null && (e.getKeyCode()==e.VK_UP || e.getKeyCode()==e.VK_DOWN))
+        if (table!=null && (e.getKeyCode()==e.VK_UP || e.getKeyCode()==e.VK_DOWN) && autoCompletitionWaitTime<0)
           table.dispatchEvent(e);
         else if (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_ENTER) {
 
@@ -495,7 +519,125 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
   }
 
 
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Input control implementation used by AutoCompletitionListener to </p>
+   * <p>Copyright: Copyright (C) 2008 Mauro Carniel</p>
+   * @version 1.0
+   */
+  class VirtualInputControl implements AutoCompletitionInputControl {
+
+
+    /**
+     * @return value related to the input control
+     */
+    public Object getValue() {
+      return codBox.getText();
+    }
+
+
+    /**
+     * Set value to the input control.
+     * @param value value to set into the input control
+     */
+    public void setValue(Object value) {
+      codBox.setText(value==null?null:value.toString());
+    }
+
+
+    /**
+     * Registers <code>listener</code> so that it will receive
+     * <code>AncestorEvents</code> when it or any of its ancestors
+     * move or are made visible or invisible.
+     * Events are also sent when the component or its ancestors are added
+     * or removed from the containment hierarchy.
+     *
+     * @param listener  the <code>AncestorListener</code> to register
+     * @see AncestorEvent
+     */
+    public void addAncestorListener(AncestorListener listener) {
+      codBox.addAncestorListener(listener);
+    }
+
+
+    /**
+     * Adds the specified focus listener to receive focus events from
+     * this component when this component gains input focus.
+     * If listener <code>l</code> is <code>null</code>,
+     * no exception is thrown and no action is performed.
+     *
+     * @param    l   the focus listener
+     * @see      java.awt.event.FocusEvent
+     * @see      java.awt.event.FocusListener
+     * @see      #removeFocusListener
+     * @see      #getFocusListeners
+     * @since    JDK1.1
+     */
+    public void addFocusListener(FocusListener l) {
+      codBox.addFocusListener(l);
+    }
+
+
+    /**
+     * Gets the location of this component in the form of a point
+     * specifying the component's top-left corner in the screen's
+     * coordinate space.
+     * @return an instance of <code>Point</code> representing
+     * 		the top-left corner of the component's bounds in the
+     * 		coordinate space of the screen
+     * @throws <code>IllegalComponentStateException</code> if the
+     * 		component is not showing on the screen
+     * @see #setLocation
+     * @see #getLocation
+     */
+    public Point getLocationOnScreen() {
+      return codBox.getLocationOnScreen();
+    }
+
+
+    /**
+     * Returns the current height of this component.
+     * This method is preferable to writing
+     * <code>component.getBounds().height</code>, or
+     * <code>component.getSize().height</code> because it doesn't cause any
+     * heap allocations.
+     *
+     * @return the current height of this component
+     */
+    public int getHeight() {
+      return codBox.getHeight();
+    }
+
+
+    /**
+     * Returns the current width of this component.
+     * This method is preferable to writing
+     * <code>component.getBounds().width</code>, or
+     * <code>component.getSize().width</code> because it doesn't cause any
+     * heap allocations.
+     *
+     * @return the current width of this component
+     */
+    public int getWidth() {
+      return codBox.getWidth();
+    }
+
+
+
+  } // end inner class
+
+
+  /**
+   * Method invoked by AutoCompletitionListener class.
+   */
+  public final void forceValidate() {
+    lookupController.forceValidate();
+  }
+
+
 }
+
+
 
 
 /**

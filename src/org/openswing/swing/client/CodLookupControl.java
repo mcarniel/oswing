@@ -50,7 +50,7 @@ import org.openswing.swing.util.client.*;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class CodLookupControl extends BaseInputControl implements CodBoxContainer,InputControl,LookupParent {
+public class CodLookupControl extends BaseInputControl implements CodBoxContainer,InputControl,LookupParent,AutoCompletitionInputControl {
 
   /** separator between code input field and lookup button */
   private Component buttonSeparator = javax.swing.Box.createHorizontalStrut(5);
@@ -92,6 +92,11 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
     }
   };
 
+  /** wait time (expressed in ms) before showing code auto completition feature for lookup controls; default value: ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME */
+  private long autoCompletitionWaitTime = ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME;
+
+  /** used in addNotify method */
+  private boolean firstTime = true;
 
 
   /**
@@ -159,34 +164,6 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
 //    this.add(buttonSeparator);
 //    this.add(lookupButton);
 
-    codBox.addKeyListener(new KeyAdapter() {
-      public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode()==ClientSettings.LOOKUP_OPEN_KEY.getKeyCode() &&
-            e.getModifiers()+e.getModifiersEx()==ClientSettings.LOOKUP_OPEN_KEY.getModifiers()) {
-          if (validationController!=null)
-            validationController.openLookupFrame(codBox,CodLookupControl.this);
-        }
-        if (e.getKeyCode()==ClientSettings.LOOKUP_CONTROLLER_KEY.getKeyCode() &&
-            e.getModifiers()+e.getModifiersEx()==ClientSettings.LOOKUP_CONTROLLER_KEY.getModifiers()) {
-          if (controllerClassName!=null) {
-            try {
-              Class.forName(controllerClassName).newInstance();
-            }
-            catch (Throwable ex) {
-              ex.printStackTrace();
-            }
-          }
-          else if (controllerMethodName!=null) {
-            try {
-              MDIFrame.getClientFacade().getClass().getMethod(controllerMethodName,new Class[0]).invoke(MDIFrame.getClientFacade(), new Object[0]);
-            }
-            catch (Throwable ex) {
-              ex.printStackTrace();
-            }
-          }
-        }
-      }
-    });
 
     initListeners();
   }
@@ -348,13 +325,60 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
   public final void addNotify() {
     super.addNotify();
 
-    // set Form object in the lookup container...
-    if (!Beans.isDesignTime() && validationController!=null && validationController.getForm()==null) {
-      Form form = ClientUtils.getLinkedForm(this);
-      if (form != null)
-        validationController.setForm(form);
-    }
+    if (firstTime) {
+      firstTime = false;
 
+      // set Form object in the lookup container...
+      if (!Beans.isDesignTime() && validationController!=null && validationController.getForm()==null) {
+        Form form = ClientUtils.getLinkedForm(this);
+        if (form != null)
+          validationController.setForm(form);
+      }
+
+      if (!Beans.isDesignTime() && autoCompletitionWaitTime>=0) {
+        codBox.addKeyListener(
+          new AutoCompletitionListener(
+            this,
+            new LookupAutoCompletitionDataLocator(
+              validationController,
+              getAttributeName()
+            ),
+            autoCompletitionWaitTime
+          )
+        );
+      }
+
+
+      codBox.addKeyListener(new KeyAdapter() {
+        public void keyReleased(KeyEvent e) {
+          if (e.getKeyCode()==ClientSettings.LOOKUP_OPEN_KEY.getKeyCode() &&
+              e.getModifiers()+e.getModifiersEx()==ClientSettings.LOOKUP_OPEN_KEY.getModifiers()) {
+            if (validationController!=null)
+              validationController.openLookupFrame(codBox,CodLookupControl.this);
+          }
+          if (e.getKeyCode()==ClientSettings.LOOKUP_CONTROLLER_KEY.getKeyCode() &&
+              e.getModifiers()+e.getModifiersEx()==ClientSettings.LOOKUP_CONTROLLER_KEY.getModifiers()) {
+            if (controllerClassName!=null) {
+              try {
+                Class.forName(controllerClassName).newInstance();
+              }
+              catch (Throwable ex) {
+                ex.printStackTrace();
+              }
+            }
+            else if (controllerMethodName!=null) {
+              try {
+                MDIFrame.getClientFacade().getClass().getMethod(controllerMethodName,new Class[0]).invoke(MDIFrame.getClientFacade(), new Object[0]);
+              }
+              catch (Throwable ex) {
+                ex.printStackTrace();
+              }
+            }
+          }
+        }
+      });
+
+    } // end if
   }
 
 
@@ -606,6 +630,23 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
     this.controllerMethodName = controllerMethodName;
     if (controllerMethodName!=null)
       this.add(plusButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(0, 0, 0, 0), 0, 0));
+  }
+
+
+  /**
+   * @return wait time (expressed in ms) before showing code auto completition feature for lookup controls; <code>-1</code>, to do not enable auto completition
+   */
+  public final long getAutoCompletitionWaitTime() {
+    return autoCompletitionWaitTime;
+  }
+
+
+  /**
+   * Wait time before showing code auto completition feature for this lookup control.
+   * @param autoCompletitionWaitTime wait time (expressed in ms) before showing code auto completition feature for this lookup control; default value: <code>-1</code> to do not enable auto completition
+   */
+  public final void setAutoCompletitionWaitTime(long autoCompletitionWaitTime) {
+    this.autoCompletitionWaitTime = autoCompletitionWaitTime;
   }
 
 

@@ -23,16 +23,20 @@ public class TreeGridPanelBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _expandAllNodes = new PropertyDescriptor("expandAllNodes", beanClass, "isExpandAllNodes", "setExpandAllNodes");
+      PropertyDescriptor _expandRoot = new PropertyDescriptor("expandRoot", beanClass, "isExpandRoot", "setExpandRoot");
       PropertyDescriptor _folderIconName = new PropertyDescriptor("folderIconName", beanClass, "getFolderIconName", "setFolderIconName");
       PropertyDescriptor _leavesImageName = new PropertyDescriptor("leavesImageName", beanClass, "getLeavesImageName", "setLeavesImageName");
       PropertyDescriptor _loadWhenVisibile = new PropertyDescriptor("loadWhenVisibile", beanClass, "isLoadWhenVisibile", "setLoadWhenVisibile");
+      PropertyDescriptor _rootVisibile = new PropertyDescriptor("rootVisibile", beanClass, "isRootVisibile", "setRootVisibile");
       PropertyDescriptor _treeController = new PropertyDescriptor("treeController", beanClass, "getTreeController", "setTreeController");
       PropertyDescriptor _treeDataLocator = new PropertyDescriptor("treeDataLocator", beanClass, "getTreeDataLocator", "setTreeDataLocator");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _expandAllNodes,
+        _expandRoot,
         _folderIconName,
         _leavesImageName,
         _loadWhenVisibile,
+        _rootVisibile,
         _treeController,
         _treeDataLocator};
       return pds;

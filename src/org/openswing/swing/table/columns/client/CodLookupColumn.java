@@ -10,6 +10,7 @@ import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.editors.client.*;
 import org.openswing.swing.table.renderers.client.*;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -75,6 +76,9 @@ public class CodLookupColumn extends Column {
 
   /** method name defined in ClientFacade class, related to the controller that must be invoked by pressing the "+" button */
   private String controllerMethodName = null;
+
+  /** wait time (expressed in ms) before showing code auto completition feature for lookup controls; default value: ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME */
+  private long autoCompletitionWaitTime = ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME;
 
 
   public CodLookupColumn() { }
@@ -269,6 +273,23 @@ public class CodLookupColumn extends Column {
 
 
   /**
+   * @return wait time (expressed in ms) before showing code auto completition feature for lookup controls; <code>-1</code>, to do not enable auto completition
+   */
+  public final long getAutoCompletitionWaitTime() {
+    return autoCompletitionWaitTime;
+  }
+
+
+  /**
+   * Wait time before showing code auto completition feature for this lookup control.
+   * @param autoCompletitionWaitTime wait time (expressed in ms) before showing code auto completition feature for this lookup control; default value: <code>-1</code> to do not enable auto completition
+   */
+  public final void setAutoCompletitionWaitTime(long autoCompletitionWaitTime) {
+    this.autoCompletitionWaitTime = autoCompletitionWaitTime;
+  }
+
+
+  /**
    * Force validation.
    * This method can be called by the developer to force a code validation, without losting focus.
    * @param rowNumber row number used to determine where is the cell to validate
@@ -365,7 +386,10 @@ public class CodLookupColumn extends Column {
         !isHideCodeBox(),
         isEnableCodBox(),
         getControllerClassName(),
-        getControllerMethodName());
+        getControllerMethodName(),
+        getAutoCompletitionWaitTime(),
+        getColumnName()
+    );
 
   }
 

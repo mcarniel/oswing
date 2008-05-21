@@ -51,15 +51,20 @@ public class TreeGrid extends JTable {
 
     private TreeGridNodeRenderer treeRenderer;
 
-    /** grid columns alignments: collection of pairs <attribute name,alingment: Integer> */
+    /** grid columns alignments: collection of pairs <attribute name,alignment: Integer> */
     private Hashtable gridColumnAlignments = new Hashtable();
 
     /** attribute name that identifies the column containing the tree */
     private String attributeName;
 
-    public TreeGrid(TreeTableModel treeTableModel,String attributeName,ArrayList gridColumnSizes,Hashtable gridColumnAlignments,String folderIconName,String leavesImageName,Format formatter,boolean rootVisible) {
+    /** attribute names to used to show grid columns */
+    private ArrayList gridColumns = new ArrayList();
+
+
+    public TreeGrid(TreeTableModel treeTableModel,String attributeName,ArrayList gridColumns,ArrayList gridColumnSizes,Hashtable gridColumnAlignments,String folderIconName,String leavesImageName,Format formatter,boolean rootVisible) {
       super();
       this.attributeName = attributeName;
+      this.gridColumns = gridColumns;
       this.gridColumnAlignments = gridColumnAlignments;
 
       treeRenderer = new TreeGridNodeRenderer(folderIconName,leavesImageName,formatter);
@@ -73,8 +78,7 @@ public class TreeGrid extends JTable {
       super.setModel(new TreeTableModelAdapter(treeTableModel, tree));
 
       // Force the JTable and JTree to share their row selection models.
-      ListToTreeSelectionModelWrapper selectionWrapper = new
-                              ListToTreeSelectionModelWrapper();
+      ListToTreeSelectionModelWrapper selectionWrapper = new ListToTreeSelectionModelWrapper();
       tree.setSelectionModel(selectionWrapper);
       setSelectionModel(selectionWrapper.getListSelectionModel());
 
@@ -94,6 +98,12 @@ public class TreeGrid extends JTable {
 
       for(int i=0;i<gridColumnSizes.size();i++) {
         getColumnModel().getColumn(i).setPreferredWidth( ( (Integer)gridColumnSizes.get(i)).intValue());
+        if (gridColumnAlignments.containsKey(gridColumns.get(i)) &&
+            !gridColumns.get(i).equals(attributeName)) {
+          DefaultTableCellRenderer rend = new DefaultTableCellRenderer();
+          rend.setHorizontalAlignment( ((Integer)gridColumnAlignments.get(gridColumns.get(i))).intValue() );
+          getColumnModel().getColumn(i).setCellRenderer(rend);
+        }
       }
 
       setRowHeight(ClientSettings.CELL_HEIGHT);
@@ -147,11 +157,6 @@ public class TreeGrid extends JTable {
     public JTree getTree() {
         return tree;
     }
-
-
-
-
-
 
 
     /**

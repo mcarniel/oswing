@@ -23,6 +23,7 @@ public class TreePanelBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _expandAllNodes = new PropertyDescriptor("expandAllNodes", beanClass, "isExpandAllNodes", "setExpandAllNodes");
+      PropertyDescriptor _expandRoot = new PropertyDescriptor("expandRoot", beanClass, "isExpandRoot", "setExpandRoot");
       PropertyDescriptor _folderIconName = new PropertyDescriptor("folderIconName", beanClass, "getFolderIconName", "setFolderIconName");
       PropertyDescriptor _iconImageName = new PropertyDescriptor("iconImageName", beanClass, "getIconImageName", "setIconImageName");
       PropertyDescriptor _leavesImageName = new PropertyDescriptor("leavesImageName", beanClass, "getLeavesImageName", "setLeavesImageName");
@@ -40,6 +41,7 @@ public class TreePanelBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _expandAllNodes,
+        _expandRoot,
         _folderIconName,
         _iconImageName,
         _leavesImageName,

@@ -98,6 +98,16 @@ public class ClientUtils extends JApplet {
    * @return Image object
    */
   public static Image getImage(String imageName) {
+    return getImage(imageName,MDIFrame.class);
+  }
+
+
+  /**
+   * @param imageName image name; must be stored in the "image" folder accessible by the classpath
+   * @return class already instantiated
+   * @return Image object
+   */
+  public static Image getImage(String imageName,Class clazz) {
     if (Beans.isDesignTime())
       return new ImageIcon(MDIFrame.class.getResource("/images/"+imageName)).getImage();
 
@@ -124,9 +134,9 @@ public class ClientUtils extends JApplet {
                imageName.toLowerCase().endsWith(".tiff") ||
                imageName.toLowerCase().endsWith(".bmp") ||
                imageName.toLowerCase().endsWith(".png"))
-        i = ImageIO.read(MDIFrame.class.getResource("/images/"+imageName));
+        i = ImageIO.read(clazz.getResource("/images/"+imageName));
       else
-        i = new ImageIcon(MDIFrame.class.getResource("/images/"+imageName)).getImage();
+        i = new ImageIcon(clazz.getResource("/images/"+imageName)).getImage();
       if (i!=null)
         return i;
     }

@@ -238,7 +238,7 @@ public class ClientApplication implements MDIController,LoginController {
   public ArrayList getLanguages() {
     ArrayList list = new ArrayList();
     list.add(new Language("EN","English"));
-    list.add(new Language("FR","Italiano"));
+    list.add(new Language("IT","Italiano"));
     return list;
   }
 

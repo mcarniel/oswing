@@ -31,6 +31,7 @@ public class CodLookupControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _controllerClassName = new PropertyDescriptor("controllerClassName", beanClass, "getControllerClassName", "setControllerClassName");
       PropertyDescriptor _controllerMethodName = new PropertyDescriptor("controllerMethodName", beanClass, "getControllerMethodName", "setControllerMethodName");
       PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
+      PropertyDescriptor _autoCompletitionWaitTime = new PropertyDescriptor("autoCompletitionWaitTime", beanClass, "getAutoCompletitionWaitTime", "setAutoCompletitionWaitTime");
       PropertyDescriptor _enabled = new PropertyDescriptor("enabled", beanClass, "isEnabled", "setEnabled");
       PropertyDescriptor _enableCodBox = new PropertyDescriptor("enableCodBox", beanClass, "isEnableCodBox", "setEnableCodBox");
       PropertyDescriptor _enabledOnEdit = new PropertyDescriptor("enabledOnEdit", beanClass, "isEnabledOnEdit", "setEnabledOnEdit");
@@ -45,6 +46,7 @@ public class CodLookupControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _allowOnlyNumbers,
         _attributeName,
+        _autoCompletitionWaitTime,
         _canCopy,
         _codBoxVisible,
         _columns,

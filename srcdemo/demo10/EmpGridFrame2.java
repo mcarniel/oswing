@@ -126,9 +126,11 @@ public class EmpGridFrame2 extends InternalFrame {
 
     LookupController lookupController = new DeptLookupController(conn);
     colDeptCode.setLookupController(lookupController);
+    colDeptCode.setAutoCompletitionWaitTime(1000);
 
     LookupController lookupController2 = new TaskLookupController(conn);
     colCodTask.setLookupController(lookupController2);
+    colCodTask.setAutoCompletitionWaitTime(1000);
 
   }
 

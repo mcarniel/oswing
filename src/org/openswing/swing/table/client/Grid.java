@@ -23,6 +23,7 @@ import org.openswing.swing.table.model.client.*;
 import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import java.text.Collator;
 
 
 /**
@@ -1277,6 +1278,8 @@ public class Grid extends JTable
    */
   private void internalSorting() {
     Vector list = getVOListTableModel().getDataVector();
+    final Collator collator = Collator.getInstance(grids.getDefaultLocale());
+
     Collections.sort(list,new Comparator() {
 
       public int compare(Object o1, Object o2) {
@@ -1307,9 +1310,14 @@ public class Grid extends JTable
                 return +1*sign;
             }
             else {
-              if (val1.toString().compareTo(val2.toString())<0)
+//              if (val1.toString().compareTo(val2.toString())<0)
+//                return -1*sign;
+//              else if (val1.toString().compareTo(val2.toString())>0)
+//                return +1*sign;
+
+              if (collator.compare(val1.toString(),val2.toString())<0)
                 return -1*sign;
-              else if (val1.toString().compareTo(val2.toString())>0)
+              else if (collator.compare(val1.toString(),val2.toString())>0)
                 return +1*sign;
             }
           }

@@ -281,9 +281,11 @@ public class EmpDetailFrame extends InternalFrame {
 
     LookupController lookupController = new DeptLookupController(conn);
     controlLookup.setLookupController(lookupController);
+    controlLookup.setAutoCompletitionWaitTime(1000);
 
     LookupController lookupController2 = new TaskLookupController(conn);
     controlCodTask.setLookupController(lookupController2);
+    controlCodTask.setAutoCompletitionWaitTime(1000);
 
   }
 

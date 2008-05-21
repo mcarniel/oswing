@@ -108,7 +108,7 @@ public class BaseInputControl extends JPanel implements InputControl {
     }
     else {
       requiredIcon.setText("");
-      requiredIcon.setIcon(new ImageIcon(ClientUtils.getImage("obl.gif")));
+      requiredIcon.setIcon(new ImageIcon(ClientUtils.getImage("obl.gif",getClass())));
     }
 
   }

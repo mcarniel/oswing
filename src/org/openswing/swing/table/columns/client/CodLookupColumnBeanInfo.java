@@ -43,6 +43,7 @@ public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _allowOnlyNumbers = new PropertyDescriptor("allowOnlyNumbers", beanClass, "isAllowOnlyNumbers", "setAllowOnlyNumbers");
+      PropertyDescriptor _autoCompletitionWaitTime = new PropertyDescriptor("autoCompletitionWaitTime", beanClass, "getAutoCompletitionWaitTime", "setAutoCompletitionWaitTime");
       PropertyDescriptor _codePadding = new PropertyDescriptor("codePadding", beanClass, "isCodePadding", "setCodePadding");
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
@@ -56,6 +57,7 @@ public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _zeroLengthAsNull = new PropertyDescriptor("zeroLengthAsNull", beanClass, "isZeroLengthAsNull", "setZeroLengthAsNull");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
 	      _allowOnlyNumbers,
+              _autoCompletitionWaitTime,
 	      _codePadding,
               _columnName,
               _controllerClassName,

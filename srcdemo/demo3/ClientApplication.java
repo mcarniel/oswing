@@ -99,7 +99,7 @@ public class ClientApplication {
 
         for(int i=0;i<900;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',null,"+12+i+0.33+","+1234+i+0.560+",?,3,'Y','Y','A"+i+"',"+i+",'ABC"+i+"\nDEF"+i+"')");
+          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"','"+(i%9)+"23-22-4444',"+12+i+0.33+","+1234+i+0.560+",?,3,'Y','Y','A"+i+"',"+i+",'ABC"+i+"\nDEF"+i+"')");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }

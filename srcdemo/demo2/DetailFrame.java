@@ -1,22 +1,15 @@
 package demo2;
 
-import javax.swing.*;
-import java.awt.*;
-import org.openswing.swing.client.*;
-import java.util.*;
-import org.openswing.swing.util.client.ClientSettings;
-import org.openswing.swing.internationalization.java.EnglishOnlyResourceFactory;
-import org.openswing.swing.form.model.client.VOModel;
-import org.openswing.swing.form.client.Form;
-import org.openswing.swing.form.client.FormController;
-import org.openswing.swing.util.java.Consts;
 import java.sql.*;
-import org.openswing.swing.message.receive.java.*;
-import org.openswing.swing.lookup.client.LookupController;
-import org.openswing.swing.lookup.client.LookupDataLocator;
-import org.openswing.swing.internationalization.java.Resources;
-import org.openswing.swing.mdi.client.InternalFrame;
+
+import java.awt.*;
+import javax.swing.*;
 import javax.swing.border.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.form.client.*;
+import org.openswing.swing.lookup.client.*;
+import org.openswing.swing.mdi.client.*;
 
 
 /**
@@ -92,10 +85,9 @@ public class DetailFrame extends InternalFrame {
     controlCurrency.setDecimals(2);
     controlCurrency.setMaxValue(1000.0);
     controlCurrency.setMinValue(-1000.0);
-    controlCurrency.setRequired(false);
+    controlCurrency.setRequired(true);
     controlNumeric.setCanCopy(true);
     controlNumeric.setDecimals(3);
-    controlNumeric.setRequired(true);
     controlText.setMaxCharacters(5);
     controlText.setTrimText(true);
     controlText.setUpperCase(true);

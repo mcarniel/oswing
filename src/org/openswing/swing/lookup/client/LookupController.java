@@ -1123,6 +1123,15 @@ public class LookupController {
 
 
   /**
+   * @param parentAttributeName parent attribute name included in mapping
+   * @return attribute name in lookup mapped to the specified parent attribute name
+   */
+  public final String getLookupAttributeName(String parentAttributeName) {
+    return lookupMapper.getLookupAttributeName(parentAttributeName);
+  }
+
+
+  /**
    * @return lookup data locator
    */
   public final LookupDataLocator getLookupDataLocator() {

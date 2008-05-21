@@ -297,6 +297,9 @@ public class ClientSettings {
   /** define if a lookup control must set focus over lookup button when pressing TAB on code field and field is correctly filled; default value: <code>false</code> */
   public static boolean FORCE_FOCUS_ON_LOOKUP_CONTROL = false;
 
+  /** wait time (expressed in ms) before showing code auto completition feature for lookup controls; default value: <code>-1</code>, i.e. do not enable auto completition */
+  public static long LOOKUP_AUTO_COMPLETITION_WAIT_TIME = -1;
+
 
   /**
    * Contains application settings.

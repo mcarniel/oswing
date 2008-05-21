@@ -175,6 +175,9 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   /** list of ItemListener objects added to the check-box tree */
   private ArrayList itemListeners = new ArrayList();
 
+  /** define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>; default value: <code>true</code> */
+  private boolean expandRoot = true;
+
 
   /**
    * Constructor.
@@ -222,6 +225,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
           createTree();
           if (expandAllNodes)
             expandAllNodes();
+          else if (expandRoot && rootVisible)
+            tree.expandRow(0);
         }
         else {
 
@@ -255,6 +260,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
           tree.revalidate();
           if (expandAllNodes)
             expandAllNodes();
+          else if (expandRoot && rootVisible)
+            tree.expandRow(0);
         }
       }
     });
@@ -388,6 +395,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     recreateTree();
     if (expandAllNodes)
       expandAllNodes();
+    else if (expandRoot && rootVisible)
+      tree.expandRow(0);
   }
 
   private void recreateTree() {
@@ -1405,6 +1414,23 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
       }
     }
     return set;
+  }
+
+
+  /**
+   * @return define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>
+   */
+  public final boolean isExpandRoot() {
+    return expandRoot;
+  }
+
+
+  /**
+   * Define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>; default value: <code>true</code>.
+   * @param expandRoot define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>
+   */
+  public final void setExpandRoot(boolean expandRoot) {
+    this.expandRoot = expandRoot;
   }
 
 }

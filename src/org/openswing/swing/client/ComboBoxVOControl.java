@@ -176,6 +176,27 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
 
 
   /**
+   * Method used to reload items in combo-box.
+   */
+  public final void reloadItems() {
+    if (itemsDataLocator!=null && itemsVO!=null) {
+      Response res = itemsDataLocator.loadData(itemsVO.getClass());
+      if (!res.isError()) {
+        ArrayList items = ((VOListResponse)res).getRows();
+        model = new DefaultComboBoxModel();
+        for(int i=0;i<items.size();i++) {
+          model.addElement(items.get(i));
+        }
+        combo.setModel(model);
+        combo.revalidate();
+        combo.repaint();
+        combo.setSelectedIndex(-1);
+      }
+    }
+  }
+
+
+  /**
    * Update the value object of the items parent container, only for attributes defined in ItemsMapper.
    * @param lookupParent lookup container
    */
