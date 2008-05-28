@@ -11,6 +11,7 @@ import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import org.openswing.swing.table.model.client.VOListTableModel;
 
 
 /**
@@ -67,6 +68,12 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
   /** default font */
   private Font defaultFont = null;
 
+  /** current JTable */
+  private Grid grid = null;
+
+  /** attribute name associated to this column */
+  private String attributeName = null;
+
 
   /**
    * Constructor.
@@ -74,12 +81,14 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
    * @param grouping flag used to enable grouping
    * @param gridController grid controller
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
+   * @param attributeName attribute name associated to this column
    */
-  public NumericTableCellRenderer(int decimals,boolean grouping,GridController gridController,IntegerColumnSettings dynamicSettings,int alignement) {
+  public NumericTableCellRenderer(int decimals,boolean grouping,GridController gridController,IntegerColumnSettings dynamicSettings,int alignement,String attributeName) {
     this.decimals = decimals;
     this.grouping = false;
     this.gridController = gridController;
     this.dynamicSettings = dynamicSettings;
+    this.attributeName = attributeName;
     setHorizontalAlignment(alignement);
     setFormat(decimals,grouping);
   }
@@ -117,13 +126,14 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
   public Component getTableCellRendererComponent(JTable table, Object value,
                           boolean isSelected, boolean hasFocus, int row, int column) {
     this.row = row;
+    this.grid = (Grid)table;
     JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
 
     if (defaultFont==null)
-      defaultFont = ((JLabel)c).getFont();
+      defaultFont = c.getFont();
 
     if (isSelected && !hasFocus) {
-      ((JLabel)c).setForeground(table.getSelectionForeground());
+      c.setForeground(table.getSelectionForeground());
 //      c.setBackground(table.getSelectionBackground());
       Color backColor = gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value);
       Color selColor = table.getSelectionBackground();
@@ -135,7 +145,7 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
     }
     else {
       c.setBackground(table.getBackground());
-      ((JLabel)c).setForeground(table.getForeground());
+      c.setForeground(table.getForeground());
     }
     if (hasFocus && table instanceof Grid) {
 //      c.setBackground(((Grid)table).getActiveCellBackgroundColor());

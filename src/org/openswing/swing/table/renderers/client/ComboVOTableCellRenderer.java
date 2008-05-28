@@ -76,13 +76,15 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
   /** cell content */
   private ItemRenderer rend = new ItemRenderer();
 
-  private String attributeName;
+  /** attribute name associated to this column */
+  private String attributeName = null;
 
 
   /**
    * Constructor.
    * @param domain domain linked to the column
    * @param gridController grid controller
+   * @param attributeName attribute name associated to this column
    */
   public ComboVOTableCellRenderer(
       ItemsDataLocator itemsDataLocator,

@@ -163,7 +163,8 @@ public class ButtonColumn extends Column {
       tableContainer,
       getTextAlignment(),
       isEnableInReadOnlyMode(),
-      icon
+      icon,
+      getColumnName()
     );
   }
 

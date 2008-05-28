@@ -52,15 +52,20 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
   /** default font */
   private Font defaultFont = null;
 
+  /** attribute name associated to this column */
+  private String attributeName = null;
+
 
   /**
    * Constructor.
    * @param domain domain linked to the column
    * @param gridController grid controller
+   * @param attributeName attribute name associated to this column
    */
-  public DomainTableCellRenderer(Domain domain,GridController gridController,int alignement) {
+  public DomainTableCellRenderer(Domain domain,GridController gridController,int alignement,String attributeName) {
     this.domain = domain;
     this.gridController = gridController;
+    this.attributeName = attributeName;
     rend.setOpaque(true);
     rend.setHorizontalAlignment(alignement);
   }

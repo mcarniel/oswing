@@ -64,17 +64,22 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
   /** define if null value is alloed (i.e. distinct from Boolean.FALSE value); default value: <code>false</code> */
   private boolean allowNullValue;
 
+  /** attribute name associated to this column */
+  private String attributeName = null;
+
 
   /**
    * Constructor.
    * @param gridContainer grid container
+   * @param attributeName attribute name associated to this column
    */
-  public CheckBoxTableCellRenderer(GridController gridContainer,int alignement,boolean enableInReadOnlyMode,boolean allowNullValue) {
+  public CheckBoxTableCellRenderer(GridController gridContainer,int alignement,boolean enableInReadOnlyMode,boolean allowNullValue,String attributeName) {
     this.gridContainer = gridContainer;
     rend.setOpaque(true);
     rend.setHorizontalAlignment(alignement);
     this.enableInReadOnlyMode = enableInReadOnlyMode;
     this.allowNullValue = allowNullValue;
+    this.attributeName = attributeName;
   }
 
 

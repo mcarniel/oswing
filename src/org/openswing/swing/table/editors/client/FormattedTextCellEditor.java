@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import org.openswing.swing.util.client.*;
+import java.text.*;
 
 
 /**
@@ -93,7 +94,12 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
    */
   private boolean validate() {
     boolean ok = true;
-    field.setValue(field.getText());
+    try {
+      field.setValue(field.getFormatter().stringToValue(field.getText()));
+    }
+    catch (ParseException ex) {
+      ok = false;
+    }
     if (field.getText()!=null && field.getValue()==null)
       ok = false;
     if(!ok)
@@ -106,7 +112,7 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
 
 
   public Object getCellEditorValue() {
-    return field.getText();
+    return field.getValue();
   }
 
 
@@ -118,7 +124,7 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
     this.row = row;
     this.col = column;
 
-    field.setText((String)value);
+    field.setValue(value);
     if (required) {
       field.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_REQUIRED_CELL_BORDER));
 //      field.setBorder(new CompoundBorder(new RequiredBorder(),field.getBorder()));

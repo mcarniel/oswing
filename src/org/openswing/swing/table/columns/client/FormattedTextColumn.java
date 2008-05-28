@@ -371,10 +371,10 @@ public class FormattedTextColumn extends Column {
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
-    return new TextTableCellRenderer(
+    return new FormattedTextTableCellRenderer(
         tableContainer,
-        false,
-        getTextAlignment()
+        getTextBox(),
+        getColumnName()
     );
   }
 

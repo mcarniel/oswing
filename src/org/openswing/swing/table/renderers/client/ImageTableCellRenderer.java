@@ -46,14 +46,19 @@ public class ImageTableCellRenderer extends DefaultTableCellRenderer {
   /** grid controller */
   private GridController gridController = null;
 
+  /** attribute name associated to this column */
+  private String attributeName = null;
+
 
   /**
    * Constructor.
    * @param text button text
    * @param gridController grid controller
+   * @param attributeName attribute name associated to this column
    */
-  public ImageTableCellRenderer(GridController gridController,int alignement) {
+  public ImageTableCellRenderer(GridController gridController,int alignement,String attributeName) {
     this.gridController = gridController;
+    this.attributeName = attributeName;
     rend.setScrollBarsPolicy(ImagePanel.SCROLLBAR_NEVER);
   }
 

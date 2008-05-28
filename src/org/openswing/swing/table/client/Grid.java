@@ -1,5 +1,6 @@
 package org.openswing.swing.table.client;
 
+import java.text.*;
 import java.util.*;
 
 import java.awt.*;
@@ -21,9 +22,9 @@ import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.table.filter.client.*;
 import org.openswing.swing.table.model.client.*;
 import org.openswing.swing.table.profiles.java.*;
+import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import java.text.Collator;
 
 
 /**
@@ -168,6 +169,21 @@ public class Grid extends JTable
 
   private RightClickMouseListener rightClickMouseListener;
 
+  /** attribute name of the column declared as expandable, i.e. user can click on it to expand cell to show an inner component; default value: 0 (first column) */
+  private String expandableColumnAttributeName = null;
+
+  /** define whether expanded rows in the past must be collapsed when expanding the current one; used only when "overwriteRowWhenExpanding" property is not null; default value: <code>false</code> */
+  private boolean singleExpandableRow = false;
+
+  /** define whether the row to show, when expanding the current one, must be showed over the current one on in a new row below it; used only when "overwriteRowWhenExpanding" property is not null; default value: <code>false</code> i.e. do not overwrite it*/
+  private boolean overwriteRowWhenExpanding = false;
+
+  /** define the controller that manages row expansion */
+  private ExpandableRowController expandableRowController = null;
+
+  /** expandable cell renderer */
+  private ExpandableRenderer expandableRenderer = null;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -195,6 +211,10 @@ public class Grid extends JTable
       GridController gridController,
       boolean lockedGrid,
       boolean anchorLastColumn,
+      int expandableColumn,
+      boolean singleExpandableRow,
+      boolean overwriteRowWhenExpanding,
+      ExpandableRowController expandableRowController,
       int gridType) {
     super();
     this.grids = grids;
@@ -207,6 +227,9 @@ public class Grid extends JTable
     this.colorsInReadOnlyMode = colorsInReadOnlyMode;
     this.gridController = gridController;
     this.lockedGrid = lockedGrid;
+    this.singleExpandableRow = singleExpandableRow;
+    this.overwriteRowWhenExpanding = overwriteRowWhenExpanding;
+    this.expandableRowController = expandableRowController;
     this.setShowGrid(true);
     if (!anchorLastColumn)
       this.setAutoResizeMode(this.AUTO_RESIZE_OFF);
@@ -218,6 +241,9 @@ public class Grid extends JTable
     this.setSelectionBackground(ClientSettings.GRID_SELECTION_BACKGROUND);
     this.setSelectionForeground(ClientSettings.GRID_SELECTION_FOREGROUND);
     this.gridType = gridType;
+
+    if (expandableColumn>=0)
+      this.expandableColumnAttributeName = colProps[expandableColumn].getColumnName();
 
 
     try {
@@ -249,11 +275,356 @@ public class Grid extends JTable
       if (gridType==MAIN_GRID) {
         if (rightClickMouseListener==null)
           rightClickMouseListener = new RightClickMouseListener();
-        this.addMouseListener(rightClickMouseListener);
+
+        this.addKeyListener(new KeyAdapter() {
+
+          /**
+           * Invoked when a key has been typed.
+           * This event occurs when a key press is followed by a key release.
+           */
+          public void keyTyped(KeyEvent e) {
+            if (Grid.this.grids.getCurrentNestedComponent()!=null) {
+              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+              e.consume();
+            }
+          }
+
+          /**
+           * Invoked when a key has been pressed.
+           */
+          public void keyPressed(KeyEvent e) {
+            if (Grid.this.grids.getCurrentNestedComponent()!=null) {
+              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+              e.consume();
+            }
+          }
+
+          /**
+           * Invoked when a key has been released.
+           */
+          public void keyReleased(KeyEvent e) {
+            if (Grid.this.grids.getCurrentNestedComponent()!=null) {
+              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+              e.consume();
+            }
+          }
+
+        });
 
         // add mouse listener to capture double click event in the selected row...
+        MouseListener[] l = this.getMouseListeners();
+        for(int i=0;i<l.length;i++)
+          removeMouseListener(l[i]);
+
         this.addMouseListener(new MouseAdapter() {
+
+          public void mousePressed(MouseEvent e) {
+            Pair p = rowColumnAtPoint(e.getPoint());
+            if (Grid.this.grids!=null &&
+                Grid.this.grids.getMode()==Consts.READONLY &&
+                Grid.this.expandableRowController!=null &&
+                Grid.this.expandableRowController.isRowExpandable(Grid.this.grids.getVOListTableModel(),p.n1) &&
+                p.n2>=Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName) &&
+                Grid.this.grids.isRowExpanded(p.n1)) {
+                // force editing for expanded row
+                Component c = Grid.this.grids.getComponentInCache(p.n1);
+
+                if (c!=null) {
+                  int row = rowAtPoint(e.getPoint());
+                  int y = getRowHeight();
+                  for(int i=0;i<row;i++)
+                    y += getRowHeight(i);
+
+                  int x = 13;
+                  int expandableColIndex = Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName);
+                  for(int i=0;i<expandableColIndex;i++)
+                    x += getColumnModel().getColumn(i).getWidth();
+
+                  if (c.getParent()==null) {
+                    ((JComponent)e.getSource()).remove(c);
+                    ((JComponent)e.getSource()).add(c);
+
+                    c.setBounds(x,y,c.getWidth(),c.getHeight());
+                  }
+
+                  x = e.getX()-x;
+                  y = e.getY()-y;
+
+                  if (x>=0 && y>=0) {
+                    final Component c2 = SwingUtilities.getDeepestComponentAt(c,x,y);
+                    if (c2!=null) {
+                      Point pp = SwingUtilities.convertPoint(c,x,y,c2);
+//                      System.out.println(pp+" "+c2);
+                      Grid.this.grids.setCurrentNestedComponent(c2);
+                      c2.dispatchEvent(
+                        new MouseEvent(
+                          c2,
+                          e.getID(),
+                          e.getWhen(),
+                          e.getModifiers(),
+                          pp.x,
+                          pp.y,
+                          e.getClickCount(),
+                          e.isPopupTrigger()
+                        )
+                      );
+                      e.consume();
+                      return;
+//                      c.repaint();
+//                      ((Component)e.getSource()).repaint();
+                    }
+                  }
+                }
+            }
+            Grid.this.grids.setCurrentNestedComponent(null);
+          }
+
+
+//          /**
+//           * Invoked when the mouse enters a component.
+//           */
+//          public void mouseEntered(MouseEvent e) {
+//            Pair p = rowColumnAtPoint(e.getPoint());
+//            if (Grid.this.grids!=null &&
+//                Grid.this.grids.getMode()==Consts.READONLY &&
+//                Grid.this.expandableRowController!=null &&
+//                Grid.this.expandableRowController.isRowExpandable(Grid.this.grids.getVOListTableModel(),p.n1) &&
+//                p.n2>=Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName) &&
+//                Grid.this.grids.isRowExpanded(p.n1)) {
+//                // force editing for expanded row
+//                Component c = Grid.this.grids.getComponentInCache(p.n1);
+//
+//                if (c!=null) {
+//                  int row = rowAtPoint(e.getPoint());
+//                  int y = getRowHeight();
+//                  for(int i=0;i<row;i++)
+//                    y += getRowHeight(i);
+//
+//                  int x = 13;
+//                  int expandableColIndex = Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName);
+//                  for(int i=0;i<expandableColIndex;i++)
+//                    x += getColumnModel().getColumn(i).getWidth();
+//
+//                  if (c.getParent()==null) {
+//                    ((JComponent)e.getSource()).remove(c);
+//                    ((JComponent)e.getSource()).add(c);
+//
+//                    c.setBounds(x,y,c.getWidth(),c.getHeight());
+//                  }
+//
+//                  x = e.getX()-x;
+//                  y = e.getY()-y;
+//
+//                  if (x>=0 && y>=0) {
+//                    Component c2 = SwingUtilities.getDeepestComponentAt(c,x,y);
+//                    if (c2!=null) {
+//                      Point pp = SwingUtilities.convertPoint(c,x,y,c2);
+//                      c2.dispatchEvent(
+//                        new MouseEvent(
+//                          c2,
+//                          e.getID(),
+//                          e.getWhen(),
+//                          e.getModifiers(),
+//                          pp.x,
+//                          pp.y,
+//                          e.getClickCount(),
+//                          e.isPopupTrigger()
+//                        )
+//                      );
+//                      e.consume();
+//                      return;
+//                    }
+//                  }
+//                }
+//            }
+//            Grid.this.grids.setCurrentNestedComponent(null);
+//          }
+//
+//          /**
+//           * Invoked when the mouse exits a component.
+//           */
+//          public void mouseExited(MouseEvent e) {
+//            Pair p = rowColumnAtPoint(e.getPoint());
+//            if (Grid.this.grids!=null &&
+//                Grid.this.grids.getMode()==Consts.READONLY &&
+//                Grid.this.expandableRowController!=null &&
+//                Grid.this.expandableRowController.isRowExpandable(Grid.this.grids.getVOListTableModel(),p.n1) &&
+//                p.n2>=Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName) &&
+//                Grid.this.grids.isRowExpanded(p.n1)) {
+//                // force editing for expanded row
+//                Component c = Grid.this.grids.getComponentInCache(p.n1);
+//
+//                if (c!=null) {
+//                  int row = rowAtPoint(e.getPoint());
+//                  int y = getRowHeight();
+//                  for(int i=0;i<row;i++)
+//                    y += getRowHeight(i);
+//
+//                  int x = 13;
+//                  int expandableColIndex = Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName);
+//                  for(int i=0;i<expandableColIndex;i++)
+//                    x += getColumnModel().getColumn(i).getWidth();
+//
+//                  if (c.getParent()==null) {
+//                    ((JComponent)e.getSource()).remove(c);
+//                    ((JComponent)e.getSource()).add(c);
+//
+//                    c.setBounds(x,y,c.getWidth(),c.getHeight());
+//                  }
+//
+//                  x = e.getX()-x;
+//                  y = e.getY()-y;
+//
+//                  if (x>=0 && y>=0) {
+//                    Component c2 = SwingUtilities.getDeepestComponentAt(c,x,y);
+//                    if (c2!=null) {
+//                      Point pp = SwingUtilities.convertPoint(c,x,y,c2);
+//                      c2.dispatchEvent(
+//                        new MouseEvent(
+//                          c2,
+//                          e.getID(),
+//                          e.getWhen(),
+//                          e.getModifiers(),
+//                          pp.x,
+//                          pp.y,
+//                          e.getClickCount(),
+//                          e.isPopupTrigger()
+//                        )
+//                      );
+//                      e.consume();
+//                      return;
+//                    }
+//                  }
+//                }
+//            }
+//            Grid.this.grids.setCurrentNestedComponent(null);
+//          }
+
+
+          public void mouseReleased(MouseEvent e) {
+            Pair p = rowColumnAtPoint(e.getPoint());
+            if (Grid.this.grids!=null &&
+                Grid.this.grids.getMode()==Consts.READONLY &&
+                Grid.this.expandableRowController!=null &&
+                Grid.this.expandableRowController.isRowExpandable(Grid.this.grids.getVOListTableModel(),p.n1) &&
+                p.n2>=Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName) &&
+                Grid.this.grids.isRowExpanded(p.n1)) {
+                // force editing for expanded row
+                Component c = Grid.this.grids.getComponentInCache(p.n1);
+
+                if (c!=null) {
+                  int row = rowAtPoint(e.getPoint());
+                  int y = getRowHeight();
+                  for(int i=0;i<row;i++)
+                    y += getRowHeight(i);
+
+                  int x = 13;
+                  int expandableColIndex = Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName);
+                  for(int i=0;i<expandableColIndex;i++)
+                    x += getColumnModel().getColumn(i).getWidth();
+
+                  if (c.getParent()==null) {
+                    ((JComponent)e.getSource()).remove(c);
+                    ((JComponent)e.getSource()).add(c);
+
+                    c.setBounds(x,y,c.getWidth(),c.getHeight());
+                  }
+
+                  x = e.getX()-x;
+                  y = e.getY()-y;
+
+                  if (x>=0 && y>=0) {
+                    final Component c2 = SwingUtilities.getDeepestComponentAt(c,x,y);
+                    if (c2!=null) {
+                      Point pp = SwingUtilities.convertPoint(c,x,y,c2);
+                      c2.dispatchEvent(
+                        new MouseEvent(
+                          c2,
+                          e.getID(),
+                          e.getWhen(),
+                          e.getModifiers(),
+                          pp.x,
+                          pp.y,
+                          e.getClickCount(),
+                          e.isPopupTrigger()
+                        )
+                      );
+                      e.consume();
+                      c.repaint();
+                      ((Component)e.getSource()).repaint();
+//                      SwingUtilities.invokeLater(new Runnable() {
+//                        public void run() {
+//                          c2.requestFocus();
+//                        }
+//                      });
+
+                      return;
+                    }
+                  }
+                }
+            }
+            Grid.this.grids.setCurrentNestedComponent(null);
+          }
+
+
           public void mouseClicked(MouseEvent e) {
+            Pair p = rowColumnAtPoint(e.getPoint());
+            if (Grid.this.grids!=null &&
+                Grid.this.grids.getMode()==Consts.READONLY &&
+                Grid.this.expandableRowController!=null &&
+                Grid.this.expandableRowController.isRowExpandable(Grid.this.grids.getVOListTableModel(),p.n1) &&
+                p.n2>=Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName) &&
+                Grid.this.grids.isRowExpanded(p.n1)) {
+                // force editing for expanded row
+                Component c = Grid.this.grids.getComponentInCache(p.n1);
+
+                if (c!=null) {
+                  int row = rowAtPoint(e.getPoint());
+                  int y = getRowHeight();
+                  for(int i=0;i<row;i++)
+                    y += getRowHeight(i);
+
+                  int x = 13;
+                  int expandableColIndex = Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName);
+                  for(int i=0;i<expandableColIndex;i++)
+                    x += getColumnModel().getColumn(i).getWidth();
+
+                  if (c.getParent()==null) {
+                    ((JComponent)e.getSource()).remove(c);
+                    ((JComponent)e.getSource()).add(c);
+
+                    c.setBounds(x,y,c.getWidth(),c.getHeight());
+                  }
+
+                  x = e.getX()-x;
+                  y = e.getY()-y;
+
+                  if (x>=0 && y>=0) {
+                    Component c2 = SwingUtilities.getDeepestComponentAt(c,x,y);
+                    if (c2!=null) {
+                      Point pp = SwingUtilities.convertPoint(c,x,y,c2);
+                      c2.dispatchEvent(
+                        new MouseEvent(
+                          c2,
+                          e.getID(),
+                          e.getWhen(),
+                          e.getModifiers(),
+                          pp.x,
+                          pp.y,
+                          e.getClickCount(),
+                          e.isPopupTrigger()
+                        )
+                      );
+                      e.consume();
+                      c.repaint();
+                      ((Component)e.getSource()).repaint();
+                      return;
+                    }
+                  }
+                }
+            }
+            Grid.this.grids.setCurrentNestedComponent(null);
+
             if (e.getClickCount()==2 &&
                        SwingUtilities.isLeftMouseButton(e) &&
                        Grid.this.gridController!=null &&
@@ -273,6 +644,13 @@ public class Grid extends JTable
               Grid.this.grids.getNavBar().fireButtonPressedEvent(NavigatorBar.LEFT_MOUSE_BUTTON);
           }
         });
+
+
+        for(int i=0;i<l.length;i++)
+          addMouseListener(l[i]);
+
+
+        this.addMouseListener(rightClickMouseListener);
 
         // add key listener to capture the ENTER pressed event in the selected row...
         this.addKeyListener(new KeyAdapter() {
@@ -365,7 +743,7 @@ public class Grid extends JTable
                 x += getColumnModel().getColumn(i).getWidth();
               showPopupMenu(
                   x+getColumnModel().getColumn(getSelectedColumn()).getWidth()/2,
-                  row*getRowHeight()+getRowHeight()/2
+                  calcHeightToRow(row)+getRowHeight(row)/2
               );
             }
 
@@ -810,6 +1188,14 @@ public class Grid extends JTable
       if (grids==null)
         return false;
       if (grids!=null && grids.getMode()==Consts.READONLY) {
+
+//        if (expandableRowController!=null &&
+//            expandableRowController.isRowExpandable(grids.getVOListTableModel(),row) &&
+//            column>=modelAdapter.getFieldIndex(expandableColumnAttributeName) &&
+//            grids.isRowExpanded(row))
+//          // force editing for expanded row
+//          return true;
+
         for(int i=0;i<colProps.length;i++)
           if (colProps[i].getColumnType()==Column.TYPE_BUTTON && ((ButtonColumn)colProps[i]).isEnableInReadOnlyMode()) {
             return super.editCellAt(row, column, e);
@@ -817,12 +1203,33 @@ public class Grid extends JTable
           else if (colProps[i].getColumnType()==Column.TYPE_CHECK && ((CheckBoxColumn)colProps[i]).isEnableInReadOnlyMode()) {
             return super.editCellAt(row, column, e);
           }
+
         return false;
       }
       setRowSelectionInterval(row,row);
       setColumnSelectionInterval(column,column);
       return super.editCellAt(row, column, e);
     }
+
+
+//    /**
+//     * Returns the component that is handling the editing session.
+//     * If nothing is being edited, returns null.
+//     *
+//     * @return  Component handling editing session
+//     */
+//    public Component getEditorComponent() {
+//      if (rowClicked!=-1 &&
+//          columnClicked!=-1 &&
+//          expandableRowController!=null &&
+//          expandableRowController.isRowExpandable(grids.getVOListTableModel(),rowClicked) &&
+//          columnClicked>=modelAdapter.getFieldIndex(expandableColumnAttributeName) &&
+//          grids.isRowExpanded(rowClicked))
+//        // force editing for expanded row
+//        return grids.getComponentInCache(rowClicked);
+//      return super.getEditorComponent();
+//    }
+
 
 
     /**
@@ -1494,7 +1901,14 @@ public class Grid extends JTable
    */
   private void showPopupMenu(final int x,final int y) {
     try {
-      final Point tablexy=this.getLocationOnScreen();
+      Point tmpTablexy = null;
+      try {
+        tmpTablexy = this.getLocationOnScreen();
+      }
+      catch (Exception ex1) {
+        tmpTablexy = this.getLocation();
+      }
+      final Point tablexy = tmpTablexy;
       final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
       grids.getPopup().removeAll();
@@ -2765,6 +3179,37 @@ public class Grid extends JTable
 
 
   /**
+   * Remove the cell span for the specified range of cells.
+   * @param rows row indexes that identify the cells to merge
+   * @param columns column indexes that identify the cells to merge
+   * @return <code>true</code> if merge operation is allowed, <code>false</code> if the cells range is invalid
+   */
+  public final boolean removeMergedCells(int[] rows,int[] columns) {
+    for (int i=0;i<rows.length;i++) {
+      for (int j=0;j<columns.length;j++) {
+        if (cellSpans.get(new Pair(
+              rows[0] + i,
+              columns[0] + j
+        ))==null)
+          return false;
+      }
+    }
+
+    for (int i=0,ii=0;i<rows.length;i++,ii--)
+      for (int j=0,jj=0;j<columns.length;j++,jj--)
+        cellSpans.remove(
+          new Pair(rows[0] + i,columns[0] + j)
+        );
+
+    cellSpans.remove(
+      new Pair(rows[0],columns[0])
+    );
+
+    return true;
+  }
+
+
+  /**
    * Method invoked by mergeCells to check cells merging consistency.
    */
   private boolean isOutOfBounds(int row, int column) {
@@ -2877,6 +3322,17 @@ public class Grid extends JTable
     return cellFrame;
   }
 */
+
+
+  private int calcHeightToRow(int row) {
+    int y = 0;
+    for(int i=0;i<row;i++)
+      y += getRowHeight(i);
+    return y;
+  }
+
+
+
   public Rectangle getCellRect(int row, int column, boolean includeSpacing) {
     Rectangle r = new Rectangle();
     boolean valid = true;
@@ -2904,7 +3360,7 @@ public class Grid extends JTable
     }
     else {
         r.height = n.getN1()*getRowHeight(row);
-        r.y = row * getRowHeight(row);
+        r.y = calcHeightToRow(row);
     }
 
     if (column < 0) {
@@ -2948,8 +3404,6 @@ public class Grid extends JTable
         r.setBounds(r.x + cm/2, r.y + rm/2, r.width - cm, r.height - rm);
     }
 
-
-
     return r;
   }
 
@@ -2959,7 +3413,16 @@ public class Grid extends JTable
    */
   private Pair rowColumnAtPoint(Point point) {
     Pair retValue = new Pair(-1,-1);
-    int row = point.y / getRowHeight();
+    int h=0;
+    int row = 0;
+    for(row=0;row<getRowCount();row++) {
+      if (h+getRowHeight(row)>point.y)
+        break;
+      else {
+        h += getRowHeight(row);
+      }
+    }
+//    int row = point.y / getRowHeight();
     if (row<0 || model.getRowCount()<=row)
       return retValue;
 
@@ -3123,17 +3586,70 @@ public class Grid extends JTable
   }
 
 
+  /**
+   * @return attribute name of the column declared as expandable, i.e. user can click on it to expand cell to show an inner component
+   */
+  public final String getExpandableColumnAttributeName() {
+    return expandableColumnAttributeName;
+  }
+
+
+  /**
+   * @return define whether expanded rows in the past must be collapsed when expanding the current one; used only when "expandableColumn" property is not null
+   */
+  public final boolean isSingleExpandableRow() {
+    return singleExpandableRow;
+  }
+
+
+  /**
+   * @return controller that manages row expansion
+   */
+  public final ExpandableRowController getExpandableRowController() {
+    return expandableRowController;
+  }
+
+
+  /**
+   * @return define whether the row to show, when expanding the current one, must be showed over the current one on in a new row below it; used only when "overwriteRowWhenExpanding" property is not null
+   */
+  public final boolean isOverwriteRowWhenExpanding() {
+    return overwriteRowWhenExpanding;
+  }
+
+
+//  public boolean isFocusable() {
+//    if (grids.getCurrentNestedComponent()!=null)
+//      return false;
+//    return super.isFocusable();
+//  }
 
 
 
 
+  /**
+   * @param row row number
+   * @param col column niumber in grid
+   * @return TableCellRenderer associated to the specified cell
+   */
+  public final TableCellRenderer getCellRenderer(int row, int col) {
+    TableCellRenderer rend = super.getCellRenderer(row,col);
+    int expandableColumn = modelAdapter.getFieldIndex(expandableColumnAttributeName);
 
+    if (expandableRowController!=null &&
+        expandableColumnAttributeName!=null &&
+        expandableRenderer==null) {
+      expandableRenderer = new ExpandableRenderer(this,grids,expandableColumn,modelAdapter);
+      setRowHeightFixed(false);
+    }
 
+    if (expandableRenderer!=null) {
+      expandableRenderer.setDefaultCellRenderer(rend);
+      return expandableRenderer;
+    }
 
-
-
-
-
+    return rend;
+  }
 
 
   /**

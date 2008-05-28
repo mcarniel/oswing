@@ -119,7 +119,8 @@ public class TimeColumn extends Column {
       Resources.DMY,
       getDateListeners(),
       true,
-      getTimeFormat()
+      getTimeFormat(),
+      getColumnName()
     );
   }
 

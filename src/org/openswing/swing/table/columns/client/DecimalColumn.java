@@ -162,7 +162,8 @@ public class DecimalColumn extends Column {
         isGrouping(),
         tableContainer,
         getDynamicSettings(),
-        getTextAlignment()
+        getTextAlignment(),
+        getColumnName()
     );
   }
 

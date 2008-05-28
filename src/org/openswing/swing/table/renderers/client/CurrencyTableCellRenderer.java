@@ -48,10 +48,11 @@ public class CurrencyTableCellRenderer extends NumericTableCellRenderer {
    * @param currencySymbol currency symbol
    * @param gridController grid controller
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
+   * @param attributeName attribute name associated to this column
    */
   public CurrencyTableCellRenderer(int decimals, boolean grouping,String currencySymbol,
-                                   GridController gridController,IntegerColumnSettings dynamicSettings,int alignement) {
-    super(decimals,grouping,gridController,dynamicSettings,alignement);
+                                   GridController gridController,IntegerColumnSettings dynamicSettings,int alignement,String attributeName) {
+    super(decimals,grouping,gridController,dynamicSettings,alignement,attributeName);
     this.currencySymbol = currencySymbol;
     setFormat(decimals,grouping);
   }

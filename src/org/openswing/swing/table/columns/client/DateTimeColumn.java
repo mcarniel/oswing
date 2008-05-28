@@ -225,7 +225,8 @@ public class DateTimeColumn extends Column {
       getFormat(),
       getDateListeners(),
       isShowCentury(),
-      getTimeFormat()
+      getTimeFormat(),
+      getColumnName()
     );
   }
 

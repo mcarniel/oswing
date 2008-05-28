@@ -153,7 +153,8 @@ public class ImageColumn extends Column {
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
     return new ImageTableCellRenderer(
       tableContainer,
-      getTextAlignment()
+      getTextAlignment(),
+      getColumnName()
     );
   }
 

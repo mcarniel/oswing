@@ -54,13 +54,17 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
   /** flag used to indicate if the button is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the button is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties */
   private boolean enableInReadOnlyMode = false;
 
+  /** attribute name associated to this column */
+  private String attributeName = null;
+
 
   /**
    * Constructor.
    * @param text button text
    * @param gridController grid controller
+   * @param attributeName attribute name associated to this column
    */
-  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController,int alignement,boolean enableInReadOnlyMode,Icon icon) {
+  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController,int alignement,boolean enableInReadOnlyMode,Icon icon,String attributeName) {
     this.gridController = gridController;
     this.showAttributeValue = showAttributeValue;
     if (!showAttributeValue)
@@ -68,6 +72,7 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
 //    rend.setBorder(BorderFactory.createRaisedBevelBorder());
     rend.setHorizontalAlignment(alignement);
     this.enableInReadOnlyMode = enableInReadOnlyMode;
+    this.attributeName = attributeName;
     if (icon!=null)
       rend.setIcon(icon);
   }

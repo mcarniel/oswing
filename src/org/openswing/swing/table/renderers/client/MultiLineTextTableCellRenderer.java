@@ -45,13 +45,18 @@ public class MultiLineTextTableCellRenderer extends JTextArea implements TableCe
   /** default font */
   private Font defaultFont = null;
 
+  /** attribute name associated to this column */
+  private String attributeName = null;
+
 
   /**
    * Constructor.
    * @param gridController grid controller
+   * @param attributeName attribute name associated to this column
    */
-  public MultiLineTextTableCellRenderer(GridController gridController) {
+  public MultiLineTextTableCellRenderer(GridController gridController,String attributeName) {
     this.gridController = gridController;
+    this.attributeName = attributeName;
     setLineWrap(true);
     setWrapStyleWord(true);
     setOpaque(true);

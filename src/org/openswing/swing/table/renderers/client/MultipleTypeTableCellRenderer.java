@@ -76,6 +76,7 @@ public class MultipleTypeTableCellRenderer extends DefaultTableCellRenderer {
    * @param grouping flag used to enable grouping
    * @param gridController grid controller
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
+   * @param attributeName attribute name associated to this column
    */
   public MultipleTypeTableCellRenderer(GridController gridController,TypeController typeController,int alignement,String attributeName,GridControl grid) {
     this.gridController = gridController;

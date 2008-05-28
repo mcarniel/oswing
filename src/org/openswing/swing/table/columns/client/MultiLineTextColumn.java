@@ -75,7 +75,8 @@ public class MultiLineTextColumn extends Column {
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
     return new MultiLineTextTableCellRenderer(
-        tableContainer
+      tableContainer,
+      getColumnName()
     );
   }
 

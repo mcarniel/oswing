@@ -183,7 +183,8 @@ public class ProgressBarColumn extends Column {
       getMinValue(),
       getMaxValue(),
       isShowAllBands(),
-      getColor()
+      getColor(),
+      getColumnName()
     );
   }
 

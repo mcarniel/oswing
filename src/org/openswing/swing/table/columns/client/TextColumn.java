@@ -157,7 +157,8 @@ public class TextColumn extends Column {
     return new TextTableCellRenderer(
         tableContainer,
         isEncryptText(),
-        getTextAlignment()
+        getTextAlignment(),
+        getColumnName()
     );
   }
 

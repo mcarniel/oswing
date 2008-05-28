@@ -159,7 +159,12 @@ public class ComboColumn extends Column {
     if (domain==null)
       domain = ClientSettings.getInstance().getDomain( getDomainId() );
     if (domain!=null)
-      return new DomainTableCellRenderer(domain,tableContainer,getTextAlignment());
+      return new DomainTableCellRenderer(
+        domain,
+        tableContainer,
+        getTextAlignment(),
+        getColumnName()
+      );
     else {
       Logger.error(this.getClass().getName(),"getCellRenderer","The domainId '"+getDomainId()+"' for the column '"+getColumnName()+"' "+" doesn't exist.",null);
       return null;

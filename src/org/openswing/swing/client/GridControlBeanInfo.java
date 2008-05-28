@@ -24,11 +24,13 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       _defaultQuickFilterCriteria.setPropertyEditorClass(org.openswing.swing.client.QuickFilterCriteriaEditor.class);
       PropertyDescriptor _deleteButton = new PropertyDescriptor("deleteButton", beanClass, "getDeleteButton", "setDeleteButton");
       PropertyDescriptor _editButton = new PropertyDescriptor("editButton", beanClass, "getEditButton", "setEditButton");
+      PropertyDescriptor _expandableColumn = new PropertyDescriptor("expandableColumn", beanClass, "getExpandableColumn", "setExpandableColumn");
       PropertyDescriptor _filterPanelOnGridPolicy = new PropertyDescriptor("filterPanelOnGridPolicy", beanClass, "getFilterPanelOnGridPolicy", "setFilterPanelOnGridPolicy");
       _filterPanelOnGridPolicy.setPropertyEditorClass(org.openswing.swing.client.FilterPanelOnGridPolicyEditor.class);
       PropertyDescriptor _gridDataLocator = new PropertyDescriptor("gridDataLocator", beanClass, "getGridDataLocator", "setGridDataLocator");
       PropertyDescriptor _importButton = new PropertyDescriptor("importButton", beanClass, "getImportButton", "setImportButton");
       PropertyDescriptor _insertButton = new PropertyDescriptor("insertButton", beanClass, "getInsertButton", "setInsertButton");
+      PropertyDescriptor _expandableRowController = new PropertyDescriptor("expandableRowController", beanClass, "getExpandableRowController", "setExpandableRowController");
       PropertyDescriptor _exportButton = new PropertyDescriptor("exportButton", beanClass, "getExportButton", "setExportButton");
       PropertyDescriptor _filterButton = new PropertyDescriptor("filterButton", beanClass, "getFilterButton", "setFilterButton");
       PropertyDescriptor _intercellSpacing = new PropertyDescriptor("intercellSpacing", beanClass, "getIntercellSpacing", "setIntercellSpacing");
@@ -41,6 +43,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _maxNumberOfRowsOnInsert = new PropertyDescriptor("maxNumberOfRowsOnInsert", beanClass, "getMaxNumberOfRowsOnInsert", "setMaxNumberOfRowsOnInsert");
       PropertyDescriptor _maxSortedColumns = new PropertyDescriptor("maxSortedColumns", beanClass, "getMaxSortedColumns", "setMaxSortedColumns");
       PropertyDescriptor _orderWithLoadData = new PropertyDescriptor("orderWithLoadData", beanClass, "isOrderWithLoadData", "setOrderWithLoadData");
+      PropertyDescriptor _overwriteRowWhenExpanding = new PropertyDescriptor("overwriteRowWhenExpanding", beanClass, "isOverwriteRowWhenExpanding", "setOverwriteRowWhenExpanding");
       PropertyDescriptor _preferredSize = new PropertyDescriptor("preferredSize", beanClass, "getPreferredSize", "setPreferredSize");
       PropertyDescriptor _reloadButton = new PropertyDescriptor("reloadButton", beanClass, "getReloadButton", "setReloadButton");
       PropertyDescriptor _reorderingAllowed = new PropertyDescriptor("reorderingAllowed", beanClass, "isReorderingAllowed", "setReorderingAllowed");
@@ -51,6 +54,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _saveButton = new PropertyDescriptor("saveButton", beanClass, "getSaveButton", "setSaveButton");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
       PropertyDescriptor _showFilterPanelOnGrid = new PropertyDescriptor("showFilterPanelOnGrid", beanClass, "isShowFilterPanelOnGrid", "setShowFilterPanelOnGrid");
+      PropertyDescriptor _singleExpandableRow = new PropertyDescriptor("singleExpandableRow", beanClass, "isSingleExpandableRow", "setSingleExpandableRow");
       PropertyDescriptor _valueObjectClassName = new PropertyDescriptor("valueObjectClassName", beanClass, "getValueObjectClassName", "setValueObjectClassName");
       PropertyDescriptor _visibleStatusPanel = new PropertyDescriptor("visibleStatusPanel", beanClass, "isVisibleStatusPanel", "setVisibleStatusPanel");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
@@ -61,6 +65,8 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _defaultQuickFilterCriteria,
         _deleteButton,
         _editButton,
+        _expandableColumn,
+        _expandableRowController,
         _exportButton,
         _filterButton,
         _filterPanelOnGridPolicy,
@@ -77,6 +83,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _mode,
         _navBar,
         _orderWithLoadData,
+        _overwriteRowWhenExpanding,
         _preferredSize,
         _reloadButton,
         _reorderingAllowed,
@@ -87,6 +94,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _saveButton,
         _selectionMode,
         _showFilterPanelOnGrid,
+        _singleExpandableRow,
         _valueObjectClassName,
         _visibleStatusPanel
       };

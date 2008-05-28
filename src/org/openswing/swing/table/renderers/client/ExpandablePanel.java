@@ -1,5 +1,6 @@
 package org.openswing.swing.table.renderers.client;
 
+import java.awt.*;
 import javax.swing.*;
 
 import org.openswing.swing.table.client.*;
@@ -7,8 +8,7 @@ import org.openswing.swing.table.client.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: Column renderer used to format a lookup type column:
- * its behaviour is as the text column, except in the case when "hideCodBox" is set to <code>true</code>.</p>
+ * <p>Description: panel to show as cell renderer. Used to show within a cell renderer in case of expandable rows.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -34,33 +34,37 @@ import org.openswing.swing.table.client.*;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class CodLookupCellRenderer extends TextTableCellRenderer {
+public class ExpandablePanel extends JPanel {
 
-  /** flag used to view "*" symbols instead of the real text */
-  private boolean hideCodBox;
+  /** parent grid */
+  private Grid grid = null;
+
+
+  public ExpandablePanel(Grid grid,Component c) {
+    this.grid = grid;
+    setLayout(new BorderLayout());
+    add(c,BorderLayout.CENTER);
+    setSize(c.getSize());
+    setPreferredSize(c.getPreferredSize());
+  }
 
 
   /**
-   * Constructor.
-   * @param gridController grid controller
-   * @param encryptText flag used to view "*" symbols instead of the real text
-   * @param attributeName attribute name associated to this column
+   * Gets the parent of this component.
+   * @return the parent container of this component
+   * @since JDK1.0
    */
-  public CodLookupCellRenderer(GridController gridController,boolean hideCodBox,int alignement,String attributeName) {
-    super(gridController,false,alignement,attributeName);
-    this.hideCodBox = hideCodBox;
+  public final Container getParent() {
+    try {
+      if (grid != null)
+        return grid;
+      else
+        return super.getParent();
+    }
+    catch (Exception ex) {
+      return super.getParent();
+    }
   }
-
-
-  public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-                          boolean isSelected, boolean hasFocus, int row, int column) {
-    JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
-    if (hideCodBox)
-      ((JLabel)c).setText("");
-
-    return c;
-  }
-
 
 
 }

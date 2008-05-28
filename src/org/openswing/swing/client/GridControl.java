@@ -247,6 +247,19 @@ public class GridControl extends JPanel {
   /** flag used to anchor the last column on the right margin of the grid, only when all columns width is lesser than grid width */
   private boolean anchorLastColumn = false;
 
+  /** column index declared as expandable, i.e. user can click on it to expand cell to show an inner component; default value: 0 (first column) */
+  private int expandableColumn = 0;
+
+  /** define whether expanded rows in the past must be collapsed when expanding the current one; used only when "overwriteRowWhenExpanding" property is not null; default value: <code>false</code> */
+  private boolean singleExpandableRow = false;
+
+  /** define whether the row to show, when expanding the current one, must be showed over the current one on in a new row below it; used only when "overwriteRowWhenExpanding" property is not null; default value: <code>false</code> i.e. do not overwrite it*/
+  private boolean overwriteRowWhenExpanding = false;
+
+  /** define the controller that manages row expansion */
+  private ExpandableRowController expandableRowController = null;
+
+
 
   /**
    * Costructor.
@@ -325,6 +338,10 @@ public class GridControl extends JPanel {
           colorsInReadOnlyMode,
           popupCommands,
           anchorLastColumn,
+          expandableColumn,
+          singleExpandableRow,
+          overwriteRowWhenExpanding,
+          expandableRowController,
           Grid.MAIN_GRID
           );
       for (int i = 0; i < columnProperties.length; i++) {
@@ -618,6 +635,10 @@ public class GridControl extends JPanel {
             colorsInReadOnlyMode,
             new ArrayList(),
             anchorLastColumn,
+            0,
+            false,
+            false,
+            null,
             Grid.TOP_GRID
         );
         topTable.setReorderingAllowed(reorderingAllowed);
@@ -678,6 +699,10 @@ public class GridControl extends JPanel {
             colorsInReadOnlyMode,
             new ArrayList(),
             anchorLastColumn,
+            0,
+            false,
+            false,
+            null,
             Grid.BOTTOM_GRID
         );
         bottomTable.setReorderingAllowed(reorderingAllowed);
@@ -755,7 +780,20 @@ public class GridControl extends JPanel {
         }
 
         public void focusLost(FocusEvent e) {
+//          if (e.getSource()!=null && e.getSource() instanceof Component) {
+//            Component c = (Component)e.getSource();
+//            while(c!=null && !Consts.EXPANDED_COMPONENT.equals(c.getName()))
+//              c = c.getParent();
+//            if (c!=null && Consts.EXPANDED_COMPONENT.equals(c.getName())) {
+//              table.dispatchEvent(new FocusEvent(c,FocusEvent.FOCUS_GAINED,false));
+//              throw new RuntimeException("");
+//            }
+//
+//          }
           tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_NO_FOCUS_BORDER,1));
+//          if (table.getCurrentNestedComponent()!=null)
+//            throw new RuntimeException("");
+
         }
       });
 
@@ -2398,6 +2436,74 @@ public class GridControl extends JPanel {
    */
   public void setAnchorLastColumn(boolean anchorLastColumn) {
     this.anchorLastColumn = anchorLastColumn;
+  }
+
+
+  /**
+   * @return column index declared as expandable, i.e. user can click on it to expand cell to show an inner component
+   */
+  public final int getExpandableColumn() {
+    return expandableColumn;
+  }
+
+
+  /**
+   * Define which column index declared as expandable, i.e. user can click on it to expand cell to show an inner component.
+   * @param expandableColumn column index declared as expandable, i.e. user can click on it to expand cell to show an inner component
+   */
+  public final void setExpandableColumn(int expandableColumn) {
+    this.expandableColumn = expandableColumn;
+  }
+
+
+  /**
+   * @return define whether expanded rows in the past must be collapsed when expanding the current one; used only when "expandableColumn" property is not null
+   */
+  public final boolean isSingleExpandableRow() {
+    return singleExpandableRow;
+  }
+
+
+  /**
+   * Define whether expanded rows in the past must be collapsed when expanding the current one; used only when "expandableColumn" property is not null.
+   * @param singleExpandableRow define whether expanded rows in the past must be collapsed when expanding the current one; used only when "expandableColumn" property is not null
+   */
+  public final void setSingleExpandableRow(boolean singleExpandableRow) {
+    this.singleExpandableRow = singleExpandableRow;
+  }
+
+
+  /**
+   * @return controller that manages row expansion
+   */
+  public final ExpandableRowController getExpandableRowController() {
+    return expandableRowController;
+  }
+
+
+  /**
+   * Define the controller that manages row expansion.
+   * @param expandableRowController controller that manages row expansion
+   */
+  public final void setExpandableRowController(ExpandableRowController expandableRowController) {
+    this.expandableRowController = expandableRowController;
+  }
+
+
+  /**
+   * @return define whether the row to show, when expanding the current one, must be showed over the current one on in a new row below it; used only when "overwriteRowWhenExpanding" property is not null
+   */
+  public final boolean isOverwriteRowWhenExpanding() {
+    return overwriteRowWhenExpanding;
+  }
+
+
+  /**
+   * Define whether the row to show, when expanding the current one, must be showed over the current one on in a new row below it; used only when "overwriteRowWhenExpanding" property is not null.
+   * @param overwriteRowWhenExpanding define whether the row to show, when expanding the current one, must be showed over the current one on in a new row below it
+   */
+  public final void setOverwriteRowWhenExpanding(boolean overwriteRowWhenExpanding) {
+    this.overwriteRowWhenExpanding = overwriteRowWhenExpanding;
   }
 
 

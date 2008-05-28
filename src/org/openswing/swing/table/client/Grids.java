@@ -187,6 +187,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** list of ActionListener objetcs related to the event "loading data completed" */
   private ArrayList loadDataCompletedListeners = new ArrayList();
 
+  /** current expanded rows */
+  private ArrayList expandedRows = new ArrayList();
+
+  /** cache that contains inner components per row */
+  private Hashtable cache = new Hashtable();
+
+  /** current nested component that is expanded and has focus */
+  private Component currentNestedComponent = null;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -211,6 +220,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       boolean colorsInReadOnlyMode,
       ArrayList popupCommands,
       boolean anchorLastColumn,
+      int expandableColumn,
+      boolean singleExpandableRow,
+      boolean overwriteRowWhenExpanding,
+      ExpandableRowController expandableRowController,
       int gridType
   ) {
     this.gridControl = gridControl;
@@ -248,6 +261,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         gridController,
         false,
         anchorLastColumn,
+        expandableColumn,
+        singleExpandableRow,
+        overwriteRowWhenExpanding,
+        expandableRowController,
         gridType
     );
 
@@ -266,6 +283,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           gridController,
           true,
           anchorLastColumn,
+          expandableColumn,
+          singleExpandableRow,
+          overwriteRowWhenExpanding,
+          expandableRowController,
           gridType
       );
       this.lockedGrid.setReorderingAllowed(false);
@@ -514,6 +535,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public final void clearData() {
     // crear table model...
     model.clear();
+    expandedRows.clear();
+    cache.clear();
     this.revalidate();
     grid.revalidate();
     grid.repaint();
@@ -1680,6 +1703,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           Logger.error(this.getClass().getName(), "loadData", "Error while fetching data: value object is not an instance of ValueObject class.",null);
           throw ex1;
         }
+
+        expandedRows.clear();
+        cache.clear();
 
         grid.revalidate();
         grid.repaint();
@@ -2960,6 +2986,71 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     return gridController;
   }
 
+
+  /**
+   * @param row row number
+   * @return <code>true</code> if specified row is currently expanded, <code>false</code> otherwise
+   */
+  public final boolean isRowExpanded(int row) {
+    return expandedRows.contains(new Integer(row));
+  }
+
+
+  /**
+   * @param row row number
+   * @return component already cached
+   */
+  public final Component getComponentInCache(int row) {
+    return (Component)cache.get(new Integer(row));
+  }
+
+
+  /**
+   * @param row row number
+   * @return component already cached
+   */
+  public final void putComponentInCache(int row,Component comp) {
+    cache.put(new Integer(row),comp);
+  }
+
+
+  /**
+   * Expand specified row.
+   * This command will be performed only if "expandableRowController" property is setted and row is not yet expanded
+   * @param row row number
+   */
+  public final void expandRow(int row) {
+    if (!expandedRows.contains(new Integer(row)))
+     expandedRows.add(new Integer(row));
+  }
+
+
+  /**
+   * Collapse specified row.
+   * This command will be performed only if "expandableRowController" property is setted and row is not yet collapsed
+   * @param row row number
+   */
+  public final void collapseRow(int row) {
+    if (expandedRows.contains(new Integer(row)))
+     expandedRows.remove(new Integer(row));
+     currentNestedComponent = null;
+  }
+
+
+  /**
+   * @return current nested component that is expanded and has focus
+   */
+  public final Component getCurrentNestedComponent() {
+    return currentNestedComponent ;
+  }
+
+
+  /**
+   * @return current nested component that is expanded and has focus
+   */
+  public final void setCurrentNestedComponent(Component currentNestedComponent) {
+    this.currentNestedComponent = currentNestedComponent;
+  }
 
 
   /**

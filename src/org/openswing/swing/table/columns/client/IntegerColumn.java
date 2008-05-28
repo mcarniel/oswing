@@ -150,7 +150,8 @@ public class IntegerColumn extends Column {
         isGrouping(),
         tableContainer,
         getDynamicSettings(),
-        getTextAlignment()
+        getTextAlignment(),
+        getColumnName()
     );
   }
 

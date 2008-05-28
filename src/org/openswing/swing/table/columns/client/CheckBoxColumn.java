@@ -151,7 +151,8 @@ public class CheckBoxColumn extends Column {
       tableContainer,
       getTextAlignment(),
       isEnableInReadOnlyMode(),
-      isAllowNullValue()
+      isAllowNullValue(),
+      getColumnName()
     );
   }
 

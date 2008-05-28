@@ -498,6 +498,10 @@ public class LookupController {
           true,
           new ArrayList(),
           anchorLastColumn,
+          0,
+          false,
+          false,
+          null,
           Grid.MAIN_GRID
       );
       lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);
@@ -633,6 +637,10 @@ public class LookupController {
           true,
           new ArrayList(),
           anchorLastColumn,
+          0,
+          false,
+          false,
+          null,
           Grid.MAIN_GRID
       );
       lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);

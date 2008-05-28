@@ -365,7 +365,8 @@ public class CodLookupColumn extends Column {
     return new CodLookupCellRenderer(
         tableContainer,
         isHideCodeBox(),
-        getTextAlignment()
+        getTextAlignment(),
+        getColumnName()
     );
   }
 

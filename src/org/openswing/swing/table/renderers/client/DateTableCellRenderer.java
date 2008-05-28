@@ -60,11 +60,15 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
   /** horizontal alignement*/
   private int alignement;
 
+  /** attribute name associated to this column */
+  private String attributeName = null;
+
 
   /**
    * Constructor.
    * @param type column type; possibile values: Column.TYPE_DATE, Column.TYPE_DATE_TIME, Column.TYPE_TIME
    * @param gridController grid controller
+   * @param attributeName attribute name associated to this column
    */
   public DateTableCellRenderer(
       int type,
@@ -74,12 +78,14 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
       int dateFormat,
       ArrayList dateListeners,
       boolean showCentury,
-      String timeFormat
+      String timeFormat,
+      String attributeName
   ) {
     this.type = type;
     this.gridController = gridController;
     this.dateFormat = ClientSettings.getInstance().getResources().getDateMask(type,dateFormat,separator,showCentury,timeFormat);
     this.alignement = alignement;
+    this.attributeName = attributeName;
   }
 
 

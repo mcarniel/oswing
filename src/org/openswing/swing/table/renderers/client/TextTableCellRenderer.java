@@ -48,15 +48,20 @@ public class TextTableCellRenderer extends DefaultTableCellRenderer {
   /** default font */
   private Font defaultFont = null;
 
+  /** attribute name associated to this column */
+  private String attributeName = null;
+
 
   /**
    * Constructor.
    * @param gridController grid controller
    * @param encryptText flag used to view "*" symbols instead of the real text
+   * @param attributeName attribute name associated to this column
    */
-  public TextTableCellRenderer(GridController gridController,boolean encryptText,int alignement) {
+  public TextTableCellRenderer(GridController gridController,boolean encryptText,int alignement,String attributeName) {
     this.gridController = gridController;
     this.encryptText = encryptText;
+    this.attributeName = attributeName;
     setHorizontalAlignment(alignement);
   }
 

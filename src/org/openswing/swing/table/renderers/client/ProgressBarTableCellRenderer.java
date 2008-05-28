@@ -52,10 +52,14 @@ public class ProgressBarTableCellRenderer extends DefaultTableCellRenderer {
   private boolean showAllBands;
   private Color currentColor;
 
+  /** attribute name associated to this column */
+  private String attributeName = null;
+
 
   /**
    * Constructor.
    * @param gridContainer grid container
+   * @param attributeName attribute name associated to this column
    */
   public ProgressBarTableCellRenderer(
       GridController gridContainer,
@@ -63,7 +67,8 @@ public class ProgressBarTableCellRenderer extends DefaultTableCellRenderer {
       double minValue,
       double maxValue,
       boolean showAllBands,
-      Color currentColor
+      Color currentColor,
+      String attributeName
   ) {
     this.gridContainer = gridContainer;
     this.coloredBands = coloredBands;
@@ -71,6 +76,7 @@ public class ProgressBarTableCellRenderer extends DefaultTableCellRenderer {
     this.maxValue = maxValue;
     this.showAllBands = showAllBands;
     this.currentColor = currentColor;
+    this.attributeName = attributeName;
   }
 
 

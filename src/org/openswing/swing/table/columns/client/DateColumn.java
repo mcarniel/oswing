@@ -204,7 +204,8 @@ public class DateColumn extends Column {
       getFormat(),
       getDateListeners(),
       isShowCentury(),
-      Resources.HH_MM
+      Resources.HH_MM,
+      getColumnName()
     );
   }
 

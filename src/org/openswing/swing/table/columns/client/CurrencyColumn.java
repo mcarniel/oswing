@@ -84,7 +84,8 @@ public class CurrencyColumn extends DecimalColumn {
         getCurrencySymbol(),
         tableContainer,
         getDynamicSettings(),
-        getTextAlignment()
+        getTextAlignment(),
+        getColumnName()
     );
   }
 
