@@ -196,6 +196,8 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
       cols[i] = i+expandableColumn;
     grid.removeMergedCells(new int[]{row},cols);
 
+    if (grid.getExpandableRowController().removeShowedComponent(grids.getVOListTableModel(),row))
+      grids.removeComponentInCache(row);
   }
 
 
@@ -251,6 +253,16 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
         x += grid.getColumnModel().getColumn(i).getWidth();
       c.setBounds(x,y,width,height);
 
+      new Thread() {
+        public void run() {
+          try {
+            sleep(1000);
+          }
+          catch (InterruptedException ex) {
+          }
+          grid.repaint();
+        }
+      }.start();
     }
   }
 
@@ -283,7 +295,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
         treePanel.setBackground(comp.getBackground());
         mainPanel.setBackground(comp.getBackground());
         mainPanel.removeAll();
-        mainPanel.setLayout(new BorderLayout(0,0));
+        mainPanel.setLayout(new BorderLayout(2,0));
         mainPanel.add(comp,BorderLayout.CENTER);
         if (!grid.isOverwriteRowWhenExpanding())
           mainPanel.add(treePanel,BorderLayout.WEST);
@@ -302,7 +314,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
         // row is expandable and not yet expanded...
         if (column==expandableColumn) {
           mainPanel.removeAll();
-          mainPanel.setLayout(new BorderLayout(0,0));
+          mainPanel.setLayout(new BorderLayout(2,0));
           Component comp = defaultCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
           mainPanel.add(comp,BorderLayout.CENTER);
           mainPanel.setBackground(comp.getBackground());
@@ -343,7 +355,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
             for(int i=expandableColumn;i<grid.getColumnModel().getColumnCount();i++) {
               comp = modelAdapter.getCellRenderer(i).getTableCellRendererComponent(table, grid.getValueAt(row,i), false, false, row, i);
               rendPanel = new JPanel();
-              rendPanel.setLayout(new BorderLayout(0,0));
+              rendPanel.setLayout(new BorderLayout(2,0));
               if (i==expandableColumn) {
                 rendPanel.add(treePanel,BorderLayout.WEST);
                 treePanel.setBackground(comp.getBackground());

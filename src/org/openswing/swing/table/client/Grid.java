@@ -25,6 +25,8 @@ import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import javax.swing.text.JTextComponent;
+import org.openswing.swing.table.editors.client.TextCellEditor;
 
 
 /**
@@ -57,7 +59,7 @@ import org.openswing.swing.util.java.*;
  * @version 1.0
  */
 public class Grid extends JTable
-    implements QuickFilterListener, DragSourceListener, DropTargetListener, SearchControl {
+    implements QuickFilterListener, DragSourceListener, DropTargetListener, SearchControl, MouseListener {
 
 
   /** TableModel adapter, used to link ValueObjects to TableModel */
@@ -167,7 +169,7 @@ public class Grid extends JTable
   /** search window manager */
   private SearchWindowManager searchWindowManager = null;
 
-  private RightClickMouseListener rightClickMouseListener;
+  private MouseListener rightClickMouseListener;
 
   /** attribute name of the column declared as expandable, i.e. user can click on it to expand cell to show an inner component; default value: 0 (first column) */
   private String expandableColumnAttributeName = null;
@@ -183,6 +185,12 @@ public class Grid extends JTable
 
   /** expandable cell renderer */
   private ExpandableRenderer expandableRenderer = null;
+
+  /** cache used to store parent grid; calcilated by getParentGrid method */
+  private Grid parentGrid = null;
+
+  /** flag used by getParentGrid method to set "parentGrid" property */
+  private boolean parentGridAlreadyCalculated = false;
 
 
   /**
@@ -274,42 +282,7 @@ public class Grid extends JTable
       // add mouse listener to capture righe mouse click event, used to show the popup menu...
       if (gridType==MAIN_GRID) {
         if (rightClickMouseListener==null)
-          rightClickMouseListener = new RightClickMouseListener();
-
-        this.addKeyListener(new KeyAdapter() {
-
-          /**
-           * Invoked when a key has been typed.
-           * This event occurs when a key press is followed by a key release.
-           */
-          public void keyTyped(KeyEvent e) {
-            if (Grid.this.grids.getCurrentNestedComponent()!=null) {
-              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
-              e.consume();
-            }
-          }
-
-          /**
-           * Invoked when a key has been pressed.
-           */
-          public void keyPressed(KeyEvent e) {
-            if (Grid.this.grids.getCurrentNestedComponent()!=null) {
-              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
-              e.consume();
-            }
-          }
-
-          /**
-           * Invoked when a key has been released.
-           */
-          public void keyReleased(KeyEvent e) {
-            if (Grid.this.grids.getCurrentNestedComponent()!=null) {
-              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
-              e.consume();
-            }
-          }
-
-        });
+          rightClickMouseListener = this;
 
         // add mouse listener to capture double click event in the selected row...
         MouseListener[] l = this.getMouseListeners();
@@ -369,136 +342,17 @@ public class Grid extends JTable
                         )
                       );
                       e.consume();
-                      return;
+                      repaint();
+//                      return;
 //                      c.repaint();
 //                      ((Component)e.getSource()).repaint();
+                      return;
                     }
                   }
                 }
             }
             Grid.this.grids.setCurrentNestedComponent(null);
           }
-
-
-//          /**
-//           * Invoked when the mouse enters a component.
-//           */
-//          public void mouseEntered(MouseEvent e) {
-//            Pair p = rowColumnAtPoint(e.getPoint());
-//            if (Grid.this.grids!=null &&
-//                Grid.this.grids.getMode()==Consts.READONLY &&
-//                Grid.this.expandableRowController!=null &&
-//                Grid.this.expandableRowController.isRowExpandable(Grid.this.grids.getVOListTableModel(),p.n1) &&
-//                p.n2>=Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName) &&
-//                Grid.this.grids.isRowExpanded(p.n1)) {
-//                // force editing for expanded row
-//                Component c = Grid.this.grids.getComponentInCache(p.n1);
-//
-//                if (c!=null) {
-//                  int row = rowAtPoint(e.getPoint());
-//                  int y = getRowHeight();
-//                  for(int i=0;i<row;i++)
-//                    y += getRowHeight(i);
-//
-//                  int x = 13;
-//                  int expandableColIndex = Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName);
-//                  for(int i=0;i<expandableColIndex;i++)
-//                    x += getColumnModel().getColumn(i).getWidth();
-//
-//                  if (c.getParent()==null) {
-//                    ((JComponent)e.getSource()).remove(c);
-//                    ((JComponent)e.getSource()).add(c);
-//
-//                    c.setBounds(x,y,c.getWidth(),c.getHeight());
-//                  }
-//
-//                  x = e.getX()-x;
-//                  y = e.getY()-y;
-//
-//                  if (x>=0 && y>=0) {
-//                    Component c2 = SwingUtilities.getDeepestComponentAt(c,x,y);
-//                    if (c2!=null) {
-//                      Point pp = SwingUtilities.convertPoint(c,x,y,c2);
-//                      c2.dispatchEvent(
-//                        new MouseEvent(
-//                          c2,
-//                          e.getID(),
-//                          e.getWhen(),
-//                          e.getModifiers(),
-//                          pp.x,
-//                          pp.y,
-//                          e.getClickCount(),
-//                          e.isPopupTrigger()
-//                        )
-//                      );
-//                      e.consume();
-//                      return;
-//                    }
-//                  }
-//                }
-//            }
-//            Grid.this.grids.setCurrentNestedComponent(null);
-//          }
-//
-//          /**
-//           * Invoked when the mouse exits a component.
-//           */
-//          public void mouseExited(MouseEvent e) {
-//            Pair p = rowColumnAtPoint(e.getPoint());
-//            if (Grid.this.grids!=null &&
-//                Grid.this.grids.getMode()==Consts.READONLY &&
-//                Grid.this.expandableRowController!=null &&
-//                Grid.this.expandableRowController.isRowExpandable(Grid.this.grids.getVOListTableModel(),p.n1) &&
-//                p.n2>=Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName) &&
-//                Grid.this.grids.isRowExpanded(p.n1)) {
-//                // force editing for expanded row
-//                Component c = Grid.this.grids.getComponentInCache(p.n1);
-//
-//                if (c!=null) {
-//                  int row = rowAtPoint(e.getPoint());
-//                  int y = getRowHeight();
-//                  for(int i=0;i<row;i++)
-//                    y += getRowHeight(i);
-//
-//                  int x = 13;
-//                  int expandableColIndex = Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName);
-//                  for(int i=0;i<expandableColIndex;i++)
-//                    x += getColumnModel().getColumn(i).getWidth();
-//
-//                  if (c.getParent()==null) {
-//                    ((JComponent)e.getSource()).remove(c);
-//                    ((JComponent)e.getSource()).add(c);
-//
-//                    c.setBounds(x,y,c.getWidth(),c.getHeight());
-//                  }
-//
-//                  x = e.getX()-x;
-//                  y = e.getY()-y;
-//
-//                  if (x>=0 && y>=0) {
-//                    Component c2 = SwingUtilities.getDeepestComponentAt(c,x,y);
-//                    if (c2!=null) {
-//                      Point pp = SwingUtilities.convertPoint(c,x,y,c2);
-//                      c2.dispatchEvent(
-//                        new MouseEvent(
-//                          c2,
-//                          e.getID(),
-//                          e.getWhen(),
-//                          e.getModifiers(),
-//                          pp.x,
-//                          pp.y,
-//                          e.getClickCount(),
-//                          e.isPopupTrigger()
-//                        )
-//                      );
-//                      e.consume();
-//                      return;
-//                    }
-//                  }
-//                }
-//            }
-//            Grid.this.grids.setCurrentNestedComponent(null);
-//          }
 
 
           public void mouseReleased(MouseEvent e) {
@@ -552,18 +406,16 @@ public class Grid extends JTable
                       e.consume();
                       c.repaint();
                       ((Component)e.getSource()).repaint();
-//                      SwingUtilities.invokeLater(new Runnable() {
-//                        public void run() {
-//                          c2.requestFocus();
-//                        }
-//                      });
-
+                      repaint();
+                      getParentGrid().getParent().repaint();
+//                      return;
                       return;
                     }
                   }
                 }
             }
             Grid.this.grids.setCurrentNestedComponent(null);
+            repaint();
           }
 
 
@@ -601,6 +453,14 @@ public class Grid extends JTable
 
                   if (x>=0 && y>=0) {
                     Component c2 = SwingUtilities.getDeepestComponentAt(c,x,y);
+                    if (c2!=null &&
+                        c2 instanceof JViewport &&
+                        c2.getMouseListeners().length==0 &&
+                        c2.getParent().getComponentCount()>0 &&
+                        c2.getParent().getComponent(0) instanceof JViewport &&
+                        ((JViewport)c2.getParent().getComponent(0)).getComponentCount()==1 &&
+                        ((JViewport)c2.getParent().getComponent(0)).getComponent(0) instanceof Grid)
+                      c2 = ((Grid)((JViewport)c2.getParent().getComponent(0)).getComponent(0)).getTableHeader();
                     if (c2!=null) {
                       Point pp = SwingUtilities.convertPoint(c,x,y,c2);
                       c2.dispatchEvent(
@@ -618,6 +478,8 @@ public class Grid extends JTable
                       e.consume();
                       c.repaint();
                       ((Component)e.getSource()).repaint();
+                      repaint();
+//                      return;
                       return;
                     }
                   }
@@ -649,12 +511,19 @@ public class Grid extends JTable
         for(int i=0;i<l.length;i++)
           addMouseListener(l[i]);
 
-
         this.addMouseListener(rightClickMouseListener);
 
         // add key listener to capture the ENTER pressed event in the selected row...
         this.addKeyListener(new KeyAdapter() {
+
           public void keyPressed(KeyEvent e) {
+
+            if (Grid.this.grids.getCurrentNestedComponent()!=null) {
+              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+//              e.consume();
+              repaint();
+              return;
+            }
 
             if (!Grid.this.grids.isListenEvent()) {
               e.consume();
@@ -958,7 +827,62 @@ public class Grid extends JTable
                 }
 
               }
+              else if (getSelectedRow()>=0 &&
+                       getSelectedColumn()>=0 &&
+                       getEditorComponent()!=null &&
+                       parentGrid.grids.getCurrentNestedComponent()!=null &&
+                       parentGrid.grids.getCurrentNestedComponent()==Grid.this &&
+                       Grid.this.grids.getCurrentNestedComponent()==null) {
+//                if (getEditorComponent() instanceof BaseInputControl) {
+//                  ( (BaseInputControl) getEditorComponent()).getBindingComponent().dispatchEvent(e);
+//                  ( (BaseInputControl) getEditorComponent()).getBindingComponent().dispatchEvent(
+//                    new KeyEvent(
+//                      getEditorComponent(),
+//                      KeyEvent.KEY_RELEASED,
+//                      e.getWhen(),
+//                      e.getModifiers(),
+//                      e.getKeyCode(),
+//                      e.getKeyChar()
+//                    )
+//                  );
+//                  ( (BaseInputControl) getEditorComponent()).getBindingComponent().dispatchEvent(
+//                    new KeyEvent(
+//                      getEditorComponent(),
+//                      KeyEvent.KEY_TYPED,
+//                      e.getWhen(),
+//                      e.getModifiers(),
+//                      e.VK_UNDEFINED,
+//                      e.getKeyChar()
+//                    )
+//                  );
+//                }
+//                else {
+//                  getEditorComponent().dispatchEvent(e);
+//                }
+//                Component c = getEditorComponent();
+//                c.dispatchEvent(e);
+//                e.consume();
 
+              }
+              else if (getSelectedRow()>=0 &&
+                       getSelectedColumn()>=0 &&
+                       getEditorComponent()==null &&
+                       e.getKeyCode()==e.VK_F2) {
+                boolean ok = editCellAt(getSelectedRow(),getSelectedColumn());
+//                editCellAt(getSelectedRow(),getSelectedColumn());
+//                final Component c = getEditorComponent();
+//
+//                c.dispatchEvent(e);
+//
+//                SwingUtilities.invokeLater(new Runnable() {
+//                  public void run() {
+//                    if (!c.hasFocus())
+//                        c.requestFocus();
+//                  }
+//                });
+
+
+              }
             } else
 
             // navigation button pressed...
@@ -1059,15 +983,34 @@ public class Grid extends JTable
               }
               e.consume();
             }
-
           }
 
 
           public void keyReleased(KeyEvent e) {
+            if (Grid.this.grids.getCurrentNestedComponent()!=null) {
+              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+              e.consume();
+              repaint();
+              return;
+            }
+
             if (getMode()==Consts.READONLY)
               controlDown = e.isControlDown();
             else
               controlDown = false;
+          }
+
+          /**
+           * Invoked when a key has been typed.
+           * This event occurs when a key press is followed by a key release.
+           */
+          public void keyTyped(KeyEvent e) {
+            if (Grid.this.grids.getCurrentNestedComponent()!=null) {
+              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+              e.consume();
+              repaint();
+              return;
+            }
           }
 
         });
@@ -1208,7 +1151,28 @@ public class Grid extends JTable
       }
       setRowSelectionInterval(row,row);
       setColumnSelectionInterval(column,column);
+
       return super.editCellAt(row, column, e);
+    }
+
+
+    public Component prepareEditor(TableCellEditor editor, int row, int column) {
+        Object value = getValueAt(row, column);
+        boolean isSelected = isCellSelected(row, column);
+        Component comp = editor.getTableCellEditorComponent(this, value, isSelected,
+                                                  row, column);
+        if (comp instanceof JComponent) {
+            JComponent jComp = (JComponent)comp;
+            if (jComp.getNextFocusableComponent() == null) {
+                jComp.setNextFocusableComponent(this);
+            }
+        }
+        return comp;
+    }
+
+
+    public void removeEditor() {
+      super.removeEditor();
     }
 
 
@@ -1542,6 +1506,15 @@ public class Grid extends JTable
         if(!isEnabled() || model.getMode()!=Consts.READONLY)
           return;
 
+        if (Grid.this.grids.getCurrentNestedComponent()!=null) {
+          Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+          e.consume();
+          repaint();
+          return;
+        }
+
+
+
         TableColumnModel columnModel = getColumnModel();
         int viewColumnIndex = columnModel.getColumnIndexAtX(e.getX());
         int modelColumnIndex = convertColumnIndexToModel(viewColumnIndex);
@@ -1578,7 +1551,7 @@ public class Grid extends JTable
       Column colProp = colProps[modelColumnIndex];
       if (!colProp.isColumnSortable()) {
         // view warning message ...
-        JOptionPane.showMessageDialog(
+        OptionPane.showMessageDialog(
             ClientUtils.getParentFrame(this),
             ClientSettings.getInstance().getResources().getResource("This column is not sorteable"),
             ClientSettings.getInstance().getResources().getResource("Sorting not allowed"),
@@ -1629,7 +1602,7 @@ public class Grid extends JTable
           !currentSortVersus.equals(Consts.NO_SORTED) &&
           currentColSorted>=grids.getMaxSortedColumns()) {
         // view warning message...
-        JOptionPane.showMessageDialog(
+        OptionPane.showMessageDialog(
             ClientUtils.getParentFrame(this),
             ClientSettings.getInstance().getResources().getResource("Maximum number of sorted columns"),
             ClientSettings.getInstance().getResources().getResource("Sorting not applicable"),
@@ -2029,7 +2002,29 @@ public class Grid extends JTable
         int yOverflow = y+(int)tablexy.getY()+grids.getPopup().getHeight()-(int)screenSize.getHeight();
         int popupX = xOverflow>0?x-xOverflow-20:x;
         int popupY = yOverflow>0?y-yOverflow-20:y;
-        grids.getPopup().show(this,popupX,popupY);
+        if (getPeer()==null) {
+          Component c = this;
+          Component expPanel = null;
+          popupY = 0;
+          do {
+            while(c!=null && !(c instanceof ExpandablePanel)) {
+              popupX += c.getLocation().x;
+              popupY += c.getLocation().y;
+              c = c.getParent();
+            }
+            if (c!=null) {
+              expPanel = c;
+              c = c.getParent();
+            }
+          }
+          while(c!=null);
+          if (expPanel!=null) {
+            grids.getPopup().show(expPanel.getParent(),popupX,popupY);
+          }
+
+        }
+        else
+          grids.getPopup().show(this,popupX,popupY);
       }
     }
     catch (Throwable ex) {
@@ -2350,7 +2345,7 @@ public class Grid extends JTable
       if (gp instanceof JScrollPane) {
         scrollPane = (JScrollPane)gp;
         if (rightClickMouseListener==null)
-          rightClickMouseListener = new RightClickMouseListener();
+          rightClickMouseListener = Grid.this;
         try {
           scrollPane.removeMouseListener(rightClickMouseListener);
         }
@@ -2448,7 +2443,7 @@ public class Grid extends JTable
 
       }
 
-      if (gridType==MAIN_GRID)
+      if (gridType==MAIN_GRID && searchWindowManager==null)
          searchWindowManager = new SearchWindowManager(this);
 
     }
@@ -2465,38 +2460,95 @@ public class Grid extends JTable
 
 
 
-
-  /**
-   * <p>Title: Open Swing</p>
-   * <p>Description: Inner class used to listen right click mouse events, to view the grids.getPopup() menu.</p>
-   * <p>Copyright: Copyright (c) 2006 Mauro Carniel</p>
-   * @author Mauro Carniel
-   * @version 1.0
-   */
-  class RightClickMouseListener extends MouseAdapter {
-
-    public void mouseClicked(MouseEvent e) {
-      if (e.getClickCount()==1 &&
-          SwingUtilities.isRightMouseButton(e)
+  public void mouseClicked(MouseEvent e) {
+    if (e.getClickCount()==1 &&
+        SwingUtilities.isRightMouseButton(e)
 //          getSelectedColumn()!=-1 &&
-          ) {
+        ) {
+      if (getParentGrid()!=null && e.getSource().equals(this))
+        return;
 
-        if (Grid.this.columnAtPoint(e.getPoint())>=0)
-          Grid.this.setColumnSelectionInterval(
-              Grid.this.columnAtPoint(e.getPoint()),
-              Grid.this.columnAtPoint(e.getPoint())
+      if (grids.getCurrentNestedComponent()!=null) {
+
+        int row = rowAtPoint(e.getPoint());
+        int y = getRowHeight();
+        for(int i=0;i<row;i++)
+          y += getRowHeight(i);
+
+        int x = 13;
+        int expandableColIndex = Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName);
+        for(int i=0;i<expandableColIndex;i++)
+          x += getColumnModel().getColumn(i).getWidth();
+        x = e.getX()-x;
+        y = e.getY()-y;
+
+        if (x>=0 && y>=0) {
+          Component c = getExpandablePanel(grids.getCurrentNestedComponent());
+          Point pp = SwingUtilities.convertPoint(c,x,y,grids.getCurrentNestedComponent());
+          grids.getCurrentNestedComponent().dispatchEvent(
+              new MouseEvent(
+                Grid.this,
+                e.getID(),
+                e.getWhen(),
+                e.getModifiers(),
+                pp.x,
+                pp.y,
+                e.getClickCount(),
+                e.isPopupTrigger()
+              )
           );
-        if (model.getRowCount()>0 && Grid.this.rowAtPoint(e.getPoint())>=0)
-          if (Grid.this.getSelectedRows()!=null && Grid.this.getSelectedRows().length<=1)
-            Grid.this.setRowSelectionInterval(
-                Grid.this.rowAtPoint(e.getPoint()),
-                Grid.this.rowAtPoint(e.getPoint())
-            );
-//        if (Grid.this.rowAtPoint(e.getPoint())>=0)
-          showPopupMenu(e.getX(),e.getY());
+        }
+        e.consume();
+        return;
       }
+
+
+      if (Grid.this.columnAtPoint(e.getPoint())>=0)
+        Grid.this.setColumnSelectionInterval(
+            Grid.this.columnAtPoint(e.getPoint()),
+            Grid.this.columnAtPoint(e.getPoint())
+        );
+      if (model.getRowCount()>0 && Grid.this.rowAtPoint(e.getPoint())>=0)
+        if (Grid.this.getSelectedRows()!=null && Grid.this.getSelectedRows().length<=1)
+          Grid.this.setRowSelectionInterval(
+              Grid.this.rowAtPoint(e.getPoint()),
+              Grid.this.rowAtPoint(e.getPoint())
+          );
+//        if (Grid.this.rowAtPoint(e.getPoint())>=0)
+        showPopupMenu(e.getX(),e.getY());
+        e.consume();
     }
   }
+
+
+
+  /**
+   * Invoked when a mouse button has been pressed on a component.
+   */
+  public void mousePressed(MouseEvent e) {}
+
+  /**
+   * Invoked when a mouse button has been released on a component.
+   */
+  public void mouseReleased(MouseEvent e) {}
+
+  /**
+   * Invoked when the mouse enters a component.
+   */
+  public void mouseEntered(MouseEvent e) {}
+
+  /**
+   * Invoked when the mouse exits a component.
+   */
+  public void mouseExited(MouseEvent e) {}
+
+
+
+
+
+
+
+
 
 
   /**
@@ -3618,15 +3670,6 @@ public class Grid extends JTable
   }
 
 
-//  public boolean isFocusable() {
-//    if (grids.getCurrentNestedComponent()!=null)
-//      return false;
-//    return super.isFocusable();
-//  }
-
-
-
-
   /**
    * @param row row number
    * @param col column niumber in grid
@@ -3649,6 +3692,127 @@ public class Grid extends JTable
     }
 
     return rend;
+  }
+
+
+  /**
+   * Prepares the renderer by querying the data model for the
+   * value and selection state
+   * of the cell at <code>row</code>, <code>column</code>.
+   * Returns the component (may be a <code>Component</code>
+   * or a <code>JComponent</code>) under the event location.
+   * <p>
+   * <b>Note:</b>
+   * Throughout the table package, the internal implementations always
+   * use this method to prepare renderers so that this default behavior
+   * can be safely overridden by a subclass.
+   *
+   * @param renderer  the <code>TableCellRenderer</code> to prepare
+   * @param row       the row of the cell to render, where 0 is the first row
+   * @param column    the column of the cell to render,
+   *			where 0 is the first column
+   * @return          the <code>Component</code> under the event location
+   */
+  public final Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+      Object value = getValueAt(row, column);
+      boolean isSelected = isCellSelected(row, column);
+      boolean rowIsAnchor = (selectionModel.getAnchorSelectionIndex() == row);
+      boolean colIsAnchor =
+          (columnModel.getSelectionModel().getAnchorSelectionIndex() == column);
+      boolean hasFocus = (rowIsAnchor && colIsAnchor);
+      if (hasFocus) {
+        try {
+          Grid parentGrid = getParentGrid();
+          if (parentGrid!=null &&
+              parentGrid.grids.getCurrentNestedComponent()!=null &&
+               parentGrid.grids.getCurrentNestedComponent()==this &&
+               grids.getCurrentNestedComponent()==null)
+            hasFocus = true;
+          else
+            hasFocus = isFocusOwner();
+        }
+        catch (Exception ex) {
+          hasFocus = isFocusOwner();
+        }
+      }
+
+      return renderer.getTableCellRendererComponent(this, value,
+                                                    isSelected, hasFocus,
+                                                    row, column);
+  }
+
+
+//  protected final boolean processKeyBinding(KeyStroke ks, KeyEvent e,
+//                                      int condition, boolean pressed) {
+//    Grid parentGrid = getParentGrid();
+//    if (parentGrid!=null &&
+//        parentGrid.grids.getCurrentNestedComponent()!=null &&
+//         parentGrid.grids.getCurrentNestedComponent()==this &&
+//         grids.getCurrentNestedComponent()==null) {
+//       Component editorComponent = getEditorComponent();
+//       if (editorComponent==null)
+//         return true;
+//       ((JComponent)editorComponent).dispatchEvent(e);
+//       // If we have started an editor as a result of the user
+//       // pressing a key and the surrendersFocusOnKeystroke property
+//       // is true, give the focus to the new editor.
+//       if (getSurrendersFocusOnKeystroke()) {
+//           editorComponent.requestFocus();
+//       }
+//       if (editorComponent!=null && editorComponent instanceof JTextComponent)
+//         ((JTextComponent)editorComponent).setCaretPosition(((JTextComponent)editorComponent).getText().length());
+//       return true;
+//
+//    }
+//    return super.processKeyBinding(ks, e, condition, pressed);
+//  }
+
+
+
+  /**
+   * @return ExpandablePanel for the specified component "c" that has it as nested component (grid); null if "c" is a main grid, not a nested grid
+   */
+  private final ExpandablePanel getExpandablePanel(Component c) {
+    while(c!=null && !(c instanceof ExpandablePanel))
+      c = c.getParent();
+    if (c!=null && c instanceof ExpandablePanel)
+      return (ExpandablePanel)c;
+    return null;
+  }
+
+
+  /**
+   * @return parent Grid that has this as nested grid; null if this is a main grid, not a nested grid
+   */
+  public final Grid getParentGrid() {
+    if (parentGrid != null || parentGridAlreadyCalculated)
+      return parentGrid;
+    parentGridAlreadyCalculated = true;
+    Component c = this;
+    while(c!=null && !(c instanceof ExpandablePanel))
+      c = c.getParent();
+    if (c!=null && c instanceof ExpandablePanel) {
+      while(c!=null && !(c instanceof Grid))
+        c = c.getParent();
+      if (c!=null)
+        parentGrid = (Grid)c;
+    }
+    return parentGrid;
+  }
+
+
+  /**
+   * @return <code>true</code> to disable key listening on input control (for instance, in case of nested grids), <code>false</code> to listen for key events
+   */
+  public final boolean disableListener() {
+    return grids.getCurrentNestedComponent()!=null;
+  }
+
+
+  public final void requestFocus() {
+    if (grids.getCurrentNestedComponent()!=null)
+      grids.getCurrentNestedComponent().requestFocus();
+    super.requestFocus();
   }
 
 

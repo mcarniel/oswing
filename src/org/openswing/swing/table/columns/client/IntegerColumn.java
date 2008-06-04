@@ -148,6 +148,7 @@ public class IntegerColumn extends Column {
     return new NumericTableCellRenderer(
         0,
         isGrouping(),
+        true,
         tableContainer,
         getDynamicSettings(),
         getTextAlignment(),

@@ -49,4 +49,10 @@ public interface SearchControl {
   public boolean isReadOnly();
 
 
+  /**
+   * @return <code>true</code> to disable key listening on input control (for instance, in case of nested grids), <code>false</code> to listen for key events
+   */
+  public boolean disableListener();
+
+
 }

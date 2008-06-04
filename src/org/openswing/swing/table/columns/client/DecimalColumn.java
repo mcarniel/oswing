@@ -54,6 +54,9 @@ public class DecimalColumn extends Column {
   /** dynamic settings used to reset numeric editor properties for each grid row */
   private DecimalColumnSettings dynamicSettings = null;
 
+  /** flag used to define whether zero digits (after decimal point) must be hided/showed; default value: <code>false</code> i.e. show zero digits */
+  private boolean hideZeroDigits = false;
+
 
   public DecimalColumn() {
     setTextAlignment(SwingConstants.RIGHT);
@@ -154,12 +157,30 @@ public class DecimalColumn extends Column {
 
 
   /**
+   * @return flag used to define whether zero digits (after decimal point) must be hided/showed
+   */
+  public final boolean isHideZeroDigits() {
+    return hideZeroDigits;
+  }
+
+
+  /**
+   * Define whether zero digits (after decimal point) must be hided/showed; default value: <code>false</code> i.e. show zero digits.
+   * @param hideZeroDigits flag used to define whether zero digits (after decimal point) must be hided/showed
+   */
+  public final void setHideZeroDigits(boolean hideZeroDigits) {
+    this.hideZeroDigits = hideZeroDigits;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
     return new NumericTableCellRenderer(
         getDecimals(),
         isGrouping(),
+        isHideZeroDigits(),
         tableContainer,
         getDynamicSettings(),
         getTextAlignment(),

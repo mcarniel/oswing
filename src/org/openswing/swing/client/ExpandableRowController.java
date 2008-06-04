@@ -60,4 +60,21 @@ public class ExpandableRowController {
   }
 
 
+  /**
+   * @param model grid model
+   * @param rowNum the current row number that is just collapsed
+   * @return <code>true</code> to detach the component from internal cache; <code>false</code> to store the collapsed component in cache
+   * This callback method is automatically invoked when the component must be collapsed and can be used also
+   * to perfom additional operations to correctly dispose the component.
+   * When returned value is <code>true</code>, the grid removes the component from cache, so reducing the amount of memory required by the application;
+   * a drawback is that re-expansion of the same row requires to recreate the component, i.e. the invokation of "getComponentToShow" method again.
+   * When returned value is <code>false</code>, the grid mantains the component into its internal cache, this will increase
+   * the amount of memory required by the application, but avoid to re-create the component for future expansions of the same row,
+   * i.e. "getComponentToShow" method is not invoked twice for the same row.
+   */
+  public boolean removeShowedComponent(VOListTableModel model,int rowNum) {
+    return false;
+  }
+
+
 }

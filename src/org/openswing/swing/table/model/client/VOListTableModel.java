@@ -379,7 +379,11 @@ public class VOListTableModel extends AbstractTableModel {
         oldValue = new Double(oldValue.toString());
       }
       if (value!=null && value instanceof BigDecimal && oldValue!=null && this.fieldAdapter.getFieldClass(column).equals(BigDecimal.class)) {
-        value = new BigDecimal(value.toString()).setScale(((BigDecimal)oldValue).scale());
+        if (this.fieldAdapter.getFieldColumn(column) instanceof DecimalColumn &&
+            ((DecimalColumn)this.fieldAdapter.getFieldColumn(column)).getDecimals()>0)
+          value = new BigDecimal(value.toString()).setScale(((DecimalColumn)this.fieldAdapter.getFieldColumn(column)).getDecimals(),BigDecimal.ROUND_HALF_UP);
+        else
+          value = new BigDecimal(value.toString()).setScale(((BigDecimal)oldValue).scale(),BigDecimal.ROUND_HALF_UP);
       }
       else if (value!=null && value instanceof BigDecimal &&
                (this.fieldAdapter.getFieldClass(column).equals(Integer.class) || this.fieldAdapter.getFieldClass(column).equals(Integer.TYPE))) {

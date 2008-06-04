@@ -428,7 +428,7 @@ public class GridControl extends JPanel {
               if (desc==null)
                 return;
 
-              profile = (GridProfile)defaultProfile.clone();
+              GridProfile profile = (GridProfile)defaultProfile.clone();
               profile.setId(null);
               profile.setDefaultProfile(false);
               profile.setDescription(desc);
@@ -441,16 +441,20 @@ public class GridControl extends JPanel {
                 Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while storing grid profile: "+ex.getMessage(),ex);
                 return;
               }
+              final Object id = profile.getId();
 
               for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
                 ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
-              JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile.getDescription(),true);
+              final JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile.getDescription(),true);
               item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                  Object id = profile.getId();
                   try {
-                    profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
-                    applyProfile(columnProperties,profile,true);
+                    for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
+                      ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
+                    item.setSelected(true);
+                    maybeStoreProfile(columnProperties);
+                    GridControl.this.profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
+                    applyProfile(columnProperties,GridControl.this.profile,true);
                   }
                   catch (Throwable ex) {
                     Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profile: "+ex.getMessage(),ex);
@@ -1821,7 +1825,7 @@ public class GridControl extends JPanel {
 
 
   /**
-   * @return top grid contained in this panel (optional); it will be created only on run-time
+   * @return top grid containepd in this panel (optional); it will be created only on run-time
    */
   public final Grids getTopTable() {
     return topTable;
@@ -2238,6 +2242,8 @@ public class GridControl extends JPanel {
       table.getQuickFilterValues().putAll(profile.getQuickFilterValues());
     }
     if (topTable!=null) {
+      g = topTable.getGrid();
+      g.resetColumns(profile);
       topTable.getCurrentSortedColumns().clear();
       topTable.getCurrentSortedColumns().addAll(profile.getCurrentSortedColumns());
       topTable.getCurrentSortedVersusColumns().clear();
@@ -2246,6 +2252,8 @@ public class GridControl extends JPanel {
       topTable.getQuickFilterValues().putAll(profile.getQuickFilterValues());
     }
     if (bottomTable!=null) {
+      g = bottomTable.getGrid();
+      g.resetColumns(profile);
       bottomTable.getCurrentSortedColumns().clear();
       bottomTable.getCurrentSortedColumns().addAll(profile.getCurrentSortedColumns());
       bottomTable.getCurrentSortedVersusColumns().clear();

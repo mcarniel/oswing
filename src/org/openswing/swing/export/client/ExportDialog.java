@@ -197,7 +197,7 @@ public class ExportDialog extends JDialog {
         exportAttrColumns.add( cols.getModel().getValueAt(i,2) );
       }
     if (exportColumns.size()==0) {
-      JOptionPane.showMessageDialog(
+      OptionPane.showMessageDialog(
           frame,
           ClientSettings.getInstance().getResources().getResource("you must select at least one column"),
           ClientSettings.getInstance().getResources().getResource("Error"),

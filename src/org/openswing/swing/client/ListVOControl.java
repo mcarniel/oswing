@@ -1190,7 +1190,7 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
 
   public void setEnabled(boolean enabled) {
     list.setEnabled(enabled);
-    list.setFocusable(enabled);
+    list.setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
     if (enabled) {
       list.setBackground( (Color) UIManager.get("TextField.background"));
       list.setSelectionBackground(ClientSettings.BACKGROUND_SEL_COLOR);
@@ -1289,5 +1289,12 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
         foreignKeyAttributeName;
   }
 
+
+  /**
+   * @return <code>true</code> to disable key listening on input control (for instance, in case of nested grids), <code>false</code> to listen for key events
+   */
+  public final boolean disableListener() {
+    return false;
+  }
 
 }

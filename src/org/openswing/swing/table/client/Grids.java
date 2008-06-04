@@ -1550,7 +1550,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public final void reload() {
     if (getMode()!=Consts.READONLY) {
       // view confirmation dialog...
-      if (JOptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
+      if (OptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
                                     ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
                                     ClientSettings.getInstance().getResources().getResource("Attention"),
                                     JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
@@ -1668,7 +1668,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         lastIndex = -1;
         moreRows = false;
         if (answer!=null)
-          JOptionPane.showMessageDialog(
+          OptionPane.showMessageDialog(
               ClientUtils.getParentFrame(this),
               ClientSettings.getInstance().getResources().getResource("Error while loading data")+":\n"+answer.getErrorMessage(),
               ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
@@ -1734,7 +1734,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     }
     catch(Throwable ex) {
       Logger.error(this.getClass().getName(), "loadData", "Error while fetching data.", ex);
-      JOptionPane.showMessageDialog(
+      OptionPane.showMessageDialog(
           ClientUtils.getParentFrame(this),
           ClientSettings.getInstance().getResources().getResource("Error while loading data"),
           ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
@@ -1921,7 +1921,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             opt
             );
         if (response.isError()) {
-          JOptionPane.showMessageDialog(
+          OptionPane.showMessageDialog(
               ClientUtils.getParentFrame(this),
               ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
               ClientSettings.getInstance().getResources().getResource("Error"),
@@ -2356,7 +2356,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       if (selRows.length==0) {
       }
       else if (
-          JOptionPane.showConfirmDialog(
+          OptionPane.showConfirmDialog(
               ClientUtils.getParentFrame(this),
               ClientSettings.getInstance().getResources().getResource("Delete Rows?"),
               ClientSettings.getInstance().getResources().getResource("Delete Confirmation"),
@@ -2381,7 +2381,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             this.gridController.afterDeleteGrid();
           } else {
             // mostra il messaggio di errore di cancellazione non riuscita...
-            JOptionPane.showMessageDialog(
+            OptionPane.showMessageDialog(
                 ClientUtils.getParentFrame(this),
                 ClientSettings.getInstance().getResources().getResource("Error while deleting rows.")+"\n"+
                 ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
@@ -2395,7 +2395,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             "delete","Error while deleting rows.",ex);
 
           // mostra il messaggio di errore di salvataggio non riuscito...
-          JOptionPane.showMessageDialog(
+          OptionPane.showMessageDialog(
               ClientUtils.getParentFrame(this),
               ClientSettings.getInstance().getResources().getResource("Error while deleting rows.")+"\n"+ex.getMessage(),
               ClientSettings.getInstance().getResources().getResource("Deleting Error"),
@@ -2494,7 +2494,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
         } else {
           // saving operation throws an error: it will be viewed on a dialog...
-          JOptionPane.showMessageDialog(
+          OptionPane.showMessageDialog(
               ClientUtils.getParentFrame(this),
               ClientSettings.getInstance().getResources().getResource("Error while saving")+":\n"+ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
               ClientSettings.getInstance().getResources().getResource("Saving Error"),
@@ -2504,7 +2504,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       }
       catch (Exception ex) {
         Logger.error(this.getClass().getName(), "save", "Error while saving.", ex);
-        JOptionPane.showMessageDialog(
+        OptionPane.showMessageDialog(
             ClientUtils.getParentFrame(this),
             ClientSettings.getInstance().getResources().getResource("Error while saving")+":\n"+ex.getMessage(),
             ClientSettings.getInstance().getResources().getResource("Saving Error"),
@@ -2662,7 +2662,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               return false;
             else if (this.colProps[j].isColumnRequired())
               if ((model.getValueAt(i, j)==null) || (model.getValueAt(i, j).toString().equals(""))) {
-                JOptionPane.showMessageDialog(ClientUtils.getParentFrame(this),
+                OptionPane.showMessageDialog(ClientUtils.getParentFrame(this),
                                               ClientSettings.getInstance().getResources().getResource("A mandatory column is empty."),
                                               ClientSettings.getInstance().getResources().getResource("Value not valid"),
                                               JOptionPane.ERROR_MESSAGE);
@@ -3015,6 +3015,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
+   * Removce component from cache.
+   * @param row row number
+   */
+  public final void removeComponentInCache(int row) {
+    cache.remove(new Integer(row));
+  }
+
+
+  /**
    * Expand specified row.
    * This command will be performed only if "expandableRowController" property is setted and row is not yet expanded
    * @param row row number
@@ -3033,7 +3042,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public final void collapseRow(int row) {
     if (expandedRows.contains(new Integer(row)))
      expandedRows.remove(new Integer(row));
-     currentNestedComponent = null;
+    currentNestedComponent = null;
   }
 
 

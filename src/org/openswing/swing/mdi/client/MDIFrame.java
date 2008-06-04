@@ -11,6 +11,7 @@ import javax.swing.tree.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.mdi.java.*;
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.client.OptionPane;
 
 
 /**
@@ -391,7 +392,7 @@ public class MDIFrame extends JFrame implements BusyListener {
           ClientUtils.fireBusyEvent(false);
           ex.printStackTrace();
 
-          JOptionPane.showMessageDialog(
+          OptionPane.showMessageDialog(
               MDIFrame.this,
               ClientSettings.getInstance().getResources().getResource("Error while executing function")+" '"+node.getMethodName()+"'",
               ClientSettings.getInstance().getResources().getResource("Error"),

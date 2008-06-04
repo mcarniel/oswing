@@ -567,7 +567,7 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
 
   public void setEnabled(boolean enabled) {
     combo.setEnabled(enabled);
-    combo.setFocusable(enabled);
+    combo.setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
     if (!enabled)
       combo.setBackground((Color)UIManager.get("TextField.inactiveBackground"));
   }
@@ -797,6 +797,14 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
    */
   public final void setForeignKeyAttributeName(String foreignKeyAttributeName) {
     this.foreignKeyAttributeName = foreignKeyAttributeName;
+  }
+
+
+  /**
+   * @return <code>true</code> to disable key listening on input control (for instance, in case of nested grids), <code>false</code> to listen for key events
+   */
+  public final boolean disableListener() {
+    return false;
   }
 
 

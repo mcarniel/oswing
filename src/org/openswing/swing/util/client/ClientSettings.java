@@ -300,6 +300,9 @@ public class ClientSettings {
   /** wait time (expressed in ms) before showing code auto completition feature for lookup controls; default value: <code>-1</code>, i.e. do not enable auto completition */
   public static long LOOKUP_AUTO_COMPLETITION_WAIT_TIME = -1;
 
+  /** <code>true</code> to enable focus on disabled input controls: this allows to select disabled content of input control for copy & paste; <code>false</code> to do not allow focus setting on disabled input controls; default value: <code>false</code> */
+  public static boolean DISABLED_INPUT_CONTROLS_FOCUSABLE = false;
+
 
   /**
    * Contains application settings.

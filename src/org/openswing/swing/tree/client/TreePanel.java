@@ -1001,6 +1001,15 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     return true;
   }
 
+
+  /**
+   * @return <code>true</code> to disable key listening on input control (for instance, in case of nested grids), <code>false</code> to listen for key events
+   */
+  public final boolean disableListener() {
+    return false;
+  }
+
+
   /**
    * Returns true if the root node of the tree is displayed.
    *

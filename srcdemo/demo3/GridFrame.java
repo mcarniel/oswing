@@ -1,20 +1,21 @@
 package demo3;
 
-import javax.swing.*;
-import org.openswing.swing.client.*;
-import java.awt.*;
-import org.openswing.swing.table.columns.client.*;
-import org.openswing.swing.lookup.client.LookupController;
+import java.math.*;
 import java.sql.*;
+import java.util.*;
+
+import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.text.*;
+
+import org.openswing.swing.client.*;
+import org.openswing.swing.lookup.client.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.table.client.*;
+import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.table.java.*;
-import org.openswing.swing.message.receive.java.Response;
-import java.util.Map;
-import java.util.ArrayList;
-import org.openswing.swing.message.receive.java.VOListResponse;
-import java.math.BigDecimal;
-import org.openswing.swing.table.client.GridController;
-import javax.swing.text.MaskFormatter;
+import java.text.ParseException;
 
 
 /**
@@ -176,6 +177,7 @@ public class GridFrame extends JFrame {
 
 
   private void jbInit() throws Exception {
+    grid.setFunctionId("F1");
 
     grid.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
@@ -259,10 +261,52 @@ public class GridFrame extends JFrame {
     colFormattedText.setEditableOnEdit(true);
     colFormattedText.setEditableOnInsert(true);
 
-    MaskFormatter mask = new MaskFormatter("###-##-####");
-    mask.setValidCharacters("0123456789");
+//    MaskFormatter mask = new MaskFormatter("###-##-####");
+//    mask.setValidCharacters("0123456789");
 
-    colFormattedText.setFormatter(mask);
+    JFormattedTextField.AbstractFormatter formatter = new JFormattedTextField.AbstractFormatter() {
+
+      /**
+       * Parses <code>text</code> returning an arbitrary Object. Some
+       * formatters may return null.
+       *
+       * @throws ParseException if there is an error in the conversion
+       * @param text String to convert
+       * @return Object representation of text
+       */
+      public Object stringToValue(String text) throws ParseException {
+        if (text==null || text.equals(""))
+          return null;
+        String t = "";
+        for(int i=0;i<text.length();i++)
+          if (Character.isDigit(text.charAt(i)))
+            t += text.charAt(i);
+          else
+            if (!( text.charAt(i)=='-' && (i==3 || i==6) ))
+                throw new ParseException("Invalid pattern!",i);
+        return new BigDecimal(t);
+      }
+
+      /**
+       * Returns the string value to display for <code>value</code>.
+       *
+       * @throws ParseException if there is an error in the conversion
+       * @param value Value to convert
+       * @return String representation of value
+       */
+      public String valueToString(Object value) throws ParseException {
+        if (value==null)
+          return null;
+        String t = value.toString();
+        if (t.length()!=9)
+          throw new ParseException("Invalid pattern!",t.length()-1);
+        t = t.substring(0,3)+"-"+t.substring(3,5)+"-"+t.substring(5);
+        return t;
+      }
+
+    };
+
+    colFormattedText.setFormatter(formatter);
 
     colInt.setColumnFilterable(false);
     colInt.setColumnName("intValue");

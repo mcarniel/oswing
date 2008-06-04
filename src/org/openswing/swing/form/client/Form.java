@@ -538,7 +538,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         previousVO = getVOModel().getValueObject();
        }
       else
-        JOptionPane.showMessageDialog(
+        OptionPane.showMessageDialog(
             ClientUtils.getParentFrame(this),
             ClientSettings.getInstance().getResources().getResource("Error while loading data:")+"\n"+
             ClientSettings.getInstance().getResources().getResource(answer.getErrorMessage()),
@@ -784,7 +784,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         setEnabled( ( (Container) c[i]).getComponents(), enabled);
         continue;
       }
-      if (c[i] instanceof Container)
+      if (c[i] instanceof Container && !(c[i] instanceof InputControl))
         setEnabled( ( (Container) c[i]).getComponents(), enabled);
       if (! (c[i] instanceof JLabel || c[i] instanceof JScrollPane)) {
         if (c[i] instanceof InputControl && enabled) {
@@ -934,7 +934,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   public final void reload() {
     if (getMode()!=Consts.READONLY) {
       // show message dialog to confirm the refresh/cancel operation...
-      if (JOptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
+      if (OptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
                                     ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
                                     ClientSettings.getInstance().getResources().getResource("Attention"),
                                     JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
@@ -1147,7 +1147,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       if (!this.formController.beforeDeleteData(this))
         return;
 
-      if (JOptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
+      if (OptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
                                     ClientSettings.getInstance().getResources().getResource("Confirm deliting data?"),
                                     ClientSettings.getInstance().getResources().getResource("Attention"),
                                     JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION) {
@@ -1172,7 +1172,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             }
 
           }
-          else JOptionPane.showMessageDialog(
+          else OptionPane.showMessageDialog(
               ClientUtils.getParentFrame(this),
               ClientSettings.getInstance().getResources().getResource("Error on deleting:")+"\n"+
               ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
@@ -1252,7 +1252,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       for(int i=0;i<inputControlsNotValid.size();i++)
         list += inputControlsNotValid.get(i)+", ";
       list = list.substring(0,list.length()-2);
-      JOptionPane.showMessageDialog(
+      OptionPane.showMessageDialog(
           ClientUtils.getParentFrame(this),
           ClientSettings.getInstance().getResources().getResource("Error while saving: incorrect data.")+"\n"+list,
           ClientSettings.getInstance().getResources().getResource("Saving Error"),
@@ -1280,7 +1280,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             model.setValue(comp.getAttributeName(), comp.getValue());
           }
           catch (Exception ex) {
-            JOptionPane.showMessageDialog(
+            OptionPane.showMessageDialog(
                 ClientUtils.getParentFrame(this),
                 ClientSettings.getInstance().getResources().getResource("Error while saving: incorrect data.")+"\n"+comp.getAttributeName(),
                 ClientSettings.getInstance().getResources().getResource("Saving Error"),
@@ -1343,7 +1343,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         }
         catch (Exception ex) {
           ex.printStackTrace();
-          JOptionPane.showMessageDialog(
+          OptionPane.showMessageDialog(
               ClientUtils.getParentFrame(this),
               ClientSettings.getInstance().getResources().getResource("Error on setting value to the input control having the attribute name")+ " '"+comp.getAttributeName()+"'\n"+ex.getMessage(),
               ClientSettings.getInstance().getResources().getResource("Saving Error"),
@@ -1490,7 +1490,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           previousVO = getVOModel().getValueObject();
           return true;
         } else {
-          JOptionPane.showMessageDialog(
+          OptionPane.showMessageDialog(
               ClientUtils.getParentFrame(this),
               ClientSettings.getInstance().getResources().getResource("Error while saving: incorrect data.")+"\n"+
               ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),

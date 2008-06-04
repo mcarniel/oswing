@@ -50,9 +50,10 @@ public class CurrencyTableCellRenderer extends NumericTableCellRenderer {
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
    * @param attributeName attribute name associated to this column
    */
-  public CurrencyTableCellRenderer(int decimals, boolean grouping,String currencySymbol,
-                                   GridController gridController,IntegerColumnSettings dynamicSettings,int alignement,String attributeName) {
-    super(decimals,grouping,gridController,dynamicSettings,alignement,attributeName);
+  public CurrencyTableCellRenderer(int decimals, boolean grouping,boolean hideZeroDigits,
+                                   String currencySymbol,GridController gridController,IntegerColumnSettings dynamicSettings,
+                                   int alignement,String attributeName) {
+    super(decimals,grouping,hideZeroDigits,gridController,dynamicSettings,alignement,attributeName);
     this.currencySymbol = currencySymbol;
     setFormat(decimals,grouping);
   }
@@ -74,13 +75,13 @@ public class CurrencyTableCellRenderer extends NumericTableCellRenderer {
     else if (grouping && decimals>0) {
       String dec = "";
       for(int i=0;i<decimals;i++)
-        dec += "0";
+        dec += hideZeroDigits?"#":"0";
       format = new DecimalFormat(currencySymbol+" "+"#,##0."+dec,dfs);
     }
     else if (!grouping && decimals>0) {
       String dec = "";
       for(int i=0;i<decimals;i++)
-        dec += "0";
+        dec += hideZeroDigits?"#":"0";
       format = new DecimalFormat(currencySymbol+" "+"0."+dec,dfs);
     }
 

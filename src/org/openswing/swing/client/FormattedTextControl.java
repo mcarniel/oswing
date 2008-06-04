@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.*;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -115,7 +116,7 @@ public class FormattedTextControl extends BaseInputControl implements InputContr
   public final void setEnabled(boolean enabled) {
     if (textBox!=null) {
       textBox.setEditable(enabled);
-      textBox.setFocusable(enabled);
+      textBox.setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
       if (!enabled)
         getBindingComponent().setBackground((Color)UIManager.get("TextField.inactiveBackground"));
     }

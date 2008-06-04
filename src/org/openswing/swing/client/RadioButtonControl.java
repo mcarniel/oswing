@@ -382,7 +382,7 @@ public class RadioButtonControl extends JRadioButton implements InputControl {
    */
   public final void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
-    setFocusable(enabled);
+    setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
   }
 
 

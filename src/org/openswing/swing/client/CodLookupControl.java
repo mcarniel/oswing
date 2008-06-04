@@ -281,7 +281,7 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
       this.codBox.setEditable(false);
 //    this.codBox.setEnabled(enabled);
     this.lookupButton.setEnabled(enabled);
-    this.codBox.setFocusable(enabled);
+    this.codBox.setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
     this.lookupButton.setFocusable(enabled);
   }
 

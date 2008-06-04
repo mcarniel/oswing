@@ -120,7 +120,7 @@ public class SearchWindowManager {
    * Process key pressed/typed events.
    */
   private void processKey(KeyEvent e) {
-    if (!inputControl.isReadOnly()) {
+    if (!inputControl.isReadOnly() || inputControl.disableListener()) {
       hideSearchWindow();
       return;
     }
@@ -186,7 +186,7 @@ public class SearchWindowManager {
         searchWindowLocation = comp.getLocationOnScreen();
       }
       catch (IllegalComponentStateException e) {
-        return null;
+        return comp.getLocation();
       }
       if(searchWindowLocation==null)
         return null;

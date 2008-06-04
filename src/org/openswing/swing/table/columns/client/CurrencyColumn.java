@@ -81,6 +81,7 @@ public class CurrencyColumn extends DecimalColumn {
     return new CurrencyTableCellRenderer(
         getDecimals(),
         isGrouping(),
+        isHideZeroDigits(),
         getCurrencySymbol(),
         tableContainer,
         getDynamicSettings(),

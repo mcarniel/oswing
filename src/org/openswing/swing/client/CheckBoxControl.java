@@ -384,7 +384,13 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
    */
   public final void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
-    setFocusable(enabled);
+    setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
+    try {
+      UIManager.put("CheckBox.background", (Color)UIManager.getColor("TextField.inactiveBackground"));
+      UIManager.put("CheckBoxMenuItem.selectionBackground", (Color)UIManager.getColor("TextField.inactiveBackground"));
+    }
+    catch (Exception ex) {
+    }
   }
 
 

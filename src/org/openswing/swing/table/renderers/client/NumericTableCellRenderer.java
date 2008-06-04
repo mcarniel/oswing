@@ -74,21 +74,26 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
   /** attribute name associated to this column */
   private String attributeName = null;
 
+  /** flag used to define whether zero digits (after decimal point) must be hided/showed */
+  protected boolean hideZeroDigits = false;
+
 
   /**
    * Constructor.
    * @param decimals number of decimals
    * @param grouping flag used to enable grouping
+   * @param hideZeroDigits flag used to define whether zero digits (after decimal point) must be hided/showed
    * @param gridController grid controller
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
    * @param attributeName attribute name associated to this column
    */
-  public NumericTableCellRenderer(int decimals,boolean grouping,GridController gridController,IntegerColumnSettings dynamicSettings,int alignement,String attributeName) {
+   public NumericTableCellRenderer(int decimals,boolean grouping,boolean hideZeroDigits,GridController gridController,IntegerColumnSettings dynamicSettings,int alignement,String attributeName) {
     this.decimals = decimals;
     this.grouping = false;
     this.gridController = gridController;
     this.dynamicSettings = dynamicSettings;
     this.attributeName = attributeName;
+    this.hideZeroDigits = hideZeroDigits;
     setHorizontalAlignment(alignement);
     setFormat(decimals,grouping);
   }
@@ -110,12 +115,12 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
     else if (grouping && decimals>0) {
       String dec = "";
       for(int i=0;i<decimals;i++)
-        dec += "#";
+        dec += hideZeroDigits?"#":"0";
       format = new DecimalFormat("#,###."+dec,dfs);
     } else if (!grouping && decimals>0) {
       String dec = "";
       for(int i=0;i<decimals;i++)
-        dec += "#";
+        dec += hideZeroDigits?"#":"0";
       format = new DecimalFormat("#."+dec,dfs);
     }
     format.setGroupingUsed(grouping);

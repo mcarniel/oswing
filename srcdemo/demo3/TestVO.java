@@ -26,9 +26,9 @@ public class TestVO extends ValueObjectImpl {
   private String lookupValue;
   private String descrLookupValue;
   private String button;
-  private String formattedTextValue;
   private Integer intValue;
   private String multiLineTextValue;
+  private java.math.BigDecimal formattedTextValue;
 
 
   public TestVO() {
@@ -95,10 +95,10 @@ public class TestVO extends ValueObjectImpl {
   public void setButton(String button) {
     this.button = button;
   }
-  public String getFormattedTextValue() {
+  public java.math.BigDecimal getFormattedTextValue() {
     return formattedTextValue;
   }
-  public void setFormattedTextValue(String formattedTextValue) {
+  public void setFormattedTextValue(java.math.BigDecimal formattedTextValue) {
     this.formattedTextValue = formattedTextValue;
   }
   public Integer getIntValue() {

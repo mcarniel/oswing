@@ -416,7 +416,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
     date.setEnabled(true); // otherwise the disabled text is not selectable...
     date.setEditable(enabled);
     calendar.setEnabled(enabled);
-    date.setFocusable(enabled);
+    date.setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
     calendar.setFocusable(enabled);
     if (!enabled)
       getBindingComponent().setBackground((Color)UIManager.get("TextField.inactiveBackground"));

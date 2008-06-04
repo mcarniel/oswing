@@ -500,7 +500,7 @@ public class LoginDialog extends JDialog implements ItemListener {
     }
     catch (Throwable ex) {
       if (attempts < loginController.getMaxAttempts()) {
-        JOptionPane.showMessageDialog(
+        OptionPane.showMessageDialog(
           parentFrame,
           ex.getMessage(),
           "Error",

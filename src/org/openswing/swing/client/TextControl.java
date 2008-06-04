@@ -3,6 +3,7 @@ package org.openswing.swing.client;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -99,8 +100,13 @@ public class TextControl extends BaseInputControl implements InputControl {
     textBox.addKeyListener(new KeyAdapter() {
 
       private boolean skip = false;
+      private boolean consumeEvent = false;
 
       public final void keyReleased(KeyEvent e) {
+        if (consumeEvent) {
+          e.consume();
+          return;
+        }
         if (textBox.getText()!=null &&
             textBox.getText().length()>maxCharacters) {
           TextControl.this.setText(textBox.getText().substring(0,maxCharacters));
@@ -112,6 +118,10 @@ public class TextControl extends BaseInputControl implements InputControl {
       }
 
       public final void keyTyped(KeyEvent e) {
+        if (consumeEvent) {
+          e.consume();
+          return;
+        }
         if (skip)
           return;
         if (textBox.getText()!=null &&
@@ -122,6 +132,24 @@ public class TextControl extends BaseInputControl implements InputControl {
 
       public void keyPressed(KeyEvent e) {
         skip = false;
+        consumeEvent = false;
+
+        if (upperCase &&
+            Character.isLetter(e.getKeyChar()) &&
+            !String.valueOf(e.getKeyChar()).toUpperCase().equals(String.valueOf(e.getKeyChar()))) {
+          processKeyEvent(new KeyEvent(
+            (Component)e.getSource(),
+            e.KEY_TYPED,
+            e.getWhen(),
+            e.getModifiers(),
+            e.VK_UNDEFINED,
+            String.valueOf(e.getKeyChar()).toUpperCase().charAt(0)
+          ));
+          consumeEvent = true;
+          e.consume();
+          return;
+        }
+
         if (e.getKeyCode()==e.VK_BACK_SPACE)
           skip = true;
       }
@@ -249,7 +277,7 @@ public class TextControl extends BaseInputControl implements InputControl {
     catch (Exception ex) {
     }
     textBox.setEditable(enabled);
-    textBox.setFocusable(enabled);
+    textBox.setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
   }
 
 

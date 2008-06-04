@@ -1,5 +1,34 @@
 
 
+
+Release Notes 1.6.3
+-------------------
+
+Final release 1.6.3 available
+Improved grid control by allowing to expand cell in a hierarchical way, by showing nested components at row level, 
+such as a nested grid inside an expandable row.
+Added "demo40" sample application, to show how to create a frame that contains a main grid having two level nested grids within it.
+Added new global property "DISABLED_INPUT_CONTROLS_FOCUSABLE" in ClientSettings class: it allows to move focus to disabled input controls too, 
+in order to set cursor on them, select their content and allow copy & paste operations.
+Improved OptionPane utility class, by supporting translations of buttons according to selected language.
+Fixed problem with user profile on grid, when storing new profiles and with grids locked on top/bottom.
+Improved DecimalColumn, PercentageColumn and CurrecnyColumn by adding "hideZeroDigits" property, that allows to hide/show zero digits, after decimal symbol.
+Fixed problem when editing numeric values in columns of grid having decimal values.
+Improved TextControl when using "upperCase" property.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
+Release Notes 1.6.2
+-------------------
+
+Final release 1.6.2 available
+Improved FormattedTextColumn and changed "demo3" sample application to show how to use JFormattedTextField.AbstractFormatter class.
+Added "demo39" sample applications to show how to drag nodes from a tree and drop onto another tree.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
 Release Notes 1.6.1
 -------------------
 

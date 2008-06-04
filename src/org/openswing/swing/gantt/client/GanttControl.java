@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
+import org.openswing.swing.client.*;
 import org.openswing.swing.gantt.java.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.util.client.*;
@@ -206,7 +207,7 @@ public class GanttControl extends JPanel {
                     Calendar cal = Calendar.getInstance();
                     GanttWorkingHours whVO = getWhVO(table2.getSelectedRow(),table2.getSelectedColumn());
                     if (whVO==null || whVO.getMorningStartHour()==null || whVO.getAfternoonStartHour()==null) {
-                      JOptionPane.showMessageDialog(
+                      OptionPane.showMessageDialog(
                           ClientUtils.getParentFrame(GanttControl.this),
                           ClientSettings.getInstance().getResources().getResource("no working hours defined for this day"),
                           ClientSettings.getInstance().getResources().getResource("Attention"),
@@ -494,7 +495,7 @@ public class GanttControl extends JPanel {
     table2.repaint();
     Response res = ganttDataLocator.loadData(ganttParameters);
     if (res.isError()) {
-      JOptionPane.showMessageDialog(
+      OptionPane.showMessageDialog(
           ClientUtils.getParentFrame(this),
           ClientSettings.getInstance().getResources().getResource("Error while loading data")+":\n"+ClientSettings.getInstance().getResources().getResource(res.getErrorMessage()),
           ClientSettings.getInstance().getResources().getResource("Loading Data Error"),

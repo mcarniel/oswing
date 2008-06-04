@@ -62,6 +62,7 @@ public class PercentageColumn extends DecimalColumn {
     return new NumericTableCellRenderer(
         getDecimals(),
         isGrouping(),
+        isHideZeroDigits(),
         tableContainer,
         getDynamicSettings(),
         getTextAlignment(),

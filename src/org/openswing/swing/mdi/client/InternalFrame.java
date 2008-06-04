@@ -148,7 +148,7 @@ public class InternalFrame extends JInternalFrame {
     if (askBeforeClose) {
       // check if this contains a GridControl or a Form panel in insert/edit mode...
       if (checkComponents(this.getComponents())) {
-        int res = OptionPane.showInternalConfirmDialog(
+        int res = OptionPane.showConfirmDialog(
           this,
           "are you sure to close this window?",
           "confirm window closing",

@@ -309,6 +309,14 @@ public class NumericControl extends BaseInputControl implements InputControl {
             NumericControl.this.getText().length()==0)
           NumericControl.this.setText(nullValue);
 
+        if (e.getKeyChar()==ClientSettings.getInstance().getResources().getDecimalSymbol() &&
+            decimals>0 &&
+            numBox.getText()!=null &&
+            numBox.getText().indexOf(ClientSettings.getInstance().getResources().getDecimalSymbol())!=-1) {
+          e.consume();
+          return;
+        }
+
         if (e.getKeyChar()==ClientSettings.getInstance().getResources().getDecimalSymbol() && decimals>0)
           return;
         else if (e.getKeyChar()==ClientSettings.getInstance().getResources().getGroupingSymbol() && grouping)
@@ -423,7 +431,7 @@ public class NumericControl extends BaseInputControl implements InputControl {
    */
   public void setEnabled(boolean enabled) {
     numBox.setEditable(enabled);
-    numBox.setFocusable(enabled);
+    numBox.setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
     if (!enabled)
       numBox.setBackground((Color)UIManager.get("TextField.inactiveBackground"));
   }

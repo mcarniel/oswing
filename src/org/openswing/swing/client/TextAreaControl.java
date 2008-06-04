@@ -3,6 +3,7 @@ package org.openswing.swing.client;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -139,7 +140,7 @@ public class TextAreaControl extends BaseInputControl implements InputControl {
    */
   public void setEnabled(boolean enabled) {
     textArea.setEditable(enabled);
-    textArea.setFocusable(enabled);
+    textArea.setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
     if (enabled)
       textArea.setBackground((Color)UIManager.get("TextField.background"));
     else

@@ -254,7 +254,7 @@ public class LookupController {
             fireCodeChangedEvent(lookupParent.getValueObject());
 
             fireCodeValidatedEvent(false);
-            JOptionPane.showMessageDialog(
+            OptionPane.showMessageDialog(
                 ClientUtils.getParentFrame(parentComponent),
                 ClientSettings.getInstance().getResources().getResource("Code is not correct."),
                 ClientSettings.getInstance().getResources().getResource("Code Validation"),
@@ -262,7 +262,7 @@ public class LookupController {
             );
           }
           else if (onInvalidCode==ON_INVALID_CODE_RESTORE_LAST_VALID_CODE) {
-            JOptionPane.showMessageDialog(
+            OptionPane.showMessageDialog(
                 ClientUtils.getParentFrame(parentComponent),
                 ClientSettings.getInstance().getResources().getResource("Code is not correct."),
                 ClientSettings.getInstance().getResources().getResource("Code Validation"),
@@ -276,7 +276,7 @@ public class LookupController {
           else if (onInvalidCode==ON_INVALID_CODE_RESTORE_FOCUS) {
             if (!lastInvalidCode.equals(code)) {
               lastInvalidCode = code;
-              JOptionPane.showMessageDialog(
+              OptionPane.showMessageDialog(
                 ClientUtils.getParentFrame(parentComponent),
                 ClientSettings.getInstance().getResources().getResource("Code is not correct."),
                 ClientSettings.getInstance().getResources().getResource("Code Validation"),

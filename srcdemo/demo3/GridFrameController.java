@@ -127,7 +127,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         vo.setStringValue(rset.getString(1));
         vo.setLookupValue(rset.getString(8));
         vo.setDescrLookupValue(rset.getString(9));
-        vo.setFormattedTextValue(rset.getString(10));
+        vo.setFormattedTextValue(rset.getBigDecimal(10));
         vo.setIntValue(rset.getBigDecimal(11)==null?null:new Integer(rset.getBigDecimal(11).intValue()));
         vo.setMultiLineTextValue(rset.getString(12));
         list.add(vo);
@@ -169,7 +169,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       stmt.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");
       stmt.setString(1,vo.getStringValue());
       stmt.setString(8,vo.getLookupValue());
-      stmt.setString(9,vo.getFormattedTextValue());
+      stmt.setBigDecimal(9,vo.getFormattedTextValue());
       stmt.setBigDecimal(10,vo.getIntValue()==null?null:new BigDecimal(vo.getIntValue().intValue()));
       stmt.setString(11,vo.getMultiLineTextValue());
       stmt.execute();
@@ -213,7 +213,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         stmt.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");
         stmt.setString(1,vo.getStringValue());
         stmt.setString(8,vo.getLookupValue());
-        stmt.setString(9,vo.getFormattedTextValue());
+        stmt.setBigDecimal(9,vo.getFormattedTextValue());
         stmt.setBigDecimal(10,vo.getIntValue()==null?null:new BigDecimal(vo.getIntValue().intValue()));
         stmt.setString(11,vo.getMultiLineTextValue());
         stmt.setString(12,vo.getStringValue());

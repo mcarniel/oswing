@@ -7,6 +7,7 @@ import org.openswing.swing.domains.java.*;
 import java.sql.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.internationalization.java.*;
+import org.openswing.swing.table.profiles.client.FileGridProfileManager;
 
 
 /**
@@ -68,6 +69,7 @@ public class ClientApplication {
     );
     ClientSettings.ALLOW_OR_OPERATOR = false;
     ClientSettings.INCLUDE_IN_OPERATOR = false;
+    ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
 
     createConnection();
 
@@ -90,19 +92,23 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO NUMERIC(1),CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,INT_VALUE NUMERIC(6),ML_TEXT VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,FORMATTED_TEXT NUMERIC(12),DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO NUMERIC(1),CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,INT_VALUE NUMERIC(6),ML_TEXT VARCHAR,PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 
         stmt = conn.prepareStatement("create table DEMO3_LOOKUP(CODE VARCHAR,DESCRCODE VARCHAR,PRIMARY KEY(CODE))");
         stmt.execute();
 
-        for(int i=0;i<900;i++) {
+        for(int i=1;i<900;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"','"+(i%9)+"23-22-4444',"+12+i+0.33+","+1234+i+0.560+",?,3,'Y','Y','A"+i+"',"+i+",'ABC"+i+"\nDEF"+i+"')");
+          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',"+((i+1)%9)+"23224444,"+12+i+0.33+","+1234+i+0.560+",?,3,'Y','Y','A"+i+"',"+i+",'ABC"+i+"\nDEF"+i+"')");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }
+
+        stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+0+"',"+((0+1)%9)+"23224444,"+12+","+1234+0+0.560+",?,3,'Y','Y','A"+0+"',"+0+",'ABC"+0+"\nDEF"+0+"')");
+        stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()));
+        stmt.execute();
 
         for(int i=0;i<900;i++) {
           stmt.close();

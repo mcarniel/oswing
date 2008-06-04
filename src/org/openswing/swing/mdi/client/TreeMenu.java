@@ -262,7 +262,7 @@ public class TreeMenu extends JPanel {
           ClientUtils.fireBusyEvent(false);
           ex.printStackTrace();
 
-          JOptionPane.showMessageDialog(
+          OptionPane.showMessageDialog(
               ClientUtils.getParentFrame(TreeMenu.this),
               ClientSettings.getInstance().getResources().getResource("Error while executing function")+" '"+node.getMethodName()+"'",
               ClientSettings.getInstance().getResources().getResource("Error"),

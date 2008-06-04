@@ -2,6 +2,7 @@ package org.openswing.swing.tree.client;
 
 import javax.swing.*;
 
+import org.openswing.swing.client.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.util.client.*;
 
@@ -68,7 +69,7 @@ public class TreeServerDataLocator extends TreeDataLocator {
   public Response getTreeModel(JTree tree) {
     Response response = ClientUtils.getData(serverMethodName,super.getTreeNodeParams());
     if (response.isError()) {
-      JOptionPane.showMessageDialog(
+      OptionPane.showMessageDialog(
           ClientUtils.getParentFrame(tree),
           response.getErrorMessage(),
           ClientSettings.getInstance().getResources().getResource("Error"),

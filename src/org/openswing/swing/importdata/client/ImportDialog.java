@@ -197,7 +197,7 @@ public class ImportDialog extends JDialog {
         importAttrColumns.add( cols.getModel().getValueAt(i,2) );
       }
     if (columnTypes.size()==0) {
-      JOptionPane.showMessageDialog(
+      OptionPane.showMessageDialog(
           frame,
           ClientSettings.getInstance().getResources().getResource("you must select at least one column"),
           ClientSettings.getInstance().getResources().getResource("Error"),

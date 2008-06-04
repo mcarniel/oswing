@@ -1,11 +1,13 @@
 package org.openswing.swing.client;
 
 
+import java.beans.*;
+
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 import org.openswing.swing.util.client.*;
-
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -187,14 +189,22 @@ public class OptionPane {
     if (message !=null && message instanceof String)
       message = ClientSettings.getInstance().getResources().getResource(message.toString());
     title = ClientSettings.getInstance().getResources().getResource(title);
-    if (selectionValues!=null)
+    if (selectionValues!=null) {
       for(int i=0;i<selectionValues.length;i++)
         if (selectionValues[i]!=null && selectionValues[i] instanceof String)
           selectionValues[i] = ClientSettings.getInstance().getResources().getResource(selectionValues[i].toString());
+    }
     if (initialSelectionValue !=null && initialSelectionValue instanceof String)
       initialSelectionValue = ClientSettings.getInstance().getResources().getResource(initialSelectionValue.toString());
 
-    return JOptionPane.showInputDialog(
+//    else if (messageType==JOptionPane.QUESTION_MESSAGE) {
+//      selectionValues = new String[]{
+//              ClientSettings.getInstance().getResources().getResource("yes"),
+//              ClientSettings.getInstance().getResources().getResource("no")
+//      };
+//    }
+
+    return showInputDialog2(
       parentComponent,
       message,
       title,
@@ -204,6 +214,129 @@ public class OptionPane {
       initialSelectionValue
     );
 
+  }
+
+
+  public static Object showInputDialog2(Component parentComponent,
+      Object message, String title, int messageType, Icon icon,
+      Object[] selectionValues, Object initialSelectionValue)
+      throws HeadlessException {
+
+      String[] options = new String[]{
+          ClientSettings.getInstance().getResources().getResource("ok"),
+          ClientSettings.getInstance().getResources().getResource("cancel")
+      };
+
+      final JOptionPane pane = new JOptionPane(message, messageType,
+                                            JOptionPane.OK_CANCEL_OPTION, icon,
+                                            options, null);
+      pane.setWantsInput(true);
+      pane.setSelectionValues(selectionValues);
+      pane.setInitialSelectionValue(initialSelectionValue);
+      int style = styleFromMessageType(messageType);
+
+      final JDialog dialog;
+      Window window = getWindowForComponent(parentComponent);
+      if (window instanceof Frame) {
+          dialog = new JDialog((Frame)window, title, true);
+      } else {
+          dialog = new JDialog((Dialog)window, title, true);
+      }
+      Container contentPane = dialog.getContentPane();
+      contentPane.setLayout(new BorderLayout());
+
+      contentPane.add(pane, BorderLayout.CENTER);
+      dialog.setResizable(true);
+      if (JDialog.isDefaultLookAndFeelDecorated()) {
+          boolean supportsWindowDecorations =
+          UIManager.getLookAndFeel().getSupportsWindowDecorations();
+          if (supportsWindowDecorations) {
+              dialog.setUndecorated(true);
+              dialog.getRootPane().setWindowDecorationStyle(style);
+          }
+      }
+      dialog.pack();
+      dialog.setLocationRelativeTo(parentComponent);
+      dialog.addWindowListener(new WindowAdapter() {
+          private boolean gotFocus = false;
+          public void windowClosing(WindowEvent we) {
+              pane.setValue(null);
+          }
+          public void windowGainedFocus(WindowEvent we) {
+              // Once window gets focus, set initial focus
+              if (!gotFocus) {
+                  pane.selectInitialValue();
+                  gotFocus = true;
+              }
+          }
+      });
+      dialog.addComponentListener(new ComponentAdapter() {
+          public void componentShown(ComponentEvent ce) {
+              // reset value to ensure closing works properly
+              pane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+          }
+      });
+
+      JPanel p = (JPanel)pane.getComponents()[1];
+      JButton okB = (JButton)p.getComponent(0);
+      JButton cancelB = (JButton)p.getComponent(1);
+      okB.addActionListener(new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+          dialog.hide();
+          dialog.dispose();
+        }
+
+      });
+      cancelB.addActionListener(new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+          pane.setInitialValue(JOptionPane.UNINITIALIZED_VALUE);
+          pane.setInputValue(JOptionPane.UNINITIALIZED_VALUE);
+          pane.setInitialSelectionValue(JOptionPane.UNINITIALIZED_VALUE);
+          dialog.hide();
+          dialog.dispose();
+        }
+
+      });
+
+      pane.selectInitialValue();
+      dialog.show();
+      dialog.dispose();
+
+      Object value = pane.getInputValue();
+
+      if (JOptionPane.UNINITIALIZED_VALUE.equals(value)) {
+          return null;
+      }
+      return value;
+  }
+
+
+  static Window getWindowForComponent(Component parentComponent)
+      throws HeadlessException {
+      if (parentComponent == null)
+          return null;
+      if (parentComponent instanceof Frame || parentComponent instanceof Dialog)
+          return (Window)parentComponent;
+      return getWindowForComponent(parentComponent.getParent());
+  }
+
+
+  private static int styleFromMessageType(int messageType) {
+      switch (messageType) {
+      case JOptionPane.ERROR_MESSAGE:
+          return JRootPane.ERROR_DIALOG;
+      case JOptionPane.QUESTION_MESSAGE:
+          return JRootPane.QUESTION_DIALOG;
+      case JOptionPane.WARNING_MESSAGE:
+          return JRootPane.WARNING_DIALOG;
+      case JOptionPane.INFORMATION_MESSAGE:
+          return JRootPane.INFORMATION_DIALOG;
+      case JOptionPane.PLAIN_MESSAGE:
+      default:
+          return JRootPane.PLAIN_DIALOG;
+      }
   }
 
 
@@ -647,9 +780,30 @@ public class OptionPane {
       message = ClientSettings.getInstance().getResources().getResource(message.toString());
     title = ClientSettings.getInstance().getResources().getResource(title);
     if (options!=null)
-      for(int i=0;i<options.length;i++)
+      for(int i=0;i<options.length;i++) {
         if (options[i]!=null && options[i] instanceof String)
           options[i] = ClientSettings.getInstance().getResources().getResource(options[i].toString());
+      }
+    else if (optionType==JOptionPane.YES_NO_CANCEL_OPTION)
+      options = new String[]{
+          ClientSettings.getInstance().getResources().getResource("yes"),
+          ClientSettings.getInstance().getResources().getResource("no"),
+          ClientSettings.getInstance().getResources().getResource("cancel")
+      };
+    else if (optionType==JOptionPane.YES_NO_OPTION)
+      options = new String[]{
+          ClientSettings.getInstance().getResources().getResource("yes"),
+          ClientSettings.getInstance().getResources().getResource("no")
+      };
+    else if (optionType==JOptionPane.OK_CANCEL_OPTION)
+      options = new String[]{
+          ClientSettings.getInstance().getResources().getResource("ok"),
+          ClientSettings.getInstance().getResources().getResource("cancel")
+      };
+    else if (optionType==JOptionPane.DEFAULT_OPTION)
+      options = new String[]{
+          ClientSettings.getInstance().getResources().getResource("ok")
+      };
 
     return JOptionPane.showOptionDialog(
       parentComponent,
