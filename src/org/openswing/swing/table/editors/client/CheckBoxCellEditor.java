@@ -219,4 +219,10 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
   }
 
 
+  public final void finalize() {
+    table = null;
+    itemListenerList.clear();
+  }
+
+
 }

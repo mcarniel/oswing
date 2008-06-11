@@ -177,4 +177,18 @@ public class DateCellEditor extends AbstractCellEditor implements TableCellEdito
     return(_prepareEditor(value));
   }
 
+
+  public final void finalize() {
+    try {
+      if (field != null) {
+        field.finalize();
+      }
+    }
+    catch (Exception ex) {
+    }
+    field = null;
+    table = null;
+  }
+
+
 }

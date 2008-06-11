@@ -126,6 +126,19 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
   /** mapping between items v.o. attributes and items container v.o. attributes */
   private ItemsMapper itemsMapper = new ItemsMapper();
 
+  /** attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container; as default value this attribute is null; null means that "attributeName" property will be used to identify the v.o. in the combo-box, i.e. the attribute names in the combo-box v.o. and in the container v.o. must have the same name */
+  private String foreignKeyAttributeName;
+
+  /**
+   * @return attribute name in the combo-box v.o. that identify the combo-box item
+   */
+  private String getFKAttributeName() {
+    return
+        foreignKeyAttributeName==null || foreignKeyAttributeName.equals("") ?
+        attributeName :
+        foreignKeyAttributeName;
+  }
+
   static {
     UIManager.put("ComboBox.disabledForeground", UIManager.get("ComboBox.foreground"));
     UIManager.put("ComboBox.disabledBackground", UIManager.get("TextField.inactiveBackground"));
@@ -149,7 +162,8 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
       int allColumnPreferredWidth,
       Hashtable getters,
       boolean required,
-      ArrayList itemListeners
+      ArrayList itemListeners,
+      String foreignKeyAttributeName
   ) {
     this.itemsMapper = itemsMapper;
     this.itemsDataLocator = itemsDataLocator;
@@ -160,6 +174,7 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
     this.allColumnPreferredWidth = allColumnPreferredWidth;
     this.getters = getters;
     this.required = required;
+    this.foreignKeyAttributeName = foreignKeyAttributeName;
 
     if (itemsDataLocator!=null && itemsVO!=null) {
       Response res = itemsDataLocator.loadData(itemsVO.getClass());
@@ -224,7 +239,7 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
       return null;
 
     try {
-      return ( (Method) getters.get(attributeName)).invoke(
+      return ( (Method) getters.get(getFKAttributeName())).invoke(
         model.getElementAt(selIndex),
         new Object[0]
       );
@@ -241,12 +256,12 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
   private final Component _prepareEditor(Object value) {
     if (value==null)
       field.setSelectedIndex(-1);
-    if (attributeName!=null) {
+    if (getFKAttributeName()!=null) {
       Object obj = null;
       try {
         field.setSelectedIndex(-1);
         for (int i = 0; i < model.getSize(); i++) {
-          obj = ( (Method) getters.get(attributeName)).invoke(
+          obj = ( (Method) getters.get(getFKAttributeName())).invoke(
               model.getElementAt(i),
               new Object[0]
           );
@@ -357,6 +372,17 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
     if (row!=-1)
       ((Grid)table).getVOListTableModel().setValueAt(value,row,((Grid)table).getColumnIndex(attributeName));
   }
+
+
+  public final void finalize() {
+    colProperties = null;
+    table = null;
+    field = null;
+    itemsMapper = null;
+    itemsDataLocator = null;
+    rend = null;
+  }
+
 
 }
 

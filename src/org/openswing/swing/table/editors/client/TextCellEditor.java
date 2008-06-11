@@ -194,6 +194,14 @@ public class TextCellEditor extends AbstractCellEditor implements TableCellEdito
     }
   }
 
+
+  public final void finalize() {
+    passwdField = null;
+    table = null;
+    field = null;
+  }
+
+
 }
 
 

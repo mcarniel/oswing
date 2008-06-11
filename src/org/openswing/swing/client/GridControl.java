@@ -259,6 +259,8 @@ public class GridControl extends JPanel {
   /** define the controller that manages row expansion */
   private ExpandableRowController expandableRowController = null;
 
+  /** parent frame: JFrame or JInternalFrame */
+  private JInternalFrame parentFrame = null;
 
 
   /**
@@ -286,7 +288,6 @@ public class GridControl extends JPanel {
     flowLayout1.setHgap(0);
     flowLayout1.setVgap(0);
     itsColumnContainer.setLayout(flowLayout1);
-    java.lang.String stringa = "";
     try {
       labelPanel.setPreferredSize(new Dimension(this.getPreferredSize().width,22));
     }
@@ -552,7 +553,6 @@ public class GridControl extends JPanel {
             Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profiles: "+ex.getMessage(),ex);
           }
 
-
           // add a "dispose grid" listener...
           this.addAncestorListener(new AncestorListener() {
 
@@ -657,6 +657,16 @@ public class GridControl extends JPanel {
         topTable.getGrid().addFocusListener(new FocusListener() {
 
           public void focusGained(FocusEvent e) {
+
+            if (parentFrame==null) {
+              parentFrame = ClientUtils.getParentInternalFrame(GridControl.this);
+            }
+            if (parentFrame!=null && !parentFrame.isSelected()) {
+              if (parentFrame.getDesktopPane().getSelectedFrame()!=null)
+                parentFrame.getDesktopPane().getSelectedFrame().requestFocus();
+              return;
+            }
+
             tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
             Form.setCurrentFocusedForm(null);
           }
@@ -670,6 +680,16 @@ public class GridControl extends JPanel {
           topTable.getLockedGrid().addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
+
+              if (parentFrame==null) {
+                parentFrame = ClientUtils.getParentInternalFrame(GridControl.this);
+              }
+              if (parentFrame!=null && !parentFrame.isSelected()) {
+                if (parentFrame.getDesktopPane().getSelectedFrame()!=null)
+                  parentFrame.getDesktopPane().getSelectedFrame().requestFocus();
+                return;
+              }
+
               tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
               Form.setCurrentFocusedForm(null);
             }
@@ -721,6 +741,16 @@ public class GridControl extends JPanel {
         bottomTable.getGrid().addFocusListener(new FocusListener() {
 
           public void focusGained(FocusEvent e) {
+
+            if (parentFrame==null) {
+              parentFrame = ClientUtils.getParentInternalFrame(GridControl.this);
+            }
+            if (parentFrame!=null && !parentFrame.isSelected()) {
+              if (parentFrame.getDesktopPane().getSelectedFrame()!=null)
+                parentFrame.getDesktopPane().getSelectedFrame().requestFocus();
+              return;
+            }
+
             tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
             Form.setCurrentFocusedForm(null);
           }
@@ -734,6 +764,16 @@ public class GridControl extends JPanel {
           bottomTable.getLockedGrid().addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
+
+              if (parentFrame==null) {
+                parentFrame = ClientUtils.getParentInternalFrame(GridControl.this);
+              }
+              if (parentFrame!=null && !parentFrame.isSelected()) {
+                if (parentFrame.getDesktopPane().getSelectedFrame()!=null)
+                  parentFrame.getDesktopPane().getSelectedFrame().requestFocus();
+                return;
+              }
+
               tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
               Form.setCurrentFocusedForm(null);
             }
@@ -779,6 +819,16 @@ public class GridControl extends JPanel {
       table.getGrid().addFocusListener(new FocusListener() {
 
         public void focusGained(FocusEvent e) {
+
+          if (parentFrame==null) {
+            parentFrame = ClientUtils.getParentInternalFrame(GridControl.this);
+          }
+          if (parentFrame!=null && !parentFrame.isSelected()) {
+            if (parentFrame.getDesktopPane().getSelectedFrame()!=null)
+              parentFrame.getDesktopPane().getSelectedFrame().requestFocus();
+            return;
+          }
+
           tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
           Form.setCurrentFocusedForm(null);
         }
@@ -805,6 +855,16 @@ public class GridControl extends JPanel {
         table.getLockedGrid().addFocusListener(new FocusListener() {
 
           public void focusGained(FocusEvent e) {
+
+            if (parentFrame==null) {
+              parentFrame = ClientUtils.getParentInternalFrame(GridControl.this);
+            }
+            if (parentFrame!=null && !parentFrame.isSelected()) {
+              if (parentFrame.getDesktopPane().getSelectedFrame()!=null)
+                parentFrame.getDesktopPane().getSelectedFrame().requestFocus();
+              return;
+            }
+
             tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
             Form.setCurrentFocusedForm(null);
           }
@@ -2515,6 +2575,78 @@ public class GridControl extends JPanel {
   }
 
 
+  public final void finalize() {
+    try {
+      if (table==null)
+        return;
+
+      table.finalize();
+      table = null;
+
+      if (topTable!=null)
+        topTable.finalize();
+      topTable = null;
+
+      if (bottomTable!=null)
+        bottomTable.finalize();
+      bottomTable = null;
+
+      FocusListener[] fl = getFocusListeners();
+      for (int i = 0; i < fl.length; i++) {
+        this.removeFocusListener(fl[i]);
+      }
+      MouseListener[] ml = getMouseListeners();
+      for (int i = 0; i < ml.length; i++) {
+        this.removeMouseListener(ml[i]);
+      }
+      KeyListener[] ll = getKeyListeners();
+      for (int i = 0; i < ll.length; i++) {
+        this.removeKeyListener(ll[i]);
+      }
+
+      controller = null;
+      gridDataLocator = null;
+      if (this.getParent()!=null)
+        this.getParent().remove(this);
+
+      if (itsColumnContainer!=null)
+        ClientUtils.disposeComponents(itsColumnContainer.getComponents());
+      ClientUtils.disposeComponents(getComponents());
+
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+
+    insertButton = null;
+    exportButton = null;
+    importButton = null;
+    filterButton = null;
+    copyButton = null;
+    editButton = null;
+    reloadButton = null;
+    deleteButton = null;
+    saveButton = null;
+    navBar = null;
+    buttonsNotEnabled = null;
+    genericButtons = null;
+    components = null;
+    filterPanel = null;
+    topGridController = null;
+    bottomGridController = null;
+    topGridDataLocator = null;
+    bottomGridDataLocator = null;
+    tmpPanel = null;
+    mergedCells = null;
+    loadDataCompletedListeners = null;
+    popupCommands = null;
+    profile = null;
+    defaultProfile = null;
+    profileMenu = null;
+    profilesMenu = null;
+    expandableRowController = null;
+    itsColumnContainer = null;
+  }
 
 
 

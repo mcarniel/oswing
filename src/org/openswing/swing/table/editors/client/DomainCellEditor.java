@@ -176,6 +176,12 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
   }
 
 
+  public final void finalize() {
+    table = null;
+    field = null;
+  }
+
+
 }
 
 

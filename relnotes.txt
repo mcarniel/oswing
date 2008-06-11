@@ -1,5 +1,16 @@
 
 
+Release Notes 1.6.4
+-------------------
+
+Final release 1.6.4 available
+Improved grid control by providing left/right/top/bottom properties in grid columns, in order to define cell margins. 
+As default value, text columns have 2 pixels as left margin, numeric columns have 2 pixels as right margin.
+Improved ComboBoxColumn by providing "foreignKeyAttributeName" as for ComboBoxControl.
+Fixed memory leak problems in OpenSwing components and in calendar library.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
 
 Release Notes 1.6.3
 -------------------

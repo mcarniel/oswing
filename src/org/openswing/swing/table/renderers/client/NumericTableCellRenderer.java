@@ -77,6 +77,18 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
   /** flag used to define whether zero digits (after decimal point) must be hided/showed */
   protected boolean hideZeroDigits = false;
 
+  /** component left margin, with respect to component container */
+  protected int leftMargin = 0;
+
+  /** component right margin, with respect to component container */
+  protected int rightMargin = 0;
+
+  /** component top margin, with respect to component container */
+  protected int topMargin = 0;
+
+  /** component bottom margin, with respect to component container */
+  protected int bottomMargin = 0;
+
 
   /**
    * Constructor.
@@ -87,13 +99,19 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
    * @param attributeName attribute name associated to this column
    */
-   public NumericTableCellRenderer(int decimals,boolean grouping,boolean hideZeroDigits,GridController gridController,IntegerColumnSettings dynamicSettings,int alignement,String attributeName) {
+   public NumericTableCellRenderer(int decimals,boolean grouping,boolean hideZeroDigits,GridController gridController,
+                                   IntegerColumnSettings dynamicSettings,int alignement,
+                                   int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
     this.decimals = decimals;
     this.grouping = false;
     this.gridController = gridController;
     this.dynamicSettings = dynamicSettings;
     this.attributeName = attributeName;
     this.hideZeroDigits = hideZeroDigits;
+    this.leftMargin = leftMargin;
+    this.rightMargin = rightMargin;
+    this.topMargin = topMargin;
+    this.bottomMargin = bottomMargin;
     setHorizontalAlignment(alignement);
     setFormat(decimals,grouping);
   }
@@ -232,7 +250,9 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
 
     if (table instanceof Grid)
       c.setToolTipText(gridController.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
-
+    c.setBorder(
+      BorderFactory.createCompoundBorder(c.getBorder(),BorderFactory.createEmptyBorder(topMargin,leftMargin,bottomMargin,rightMargin))
+    );
     return c;
   }
 
@@ -284,6 +304,13 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
 
     s = format.format(val);
     setText(s);
+   }
+
+
+   public final void finalize() {
+     gridController = null;
+     grid = null;
+     dynamicSettings = null;
    }
 
 

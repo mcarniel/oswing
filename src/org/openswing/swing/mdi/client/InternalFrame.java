@@ -171,6 +171,8 @@ public class InternalFrame extends JInternalFrame {
       e.printStackTrace();
     }
     try {
+      ClientUtils.disposeComponents(getContentPane().getComponents());
+
       setVisible(false);
       dispose();
       MDIFrame.getWindowMenu().removeWindow(this);

@@ -547,4 +547,15 @@ public class VOListAdapter {
     return grids;
   }
 
+
+  public final void finalize() {
+    colProperties = null;
+    voSetterMethods = null;
+    voGetterMethods = null;
+    tableContainer = null;
+    grids = null;
+    indexes = null;
+    reverseIndexes = null;
+  }
+
 }

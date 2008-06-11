@@ -27,6 +27,7 @@ import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import javax.swing.text.JTextComponent;
 import org.openswing.swing.table.editors.client.TextCellEditor;
+import java.lang.reflect.*;
 
 
 /**
@@ -191,6 +192,9 @@ public class Grid extends JTable
 
   /** flag used by getParentGrid method to set "parentGrid" property */
   private boolean parentGridAlreadyCalculated = false;
+
+//  /** parent frame: JFrame or JInternalFrame */
+//  private Container parentFrame = null;
 
 
   /**
@@ -493,11 +497,18 @@ public class Grid extends JTable
                        getSelectedRow()!=-1 &&
                        Grid.this.model.getMode()==Consts.READONLY)
               // call grid controller method on another thread
-              new Thread() {
+
+              SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                   Grid.this.gridController.doubleClick(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
                 }
-              }.start();
+              });
+
+//              new Thread() {
+//                public void run() {
+//                  Grid.this.gridController.doubleClick(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
+//                }
+//              }.start();
             else if (e.getClickCount()==1 &&
                      SwingUtilities.isLeftMouseButton(e) &&
                      Grid.this.gridController!=null &&
@@ -541,11 +552,19 @@ public class Grid extends JTable
                 getSelectedRow()!=-1 &&
                 Grid.this.model.getMode()==Consts.READONLY)
               // call grid controller method on another thread
-              new Thread() {
+
+
+              SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                   Grid.this.gridController.enterButton(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
                 }
-              }.start();
+              });
+
+//              new Thread() {
+//                public void run() {
+//                  Grid.this.gridController.enterButton(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
+//                }
+//              }.start();
 
             // ENTER button pressed in the selected row: consule event (otherwise the grid will select the next row)...
             if (e.getKeyCode()==e.VK_ENTER)
@@ -3810,10 +3829,73 @@ public class Grid extends JTable
 
 
   public final void requestFocus() {
+//    if (parentFrame==null) {
+//      parentFrame = this;
+//      while(parentFrame!=null &&
+//            parentFrame instanceof JInternalFrame)
+//        parentFrame = parentFrame.getParent();
+//    }
+//
+//    if (parentFrame!=null &&
+//        parentFrame instanceof JInternalFrame &&
+//        !((JInternalFrame)parentFrame).isSelected())
+//      return;
+
     if (grids.getCurrentNestedComponent()!=null)
       grids.getCurrentNestedComponent().requestFocus();
     super.requestFocus();
   }
+
+
+  public void finalize() {
+    try {
+      FocusListener[] fl = getFocusListeners();
+      for (int i = 0; i < fl.length; i++) {
+        this.removeFocusListener(fl[i]);
+      }
+      MouseListener[] ml = getMouseListeners();
+      for (int i = 0; i < ml.length; i++) {
+        this.removeMouseListener(ml[i]);
+      }
+      KeyListener[] ll = getKeyListeners();
+      for (int i = 0; i < ll.length; i++) {
+        this.removeKeyListener(ll[i]);
+      }
+
+      for(int i=0;i<this.getColumnModel().getColumnCount();i++) {
+        try {
+          this.getColumnModel().getColumn(i).getCellEditor().getClass().getMethod("finalize",new Class[0]).invoke(this.getColumnModel().getColumn(i).getCellEditor(), new Object[0]);
+        }
+        catch (NoSuchMethodException ex1) {
+        }
+        try {
+          this.getColumnModel().getColumn(i).getCellRenderer().getClass().getMethod("finalize",new Class[0]).invoke(this.getColumnModel().getColumn(i).getCellRenderer(), new Object[0]);
+        }
+        catch (NoSuchMethodException ex1) {
+        }
+      }
+
+      if (modelAdapter!=null)
+        modelAdapter.finalize();
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+
+
+    gridController = null;
+    modelAdapter = null;
+    model = null;
+    colProps = null;
+    tableColumnModel = null;
+    grids = null;
+    dragSource = null;
+    searchWindowManager = null;
+    expandableRowController = null;
+    expandableRenderer = null;
+    parentGrid = null;
+  }
+
 
 
   /**

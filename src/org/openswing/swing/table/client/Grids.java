@@ -2885,9 +2885,64 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   }
 
 
-  public void finalize() {
+  public final void finalize() {
     if (filterDialog!=null)
       filterDialog.dispose();
+
+    try {
+      if (grid==null)
+        return;
+      grid.finalize();
+      if (lockedGrid!=null)
+        lockedGrid.finalize();
+
+      FocusListener[] fl = getFocusListeners();
+      for (int i = 0; i < fl.length; i++) {
+        this.removeFocusListener(fl[i]);
+      }
+      MouseListener[] ml = getMouseListeners();
+      for (int i = 0; i < ml.length; i++) {
+        this.removeMouseListener(ml[i]);
+      }
+      KeyListener[] ll = getKeyListeners();
+      for (int i = 0; i < ll.length; i++) {
+        this.removeKeyListener(ll[i]);
+      }
+
+      lockedGrid = null;
+      grid = null;
+      model = null;
+      gridController = null;
+      insertButton = null;
+      exportButton = null;
+      importButton = null;
+      copyButton = null;
+      filterButton = null;
+      editButton = null;
+      reloadButton = null;
+      deleteButton = null;
+      saveButton = null;
+      modelAdapter = null;
+      navBar = null;
+      gridDataLocator = null;
+      gridControl = null;
+      filterPanel = null;
+      popup = null;
+      removefilterItem = null;
+      popupCommands = null;
+      genericButtons = null;
+      statusPanel = null;
+      colProps = null;
+      buttonsToDisable = null;
+      filterDialog = null;
+      loadDataCompletedListeners = null;
+      expandedRows = null;
+      cache = null;
+      currentNestedComponent = null;
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
   }
 
 
@@ -3060,6 +3115,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public final void setCurrentNestedComponent(Component currentNestedComponent) {
     this.currentNestedComponent = currentNestedComponent;
   }
+
+
 
 
   /**

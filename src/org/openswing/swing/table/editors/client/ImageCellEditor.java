@@ -161,6 +161,11 @@ public class ImageCellEditor extends AbstractCellEditor implements TableCellEdit
   }
 
 
+  public final void finalize() {
+    table = null;
+  }
+
+
 }
 
 

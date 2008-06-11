@@ -197,6 +197,11 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
   }
 
 
+  public final void finalize() {
+    dynamicSettings = null;
+    table = null;
+    field = null;
+  }
 
 
 

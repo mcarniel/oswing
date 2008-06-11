@@ -42,6 +42,10 @@ public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _leftMargin = new PropertyDescriptor("leftMargin", beanClass, "getLeftMargin", "setLeftMargin");
+      PropertyDescriptor _rightMargin = new PropertyDescriptor("rightMargin", beanClass, "getRightMargin", "setRightMargin");
+      PropertyDescriptor _topMargin = new PropertyDescriptor("topMargin", beanClass, "getTopMargin", "setTopMargin");
+      PropertyDescriptor _bottomMargin = new PropertyDescriptor("bottomMargin", beanClass, "getBottomMargin", "setBottomMargin");
       PropertyDescriptor _allowOnlyNumbers = new PropertyDescriptor("allowOnlyNumbers", beanClass, "isAllowOnlyNumbers", "setAllowOnlyNumbers");
       PropertyDescriptor _autoCompletitionWaitTime = new PropertyDescriptor("autoCompletitionWaitTime", beanClass, "getAutoCompletitionWaitTime", "setAutoCompletitionWaitTime");
       PropertyDescriptor _codePadding = new PropertyDescriptor("codePadding", beanClass, "isCodePadding", "setCodePadding");
@@ -58,6 +62,7 @@ public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
 	      _allowOnlyNumbers,
               _autoCompletitionWaitTime,
+              _bottomMargin,
 	      _codePadding,
               _columnName,
               _controllerClassName,
@@ -65,9 +70,13 @@ public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
 	      _enableCodBox,
 	      _hideButton,
               _hideCodeBox,
+              _leftMargin,
 	      _lookupController,
 	      _maxCharacters,
-	      _zeroLengthAsNull};
+              _rightMargin,
+              _topMargin,
+	      _zeroLengthAsNull
+      };
       return pds;
     }
     catch(IntrospectionException ex) {

@@ -45,10 +45,19 @@ public class MultipleTypeColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _leftMargin = new PropertyDescriptor("leftMargin", beanClass, "getLeftMargin", "setLeftMargin");
+      PropertyDescriptor _rightMargin = new PropertyDescriptor("rightMargin", beanClass, "getRightMargin", "setRightMargin");
+      PropertyDescriptor _topMargin = new PropertyDescriptor("topMargin", beanClass, "getTopMargin", "setTopMargin");
+      PropertyDescriptor _bottomMargin = new PropertyDescriptor("bottomMargin", beanClass, "getBottomMargin", "setBottomMargin");
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(AttributeNameEditor.class);
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
-        _columnName};
+          _bottomMargin,
+          _columnName,
+          _leftMargin,
+          _rightMargin,
+          _topMargin,
+      };
       return pds;
     }
     catch(IntrospectionException ex) {

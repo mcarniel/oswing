@@ -42,16 +42,25 @@ public class IntegerColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _leftMargin = new PropertyDescriptor("leftMargin", beanClass, "getLeftMargin", "setLeftMargin");
+      PropertyDescriptor _rightMargin = new PropertyDescriptor("rightMargin", beanClass, "getRightMargin", "setRightMargin");
+      PropertyDescriptor _topMargin = new PropertyDescriptor("topMargin", beanClass, "getTopMargin", "setTopMargin");
+      PropertyDescriptor _bottomMargin = new PropertyDescriptor("bottomMargin", beanClass, "getBottomMargin", "setBottomMargin");
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(org.openswing.swing.client.NumericAttributeNameEditor.class);
       PropertyDescriptor _grouping = new PropertyDescriptor("grouping", beanClass, "isGrouping", "setGrouping");
       PropertyDescriptor _maxValue = new PropertyDescriptor("maxValue", beanClass, "getMaxValue", "setMaxValue");
       PropertyDescriptor _minValue = new PropertyDescriptor("minValue", beanClass, "getMinValue", "setMinValue");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
-              _columnName,
-              _grouping,
-	      _maxValue,
-	      _minValue};
+          _bottomMargin,
+          _columnName,
+          _grouping,
+          _leftMargin,
+          _maxValue,
+	   _minValue,
+           _rightMargin,
+           _topMargin
+      };
       return pds;
     }
     catch(IntrospectionException ex) {

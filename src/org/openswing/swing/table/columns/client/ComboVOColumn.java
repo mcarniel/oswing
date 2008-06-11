@@ -76,6 +76,21 @@ public class ComboVOColumn extends Column {
   /** collection of pairs <v.o. attribute name,Method object, related to the attribute getter method> */
   private Hashtable getters = new Hashtable();
 
+  /** component left margin, with respect to component container; defaut value: 2 */
+  private int leftMargin = 2;
+
+  /** component right margin, with respect to component container; defaut value: 0 */
+  private int rightMargin = 0;
+
+  /** component top margin, with respect to component container; defaut value: 0 */
+  private int topMargin = 0;
+
+  /** component bottom margin, with respect to component container; defaut value: 0 */
+  private int bottomMargin = 0;
+
+  /** attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container; as default value this attribute is null; null means that "attributeName" property will be used to identify the v.o. in the combo-box, i.e. the attribute names in the combo-box v.o. and in the container v.o. must have the same name */
+  private String foreignKeyAttributeName;
+
 
   public ComboVOColumn() { }
 
@@ -388,6 +403,93 @@ public class ComboVOColumn extends Column {
 
 
   /**
+   * @return component bottom margin, with respect to component container
+   */
+  public final int getBottomMargin() {
+    return bottomMargin;
+  }
+
+
+  /**
+   * @return component left margin, with respect to component container
+   */
+  public final int getLeftMargin() {
+    return leftMargin;
+  }
+
+
+  /**
+   * @return component right margin, with respect to component container
+   */
+  public final int getRightMargin() {
+    return rightMargin;
+  }
+
+
+  /**
+   * @return component top margin, with respect to component container
+   */
+  public final int getTopMargin() {
+    return topMargin;
+  }
+
+
+  /**
+   * Set component top margin, with respect to component container.
+   * @param topMargin component top margin
+   */
+  public final void setTopMargin(int topMargin) {
+    this.topMargin = topMargin;
+  }
+
+
+  /**
+   * Set component right margin, with respect to component container.
+   * @param rightMargin component right margin
+   */
+  public final void setRightMargin(int rightMargin) {
+    this.rightMargin = rightMargin;
+  }
+
+
+  /**
+   * Set component left margin, with respect to component container.
+   * @param leftMargin component left margin
+   */
+  public final void setLeftMargin(int leftMargin) {
+    this.leftMargin = leftMargin;
+  }
+
+
+  /**
+   * Set component bottom margin, with respect to component container.
+   * @param bottomMargin component bottom margin
+   */
+  public final void setBottomMargin(int bottomMargin) {
+    this.bottomMargin = bottomMargin;
+  }
+
+
+  /**
+   * @return attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container
+   */
+  public final String getForeignKeyAttributeName() {
+    return foreignKeyAttributeName;
+  }
+
+
+  /**
+   * Set the attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container.
+   * As default value this attribute is null.
+   * Null means that "attributeName" property will be used to identify the v.o. in the combo-box, i.e. the attribute names in the combo-box v.o. and in the container v.o. must have the same name.
+   * @param foreignKeyAttributeName String
+   */
+  public final void setForeignKeyAttributeName(String foreignKeyAttributeName) {
+    this.foreignKeyAttributeName = foreignKeyAttributeName;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -399,7 +501,12 @@ public class ComboVOColumn extends Column {
         isAllColumnVisible(),
         getAllColumnPreferredWidth(),
         getGetters(),
-        tableContainer
+        tableContainer,
+        leftMargin,
+        rightMargin,
+        topMargin,
+        bottomMargin,
+        getForeignKeyAttributeName()
     );
   }
 
@@ -418,7 +525,8 @@ public class ComboVOColumn extends Column {
         getAllColumnPreferredWidth(),
         getGetters(),
         isColumnRequired(),
-        getItemListeners()
+        getItemListeners(),
+        getForeignKeyAttributeName()
     );
   }
 

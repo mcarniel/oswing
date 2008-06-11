@@ -635,6 +635,12 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
   }
 
 
+  public final void finalize() {
+    table = null;
+    lookupController = null;
+  }
+
+
 }
 
 

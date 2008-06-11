@@ -142,6 +142,12 @@ public class ImageTableCellRenderer extends DefaultTableCellRenderer {
     return rend;
   }
 
+
+  public final void finalize() {
+    gridController = null;
+    rend = null;
+  }
+
 }
 
 

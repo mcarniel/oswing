@@ -12,6 +12,8 @@ import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import com.toedter.calendar.*;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.AncestorEvent;
 
 
 /**
@@ -93,10 +95,50 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
           ClientSettings.getInstance().getResources().isShowCenturyInDateFormat(),
           Resources.HH_MM
           );
+
+
+//      addAncestorListener(new AncestorListener() {
+//
+//        public void ancestorAdded(AncestorEvent event) {
+//        }
+//
+//        public void ancestorMoved(AncestorEvent event) {
+//        }
+//
+//        public void ancestorRemoved(AncestorEvent event) {
+//          ClientUtils.disposeComponents(DateControl.this.getComponents());
+//
+//          date = null;
+//          dateListeners = null;
+//          calendar = null;
+//        }
+//
+//      });
+
     }
     catch (Throwable ex) {
       ex.printStackTrace();
     }
+  }
+
+
+  public final void finalize() {
+    try {
+      ClientUtils.disposeComponents(DateControl.this.getComponents());
+
+      if (calendar!=null) {
+        calendar.getDateEditor().removePropertyChangeListener(calendar);
+        calendar.getJCalendar().getDayChooser().removePropertyChangeListener(calendar);
+        calendar.cleanup();
+      }
+      date = null;
+      dateListeners = null;
+      calendar = null;
+    }
+    catch (Exception ex1) {
+      ex1.printStackTrace();
+    }
+
   }
 
 

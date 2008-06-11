@@ -55,6 +55,21 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
   /** attribute name associated to this column */
   private String attributeName = null;
 
+  /** component container */
+  private JPanel container = new JPanel();
+
+  /** component left margin, with respect to component container */
+  private int leftMargin = 0;
+
+  /** component right margin, with respect to component container */
+  private int rightMargin = 0;
+
+  /** component top margin, with respect to component container */
+  private int topMargin = 0;
+
+  /** component bottom margin, with respect to component container */
+  private int bottomMargin = 0;
+
 
   /**
    * Constructor.
@@ -62,9 +77,14 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
    * @param gridController grid controller
    * @param attributeName attribute name associated to this column
    */
-  public DomainTableCellRenderer(Domain domain,GridController gridController,int alignement,String attributeName) {
+  public DomainTableCellRenderer(Domain domain,GridController gridController,int alignement,
+                                 int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
     this.domain = domain;
     this.gridController = gridController;
+    this.leftMargin = leftMargin;
+    this.rightMargin = rightMargin;
+    this.topMargin = topMargin;
+    this.bottomMargin = bottomMargin;
     this.attributeName = attributeName;
     rend.setOpaque(true);
     rend.setHorizontalAlignment(alignement);
@@ -157,8 +177,18 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
     if (table instanceof Grid)
       rend.setToolTipText(gridController.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
 
+    rend.setBorder(
+      BorderFactory.createCompoundBorder(rend.getBorder(),BorderFactory.createEmptyBorder(topMargin,leftMargin,bottomMargin,rightMargin))
+    );
     return rend;
   }
+
+
+  public final void finalize() {
+    gridController = null;
+    rend = null;
+  }
+
 
 }
 

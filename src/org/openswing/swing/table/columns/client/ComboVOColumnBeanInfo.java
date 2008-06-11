@@ -42,12 +42,22 @@ public class ComboVOColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _foreignKeyAttributeName = new PropertyDescriptor("foreignKeyAttributeName", beanClass, "getForeignKeyAttributeName", "setForeignKeyAttributeName");
+      PropertyDescriptor _leftMargin = new PropertyDescriptor("leftMargin", beanClass, "getLeftMargin", "setLeftMargin");
+      PropertyDescriptor _rightMargin = new PropertyDescriptor("rightMargin", beanClass, "getRightMargin", "setRightMargin");
+      PropertyDescriptor _topMargin = new PropertyDescriptor("topMargin", beanClass, "getTopMargin", "setTopMargin");
+      PropertyDescriptor _bottomMargin = new PropertyDescriptor("bottomMargin", beanClass, "getBottomMargin", "setBottomMargin");
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
       PropertyDescriptor _nullAsDefaultValue = new PropertyDescriptor("nullAsDefaultValue", beanClass, "isNullAsDefaultValue", "setNullAsDefaultValue");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
-              _columnName,
-              _nullAsDefaultValue
+          _bottomMargin,
+          _columnName,
+          _foreignKeyAttributeName,
+          _leftMargin,
+          _nullAsDefaultValue,
+          _rightMargin,
+          _topMargin
       };
       return pds;
     }

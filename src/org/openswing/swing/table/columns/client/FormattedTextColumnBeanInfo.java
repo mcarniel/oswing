@@ -42,17 +42,26 @@ public class FormattedTextColumnBeanInfo extends SimpleBeanInfo {
   public FormattedTextColumnBeanInfo() {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
-    PropertyDescriptor _columnName = null;
+    PropertyDescriptor[] pds = new PropertyDescriptor[0];
     try {
+      PropertyDescriptor _columnName = null;
+      PropertyDescriptor _leftMargin = new PropertyDescriptor("leftMargin", beanClass, "getLeftMargin", "setLeftMargin");
+      PropertyDescriptor _rightMargin = new PropertyDescriptor("rightMargin", beanClass, "getRightMargin", "setRightMargin");
+      PropertyDescriptor _topMargin = new PropertyDescriptor("topMargin", beanClass, "getTopMargin", "setTopMargin");
+      PropertyDescriptor _bottomMargin = new PropertyDescriptor("bottomMargin", beanClass, "getBottomMargin", "setBottomMargin");
       _columnName = new PropertyDescriptor("columnName", beanClass,
                                            "getColumnName", "setColumnName");
-    }
-    catch (IntrospectionException ex) {
-    }
-    _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
-    PropertyDescriptor[] pds = new PropertyDescriptor[] {
-        _columnName
+      _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
+      pds = new PropertyDescriptor[] {
+        _bottomMargin,
+        _columnName,
+        _leftMargin,
+        _rightMargin,
+        _topMargin
     };
+  }
+  catch (IntrospectionException ex) {
+  }
     return pds;
   }
   public java.awt.Image getIcon(int iconKind) {

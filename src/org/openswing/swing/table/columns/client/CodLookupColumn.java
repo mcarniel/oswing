@@ -80,6 +80,18 @@ public class CodLookupColumn extends Column {
   /** wait time (expressed in ms) before showing code auto completition feature for lookup controls; default value: ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME */
   private long autoCompletitionWaitTime = ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME;
 
+  /** component left margin, with respect to component container; defaut value: 2 */
+  private int leftMargin = 2;
+
+  /** component right margin, with respect to component container; defaut value: 0 */
+  private int rightMargin = 0;
+
+  /** component top margin, with respect to component container; defaut value: 0 */
+  private int topMargin = 0;
+
+  /** component bottom margin, with respect to component container; defaut value: 0 */
+  private int bottomMargin = 0;
+
 
   public CodLookupColumn() { }
 
@@ -359,6 +371,74 @@ public class CodLookupColumn extends Column {
 
 
   /**
+   * @return component bottom margin, with respect to component container
+   */
+  public final int getBottomMargin() {
+    return bottomMargin;
+  }
+
+
+  /**
+   * @return component left margin, with respect to component container
+   */
+  public final int getLeftMargin() {
+    return leftMargin;
+  }
+
+
+  /**
+   * @return component right margin, with respect to component container
+   */
+  public final int getRightMargin() {
+    return rightMargin;
+  }
+
+
+  /**
+   * @return component top margin, with respect to component container
+   */
+  public final int getTopMargin() {
+    return topMargin;
+  }
+
+
+  /**
+   * Set component top margin, with respect to component container.
+   * @param topMargin component top margin
+   */
+  public final void setTopMargin(int topMargin) {
+    this.topMargin = topMargin;
+  }
+
+
+  /**
+   * Set component right margin, with respect to component container.
+   * @param rightMargin component right margin
+   */
+  public final void setRightMargin(int rightMargin) {
+    this.rightMargin = rightMargin;
+  }
+
+
+  /**
+   * Set component left margin, with respect to component container.
+   * @param leftMargin component left margin
+   */
+  public final void setLeftMargin(int leftMargin) {
+    this.leftMargin = leftMargin;
+  }
+
+
+  /**
+   * Set component bottom margin, with respect to component container.
+   * @param bottomMargin component bottom margin
+   */
+  public final void setBottomMargin(int bottomMargin) {
+    this.bottomMargin = bottomMargin;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -366,6 +446,10 @@ public class CodLookupColumn extends Column {
         tableContainer,
         isHideCodeBox(),
         getTextAlignment(),
+        getLeftMargin(),
+        getRightMargin(),
+        getTopMargin(),
+        getBottomMargin(),
         getColumnName()
     );
   }
@@ -393,6 +477,7 @@ public class CodLookupColumn extends Column {
     );
 
   }
+
 
 
 

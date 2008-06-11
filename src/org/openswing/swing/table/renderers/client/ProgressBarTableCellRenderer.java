@@ -173,6 +173,9 @@ public class ProgressBarTableCellRenderer extends DefaultTableCellRenderer {
   }
 
 
+  public final void finalize() {
+    gridContainer = null;
+  }
 
 
 }

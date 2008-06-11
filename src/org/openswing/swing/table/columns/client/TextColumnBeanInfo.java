@@ -44,6 +44,10 @@ public class TextColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _leftMargin = new PropertyDescriptor("leftMargin", beanClass, "getLeftMargin", "setLeftMargin");
+      PropertyDescriptor _rightMargin = new PropertyDescriptor("rightMargin", beanClass, "getRightMargin", "setRightMargin");
+      PropertyDescriptor _topMargin = new PropertyDescriptor("topMargin", beanClass, "getTopMargin", "setTopMargin");
+      PropertyDescriptor _bottomMargin = new PropertyDescriptor("bottomMargin", beanClass, "getBottomMargin", "setBottomMargin");
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(StringAttributeNameEditor.class);
       PropertyDescriptor _encryptText = new PropertyDescriptor("encryptText", beanClass, "isEncryptText", "setEncryptText");
@@ -52,10 +56,14 @@ public class TextColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _trimText = new PropertyDescriptor("trimText", beanClass, "isTrimText", "setTrimText");
       PropertyDescriptor _upperCase = new PropertyDescriptor("upperCase", beanClass, "isUpperCase", "setUpperCase");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _bottomMargin,
         _columnName,
         _encryptText,
         _maxCharacters,
+        _leftMargin,
+        _rightMargin,
         _rpadding,
+        _topMargin,
         _trimText,
         _upperCase};
       return pds;

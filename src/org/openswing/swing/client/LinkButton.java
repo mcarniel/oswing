@@ -190,6 +190,14 @@ public class LinkButton extends JLabel {
 
 
   /**
+   * @param ActionListeners added to the link button
+   */
+  public final ActionListener[] getActionListeners() {
+    return (ActionListener[])listeners.toArray(new ActionListener[listeners.size()]);
+  }
+
+
+  /**
    * Add an ActionListener to the link button.
    * @param listener ActionListener to add to the link button
    */

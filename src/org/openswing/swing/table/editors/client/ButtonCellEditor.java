@@ -137,6 +137,15 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
   }
 
 
+  public final void finalize() {
+    field.removeActionListener(this);
+    table = null;
+    field = null;
+    actionListeners.clear();
+  }
+
+
+
 }
 
 

@@ -66,6 +66,10 @@ public class PercentageColumn extends DecimalColumn {
         tableContainer,
         getDynamicSettings(),
         getTextAlignment(),
+        getLeftMargin(),
+        getRightMargin(),
+        getTopMargin(),
+        getBottomMargin(),
         getColumnName()
     );
   }

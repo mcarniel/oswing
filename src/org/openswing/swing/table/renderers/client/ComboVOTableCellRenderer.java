@@ -79,6 +79,21 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
   /** attribute name associated to this column */
   private String attributeName = null;
 
+  /** component left margin, with respect to component container */
+  private int leftMargin = 0;
+
+  /** component right margin, with respect to component container */
+  private int rightMargin = 0;
+
+  /** component top margin, with respect to component container */
+  private int topMargin = 0;
+
+  /** component bottom margin, with respect to component container */
+  private int bottomMargin = 0;
+
+  /** attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container; as default value this attribute is null; null means that "attributeName" property will be used to identify the v.o. in the combo-box, i.e. the attribute names in the combo-box v.o. and in the container v.o. must have the same name */
+  private String foreignKeyAttributeName;
+
 
   /**
    * Constructor.
@@ -94,7 +109,9 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
       boolean allColumnVisible,
       int allColumnPreferredWidth,
       Hashtable getters,
-      GridController gridController
+      GridController gridController,
+      int leftMargin,int rightMargin,int topMargin,int bottomMargin,
+      String foreignKeyAttributeName
   ) {
     this.itemsDataLocator = itemsDataLocator;
     this.attributeName = attributeName;
@@ -104,6 +121,11 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
     this.allColumnPreferredWidth = allColumnPreferredWidth;
     this.getters = getters;
     this.gridController = gridController;
+    this.leftMargin = leftMargin;
+    this.rightMargin = rightMargin;
+    this.topMargin = topMargin;
+    this.bottomMargin = bottomMargin;
+    this.foreignKeyAttributeName = foreignKeyAttributeName;
     rend.setOpaque(true);
 
 
@@ -129,7 +151,7 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
     try {
       if (value!=null)
         for (i = 0; i < items.size(); i++) {
-          obj = ( (Method) getters.get(attributeName)).invoke(
+          obj = ( (Method) getters.get(getFKAttributeName())).invoke(
               items.get(i),
               new Object[0]
           );
@@ -223,8 +245,32 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
     if (table instanceof Grid)
       c.setToolTipText(gridController.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
 
+    c.setBorder(
+      BorderFactory.createCompoundBorder(c.getBorder(),BorderFactory.createEmptyBorder(topMargin,leftMargin,bottomMargin,rightMargin))
+    );
     return c;
   }
+
+
+  public final void finalize() {
+    gridController = null;
+    items = null;
+    itemsDataLocator = null;
+    colProperties = null;
+    rend = null;
+  }
+
+
+  /**
+   * @return attribute name in the combo-box v.o. that identify the combo-box item
+   */
+  private String getFKAttributeName() {
+    return
+        foreignKeyAttributeName==null || foreignKeyAttributeName.equals("") ?
+        attributeName :
+        foreignKeyAttributeName;
+  }
+
 
 }
 

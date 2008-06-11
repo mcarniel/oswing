@@ -801,6 +801,14 @@ public class LookupController {
 
 
   /**
+   * @return lookup listeners
+   */
+  public final LookupListener[] getLookupListeners() {
+    return (LookupListener[])listeners.toArray(new LookupListener[listeners.size()]);
+  }
+
+
+  /**
    * Remove a lookup listener.
    * @param listener lookup listener
    */

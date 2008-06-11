@@ -15,6 +15,11 @@ import org.openswing.swing.logger.client.*;
 import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.*;
+import org.openswing.swing.tree.client.TreePanel;
+import org.openswing.swing.tree.client.TreeGridPanel;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseListener;
+import java.awt.event.KeyListener;
 
 
 /**
@@ -87,6 +92,21 @@ public class ClientUtils extends JApplet {
       else if (parentFrame instanceof JFrame) {
         return (JFrame)parentFrame;
       }
+      parentFrame = parentFrame.getParent();
+    }
+    return null;
+  }
+
+
+  /**
+   * @param comp graphic component which is contained into a JInternalFrame
+   * @return JInternalFrame object which contains the graphic component
+   */
+  public static JInternalFrame getParentInternalFrame(JComponent comp) {
+    Container parentFrame = comp.getParent();
+    while(parentFrame!=null) {
+      if (parentFrame instanceof JInternalFrame)
+        return (JInternalFrame)parentFrame;
       parentFrame = parentFrame.getParent();
     }
     return null;
@@ -473,6 +493,86 @@ public class ClientUtils extends JApplet {
    */
   public static final void setObjectSender(ObjectSender objectSender) {
     defaultSender = objectSender;
+  }
+
+
+  /**
+   * Remove components no more used.
+   * @param components to analyze in order to remove existing bindings and avoid memory leaks
+   */
+  public static final void disposeComponents(Component[] c) {
+    for(int i=0;i<c.length;i++) {
+      if (c[i] instanceof Form) {
+        ((Form)c[i]).finalize();
+      }
+      else if (c[i] instanceof GridControl) {
+        ((GridControl)c[i]).finalize();
+      }
+      else if (c[i] instanceof InputControl) {
+        InputControl ic = (InputControl)c[i];
+        if (ic instanceof JComponent) {
+          JComponent cc = (JComponent)ic;
+          FocusListener[] fl = cc.getFocusListeners();
+          for(int j=0;j<fl.length;j++)
+            cc.removeFocusListener(fl[j]);
+          MouseListener[] ml = cc.getMouseListeners();
+          for(int j=0;j<ml.length;j++)
+            cc.removeMouseListener(ml[j]);
+          KeyListener[] ll = cc.getKeyListeners();
+          for(int j=0;j<ll.length;j++)
+            cc.removeKeyListener(ll[j]);
+        }
+        if (ic instanceof BaseInputControl) {
+          JComponent cc = ((BaseInputControl)ic).getBindingComponent();
+          if (cc!=null) {
+            FocusListener[] fl = cc.getFocusListeners();
+            for(int j=0;j<fl.length;j++)
+              cc.removeFocusListener(fl[j]);
+            MouseListener[] ml = cc.getMouseListeners();
+            for(int j=0;j<ml.length;j++)
+              cc.removeMouseListener(ml[j]);
+            KeyListener[] ll = cc.getKeyListeners();
+            for(int j=0;j<ll.length;j++)
+              cc.removeKeyListener(ll[j]);
+          }
+        }
+        if (ic instanceof  DateControl) {
+          ((DateControl)ic).finalize();
+        }
+
+      }
+      else if (c[i] instanceof TreePanel) {
+      }
+      else if (c[i] instanceof TreeGridPanel) {
+      }
+      else if (c[i] instanceof JComponent) {
+        disposeComponents(((JComponent)c[i]).getComponents());
+
+        JComponent cc = (JComponent)c[i];
+        FocusListener[] fl = cc.getFocusListeners();
+        for(int j=0;j<fl.length;j++)
+          cc.removeFocusListener(fl[j]);
+        MouseListener[] ml = cc.getMouseListeners();
+        for(int j=0;j<ml.length;j++)
+          cc.removeMouseListener(ml[j]);
+        KeyListener[] ll = cc.getKeyListeners();
+        for(int j=0;j<ll.length;j++)
+          cc.removeKeyListener(ll[j]);
+      }
+    }
+
+
+    for(int i=0;i<c.length;i++) {
+      try {
+        if (c[i].getParent() != null) {
+          c[i].getParent().removeAll();
+        }
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+
   }
 
 

@@ -69,6 +69,21 @@ public class MultipleTypeTableCellRenderer extends DefaultTableCellRenderer {
   /** used instead of a combo-box */
   private JLabel l = new JLabel();
 
+  /** component container */
+  private JPanel container = new JPanel();
+
+  /** component left margin, with respect to component container */
+  private int leftMargin = 0;
+
+  /** component right margin, with respect to component container */
+  private int rightMargin = 0;
+
+  /** component top margin, with respect to component container */
+  private int topMargin = 0;
+
+  /** component bottom margin, with respect to component container */
+  private int bottomMargin = 0;
+
 
   /**
    * Constructor.
@@ -78,10 +93,15 @@ public class MultipleTypeTableCellRenderer extends DefaultTableCellRenderer {
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
    * @param attributeName attribute name associated to this column
    */
-  public MultipleTypeTableCellRenderer(GridController gridController,TypeController typeController,int alignement,String attributeName,GridControl grid) {
+  public MultipleTypeTableCellRenderer(GridController gridController,TypeController typeController,int alignement,
+                                       int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName,GridControl grid) {
     this.gridController = gridController;
     this.typeController = typeController;
     setHorizontalAlignment(alignement);
+    this.leftMargin = leftMargin;
+    this.rightMargin = rightMargin;
+    this.topMargin = topMargin;
+    this.bottomMargin = bottomMargin;
     this.attributeName = attributeName;
     this.grid = grid;
     p.setLayout(new GridBagLayout());
@@ -241,6 +261,9 @@ public class MultipleTypeTableCellRenderer extends DefaultTableCellRenderer {
 //      if (table instanceof Grid)
 //        c.setToolTipText(gridController.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
 
+      c.setBorder(
+        BorderFactory.createCompoundBorder(c.getBorder(),BorderFactory.createEmptyBorder(topMargin,leftMargin,bottomMargin,rightMargin))
+      );
       return c;
     }
     catch (Exception ex) {
@@ -249,6 +272,13 @@ public class MultipleTypeTableCellRenderer extends DefaultTableCellRenderer {
     }
   }
 
+
+  public final void finalize() {
+    gridController = null;
+    grid = null;
+    typeController = null;
+    inputControls.clear();;
+  }
 
 
 }

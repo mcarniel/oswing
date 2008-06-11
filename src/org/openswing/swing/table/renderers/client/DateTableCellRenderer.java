@@ -221,5 +221,9 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
   }
 
 
+  public final void finalize() {
+    gridController = null;
+  }
+
 
 }

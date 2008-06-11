@@ -52,8 +52,8 @@ public class CurrencyTableCellRenderer extends NumericTableCellRenderer {
    */
   public CurrencyTableCellRenderer(int decimals, boolean grouping,boolean hideZeroDigits,
                                    String currencySymbol,GridController gridController,IntegerColumnSettings dynamicSettings,
-                                   int alignement,String attributeName) {
-    super(decimals,grouping,hideZeroDigits,gridController,dynamicSettings,alignement,attributeName);
+                                   int alignement,int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
+    super(decimals,grouping,hideZeroDigits,gridController,dynamicSettings,alignement,leftMargin,rightMargin,topMargin,bottomMargin,attributeName);
     this.currencySymbol = currencySymbol;
     setFormat(decimals,grouping);
   }

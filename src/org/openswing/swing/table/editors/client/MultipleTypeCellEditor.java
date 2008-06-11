@@ -190,6 +190,15 @@ public class MultipleTypeCellEditor extends AbstractCellEditor implements TableC
   }
 
 
+  public final void finalize() {
+    table = null;
+    gridController = null;
+    typeController = null;
+    grid = null;
+    inputControls.clear();
+  }
+
+
 }
 
 

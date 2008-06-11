@@ -133,6 +133,13 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
     return field;
   }
 
+
+  public final void finalize() {
+    table = null;
+    field = null;
+  }
+
+
 }
 
 

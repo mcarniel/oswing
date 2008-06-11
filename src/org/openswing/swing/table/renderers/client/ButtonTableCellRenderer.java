@@ -171,6 +171,12 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
     return rend;
   }
 
+
+  public final void finalize() {
+    gridController = null;
+  }
+
+
 }
 
 

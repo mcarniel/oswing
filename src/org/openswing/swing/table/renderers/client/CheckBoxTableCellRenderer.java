@@ -178,6 +178,16 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
   }
 
 
+  public final void finalize() {
+    gridContainer = null;
+  }
+
+
+
+
+
+
+
   /**
    * <p>Title: OpenSwing Framework</p>
    * <p>Description: Inner class used to draw the check-box (and its selection) inside a JLabel object (cell content).</p>

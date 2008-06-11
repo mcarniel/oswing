@@ -86,6 +86,10 @@ public class CurrencyColumn extends DecimalColumn {
         tableContainer,
         getDynamicSettings(),
         getTextAlignment(),
+        getLeftMargin(),
+        getRightMargin(),
+        getTopMargin(),
+        getBottomMargin(),
         getColumnName()
     );
   }

@@ -16,6 +16,7 @@ import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import javax.swing.event.AncestorListener;
 
 
 /**
@@ -129,7 +130,55 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   private boolean createInnerVO = true;
 
 
-  public Form() { }
+  public Form() {}
+
+
+  public final void finalize() {
+    ClientUtils.disposeComponents(Form.this.getComponents());
+
+    try {
+      Enumeration en = bindings.keys();
+      Object attributeName = null;
+      InputControl ic = null;
+      while(en.hasMoreElements()) {
+        attributeName = en.nextElement();
+
+        ArrayList list = (ArrayList)bindings.get(attributeName);
+        if (list==null)
+          continue;
+        for(int i=0;i<list.size();i++) {
+          ic = (InputControl)list.get(i);
+          list.remove(ic);
+          ic.removeValueChangedListener(Form.this);
+          if (((Component)ic).getParent()!=null)
+            ((Component)ic).getParent().remove((Component)ic);
+        }
+      }
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+
+    formController = null;
+    if (currentFocusedForm==Form.this)
+      currentFocusedForm = null;
+    insertButton = null;
+    copyButton = null;
+    editButton = null;
+    reloadButton = null;
+    deleteButton = null;
+    saveButton = null;
+    model = null;
+    linkedPanels = null;
+    previousVO = null;
+    genericButtons = null;
+    inputControlsToDisable = null;
+    buttonsToDisable = null;
+    bindings = null;
+    grid = null;
+    navBar = null;
+    pkAttributes = null;
+  }
 
 
   /**

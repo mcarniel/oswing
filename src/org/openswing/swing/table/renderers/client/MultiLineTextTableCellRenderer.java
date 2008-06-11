@@ -48,14 +48,33 @@ public class MultiLineTextTableCellRenderer extends JTextArea implements TableCe
   /** attribute name associated to this column */
   private String attributeName = null;
 
+  /** component container */
+  private JPanel container = new JPanel();
+
+  /** component left margin, with respect to component container */
+  private int leftMargin = 0;
+
+  /** component right margin, with respect to component container */
+  private int rightMargin = 0;
+
+  /** component top margin, with respect to component container */
+  private int topMargin = 0;
+
+  /** component bottom margin, with respect to component container */
+  private int bottomMargin = 0;
+
 
   /**
    * Constructor.
    * @param gridController grid controller
    * @param attributeName attribute name associated to this column
    */
-  public MultiLineTextTableCellRenderer(GridController gridController,String attributeName) {
+  public MultiLineTextTableCellRenderer(GridController gridController,int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
     this.gridController = gridController;
+    this.leftMargin = leftMargin;
+    this.rightMargin = rightMargin;
+    this.topMargin = topMargin;
+    this.bottomMargin = bottomMargin;
     this.attributeName = attributeName;
     setLineWrap(true);
     setWrapStyleWord(true);
@@ -145,9 +164,16 @@ public class MultiLineTextTableCellRenderer extends JTextArea implements TableCe
     if (table instanceof Grid)
       c.setToolTipText(gridController.getCellTooltip(row,((Grid)table).getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column))));
 
+    c.setBorder(
+      BorderFactory.createCompoundBorder(c.getBorder(),BorderFactory.createEmptyBorder(topMargin,leftMargin,bottomMargin,rightMargin))
+    );
     return c;
   }
 
+
+  public final void finalize() {
+    gridController = null;
+  }
 
 
 }
