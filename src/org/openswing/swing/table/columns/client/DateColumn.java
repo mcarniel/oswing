@@ -11,6 +11,7 @@ import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.editors.client.*;
 import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
+import java.beans.Beans;
 
 
 /**
@@ -67,6 +68,8 @@ public class DateColumn extends Column {
     setTextAlignment(SwingConstants.CENTER);
     try {
       dateFormat = ClientSettings.getInstance().getResources().getDateFormat();
+      if (!Beans.isDesignTime())
+        setSeparator(ClientSettings.getInstance().getResources().getDateFormatSeparator());
     }
     catch (Exception ex) {
     }

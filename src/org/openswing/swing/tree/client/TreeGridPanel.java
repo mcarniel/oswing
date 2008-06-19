@@ -178,6 +178,7 @@ public class TreeGridPanel extends JPanel {
           else
             treeRoot = (DefaultMutableTreeNode)((DefaultTreeModel)((VOResponse)response).getVo()).getRoot();
           recreateTree();
+          treeDataLocator.loadDataCompleted(response.isError());
           if (expandAllNodes)
             expandAllNodes();
           else
@@ -249,6 +250,7 @@ public class TreeGridPanel extends JPanel {
     else
       treeRoot = (DefaultMutableTreeNode)((DefaultTreeModel)((VOResponse)response).getVo()).getRoot();
     recreateTree();
+    treeDataLocator.loadDataCompleted(response.isError());
   }
 
 

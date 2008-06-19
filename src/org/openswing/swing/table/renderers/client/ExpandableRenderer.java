@@ -75,33 +75,11 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
   /** current editing row*/
   private int row = -1;
 
-  /** tree panel */
-  private JPanel treePanel = new JPanel() {
+  /** tree panel used in renderer */
+  private PlusPanel rendTreePanel = new PlusPanel();
 
-    public final void paintComponent(Graphics g) {
-      super.paintComponent(g);
-      if (!ExpandableRenderer.this.grid.isOverwriteRowWhenExpanding()) {
-        if (row!=-1 &&
-            grid.getExpandableRowController().isRowExpandable((VOListTableModel)grid.getModel(),row)) {
-          if (plusImage==null)
-            plusImage = ClientUtils.getImage("plus.gif");
-          if (minusImage==null)
-            minusImage = ClientUtils.getImage("minus.gif");
-
-          Image img = null;
-          if (grids.isRowExpanded(row)) {
-            img = minusImage;
-            g.setColor(new Color(128,128,128));
-            g.drawLine(img.getWidth(this)/2,getHeight()/2+img.getHeight(this)/2-1,img.getWidth(this)/2,getHeight());
-          }
-          else
-            img = plusImage;
-          g.drawImage(img,0,getHeight()/2-img.getHeight(this)/2,img.getWidth(this),img.getHeight(this),this);
-        }
-      }
-    }
-
-  };
+  /** tree panel used in nested component container */
+  private MinusPanel expTreePanel = new MinusPanel();
 
 
   public ExpandableRenderer(Grid grid,Grids grids,int expandableColumn,VOListAdapter modelAdapter) {
@@ -110,8 +88,8 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
     this.expandableColumn = expandableColumn;
     this.modelAdapter = modelAdapter;
 //    mainPanel.setBackground(defaultColor);
-    treePanel.setOpaque(false);
-    treePanel.setMinimumSize(new Dimension(13,13));
+    rendTreePanel.setOpaque(false);
+    rendTreePanel.setMinimumSize(new Dimension(13,13));
 
     treeLinesPanel.setSize(12,12);
     treeLinesPanel.setMinimumSize(new Dimension(12,12));
@@ -139,9 +117,6 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
               }
               else {
                 expandRow(row);
-                if (ExpandableRenderer.this.grid.isSingleExpandableRow()) {
-                  collapseAllRowsExcept(row);
-                }
               }
               ExpandableRenderer.this.grid.repaint();
             }
@@ -151,7 +126,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
           // show inner component in next row
           if (SwingUtilities.isLeftMouseButton(e) &&
               e.getClickCount()==1 &&
-              p1.x>=width && p1.x<=width+treePanel.getWidth()) {
+              p1.x>=width && p1.x<=width+rendTreePanel.getWidth()) {
             if (row!=-1 &&
                 ExpandableRenderer.this.grid.getExpandableRowController().isRowExpandable((VOListTableModel)ExpandableRenderer.this.grid.getModel(),row)) {
               // current cell is expandable...
@@ -160,9 +135,6 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
               }
               else {
                 expandRow(row);
-                if (ExpandableRenderer.this.grid.isSingleExpandableRow()) {
-                  collapseAllRowsExcept(row);
-                }
               }
               ExpandableRenderer.this.grid.repaint();
             }
@@ -182,8 +154,8 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
   }
 
 
-  private void collapseRow(int row) {
-    Component c = (Component)grids.getComponentInCache(row);
+  public final void collapseRow(int row) {
+    ExpandablePanel c = (ExpandablePanel)grids.getComponentInCache(row);
     if (c!=null)
       grid.remove(c);
 
@@ -196,73 +168,170 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
       cols[i] = i+expandableColumn;
     grid.removeMergedCells(new int[]{row},cols);
 
-    if (grid.getExpandableRowController().removeShowedComponent(grids.getVOListTableModel(),row))
+    if (grid.getExpandableRowController().removeShowedComponent(grids.getVOListTableModel(),row,(JComponent)c.getNestedComponent()))
       grids.removeComponentInCache(row);
   }
 
 
-  private void expandRow(int row) {
-    grids.expandRow(row);
+  public final Component expandRow(final int row) {
+    ClientUtils.fireBusyEvent(true);
+    try {
+      if (ExpandableRenderer.this.grid.isSingleExpandableRow()) {
+        collapseAllRowsExcept(row);
+      }
+      grids.expandRow(row);
 
-    Component c = (Component)grids.getComponentInCache(row);
-    if (c==null) {
-      c = grid.getExpandableRowController().getComponentToShow(grids.getVOListTableModel(),row);
+      ExpandablePanel expPanel = (ExpandablePanel)grids.getComponentInCache(row);
+      Component c = null;
+      if (expPanel==null)
+        c = grid.getExpandableRowController().getComponentToShow(grids.getVOListTableModel(),row);
+      else
+        c = expPanel.getNestedComponent();
 
       if (c!=null) {
-
-        c = new ExpandablePanel(grid,c);
-        grids.putComponentInCache(row,c);
-      }
-    }
-
-    if (c!=null) {
-      int width = 0; // component width
-      for(int i=expandableColumn;i<grid.getColumnModel().getColumnCount();i++) {
-        width += grid.getColumnModel().getColumn(i).getWidth();
-      }
-      int height = grid.getRowHeight(row);
-
-      Dimension dim = c.getSize();
-      if (dim.width==0 && dim.height==0)
-        dim = c.getPreferredSize();
-
-      if (!grid.isOverwriteRowWhenExpanding())
-        dim.height += grid.getRowHeight();
-
-      if (dim.getHeight()>height) {
-        height = dim.height;
-        if (grid.getRowHeight(row)!=height)
-          grid.setRowHeight(row,height);
-      }
-
-      ((JComponent)c).setMaximumSize(new Dimension(width,height));
-
-
-      int[] cols = new int[grid.getColumnModel().getColumnCount()-expandableColumn];
-      for(int i=0;i<cols.length;i++)
-        cols[i] = i+expandableColumn;
-      grid.mergeCells(new int[]{row},cols);
-
-      grid.add(c);
-
-      int y = grid.getRowHeight();
-      for(int i=0;i<row;i++)
-        y += grid.getRowHeight(i);
-      int x = 13;
-      for(int i=0;i<expandableColumn;i++)
-        x += grid.getColumnModel().getColumn(i).getWidth();
-      c.setBounds(x,y,width,height);
-
-      new Thread() {
-        public void run() {
-          try {
-            sleep(1000);
-          }
-          catch (InterruptedException ex) {
-          }
-          grid.repaint();
+        // c is the nested component
+        // now the size of the container of nested component is determined (as <width,height>)
+        int width = 0;
+        for(int i=expandableColumn;i<grid.getColumnModel().getColumnCount();i++) {
+          width += grid.getColumnModel().getColumn(i).getWidth();
         }
-      }.start();
+        int height = grid.getRowHeight(row);
+        Dimension dim = c.getSize();
+        if (dim.width==0 && dim.height==0)
+          dim = c.getPreferredSize();
+        int delta = 0;
+        if (!grid.isOverwriteRowWhenExpanding())
+          delta = grid.getRowHeight(row);
+        dim.height += delta;
+        if (dim.getHeight()>height) {
+          height = dim.height;
+          if (grid.getRowHeight(row)!=height)
+            grid.setRowHeight(row,height);
+        }
+
+        // now nested component size is defined
+        ((JComponent)c).setMaximumSize(new Dimension(width-13,height-delta));
+        ((JComponent)c).setSize(new Dimension(width-13,height-delta));
+        ((JComponent)c).setPreferredSize(new Dimension(width-13,height-delta));
+
+        // grid cell spans are changed, accortind to nested component dimension
+        int[] cols = new int[grid.getColumnModel().getColumnCount()-expandableColumn];
+        for(int i=0;i<cols.length;i++)
+          cols[i] = i+expandableColumn;
+        grid.mergeCells(new int[]{row},cols);
+
+        // according to "isOverwriteRowWhenExpanding" value,
+        // nested component is added to grid or
+        // expanded row + nested component are added to grid
+        if (!grid.isOverwriteRowWhenExpanding()) {
+          JPanel nestedCompContainer = new JPanel();
+          nestedCompContainer.setLayout(null);
+          JPanel aux = new JPanel();
+          aux.setLayout(null);
+//          aux.setBackground(grid.getGridColor());
+          Component comp = null;
+  //        JPanel rendPanel = null;
+          int w = 0;
+          for(int i=expandableColumn;i<grid.getColumnModel().getColumnCount();i++) {
+            comp = modelAdapter.getCellRenderer(i).getTableCellRendererComponent(grid, grid.getValueAt(row,i), false, false, row, i);
+            if (i==expandableColumn) {
+              aux.add(expTreePanel);
+              expTreePanel.setBackground(comp.getBackground());
+              expTreePanel.setBounds(0,0,13,delta);
+            }
+            aux.add(comp);
+            comp.setBounds(
+              w+(i==expandableColumn?+12:0),
+              0,
+              grid.getColumnModel().getColumn(i+expandableColumn).getWidth()-1-(i==expandableColumn?12:0),
+              delta
+            );
+            w += grid.getColumnModel().getColumn(i+expandableColumn).getWidth();
+            JSeparator sep = new JSeparator(JSeparator.VERTICAL);
+            aux.add(sep);
+            sep.setBounds(w-1,0,1,delta);
+            aux.setBackground(comp.getBackground());
+          }
+          aux.setSize(w,delta);
+          aux.setMinimumSize(new Dimension(w,delta));
+          nestedCompContainer.setMinimumSize(new Dimension(width,height));
+          nestedCompContainer.setSize(new Dimension(width,height));
+          nestedCompContainer.setPreferredSize(new Dimension(width,height));
+
+          treeLinesPanel.setBackground(expTreePanel.getBackground());
+          nestedCompContainer.add(aux);
+          aux.setBounds(0,0,w,delta);
+          nestedCompContainer.add(treeLinesPanel);
+          treeLinesPanel.setBounds(1,delta,treeLinesPanel.getWidth(),treeLinesPanel.getHeight());
+          nestedCompContainer.add(c);
+          c.setBounds(treeLinesPanel.getWidth()+1,delta,c.getWidth(),c.getHeight());
+          nestedCompContainer.setFocusable(true);
+
+          expPanel = new ExpandablePanel(grid,c,nestedCompContainer);
+          nestedCompContainer.setBackground(comp.getBackground());
+          expPanel.setBackground(comp.getBackground());
+          grids.putComponentInCache(row,expPanel);
+          grid.add(expPanel);
+
+          int y = 0;
+          for(int i=0;i<row;i++)
+            y += grid.getRowHeight(i);
+          int x = 0;
+          for(int i=0;i<expandableColumn;i++)
+            x += grid.getColumnModel().getColumn(i).getWidth();
+          expPanel.setBounds(x,y,width,height);
+        }
+        else {
+          expPanel = new ExpandablePanel(grid,c,c);
+          grids.putComponentInCache(row,expPanel);
+          grid.add(expPanel);
+          int y = grid.getRowHeight();
+          for(int i=0;i<row;i++)
+            y += grid.getRowHeight(i);
+          int x = 13;
+          for(int i=0;i<expandableColumn;i++)
+            x += grid.getColumnModel().getColumn(i).getWidth();
+          expPanel.setBounds(x,y,width,height);
+
+        }
+        grids.setCurrentNestedComponent(row,expPanel);
+
+        final ExpandablePanel aux = expPanel;
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            grid.repaint();
+            final Component comp = grid.getExpandableRowController().getFocusableComponent((JComponent)aux.getNestedComponent());
+            if (comp!=null) {
+              comp.requestFocus();
+
+              if (comp instanceof JComponent) {
+                Action exitAction = new AbstractAction() {
+                    public void actionPerformed(ActionEvent e) {
+                      ((JComponent)comp).getInputMap().remove(ClientSettings.COLLAPSE_CELL_KEY);
+                      ((JComponent)comp).getActionMap().remove("exitAction");
+                      collapseRow(row);
+                      grid.requestFocus();
+                    }
+                };
+                ((JComponent)comp).getInputMap().put(ClientSettings.COLLAPSE_CELL_KEY,"exitAction");
+                ((JComponent)comp).getActionMap().put("exitAction",exitAction);
+              }
+            }
+            else
+              aux.requestFocus();
+          }
+        });
+        return expPanel;
+      }
+      else
+        return null;
+    }
+    catch(Throwable t) {
+      t.printStackTrace();
+      return null;
+    }
+    finally {
+      ClientUtils.fireBusyEvent(false);
     }
   }
 
@@ -292,13 +361,13 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
     if (!grid.getExpandableRowController().isRowExpandable((VOListTableModel)grid.getModel(),row)) {
       if (column==expandableColumn) {
         Component comp = defaultCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        treePanel.setBackground(comp.getBackground());
+        rendTreePanel.setBackground(comp.getBackground());
         mainPanel.setBackground(comp.getBackground());
         mainPanel.removeAll();
         mainPanel.setLayout(new BorderLayout(2,0));
         mainPanel.add(comp,BorderLayout.CENTER);
         if (!grid.isOverwriteRowWhenExpanding())
-          mainPanel.add(treePanel,BorderLayout.WEST);
+          mainPanel.add(rendTreePanel,BorderLayout.WEST);
         mainPanel.revalidate();
         return mainPanel;
       }
@@ -318,9 +387,9 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
           Component comp = defaultCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
           mainPanel.add(comp,BorderLayout.CENTER);
           mainPanel.setBackground(comp.getBackground());
-          treePanel.setBackground(comp.getBackground());
+          rendTreePanel.setBackground(comp.getBackground());
           if (!grid.isOverwriteRowWhenExpanding())
-            mainPanel.add(treePanel,BorderLayout.WEST);
+            mainPanel.add(rendTreePanel,BorderLayout.WEST);
           mainPanel.revalidate();
           return mainPanel;
         }
@@ -346,43 +415,6 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
             return c;
           else {
             mainPanel.removeAll();
-            mainPanel.setLayout(new GridBagLayout());
-            JPanel aux = new JPanel();
-            aux.setLayout(null);
-            aux.setBackground(grid.getGridColor());
-            Component comp = null;
-            JPanel rendPanel = null;
-            for(int i=expandableColumn;i<grid.getColumnModel().getColumnCount();i++) {
-              comp = modelAdapter.getCellRenderer(i).getTableCellRendererComponent(table, grid.getValueAt(row,i), false, false, row, i);
-              rendPanel = new JPanel();
-              rendPanel.setLayout(new BorderLayout(2,0));
-              if (i==expandableColumn) {
-                rendPanel.add(treePanel,BorderLayout.WEST);
-                treePanel.setBackground(comp.getBackground());
-              }
-              rendPanel.add(comp,BorderLayout.CENTER);
-              rendPanel.setBackground(comp.getBackground());
-              aux.add(rendPanel);
-            }
-            int w = 0;
-            for(int i=0;i<aux.getComponentCount();i++) {
-              rendPanel = (JPanel)aux.getComponent(i);
-              rendPanel.setBounds(w,0,grid.getColumnModel().getColumn(i+expandableColumn).getWidth()-1,grid.getRowHeight());
-//              System.out.println(w+","+0);
-              w += grid.getColumnModel().getColumn(i+expandableColumn).getWidth();
-            }
-            aux.setSize(w,grid.getRowHeight());
-            aux.setMinimumSize(new Dimension(w,grid.getRowHeight()));
-
-            treeLinesPanel.setBackground(treePanel.getBackground());
-            mainPanel.add(aux,             new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0
-                    ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-            mainPanel.add(treeLinesPanel,             new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
-                    ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 1, 0, 0), 0, 0));
-            mainPanel.add(c,             new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0
-                    ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-            mainPanel.revalidate();
-            mainPanel.setFocusable(true);
             return mainPanel;
           }
         }
@@ -430,6 +462,50 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
 
   }
 
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class that draw the expansion box (used on renderering cells).</p>
+   * @version 1.0
+   */
+  class PlusPanel extends JPanel {
+
+    public final void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      if (!ExpandableRenderer.this.grid.isOverwriteRowWhenExpanding()) {
+        if (row!=-1 &&
+            grid.getExpandableRowController().isRowExpandable((VOListTableModel)grid.getModel(),row)) {
+          if (plusImage==null)
+            plusImage = ClientUtils.getImage("plus.gif");
+
+          g.drawImage(plusImage,0,getHeight()/2-plusImage.getHeight(this)/2,plusImage.getWidth(this),plusImage.getHeight(this),this);
+        }
+      }
+    }
+
+  }
+
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class that draw the tree collapsed box (used by the container of nested component).</p>
+   * @version 1.0
+   */
+  class MinusPanel extends JPanel {
+
+    public final void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      if (!ExpandableRenderer.this.grid.isOverwriteRowWhenExpanding()) {
+        if (minusImage==null)
+          minusImage = ClientUtils.getImage("minus.gif");
+        g.setColor(new Color(128,128,128));
+        g.drawLine(minusImage.getWidth(this)/2,getHeight()/2+minusImage.getHeight(this)/2-1,minusImage.getWidth(this)/2,getHeight());
+        g.drawImage(minusImage,0,getHeight()/2-minusImage.getHeight(this)/2,minusImage.getWidth(this),minusImage.getHeight(this),this);
+      }
+    }
+
+  }
 
 
 }

@@ -48,7 +48,7 @@ public class OrdersGridFrame extends JFrame {
     this.conn = conn;
     try {
       jbInit();
-      setSize(550,550);
+      setSize(550,600);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
       setVisible(true);
@@ -189,7 +189,24 @@ public class OrdersGridFrame extends JFrame {
         OrderRowsGridPanel p = new OrderRowsGridPanel(c,conn);
         p.setPreferredSize(new Dimension(300,400));
         return p;
+
+//        JPanel p = new JPanel();
+//        JTextField f = new JTextField("abc",20);
+//        p.add(f,null);
+//        p.setPreferredSize(new Dimension(400,100));
+//        return p;
       }
+
+
+      /**
+       * @param showedComponent component currently showed
+       * @return component that will receive focus when showing frame; null to do not set focus automatically
+       */
+      public Component getFocusableComponent(JComponent showedComponent) {
+        OrderRowsGridPanel p = (OrderRowsGridPanel)showedComponent;
+        return p.getGrid();
+      }
+
 
     });
 

@@ -25,9 +25,7 @@ import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import javax.swing.text.JTextComponent;
-import org.openswing.swing.table.editors.client.TextCellEditor;
-import java.lang.reflect.*;
+import org.openswing.swing.form.client.Form;
 
 
 /**
@@ -273,6 +271,10 @@ public class Grid extends JTable
       prepareJTable();
 
       checkColumnSpans();
+      if (expandableRowController!=null) {
+        setResizingAllowed(false);
+        setReorderingAllowed(false);
+      }
 
       // storing of TableColumn objects to the purpouse of reuse them in setVisibleColumns method...
       TableColumnModel colsModel = this.getColumnModel();
@@ -332,7 +334,7 @@ public class Grid extends JTable
                     if (c2!=null) {
                       Point pp = SwingUtilities.convertPoint(c,x,y,c2);
 //                      System.out.println(pp+" "+c2);
-                      Grid.this.grids.setCurrentNestedComponent(c2);
+                      Grid.this.grids.setCurrentNestedComponent(getSelectedRow(),c2);
                       c2.dispatchEvent(
                         new MouseEvent(
                           c2,
@@ -345,7 +347,12 @@ public class Grid extends JTable
                           e.isPopupTrigger()
                         )
                       );
-                      e.consume();
+
+                     Component c3 = SwingUtilities.getDeepestComponentAt(c,x,y);
+                     Grid.this.grids.setCurrentNestedComponent(getSelectedRow(),c3);
+
+//                      e.consume();
+                      c2.repaint();
                       repaint();
 //                      return;
 //                      c.repaint();
@@ -355,7 +362,7 @@ public class Grid extends JTable
                   }
                 }
             }
-            Grid.this.grids.setCurrentNestedComponent(null);
+            Grid.this.grids.setCurrentNestedComponent(-1,null);
           }
 
 
@@ -407,8 +414,12 @@ public class Grid extends JTable
                           e.isPopupTrigger()
                         )
                       );
-                      e.consume();
-                      c.repaint();
+
+                      Component c3 = SwingUtilities.getDeepestComponentAt(c,x,y);
+                      Grid.this.grids.setCurrentNestedComponent(getSelectedRow(),c3);
+
+//                      e.consume();
+                      c2.repaint();
                       ((Component)e.getSource()).repaint();
                       repaint();
                       getParentGrid().getParent().repaint();
@@ -418,7 +429,7 @@ public class Grid extends JTable
                   }
                 }
             }
-            Grid.this.grids.setCurrentNestedComponent(null);
+            Grid.this.grids.setCurrentNestedComponent(-1,null);
             repaint();
           }
 
@@ -479,8 +490,12 @@ public class Grid extends JTable
                           e.isPopupTrigger()
                         )
                       );
-                      e.consume();
-                      c.repaint();
+
+                      Component c3 = SwingUtilities.getDeepestComponentAt(c,x,y);
+                      Grid.this.grids.setCurrentNestedComponent(getSelectedRow(),c3);
+
+//                      e.consume();
+                      c2.repaint();
                       ((Component)e.getSource()).repaint();
                       repaint();
 //                      return;
@@ -489,7 +504,7 @@ public class Grid extends JTable
                   }
                 }
             }
-            Grid.this.grids.setCurrentNestedComponent(null);
+            Grid.this.grids.setCurrentNestedComponent(-1,null);
 
             if (e.getClickCount()==2 &&
                        SwingUtilities.isLeftMouseButton(e) &&
@@ -530,7 +545,119 @@ public class Grid extends JTable
           public void keyPressed(KeyEvent e) {
 
             if (Grid.this.grids.getCurrentNestedComponent()!=null) {
-              Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+              e.setSource(Grid.this.grids.getCurrentNestedComponent());
+
+              if (Grid.this.grids.getCurrentNestedComponent() instanceof Grid &&
+                  e instanceof KeyEvent &&
+                  ((KeyEvent)e).getKeyCode()==e.VK_TAB &&
+                  ((Grid)Grid.this.grids.getCurrentNestedComponent()).getEditorComponent()!=null) {
+                // user has pressed TAB key and current nested component is a (nested) grid and
+                // nested grid has currently a cell in edit
+                // => editing wil be stopped in nested grid and
+                //    key event will be dispatched to nested grid
+                if (((Grid)Grid.this.grids.getCurrentNestedComponent()).stopCellEditing())
+                  ((Grid)Grid.this.grids.getCurrentNestedComponent()).dispatchEvent(e);
+                e.consume();
+                return;
+              }
+              else {
+                if (!(Grid.this.grids.getCurrentNestedComponent() instanceof Grid) &&
+                    e instanceof KeyEvent && ((KeyEvent)e).getKeyCode()==e.VK_TAB) {
+                  // user has pressed TAB key inside the nested component and
+                  // nested component is not a grid
+                  // => check for nested component container:
+                  //    it could be a grid or
+                  //    it cound be a Form panel
+                  Container cont = Grid.this.grids.getCurrentNestedComponent().getParent();
+                  while(cont!=null &&
+                        !(cont instanceof Grid) &&
+                        !(cont instanceof Form))
+                    cont = cont.getParent();
+                  if (cont!=null &&
+                      cont instanceof Grid &&
+                      ((Grid)cont).getCellEditor()!=null) {
+                    // user has pressed TAB key inside the nested component and
+                    // nested component is not a grid and
+                    // nested component container is a grid
+                    // => editing wil be stopped in nested grid and
+                    //    key event will be dispatched to grid, i.e. TAB will be listened by nested to grid,
+                    //    in order to move cell selection to next cell
+                    ((Grid)cont).stopCellEditing();
+                    e.setSource(cont);
+                    int row = ((Grid)cont).getSelectedRow();
+                    int col = ((Grid)cont).getSelectedColumn();
+
+                    ((Grid)cont).tabPressed(e);
+
+                    row = ((Grid)cont).getSelectedRow();
+                    col = ((Grid)cont).getSelectedColumn();
+                    if (col<((Grid)cont).getColumnCount()-1)
+                      col++;
+                    else {
+                      col = 0;
+                      row++;
+                      if (row>=((Grid)cont).getRowCount()-1) {
+                        row = 0;
+                        col = 0;
+                      }
+                    }
+                    ((Grid)cont).setRowSelectionInterval(row,row);
+                    ((Grid)cont).setColumnSelectionInterval(col,col);
+
+                    if (((Grid)cont).isCellEditable(row,col))
+                      ((Grid)cont).editCellAt(
+                        ((Grid)cont).getSelectedRow(),
+                        ((Grid)cont).getSelectedColumn()
+                      );
+                    Grid.this.grids.setCurrentNestedComponent(getSelectedRow(),((Grid)cont).getEditorComponent());
+                    e.consume();
+                    return;
+                  }
+                  else if (cont!=null &&
+                           cont instanceof Form &&
+                           ((Form)cont).getMode()!=Consts.READONLY) {
+                    // user has pressed TAB key inside the nested component and
+                    // nested component is not a grid and
+                    // nested component container is a Form panel
+                    // => key event will be dispatched to Form, in order to move focus to next input control
+
+//                    e.setSource(Grid.this.grids.getCurrentNestedComponent());
+//                    Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+
+                    Component[] c = Grid.this.grids.getCurrentNestedComponent().getParent().getComponents();
+                    for(int i=0;i<c.length;i++)
+                      if (c[i].equals(Grid.this.grids.getCurrentNestedComponent())) {
+                        if (i<c.length-1)
+                          c[i+1].requestFocus();
+                        else
+                          c[0].requestFocus();
+                        break;
+                      }
+//                    e.setSource(cont);
+//                    cont.dispatchEvent(e);
+                    e.consume();
+                    return;
+                  }
+
+                }
+                else {
+                  Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
+                }
+              }
+              if (Grid.this.grids.getCurrentNestedComponent() instanceof Grid &&
+                  e instanceof KeyEvent &&
+                  ((KeyEvent)e).getKeyCode()==e.VK_F2 &&
+                  ((Grid)Grid.this.grids.getCurrentNestedComponent()).getSelectedRow()!=-1 &&
+                  ((Grid)Grid.this.grids.getCurrentNestedComponent()).getSelectedColumn()!=-1) {
+                ((Grid)Grid.this.grids.getCurrentNestedComponent()).editCellAt(
+                   ((Grid)Grid.this.grids.getCurrentNestedComponent()).getSelectedRow(),
+                   ((Grid)Grid.this.grids.getCurrentNestedComponent()).getSelectedColumn()
+                );
+                Component c2 = ((Grid)Grid.this.grids.getCurrentNestedComponent()).getEditorComponent();
+                if (c2!=null) {
+                  Grid.this.grids.setCurrentNestedComponent(getSelectedRow(),c2);
+                }
+              }
 //              e.consume();
               repaint();
               return;
@@ -570,11 +697,30 @@ public class Grid extends JTable
             if (e.getKeyCode()==e.VK_ENTER)
               e.consume();
 
-              // accelerator key pressed...
-            if (e.getKeyCode()==ClientSettings.RELOAD_BUTTON_KEY.getKeyCode() &&
-                e.getModifiers()+e.getModifiersEx()==ClientSettings.RELOAD_BUTTON_KEY.getModifiers() &&
-                Grid.this.grids.getReloadButton()!=null &&
-                Grid.this.grids.getReloadButton().isEnabled())
+            // accelerator key pressed...
+            if (e.getKeyCode()==ClientSettings.EXPAND_CELL_KEY.getKeyCode() &&
+                e.getModifiers()+e.getModifiersEx()==ClientSettings.EXPAND_CELL_KEY.getModifiers() &&
+                getMode()==Consts.READONLY &&
+                getSelectedRow()!=-1 &&
+                getExpandableRowController()!=null &&
+                getExpandableRowController().isRowExpandable(Grid.this.grids.getVOListTableModel(),getSelectedRow()) &&
+                !Grid.this.grids.isRowExpanded(getSelectedRow())) {
+              Component c = expandableRenderer.expandRow(getSelectedRow());
+              if (c!=null)
+                Grid.this.grids.setCurrentNestedComponent(getSelectedRow(),c);
+            }
+            else if (e.getKeyCode()==ClientSettings.COLLAPSE_CELL_KEY.getKeyCode() &&
+                e.getModifiers()+e.getModifiersEx()==ClientSettings.COLLAPSE_CELL_KEY.getModifiers() &&
+                getMode()==Consts.READONLY &&
+                getParentGrid()!=null &&
+                getParentGrid().getGrids().getCurrentNestedComponentRow()!=-1) {
+              getParentGrid().expandableRenderer.collapseRow(getParentGrid().getGrids().getCurrentNestedComponentRow());
+              getParentGrid().requestFocus();
+            }
+            else if (e.getKeyCode()==ClientSettings.RELOAD_BUTTON_KEY.getKeyCode() &&
+                     e.getModifiers()+e.getModifiersEx()==ClientSettings.RELOAD_BUTTON_KEY.getModifiers() &&
+                     Grid.this.grids.getReloadButton()!=null &&
+                     Grid.this.grids.getReloadButton().isEnabled())
               Grid.this.grids.reload();
             else if (e.getKeyCode()==ClientSettings.FILTER_BUTTON_KEY.getKeyCode() &&
                      e.getModifiers()+e.getModifiersEx()==ClientSettings.FILTER_BUTTON_KEY.getModifiers() &&
@@ -1007,8 +1153,13 @@ public class Grid extends JTable
 
           public void keyReleased(KeyEvent e) {
             if (Grid.this.grids.getCurrentNestedComponent()!=null) {
+              if (Grid.this.grids.getCurrentNestedComponent() instanceof Grid &&
+                  e instanceof KeyEvent &&
+                  ((KeyEvent)e).getKeyCode()==e.VK_TAB)
+                return;
+
               Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
-              e.consume();
+//              e.consume();
               repaint();
               return;
             }
@@ -1025,8 +1176,14 @@ public class Grid extends JTable
            */
           public void keyTyped(KeyEvent e) {
             if (Grid.this.grids.getCurrentNestedComponent()!=null) {
+
+              if (Grid.this.grids.getCurrentNestedComponent() instanceof Grid &&
+                  e instanceof KeyEvent &&
+                  ((KeyEvent)e).getKeyCode()==e.VK_TAB)
+                return;
+
               Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
-              e.consume();
+//              e.consume();
               repaint();
               return;
             }
@@ -1527,7 +1684,7 @@ public class Grid extends JTable
 
         if (Grid.this.grids.getCurrentNestedComponent()!=null) {
           Grid.this.grids.getCurrentNestedComponent().dispatchEvent(e);
-          e.consume();
+//          e.consume();
           repaint();
           return;
         }
@@ -3342,6 +3499,14 @@ public class Grid extends JTable
 
 
   /**
+   * @return boolean
+   */
+  public final boolean hasCellSpan() {
+    return cellSpans.size()>0;
+  }
+
+
+  /**
    * This method has been overrided to support cells span: it returns the cell span (width and height),
    * according to the specified cell current visibility.
    * Note: a cell can be invisible if it is contained inside a spanned cell.
@@ -3847,6 +4012,27 @@ public class Grid extends JTable
   }
 
 
+  public Grids getGrids() {
+    return grids;
+  }
+
+
+//  public int getEditingRow() {
+//    if (getParentGrid()!=null && getMode()!=Consts.READONLY)
+//      return getSelectedRow();
+//    else
+//      return super.getEditingRow();
+//  }
+//
+//
+//  public int getEditingColumn() {
+//    if (getParentGrid()!=null && getMode()!=Consts.READONLY)
+//      return getSelectedColumn();
+//    else
+//      return super.getEditingColumn();
+//  }
+
+
   public void finalize() {
     try {
       FocusListener[] fl = getFocusListeners();
@@ -3894,6 +4080,38 @@ public class Grid extends JTable
     expandableRowController = null;
     expandableRenderer = null;
     parentGrid = null;
+  }
+
+
+  protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
+					int condition, boolean pressed) {
+    if (grids.getCurrentNestedComponent()!=null) {
+      Component source = (Component)e.getSource();
+
+      if (e.getID()==e.KEY_PRESSED && e.getKeyChar()=='\t' && !e.isShiftDown()) {
+        // TAB key pressed...
+        Container c = source.getParent();
+        while(c!=null && !(c instanceof Grid) && !(c instanceof Form))
+          c = c.getParent();
+        if (c!=null && c instanceof Form) {
+          KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent();
+          e.consume();
+          return true;
+        }
+      }
+      else if (e.getID()==e.KEY_PRESSED && e.getKeyChar()=='\t' && e.isShiftDown()) {
+        // TAB key pressed...
+        Container c = source.getParent();
+        while(c!=null && !(c instanceof Grid) && !(c instanceof Form))
+          c = c.getParent();
+        if (c!=null && c instanceof Form) {
+          KeyboardFocusManager.getCurrentKeyboardFocusManager().focusPreviousComponent();
+          e.consume();
+          return true;
+        }
+      }
+    }
+    return super.processKeyBinding(ks, e, condition, pressed);
   }
 
 

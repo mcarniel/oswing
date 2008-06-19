@@ -149,7 +149,7 @@ public class ClientApplication implements MDIController,LoginController {
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.OfficeXP.OfficeXPLookAndFeel";
     ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.VisualStudio2005.VisualStudio2005LookAndFeel";
 
-//    ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
+    ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
     ClientSettings.LOOKUP_FRAME_CONTENT = LookupController.GRID_AND_FILTER_FRAME;
 
     MDIFrame mdi = new MDIFrame(this);

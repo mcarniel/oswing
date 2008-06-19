@@ -88,6 +88,12 @@ public abstract class TreeDataLocator {
   }
 
 
+  /**
+   * Callback method invoked when the data loading is completed.
+   * @param error <code>true</code> if data loading has terminated with errors, <code>false</code> otherwise
+   */
+  public void loadDataCompleted(boolean error) {
+  }
 
 
 

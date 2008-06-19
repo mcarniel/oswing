@@ -353,6 +353,27 @@ public class VOListTableModel extends AbstractTableModel {
 
 
   /**
+   * Set value within a value object, for the specified attribute name.
+   * Note: no validation task is performed.
+   * @param tow row index
+   * @param attribute name
+   * @param value new Object to set onto ValueObject
+   */
+  public final void setField(int row, String attributeName, Object value) {
+    // store the original v.o. if grid mode is EDIT...
+    try {
+      if (mode == Consts.EDIT && !changedVOs.containsKey(new Integer(row))) {
+        changedVOs.put(new Integer(row), getObjectForRow(row).clone());
+      }
+    }
+    catch (CloneNotSupportedException ex) {
+      Logger.error(this.getClass().getName(),"setField","Error while duplicating the edited v.o.",ex);
+    }
+    fieldAdapter.setField(getObjectForRow(row),attributeName,value);
+  }
+
+
+  /**
    * Set the value at the specified row and column in the TableModel, only if:
    * - the grid is editable and the value is valid (i.e. GridController.validateCell method returns <code>true</code>)
    * - the grid is in read only mode
@@ -378,6 +399,8 @@ public class VOListTableModel extends AbstractTableModel {
       if (oldValue!=null && oldValue instanceof Number && value instanceof Double) {
         oldValue = new Double(oldValue.toString());
       }
+
+      // maybe changed value should be converted...
       if (value!=null && value instanceof BigDecimal && oldValue!=null && this.fieldAdapter.getFieldClass(column).equals(BigDecimal.class)) {
         if (this.fieldAdapter.getFieldColumn(column) instanceof DecimalColumn &&
             ((DecimalColumn)this.fieldAdapter.getFieldColumn(column)).getDecimals()>0)

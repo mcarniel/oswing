@@ -78,8 +78,25 @@ public class HibernateUtils {
     ArrayList filterAttrNames = new ArrayList();
     baseSQL = QueryUtil.getSql(new UserSessionParameters(),baseSQL,filterAttrNames,paramValues,filteredColumns,currentSortedColumns,currentSortedVersusColumns,attributesMap);
 
+    FilterWhereClause[] where = null;
     for(int i=0;i<filterAttrNames.size();i++) {
-      paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+      where = (FilterWhereClause[])filteredColumns.get(filterAttrNames.get(i));
+
+      if (where[0].getValue()!=null && where[0].getValue() instanceof List) {
+        for(int j=0;j<((List)where[0].getValue()).size();j++)
+          paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+      }
+      else
+        paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+
+      if (where[1]!=null) {
+        if (where[1].getValue()!=null && where[1].getValue() instanceof List) {
+          for(int j=0;j<((List)where[1].getValue()).size();j++)
+            paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+        }
+        else
+          paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+      }
     }
 
     return baseSQL;
@@ -157,9 +174,27 @@ public class HibernateUtils {
       attributesMap
     );
 
+    FilterWhereClause[] whereC = null;
     for(int i=0;i<filterAttrNames.size();i++) {
-      paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+      whereC = (FilterWhereClause[])filteredColumns.get(filterAttrNames.get(i));
+
+      if (whereC[0].getValue()!=null && whereC[0].getValue() instanceof List) {
+        for(int j=0;j<((List)whereC[0].getValue()).size();j++)
+          paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+      }
+      else
+        paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+
+      if (whereC[1]!=null) {
+        if (whereC[1].getValue()!=null && whereC[1].getValue() instanceof List) {
+          for(int j=0;j<((List)whereC[1].getValue()).size();j++)
+            paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+        }
+        else
+          paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+      }
     }
+
 
     return baseSQL;
   }

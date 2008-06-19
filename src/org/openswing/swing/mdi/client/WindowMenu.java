@@ -44,7 +44,7 @@ public class WindowMenu extends JMenu {
   private JMenuItem menuWindowCloseAll = new JMenuItem();
 
   /** collection of pairs: JInternalFrame, menu item */
-  private Hashtable internalFrames = new Hashtable();
+  private WindowsList internalFrames = new WindowsList();
 
   /** menu item related to switch between opened windows */
   private JMenuItem menuWindowSwitch = new JMenuItem();
@@ -201,13 +201,15 @@ public class WindowMenu extends JMenu {
 
     this.menuWindowCloseAll.setEnabled(true);
     this.menuWindowSwitch.setEnabled(true);
-    this.menuWindowTileH.setEnabled(internalFrames.size()>1);
-    this.menuWindowTileV.setEnabled(internalFrames.size()>1);
-    this.menuWindowCascade.setEnabled(internalFrames.size()>1);
     this.menuWindowMinimize.setEnabled(true);
     this.menuWindowMinimizeAll.setEnabled(true);
 
     internalFrames.put(frame,window);
+
+    this.menuWindowTileH.setEnabled(internalFrames.size()>1);
+    this.menuWindowTileV.setEnabled(internalFrames.size()>1);
+    this.menuWindowCascade.setEnabled(internalFrames.size()>1);
+
     window.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
@@ -353,6 +355,7 @@ public class WindowMenu extends JMenu {
     catch (Exception ex) {
     }
   }
+
 
 
 }

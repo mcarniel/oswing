@@ -80,13 +80,13 @@ public class CurrencyControl extends NumericControl {
       String dec = "";
       for(int i=0;i<getDecimals();i++)
         dec += "#";
-      format = new DecimalFormat(currencySymbol+" "+"#,###."+dec,dfs);
+      format = new DecimalFormat(currencySymbol+" "+"#,##0."+dec,dfs);
     }
     else if (!isGrouping() && getDecimals()>0) {
       String dec = "";
       for(int i=0;i<getDecimals();i++)
         dec += "#";
-      format = new DecimalFormat(currencySymbol+" "+"#."+dec,dfs);
+      format = new DecimalFormat(currencySymbol+" "+"0."+dec,dfs);
     }
     format.setGroupingUsed(isGrouping());
     nullValue = currencySymbol+" ";

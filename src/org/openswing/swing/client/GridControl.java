@@ -262,6 +262,9 @@ public class GridControl extends JPanel {
   /** parent frame: JFrame or JInternalFrame */
   private JInternalFrame parentFrame = null;
 
+  /** column properties */
+  private Column[] columnProperties = null;
+
 
   /**
    * Costructor.
@@ -323,7 +326,7 @@ public class GridControl extends JPanel {
       gridStatusPanel.remove(designScrollPane);
 
       Component[] c = (Component[]) components.toArray(new Component[components.size()]);
-      final Column[] columnProperties = new Column[c.length];
+      columnProperties = new Column[c.length];
       for (int i = 0; i < c.length; i++) {
         columnProperties[i] = (Column) c[i];
       }
@@ -827,6 +830,17 @@ public class GridControl extends JPanel {
             if (parentFrame.getDesktopPane().getSelectedFrame()!=null)
               parentFrame.getDesktopPane().getSelectedFrame().requestFocus();
             return;
+          }
+
+
+          if (table.getCurrentNestedComponent()!=null) {
+            Container cont = (Container)table.getCurrentNestedComponent();
+            while(cont!=null && !(cont instanceof Form) && !cont.equals(table.getGrid()))
+              cont = cont.getParent();
+            if (cont!=null && cont instanceof Form) {
+              Form.setCurrentFocusedForm( (Form) cont);
+              return;
+            }
           }
 
           tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
@@ -2378,6 +2392,9 @@ public class GridControl extends JPanel {
    * Store profile if changed.
    */
   private void maybeStoreProfile(Column[] columnProperties) {
+    if (table==null)
+      return;
+
     try {
       boolean changed = false;
 
@@ -2580,6 +2597,9 @@ public class GridControl extends JPanel {
       if (table==null)
         return;
 
+      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null)
+        maybeStoreProfile(columnProperties);
+
       table.finalize();
       table = null;
 
@@ -2646,6 +2666,14 @@ public class GridControl extends JPanel {
     profilesMenu = null;
     expandableRowController = null;
     itsColumnContainer = null;
+  }
+
+
+  public final void requestFocus() {
+    if (table!=null)
+      table.getGrid().requestFocus();
+    else
+      super.requestFocus();
   }
 
 

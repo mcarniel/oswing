@@ -3,6 +3,8 @@ package org.openswing.swing.client;
 import org.openswing.swing.message.receive.java.ValueObject;
 import org.openswing.swing.table.model.client.VOListTableModel;
 import javax.swing.JComponent;
+import java.awt.Container;
+import java.awt.Component;
 
 
 /**
@@ -63,6 +65,7 @@ public class ExpandableRowController {
   /**
    * @param model grid model
    * @param rowNum the current row number that is just collapsed
+   * @param showedComponent component to remove
    * @return <code>true</code> to detach the component from internal cache; <code>false</code> to store the collapsed component in cache
    * This callback method is automatically invoked when the component must be collapsed and can be used also
    * to perfom additional operations to correctly dispose the component.
@@ -72,8 +75,17 @@ public class ExpandableRowController {
    * the amount of memory required by the application, but avoid to re-create the component for future expansions of the same row,
    * i.e. "getComponentToShow" method is not invoked twice for the same row.
    */
-  public boolean removeShowedComponent(VOListTableModel model,int rowNum) {
+  public boolean removeShowedComponent(VOListTableModel model,int rowNum,JComponent showedComponent) {
     return false;
+  }
+
+
+  /**
+   * @param showedComponent component currently showed
+   * @return component that will receive focus when showing frame; null to do not set focus automatically
+   */
+  public Component getFocusableComponent(JComponent showedComponent) {
+    return null;
   }
 
 

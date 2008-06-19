@@ -196,6 +196,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** current nested component that is expanded and has focus */
   private Component currentNestedComponent = null;
 
+  /** current nested component row index */
+  private int currentNestedComponentRow = -1;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -3105,14 +3108,23 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @return current nested component that is expanded and has focus
    */
   public final Component getCurrentNestedComponent() {
-    return currentNestedComponent ;
+    return currentNestedComponent;
+  }
+
+
+  /**
+   * @return current nested component row index
+   */
+  public final int getCurrentNestedComponentRow() {
+    return currentNestedComponentRow;
   }
 
 
   /**
    * @return current nested component that is expanded and has focus
    */
-  public final void setCurrentNestedComponent(Component currentNestedComponent) {
+  public final void setCurrentNestedComponent(int currentNestedComponentRow,Component currentNestedComponent) {
+    this.currentNestedComponentRow = currentNestedComponentRow;
     this.currentNestedComponent = currentNestedComponent;
   }
 

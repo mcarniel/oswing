@@ -1869,6 +1869,8 @@ public class QueryUtil {
      PreparedStatement pstmt = null;
      String params = "";
      String sql = null;
+     String aName = null;
+     Class clazz = null;
      try {
        // prepare getter methods of the v.o and the SQL statement...
        sql = "insert into "+tableName+"(";
@@ -1885,18 +1887,63 @@ public class QueryUtil {
        while(it.hasNext()) {
          attributeName = it.next().toString();
          field = (String)attribute2dbField.get(attributeName);
+         aName = attributeName;
+         clazz = vo.getClass();
+         value = vo;
+
+
+
+//         try {
+//           getter = vo.getClass().getMethod(
+//             "get" +
+//             attributeName.substring(0, 1).toUpperCase() +
+//             attributeName.substring(1),
+//             new Class[0]
+//           );
+//         }
+//         catch (NoSuchMethodException ex2) {
+//           getter = vo.getClass().getMethod("is"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]);
+//         }
+//         value = getter.invoke(vo,new Object[0]);
+
+         // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+         while(aName.indexOf(".")!=-1) {
+           try {
+             getter = clazz.getMethod(
+               "get" +
+               aName.substring(0, 1).
+               toUpperCase() +
+               aName.substring(1,aName.indexOf(".")),
+               new Class[0]
+             );
+           }
+           catch (NoSuchMethodException ex2) {
+             getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+           }
+           aName = aName.substring(aName.indexOf(".")+1);
+           clazz = getter.getReturnType();
+           if (value!=null)
+             value = getter.invoke(value,new Object[0]);
+           else
+             break;
+         }
+
          try {
-           getter = vo.getClass().getMethod(
+           getter = clazz.getMethod(
              "get" +
-             attributeName.substring(0, 1).toUpperCase() +
-             attributeName.substring(1),
+             aName.substring(0, 1).
+             toUpperCase() +
+             aName.substring(1),
              new Class[0]
            );
          }
          catch (NoSuchMethodException ex2) {
-           getter = vo.getClass().getMethod("is"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]);
+           getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
          }
-         value = getter.invoke(vo,new Object[0]);
+         if (value!=null)
+           value = getter.invoke(value,new Object[0]);
+
+
          if (value!=null) {
            if (value instanceof Boolean) {
              if (((Boolean)value).booleanValue())
@@ -2050,6 +2097,8 @@ public class QueryUtil {
     long t2;
     try {
       ValueObject vo = null;
+      String aName = null;
+      Class clazz = null;
       for(int j=0;j<vos.size();j++) {
         vo = (ValueObject)vos.get(j);
 
@@ -2066,25 +2115,67 @@ public class QueryUtil {
         while(it.hasNext()) {
           attributeName = it.next().toString();
           field = (String)attribute2dbField.get(attributeName);
+          aName = attributeName;
+          clazz = vo.getClass();
+          value = vo;
+
+//          try {
+//            getter = vo.getClass().getMethod(
+//               "get" +
+//               attributeName.substring(0, 1).
+//               toUpperCase() +
+//               attributeName.substring(1),
+//               new Class[0]
+//            );
+//          }
+//          catch (NoSuchMethodException ex2) {
+//            getter = vo.getClass().getMethod(
+//               "is" +
+//               attributeName.substring(0, 1).
+//               toUpperCase() +
+//               attributeName.substring(1),
+//               new Class[0]
+//            );
+//          }
+//          value = getter.invoke(vo,new Object[0]);
+
+          // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+          while(aName.indexOf(".")!=-1) {
+            try {
+              getter = clazz.getMethod(
+                "get" +
+                aName.substring(0, 1).
+                toUpperCase() +
+                aName.substring(1,aName.indexOf(".")),
+                new Class[0]
+              );
+            }
+            catch (NoSuchMethodException ex2) {
+              getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+            }
+            aName = aName.substring(aName.indexOf(".")+1);
+            clazz = getter.getReturnType();
+            if (value!=null)
+              value = getter.invoke(value,new Object[0]);
+            else
+              break;
+          }
+
           try {
-            getter = vo.getClass().getMethod(
-               "get" +
-               attributeName.substring(0, 1).
-               toUpperCase() +
-               attributeName.substring(1),
-               new Class[0]
+            getter = clazz.getMethod(
+              "get" +
+              aName.substring(0, 1).
+              toUpperCase() +
+              aName.substring(1),
+              new Class[0]
             );
           }
           catch (NoSuchMethodException ex2) {
-            getter = vo.getClass().getMethod(
-               "is" +
-               attributeName.substring(0, 1).
-               toUpperCase() +
-               attributeName.substring(1),
-               new Class[0]
-            );
+            getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
           }
-          value = getter.invoke(vo,new Object[0]);
+          if (value!=null)
+            value = getter.invoke(value,new Object[0]);
+
           if (value!=null) {
             if (value instanceof Boolean) {
               if (((Boolean)value).booleanValue())
@@ -2251,59 +2342,86 @@ public class QueryUtil {
       Method getter = null;
       String attributeName = null;
       String field = null;
-      Object value = null;
       int i=0;
+      String aName = null;
+      Class clazz = null;
+      Object newObj = null;
+      Object oldObj = null;
       while(it.hasNext()) {
         attributeName = it.next().toString();
         field = (String)attribute2dbField.get(attributeName);
+        aName = attributeName;
+        clazz = newVO.getClass();
+        newObj = newVO;
+        oldObj = oldVO;
+
+        // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+        while(aName.indexOf(".")!=-1) {
+          try {
+            getter = clazz.getMethod(
+              "get" +
+              aName.substring(0, 1).
+              toUpperCase() +
+              aName.substring(1,aName.indexOf(".")),
+              new Class[0]
+            );
+          }
+          catch (NoSuchMethodException ex2) {
+            getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+          }
+          aName = aName.substring(aName.indexOf(".")+1);
+          clazz = getter.getReturnType();
+          if (newObj!=null)
+            newObj = getter.invoke(newObj,new Object[0]);
+          if (oldObj!=null)
+            oldObj = getter.invoke(oldObj,new Object[0]);
+        }
+
         try {
-          getter = newVO.getClass().getMethod(
+          getter = clazz.getMethod(
             "get" +
-            attributeName.substring(0, 1).
+            aName.substring(0, 1).
             toUpperCase() +
-            attributeName.substring(1),
+            aName.substring(1),
             new Class[0]
           );
         }
         catch (NoSuchMethodException ex2) {
-          getter = newVO.getClass().getMethod(
-             "is" +
-             attributeName.substring(0, 1).
-             toUpperCase() +
-             attributeName.substring(1),
-             new Class[0]
-          );
+          getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
         }
-        value = getter.invoke(newVO,new Object[0]);
-        if (value==null) {
+        if (newObj!=null)
+          newObj = getter.invoke(newObj,new Object[0]);
+        if (oldObj!=null)
+          oldObj = getter.invoke(oldObj,new Object[0]);
+
+        if (newObj==null) {
           sql += field+"=null, ";
         }
         else {
-          if (value instanceof Boolean) {
-            if (((Boolean)value).booleanValue())
-              value = booleanTrueValue;
+          if (newObj instanceof Boolean) {
+            if (((Boolean)newObj).booleanValue())
+              newObj = booleanTrueValue;
             else
-              value = booleanFalseValue;
+              newObj = booleanFalseValue;
           }
 
           sql += field+"=?, ";
-          values.add(value);
+          values.add(newObj);
         }
 
-        value = getter.invoke(oldVO,new Object[0]);
-        if (value==null) {
+        if (oldObj==null) {
           where += field+" is null and ";
         }
         else {
-          if (value instanceof Boolean) {
-            if (((Boolean)value).booleanValue())
-              value = booleanTrueValue;
+          if (oldObj instanceof Boolean) {
+            if (((Boolean)oldObj).booleanValue())
+              oldObj = booleanTrueValue;
             else
-              value = booleanFalseValue;
+              oldObj = booleanFalseValue;
           }
 
           where += field+"=? and ";
-          whereValues.add(value);
+          whereValues.add(oldObj);
         }
       }
 

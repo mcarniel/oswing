@@ -129,12 +129,12 @@ public class NumericControl extends BaseInputControl implements InputControl {
       String dec = "";
       for(int i=0;i<decimals;i++)
         dec += "#";
-      format = new DecimalFormat("#,###."+dec,dfs);
+      format = new DecimalFormat("#,##0."+dec,dfs);
     } else if (!grouping && decimals>0) {
       String dec = "";
       for(int i=0;i<decimals;i++)
         dec += "#";
-      format = new DecimalFormat("#."+dec,dfs);
+      format = new DecimalFormat("0."+dec,dfs);
     }
     format.setGroupingUsed(grouping);
     nullValue = "";

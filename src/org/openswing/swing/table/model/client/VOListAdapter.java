@@ -308,13 +308,24 @@ public class VOListAdapter {
    * @param value new Object to set onto ValueObject
    */
   public final void setField(ValueObject obj, int colIndex, Object value) {
+    setField(obj,getFieldName(colIndex),value);
+  }
+
+
+
+  /**
+   * @param obj ValueObject where updating the value for the specified attribute (identified by colunm index)
+   * @param attributeName attribute name
+   * @param value new Object to set onto ValueObject
+   */
+  public final void setField(ValueObject obj, String attributeName, Object value) {
     try {
-      Method[] getter = ((Method[])voGetterMethods.get(getFieldName(colIndex)));
-      Method[] setter = ((Method[])voSetterMethods.get(getFieldName(colIndex)));
+      Method[] getter = ((Method[])voGetterMethods.get(attributeName));
+      Method[] setter = ((Method[])voSetterMethods.get(attributeName));
       if (getter==null)
-        Logger.error(this.getClass().getName(),"setField","No getter method for index "+colIndex+" and attribute name '"+getFieldName(colIndex)+"'.",null);
+        Logger.error(this.getClass().getName(),"setField","No getter method for attribute name '"+attributeName+"'.",null);
       if (setter==null)
-        Logger.error(this.getClass().getName(),"setField","No setter method for index "+colIndex+" and attribute name '"+getFieldName(colIndex)+"'.",null);
+        Logger.error(this.getClass().getName(),"setField","No setter method for attribute name '"+attributeName+"'.",null);
 
 
       if (value!=null && (value instanceof Number || !value.equals("") && value instanceof String)) {
@@ -350,17 +361,23 @@ public class VOListAdapter {
 
 
       // retrieve inner v.o.: if not present then maybe create it, according to "createInnerVO" property...
-      Method[] m = (Method[])voGetterMethods.get(getFieldName(colIndex));
+      Method[] m = (Method[])voGetterMethods.get(attributeName);
       if (m==null)
-        Logger.error(this.getClass().getName(),"setField","No getter method for index "+colIndex+" and attribute name '"+getFieldName(colIndex)+"'.",null);
-
+        Logger.error(this.getClass().getName(),"setField","No getter method for attribute name '"+attributeName+"'.",null);
+      Object oldObj = obj;
       for(int i=0;i<m.length-1;i++){
-        obj = (ValueObject)m[i].invoke(obj,new Object[0]);
+        oldObj = obj;
+        obj = (ValueObject)m[i].invoke(oldObj,new Object[0]);
         if(obj == null) {
           if (grids.getGridControl()==null || !grids.getGridControl().isCreateInnerVO())
             return;
-          else
+          else {
             obj = (ValueObject)m[i].getReturnType().newInstance();
+            String[] attrs = attributeName.split("\\.");
+            Method aux = ((Method[])voSetterMethods.get(attrs[i]))[i];
+            aux.invoke(oldObj,new Object[]{obj});
+
+          }
         }
       }
 

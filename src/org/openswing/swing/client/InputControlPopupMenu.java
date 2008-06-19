@@ -274,6 +274,9 @@ public class InputControlPopupMenu extends JPopupMenu implements MouseListener {
     if (SwingUtilities.isRightMouseButton(e)) {
       showPopupMenu(e.getX(),e.getY());
     }
+    else if (inputControl.isEnabled()) {
+      ((JComponent)inputControl).requestFocus();
+    }
   }
 
   /**

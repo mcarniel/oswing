@@ -47,36 +47,94 @@ public class GridUI extends BasicTableUI {
       Rectangle clip = g.getClipBounds();
       Point upperLeft = clip.getLocation();
       Point lowerRight = new Point(clip.x + clip.width - 1, clip.y + clip.height - 1);
-      int rMin = table.rowAtPoint(upperLeft);
-      int rMax = table.rowAtPoint(lowerRight);
-      // This should never happen.
-      if (rMin == -1) {
-          rMin = 0;
+
+      if (((Grid)table).hasCellSpan()) {
+        // no cells span defined: it is needed to split visible area in more regions, according to cells span:
+        int rMin = table.rowAtPoint(upperLeft);
+        // This should never happen.
+        if (rMin == -1) {
+            rMin = 0;
+        }
+        int rMax = rMin;
+        int h = 0;
+        for(int i=rMin;i<table.getRowCount();i++)
+          if (h<lowerRight.y) {
+            h += table.getRowHeight(i);
+            rMax = i;
+          }
+          else
+            break;
+
+        // If the table does not have enough rows to fill the view we'll get -1.
+        // Replace this with the index of the last row.
+        if (rMax == -1) {
+            rMax = table.getRowCount()-1;
+        }
+
+        boolean ltr = table.getComponentOrientation().isLeftToRight();
+        int cMin = table.columnAtPoint(ltr ? upperLeft : lowerRight);
+        // This should never happen.
+        if (cMin == -1) {
+            cMin = 0;
+        }
+
+        int cMax = cMin;
+        int w = 0;
+        for(int i=cMin;i<table.getColumnCount();i++)
+          if (w<lowerRight.x) {
+            w += table.getColumnModel().getColumn(i).getWidth();
+            cMax = i;
+          }
+          else
+            break;
+
+        // If the table does not have enough columns to fill the view we'll get -1.
+        // Replace this with the index of the last column.
+        if (cMax == -1) {
+            cMax = table.getColumnCount()-1;
+        }
+
+        // Paint the grid.
+        paintGrid(g, rMin, rMax, cMin, cMax);
+
+        // Paint the cells.
+        paintCells(g, rMin, rMax, cMin, cMax);
+
       }
-      // If the table does not have enough rows to fill the view we'll get -1.
-      // Replace this with the index of the last row.
-      if (rMax == -1) {
-          rMax = table.getRowCount()-1;
+      else {
+        // no cells span defined: it is possible to identify a unique visible area for the whole grid:
+        int rMin = table.rowAtPoint(upperLeft);
+        int rMax = table.rowAtPoint(lowerRight);
+        // This should never happen.
+        if (rMin == -1) {
+            rMin = 0;
+        }
+        // If the table does not have enough rows to fill the view we'll get -1.
+        // Replace this with the index of the last row.
+        if (rMax == -1) {
+            rMax = table.getRowCount()-1;
+        }
+
+        boolean ltr = table.getComponentOrientation().isLeftToRight();
+        int cMin = table.columnAtPoint(ltr ? upperLeft : lowerRight);
+        int cMax = table.columnAtPoint(ltr ? lowerRight : upperLeft);
+        // This should never happen.
+        if (cMin == -1) {
+            cMin = 0;
+        }
+        // If the table does not have enough columns to fill the view we'll get -1.
+        // Replace this with the index of the last column.
+        if (cMax == -1) {
+            cMax = table.getColumnCount()-1;
+        }
+
+        // Paint the grid.
+        paintGrid(g, rMin, rMax, cMin, cMax);
+
+        // Paint the cells.
+        paintCells(g, rMin, rMax, cMin, cMax);
       }
 
-      boolean ltr = table.getComponentOrientation().isLeftToRight();
-      int cMin = table.columnAtPoint(ltr ? upperLeft : lowerRight);
-      int cMax = table.columnAtPoint(ltr ? lowerRight : upperLeft);
-      // This should never happen.
-      if (cMin == -1) {
-          cMin = 0;
-      }
-      // If the table does not have enough columns to fill the view we'll get -1.
-      // Replace this with the index of the last column.
-      if (cMax == -1) {
-          cMax = table.getColumnCount()-1;
-      }
-
-      // Paint the grid.
-      paintGrid(g, rMin, rMax, cMin, cMax);
-
-      // Paint the cells.
-      paintCells(g, rMin, rMax, cMin, cMax);
   }
 
   /*

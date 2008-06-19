@@ -46,6 +46,19 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
    * @param showResourceNotFoundWarning warn when no resource key not found
    */
   public EnglishOnlyResourceFactory(String currencySymbol,Properties additionalDictionary,boolean showResourceNotFoundWarning) {
+    this(currencySymbol,additionalDictionary,showResourceNotFoundWarning,'/');
+  }
+
+
+
+  /**
+   * Constructor.
+   * @param currencySymbol currency symbol
+   * @param additionalDictionary additional descriptions
+   * @param showResourceNotFoundWarning warn when no resource key not found
+   * @param dateFormatSeparator date format separator; for example: '-' or '/'
+   */
+  public EnglishOnlyResourceFactory(String currencySymbol,Properties additionalDictionary,boolean showResourceNotFoundWarning,char dateFormatSeparator) {
     Properties dictionary = new Properties();
 
     dictionary.putAll(additionalDictionary);
@@ -293,7 +306,7 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
       ',',
       Resources.YMD,
       true,
-      '/',
+      dateFormatSeparator,
       "HH:mm",
       "EN",
       showResourceNotFoundWarning

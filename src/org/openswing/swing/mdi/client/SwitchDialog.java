@@ -55,13 +55,13 @@ public class SwitchDialog extends JDialog {
   JButton cancelButton = new JButton();
 
   /** collection of pairs: JInternalFrame, menu item */
-  private Hashtable internalFrames = new Hashtable();
+  private WindowsList internalFrames = new WindowsList();
 
   /** list of frames */
   private ArrayList frames = new ArrayList();
 
 
-  public SwitchDialog(Hashtable internalFrames) {
+  public SwitchDialog(WindowsList internalFrames) {
     super(MDIFrame.getInstance(),ClientSettings.getInstance().getResources().getResource("switch"),true);
     this.internalFrames = internalFrames;
     try {
@@ -82,11 +82,11 @@ public class SwitchDialog extends JDialog {
     list.setSelectionForeground((Color)UIManager.get("TextField.foreground"));
     list.setBackground( (Color) UIManager.get("TextField.background"));
     list.setSelectionBackground(ClientSettings.BACKGROUND_SEL_COLOR);
-    Enumeration en = internalFrames.keys();
+    ArrayList winList = internalFrames.getList();
     JInternalFrame f = null;
     DefaultListModel model = new DefaultListModel();
-    while(en.hasMoreElements()) {
-      f = (JInternalFrame)en.nextElement();
+    for(int i=0;i<winList.size();i++) {
+      f = (JInternalFrame)winList.get(i);
       model.addElement(f.getTitle());
       frames.add(f);
     }

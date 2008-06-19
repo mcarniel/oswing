@@ -282,8 +282,14 @@ public class ClientSettings {
   /** shortcut key used to set focus in tree menu; default value: KeyStroke.getKeyStroke(KeyEvent.VK_F3,0) */
   public static KeyStroke TREE_MENU_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_F3,0);
 
-  /** shortcut key used to remove a filter in quick filter panel; default value: KeyStroke.getKeyStroke(KeyEvent.VK_R,,KeyEvent.CTRL_MASK) */
+  /** shortcut key used to remove a filter in quick filter panel; default value: KeyStroke.getKeyStroke(KeyEvent.VK_R,KeyEvent.CTRL_MASK) */
   public static KeyStroke REMOVE_FILTER_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_R,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used to expand a row in grid; default value: KeyStroke.getKeyStroke(KeyEvent.VK_P,KeyEvent.CTRL_MASK) */
+  public static KeyStroke EXPAND_CELL_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_P,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used to collable an already expanded row in grid; default value: KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK) */
+  public static KeyStroke COLLAPSE_CELL_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK);
 
   /** define if a warning dialog must be showed when closing an internal frame that contains a Form/GridControl in edit/insert mode */
   public static boolean ASK_BEFORE_CLOSE = false;

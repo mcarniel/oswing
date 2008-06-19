@@ -39,13 +39,25 @@ public class ExpandablePanel extends JPanel {
   /** parent grid */
   private Grid grid = null;
 
+  /** parent grid */
+  private Component nestedComponent = null;
 
-  public ExpandablePanel(Grid grid,Component c) {
+
+  public ExpandablePanel(Grid grid,Component nestedComponent,Component panel) {
     this.grid = grid;
+    this.nestedComponent = nestedComponent;
     setLayout(new BorderLayout());
-    add(c,BorderLayout.CENTER);
-    setSize(c.getSize());
-    setPreferredSize(c.getPreferredSize());
+    add(panel,BorderLayout.CENTER);
+    setSize(panel.getSize());
+    setPreferredSize(panel.getPreferredSize());
+  }
+
+
+  /**
+   * @return nested component
+   */
+  public final Component getNestedComponent() {
+    return nestedComponent;
   }
 
 
@@ -56,7 +68,8 @@ public class ExpandablePanel extends JPanel {
    */
   public final Container getParent() {
     try {
-      if (grid != null)
+      Object p = super.getParent();
+      if (p==null && grid != null)
         return grid;
       else
         return super.getParent();
@@ -64,6 +77,7 @@ public class ExpandablePanel extends JPanel {
     catch (Exception ex) {
       return super.getParent();
     }
+//    return super.getParent();
   }
 
 

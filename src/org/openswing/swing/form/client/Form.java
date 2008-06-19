@@ -237,6 +237,12 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   }
 
 
+  public final void requestFocus() {
+    super.requestFocus();
+    setCurrentFocusedForm(this);
+  }
+
+
   /**
    * Set the current focused form that will receive key events..
    * @param form currently focused form; may be null (if no form is currently focused)
@@ -519,7 +525,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * Method called from refresh/cancel button: it reload the v.o. (in another thread).
    */
   private void reloadData() {
-    new Thread() {
+    SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         boolean errorOnLoad = true;
         // it will be used another thread to do not block the rest of the application (the mani graphical thread)...
@@ -549,7 +555,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         resetButtonsState();
 
       }
-    }.start();
+    });
   }
 
 

@@ -86,8 +86,7 @@ public class FormattedTextTableCellRenderer extends DefaultTableCellRenderer {
 
 
   public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-                          boolean isSelected, boolean hasFocus, int row, int column,
-                          int leftMargin,int rightMargin,int topMargin,int bottomMargin) {
+                          boolean isSelected, boolean hasFocus, int row, int column) {
     JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
 
     if (defaultFont==null)

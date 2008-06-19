@@ -112,6 +112,9 @@ public class OrderRowsGridPanel extends JPanel {
     });
 
   }
+  public GridControl getGrid() {
+    return grid;
+  }
 
 
 

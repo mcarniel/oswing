@@ -370,7 +370,8 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
    */
   public void setValue(String attributeName, Object value) {
     if (row!=-1)
-      ((Grid)table).getVOListTableModel().setValueAt(value,row,((Grid)table).getColumnIndex(attributeName));
+//      ((Grid)table).getVOListTableModel().setValueAt(value,row,((Grid)table).getColumnIndex(attributeName));
+      ((Grid)table).getVOListTableModel().setField(row,attributeName,value);
   }
 
 

@@ -1,5 +1,29 @@
 
 
+Release Notes 1.6.5
+-------------------
+
+Final release 1.6.5 available
+Improved management of nested components within grid control and added CTRL+P/L accelerators to expand/collapse cells in grid.
+Added EXPAND_CELL_KEY and COLLAPSE_CELL_KEY properties to ClientSettings, in order to customize key accelerators used to expand/collapse cells.
+Improved ComboBoxVOColumn usage, by supporting inner value objects.
+Improved QueryUtil class by supporting inner value objects in insert and update methods.
+Added callback method "loadDataCompleted" to TreeDataLocator class, in order to intercept tree model loading completition for TreePanel and TreeGridPanel.
+Improved "Switch" dialog in "window" menu: now reported windows are chronologically sorted.
+Fixed bug in "window" menu of MDI frame: items "cascade", "tile horizontally" and "tile vertically" were inactive for two opened windows
+Fixed problem with numeric control and column: now 0.xxx numbers are correctly showed.
+Fixed problem with date column: now dd mm yyyy separator is correctly showed when redefined in ClientSettings.
+Fixed problem on rendering cells in grid having cell span defined.
+Fixed bug on rendering values in FormattedTextColumn introduced in last release.
+Fixed bug with grid profile when closing Internalframe.
+Fixed bug in HibernateUtils when applying filtering condition on grid having OR operator (e.g. field = 'a' or same field = 'b')
+Added "demo41" sample application to show how to use ColumnBoxVoColumn in grid, in combination with inner value objects.
+Added "demo42" sample application to show how to nest a Form panel within a grid.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions. 
+
+
+
+
 Release Notes 1.6.4
 -------------------
 

@@ -257,6 +257,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
           else
             treeModel = (DefaultTreeModel) ( (VOResponse) response).getVo();
           tree.setModel(treeModel);
+          treeDataLocator.loadDataCompleted(response.isError());
           tree.revalidate();
           if (expandAllNodes)
             expandAllNodes();
@@ -393,6 +394,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     else
       treeModel = (DefaultTreeModel) ( (VOResponse) response).getVo();
     recreateTree();
+    treeDataLocator.loadDataCompleted(response.isError());
+
     if (expandAllNodes)
       expandAllNodes();
     else if (expandRoot && rootVisible)
