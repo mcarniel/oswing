@@ -36,4 +36,9 @@ public class DemoClientFacade implements ClientFacade {
     new EmpGridFrameController(sessions);
   }
 
+
+  public void getEmpDepts() {
+    new EmpDeptGridFrameController(sessions);
+  }
+
 }

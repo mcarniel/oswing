@@ -92,6 +92,7 @@ public class ClientApplication implements MDIController,LoginController {
       props.setProperty("empCode","Employee Code");
       props.setProperty("task","Task");
       props.setProperty("department","Department");
+      props.setProperty("employees and departments","Employees and Departments");
 
       ClientSettings clientSettings = new ClientSettings(
           new EnglishOnlyResourceFactory("$",props,true),
@@ -272,9 +273,11 @@ public class ClientApplication implements MDIController,LoginController {
     ApplicationFunction n13 = new ApplicationFunction("Tasks","TASKS","appicon.gif","getTasks");
     ApplicationFunction n14 = new ApplicationFunction("Departments","DEPT","appicon.gif","getDepts");
     ApplicationFunction n15 = new ApplicationFunction("Emps","EMP","appicon.gif","getEmps");
+    ApplicationFunction n16 = new ApplicationFunction("Emps and Depts","EMPDEPT","appicon.gif","getEmpDepts");
     n1.add(n13);
     n1.add(n14);
     n1.add(n15);
+    n1.add(n16);
     root.add(n1);
 
     return model;

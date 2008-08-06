@@ -334,7 +334,7 @@ public class GridFrameController extends GridController implements GridDataLocat
    */
   public Color getBackgroundColor(int row,String attributeName,Object value) {
     if (attributeName.equals("button"))
-      return Color.orange;
+      return new Color(200,200,220);
     return super.getBackgroundColor(row,attributeName,value);
   }
 
