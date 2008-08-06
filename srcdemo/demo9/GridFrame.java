@@ -73,8 +73,10 @@ public class GridFrame extends JFrame {
     grid.setCopyButton(copyButton);
     grid.setDeleteButton(deleteButton);
     grid.setEditButton(editButton);
+    grid.setInsertRowsOnTop(false);
     grid.setExportButton(exportButton);
     grid.setMaxNumberOfRowsOnInsert(50);
+    grid.setAllowInsertInEdit(true);
     grid.setInsertButton(insertButton);
     grid.setReloadButton(reloadButton);
     grid.setSaveButton(saveButton);

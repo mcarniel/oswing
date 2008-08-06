@@ -67,6 +67,7 @@ public class DetailFrame extends JFrame {
   ListControl listControl1 = new ListControl();
   PasswordControl controlPasswd = new PasswordControl();
   LinkButton linkButton1 = new LinkButton();
+  GenericButton buttonPressMe = new GenericButton();
 
 
   public DetailFrame(Connection conn,DetailFrameController dataController) {
@@ -167,6 +168,8 @@ public class DetailFrame extends JFrame {
     linkButton1.addActionListener(new DetailFrame_linkButton1_actionAdapter(this));
     linkButton1.setFont(new java.awt.Font("Dialog", 1, 11));
     linkButton1.setLabel("click me!");
+    buttonPressMe.setButtonBehavior(Consts.BUTTON_TEXT_ONLY);
+    buttonPressMe.setAttributeName("stringValue");
     this.getContentPane().add(buttonsPanel,  BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(copyButton, null);
@@ -214,6 +217,8 @@ public class DetailFrame extends JFrame {
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(linkButton1,     new GridBagConstraints(0, 9, 4, 1, 0.0, 0.0
             ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    mainPanel.add(buttonPressMe,           new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 0, 0), 0, 0));
 
     controlText.setAttributeName("stringValue");
     controlText.setRequired(true);

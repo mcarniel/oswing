@@ -195,21 +195,39 @@ public class GridFrameController extends GridController implements GridDataLocat
    */
   public Response updateRecords(int[] rowNumbers,ArrayList oldPersistentObjects,ArrayList persistentObjects) throws Exception {
     PreparedStatement stmt = null;
+    PreparedStatement stmt2 = null;
     try {
       stmt = conn.prepareStatement("update DEMO3 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=? where TEXT=?");
+      stmt2 = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE) values(?,?,?,?,?,?,?,?)");
       TestVO vo = null;
+      TestVO oldVO = null;
       for(int i=0;i<persistentObjects.size();i++) {
+        oldVO = (TestVO)oldPersistentObjects.get(i);
         vo = (TestVO)persistentObjects.get(i);
-        stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
-        stmt.setString(5,vo.getComboValue());
-        stmt.setBigDecimal(3,vo.getCurrencyValue());
-        stmt.setDate(4,vo.getDateValue());
-        stmt.setBigDecimal(2,vo.getNumericValue());
-        stmt.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");
-        stmt.setString(1,vo.getStringValue());
-        stmt.setString(8,vo.getLookupValue());
-        stmt.setString(9,vo.getStringValue());
-        stmt.execute();
+        if (oldVO!=null) {
+          stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
+          stmt.setString(5,vo.getComboValue());
+          stmt.setBigDecimal(3,vo.getCurrencyValue());
+          stmt.setDate(4,vo.getDateValue());
+          stmt.setBigDecimal(2,vo.getNumericValue());
+          stmt.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");
+          stmt.setString(1,vo.getStringValue());
+          stmt.setString(8,vo.getLookupValue());
+          stmt.setString(9,vo.getStringValue());
+          stmt.execute();
+        }
+        else {
+          stmt2.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
+          stmt2.setString(5,vo.getComboValue());
+          stmt2.setBigDecimal(3,vo.getCurrencyValue());
+          stmt2.setDate(4,vo.getDateValue());
+          stmt2.setBigDecimal(2,vo.getNumericValue());
+          stmt2.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");
+          stmt2.setString(1,vo.getStringValue());
+          stmt2.setString(8,vo.getLookupValue());
+          stmt2.execute();
+        }
+
       }
       return new VOListResponse(persistentObjects,false,persistentObjects.size());
     }
@@ -220,6 +238,7 @@ public class GridFrameController extends GridController implements GridDataLocat
     finally {
       try {
         stmt.close();
+        stmt2.close();
         conn.commit();
       }
       catch (SQLException ex1) {

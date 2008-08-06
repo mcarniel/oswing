@@ -120,7 +120,7 @@ public class EmpGridFrame extends InternalFrame {
        */
       public JComponent getComponentToShow(VOListTableModel model,int rowNum) {
         GridEmpVO gridVO = (GridEmpVO)model.getObjectForRow(rowNum);
-        EmpDetailPanelController c = new EmpDetailPanelController(gridVO,conn);
+        EmpDetailPanelController c = new EmpDetailPanelController(grid,gridVO,conn);
         EmpDetailPanel p = c.getPanel();
         p.setPreferredSize(new Dimension(590,480));
         p.setBorder(BorderFactory.createEtchedBorder());

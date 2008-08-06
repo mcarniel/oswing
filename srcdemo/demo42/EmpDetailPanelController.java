@@ -34,13 +34,19 @@ public class EmpDetailPanelController extends FormController {
   private EmpDetailPanel panel = null;
 
 
-  public EmpDetailPanelController(GridEmpVO gridVO,Connection conn) {
+  public EmpDetailPanelController(GridControl grid,GridEmpVO gridVO,Connection conn) {
     this.gridVO = gridVO;
     this.conn = conn;
     panel = new EmpDetailPanel(conn);
     panel.getMainPanel().setFormController(this);
     panel.getMainPanel().setMode(Consts.READONLY);
     panel.getMainPanel().reload();
+
+    // link the parent grid to the current Form...
+    HashSet pk = new HashSet();
+    pk.add("empCode"); // pk for Form is based on one only attribute...
+    panel.getMainPanel().linkGrid(grid,pk,true,true,true,null);
+
   }
 
 
