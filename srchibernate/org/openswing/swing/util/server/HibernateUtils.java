@@ -8,6 +8,9 @@ import org.hibernate.type.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.*;
 import org.openswing.swing.server.*;
+import java.math.BigDecimal;
+import java.beans.*;
+import java.math.BigInteger;
 
 
 /**
@@ -65,14 +68,92 @@ public class HibernateUtils {
     String tableName,
     SessionFactory sessions
   ) throws Exception {
+    return applyFiltersAndSorter(
+      new HashMap(),
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      valueObjectType,
+      baseSQL,
+      paramValues,
+      paramTypes,
+      tableName,
+      sessions
+    );
+  }
+
+
+  /**
+   * Apply filtering and sorting conditions to the specified baseSQL and return
+   * a new baseSQL that contains those conditions too.
+   * If decodedAttributes is filled, then baseSQL can contains a HSQL query.
+   * @param decodedAttributes collection of pairs <value object attribute name,attribute defined in HSQL query>
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param baseSQL base SQL
+   * @param paramValues parameters values, related to "?" in "baseSQL"
+   * @param paramTypes parameters types, related to "?" in "baseSQL"
+   * @param tableName table name related to baseSQL and v.o.
+   * @param sessions SessionFactory
+   */
+  public static String applyFiltersAndSorter(
+    Map decodedAttributes,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String baseSQL,
+    ArrayList paramValues,
+    ArrayList paramTypes,
+    String tableName,
+    SessionFactory sessions
+  ) throws Exception {
+
+//    Iterator it = filteredColumns.keySet().iterator();
+//    String gridAttr,hsqlAttr;
+//    HashSet toRemove = new HashSet();
+//    HashMap toAdd = new HashMap();
+//    while(it.hasNext()) {
+//      gridAttr = it.next().toString();
+//      hsqlAttr = (String)decodedAttributes.get(gridAttr);
+//      if (hsqlAttr!=null) {
+//        toAdd.put(hsqlAttr,filteredColumns.get(gridAttr));
+//        toRemove.add(gridAttr);
+//      }
+//    }
+//    filteredColumns.putAll(toAdd);
+//    it = toRemove.iterator();
+//    while(it.hasNext())
+//      filteredColumns.remove(it.next());
+//
+//    for(int i=0;i<currentSortedColumns.size();i++) {
+//      gridAttr = currentSortedColumns.get(i).toString();
+//      hsqlAttr = (String)decodedAttributes.get(gridAttr);
+//      if (hsqlAttr!=null) {
+//        currentSortedColumns.set(i,hsqlAttr);
+//      }
+//    }
+
+
     // fill in "attributesMap" according to attributes defined in xxx.hdm.xml...
     ClassMetadata meta = sessions.getClassMetadata(valueObjectType);
-    String[] attrNames = meta.getPropertyNames();
     Map attributesMap = new HashMap();
-    for(int i=0;i<attrNames.length;i++)
-      attributesMap.put(attrNames[i],tableName+"."+attrNames[i]);
+    Map propDescriptors = new HashMap();
+    if (meta!=null) {
+      String[] attrNames = meta.getPropertyNames();
+      for(int i=0;i<attrNames.length;i++)
+        attributesMap.put(attrNames[i],tableName+"."+attrNames[i]);
 
-    attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
+      attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
+    }
+    else {
+      attributesMap.putAll(decodedAttributes);
+      PropertyDescriptor[] p = Introspector.getBeanInfo(valueObjectType).getPropertyDescriptors();
+      for(int i=0;i<p.length;i++)
+        propDescriptors.put(p[i].getName(),p[i].getPropertyType());
+    }
 
     // append filtering and sorting conditions to the base SQL...
     ArrayList filterAttrNames = new ArrayList();
@@ -84,18 +165,18 @@ public class HibernateUtils {
 
       if (where[0].getValue()!=null && where[0].getValue() instanceof List) {
         for(int j=0;j<((List)where[0].getValue()).size();j++)
-          paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+          paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
       }
       else
-        paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+        paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
 
       if (where[1]!=null) {
         if (where[1].getValue()!=null && where[1].getValue() instanceof List) {
           for(int j=0;j<((List)where[1].getValue()).size();j++)
-            paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+            paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
         }
         else
-          paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+          paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
       }
     }
 
@@ -147,14 +228,116 @@ public class HibernateUtils {
     String tableName,
     SessionFactory sessions
   ) throws Exception {
+    return applyFiltersAndSorter(
+        new HashMap(),
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        valueObjectType,
+        select,
+        from,
+        where,
+        group,
+        having,
+        order,
+        paramValues,
+        paramTypes,
+        tableName,
+        sessions
+      );
+  }
+
+
+  /**
+   * Apply filtering and sorting conditions to the specified baseSQL and return
+   * a new baseSQL that contains those conditions too.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companiesVO order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companiesVO","","customer_code asc","","",...);
+   *
+   * If decodedAttributes is filled, then baseSQL can contains a HSQL query.
+   * @param decodedAttributes collection of pairs <value object attribute name,attribute defined in HSQL query>
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL"
+   * @param paramTypes parameters types, related to "?" in "baseSQL"
+   * @param tableName table name related to baseSQL and v.o.
+   * @param sessions SessionFactory
+   */
+  public static String applyFiltersAndSorter(
+    Map decodedAttributes,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    ArrayList paramValues,
+    ArrayList paramTypes,
+    String tableName,
+    SessionFactory sessions
+  ) throws Exception {
+
+//    Iterator it = filteredColumns.keySet().iterator();
+//    String gridAttr,hsqlAttr;
+//    HashSet toRemove = new HashSet();
+//    HashMap toAdd = new HashMap();
+//    while(it.hasNext()) {
+//      gridAttr = it.next().toString();
+//      hsqlAttr = (String)decodedAttributes.get(gridAttr);
+//      if (hsqlAttr!=null) {
+//        toAdd.put(hsqlAttr,filteredColumns.get(gridAttr));
+//        toRemove.add(gridAttr);
+//      }
+//    }
+//    filteredColumns.putAll(toAdd);
+//    it = toRemove.iterator();
+//    while(it.hasNext())
+//      filteredColumns.remove(it.next());
+//
+//    for(int i=0;i<currentSortedColumns.size();i++) {
+//      gridAttr = currentSortedColumns.get(i).toString();
+//      hsqlAttr = (String)decodedAttributes.get(gridAttr);
+//      if (hsqlAttr!=null) {
+//        currentSortedColumns.set(i,hsqlAttr);
+//      }
+//    }
+
     // fill in "attributesMap" according to attributes defined in xxx.hdm.xml...
     ClassMetadata meta = sessions.getClassMetadata(valueObjectType);
-    String[] attrNames = meta.getPropertyNames();
     Map attributesMap = new HashMap();
-    for(int i=0;i<attrNames.length;i++)
-      attributesMap.put(attrNames[i],tableName+"."+attrNames[i]);
+    Map propDescriptors = new HashMap();
+    if (meta!=null) {
+      String[] attrNames = meta.getPropertyNames();
+      for(int i=0;i<attrNames.length;i++)
+        attributesMap.put(attrNames[i],tableName+"."+attrNames[i]);
 
-    attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
+      attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
+    }
+    else {
+      attributesMap.putAll(decodedAttributes);
+      PropertyDescriptor[] p = Introspector.getBeanInfo(valueObjectType).getPropertyDescriptors();
+      for(int i=0;i<p.length;i++)
+        propDescriptors.put(p[i].getName(),p[i].getPropertyType());
+    }
 
     // append filtering and sorting conditions to the base SQL...
     ArrayList filterAttrNames = new ArrayList();
@@ -180,18 +363,18 @@ public class HibernateUtils {
 
       if (whereC[0].getValue()!=null && whereC[0].getValue() instanceof List) {
         for(int j=0;j<((List)whereC[0].getValue()).size();j++)
-          paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+          paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
       }
       else
-        paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+        paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
 
       if (whereC[1]!=null) {
         if (whereC[1].getValue()!=null && whereC[1].getValue() instanceof List) {
           for(int j=0;j<((List)whereC[1].getValue()).size();j++)
-            paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+            paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
         }
         else
-          paramTypes.add(meta.getPropertyType(filterAttrNames.get(i).toString()));
+          paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
       }
     }
 
@@ -364,31 +547,22 @@ public class HibernateUtils {
     SessionFactory sessions,
     Session sess
   ) throws Exception {
-
-    ArrayList values = new ArrayList();
-    values.addAll(Arrays.asList(paramValues));
-    ArrayList types = new ArrayList();
-    types.addAll(Arrays.asList(paramTypes));
-    baseSQL = applyFiltersAndSorter(
+    return getBlockFromQuery(
+        new HashMap(),
+        action,
+        startIndex,
+        blockSize,
         filteredColumns,
         currentSortedColumns,
         currentSortedVersusColumns,
         valueObjectType,
         baseSQL,
-        values,
-        types,
+        paramValues,
+        paramTypes,
         tableName,
-        sessions
+        sessions,
+        sess
     );
-
-    return getBlockFromQuery(
-      action,
-      startIndex,
-      blockSize,
-      sess.createQuery(baseSQL).setParameters(values.toArray(),(Type[])types.toArray(new Type[types.size()])),
-      sess
-    );
-
 
 //    // read a block of records...
 //    ArrayList gridList = new ArrayList();
@@ -430,6 +604,155 @@ public class HibernateUtils {
 //      resultSetLength = gridList.size();
 //
 //    return new VOListResponse(gridList,moreRows,resultSetLength);
+  }
+
+
+  /**
+   * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
+   * @param decodedAttributes collection of pairs <value object attribute name,attribute defined in HSQL query>
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param baseSQL base SQL
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param paramTypes parameters types, related to "?" in "baseSQL" (optional)
+   * @param tableName table name related to baseSQL and v.o.
+   * @param sessions SessionFactory
+   * @param sess Session
+   */
+  public static Response getBlockFromQuery(
+    Map decodedAttributes,
+    int action,
+    int startIndex,
+    int blockSize,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String baseSQL,
+    Object[] paramValues,
+    Type[] paramTypes,
+    String tableName,
+    SessionFactory sessions,
+    Session sess
+  ) throws Exception {
+
+    ArrayList values = new ArrayList();
+    values.addAll(Arrays.asList(paramValues));
+    ArrayList types = new ArrayList();
+    types.addAll(Arrays.asList(paramTypes));
+    baseSQL = applyFiltersAndSorter(
+        decodedAttributes,
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        valueObjectType,
+        baseSQL,
+        values,
+        types,
+        tableName,
+        sessions
+    );
+
+    return getBlockFromQuery(
+      valueObjectType,
+      action,
+      startIndex,
+      blockSize,
+      sess.createQuery(baseSQL).setParameters(values.toArray(),(Type[])types.toArray(new Type[types.size()])),
+      sess
+    );
+  }
+
+
+  /**
+   * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companiesVO order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companiesVO","","customer_code asc","","",...);
+   *
+   * @param decodedAttributes collection of pairs <value object attribute name,attribute defined in HSQL query>
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param paramTypes parameters types, related to "?" in "baseSQL" (optional)
+   * @param tableName table name related to baseSQL and v.o.
+   * @param sessions SessionFactory
+   * @param sess Session
+   */
+  public static Response getBlockFromQuery(
+    Map decodedAttributes,
+    int action,
+    int startIndex,
+    int blockSize,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    Type[] paramTypes,
+    String tableName,
+    SessionFactory sessions,
+    Session sess
+  ) throws Exception {
+
+    ArrayList values = new ArrayList();
+    values.addAll(Arrays.asList(paramValues));
+    ArrayList types = new ArrayList();
+    types.addAll(Arrays.asList(paramTypes));
+    String baseSQL = applyFiltersAndSorter(
+        decodedAttributes,
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        valueObjectType,
+        select,
+        from,
+        where,
+        group,
+        having,
+        order,
+        values,
+        types,
+        tableName,
+        sessions
+    );
+
+    return getBlockFromQuery(
+      valueObjectType,
+      action,
+      startIndex,
+      blockSize,
+      sess.createQuery(baseSQL).setParameters(values.toArray(),(Type[])types.toArray(new Type[types.size()])),
+      sess
+    );
   }
 
 
@@ -484,33 +807,25 @@ public class HibernateUtils {
     SessionFactory sessions,
     Session sess
   ) throws Exception {
-
-    ArrayList values = new ArrayList();
-    values.addAll(Arrays.asList(paramValues));
-    ArrayList types = new ArrayList();
-    types.addAll(Arrays.asList(paramTypes));
-    String baseSQL = applyFiltersAndSorter(
-        filteredColumns,
-        currentSortedColumns,
-        currentSortedVersusColumns,
-        valueObjectType,
-        select,
-        from,
-        where,
-        group,
-        having,
-        order,
-        values,
-        types,
-        tableName,
-        sessions
-    );
-
     return getBlockFromQuery(
+      new HashMap(),
       action,
       startIndex,
       blockSize,
-      sess.createQuery(baseSQL).setParameters(values.toArray(),(Type[])types.toArray(new Type[types.size()])),
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      valueObjectType,
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      paramValues,
+      paramTypes,
+      tableName,
+      sessions,
       sess
     );
   }
@@ -525,6 +840,7 @@ public class HibernateUtils {
    * @param sess Session
    */
   public static Response getBlockFromQuery(
+    Class valueObjectClass,
     int action,
     int startIndex,
     int blockSize,
@@ -567,7 +883,48 @@ public class HibernateUtils {
     if (resultSetLength==-1)
       resultSetLength = gridList.size();
 
+    if (gridList.size()>0 && gridList.get(0) instanceof Object[]) {
+      return QueryUtil.getQuery(
+        query.getReturnAliases(),
+        valueObjectClass,
+        gridList,
+        moreRows
+      );
+
+    }
+
     return new VOListResponse(gridList,moreRows,resultSetLength);
+  }
+
+
+  private static org.hibernate.type.Type getPropertyType(ClassMetadata meta,String attrName,Map propDescriptors) {
+    if (meta!=null)
+      return meta.getPropertyType(attrName);
+    Class clazz = (Class)propDescriptors.get(attrName);
+    if (clazz==null)
+      return new org.hibernate.type.StringType();
+    else if (clazz.equals(BigDecimal.class))
+      return new org.hibernate.type.BigDecimalType();
+    else if (clazz.equals(Double.class))
+      return new org.hibernate.type.DoubleType();
+    else if (clazz.equals(Long.class))
+      return new org.hibernate.type.LongType();
+    else if (clazz.equals(BigInteger.class))
+      return new org.hibernate.type.BigIntegerType();
+    else if (clazz.equals(Integer.class))
+      return new org.hibernate.type.IntegerType();
+    else if (clazz.equals(Float.class))
+      return new org.hibernate.type.FloatType();
+    else if (clazz.equals(Short.class))
+      return new org.hibernate.type.ShortType();
+    else if (clazz.equals(java.util.Date.class))
+      return new org.hibernate.type.DateType();
+    else if (clazz.equals(java.sql.Date.class))
+      return new org.hibernate.type.DateType();
+    else if (clazz.equals(java.sql.Timestamp.class))
+      return new org.hibernate.type.TimestampType();
+    else
+      return new org.hibernate.type.StringType();
   }
 
 
