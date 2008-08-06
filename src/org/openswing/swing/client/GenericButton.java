@@ -55,6 +55,9 @@ public class GenericButton extends JButton {
   /** define whether showing image/text on default buttons (insert, edit, ...); allowed values: Consts.BUTTON_IMAGE_ONLY, Consts.BUTTON_TEXT_ONLY, Consts.BUTTON_IMAGE_AND_TEXT; default value: ClientSettings.BUTTON_BEHAVIOR */
   private int buttonBehavior = ClientSettings.BUTTON_BEHAVIOR;
 
+  /** attribute name linked to the button (optional) */
+  public String attributeName = null;
+
 
   public GenericButton() {
     super.addActionListener(new ActionListener() {
@@ -255,6 +258,23 @@ public class GenericButton extends JButton {
    */
   public final void setButtonBehavior(int buttonBehavior) {
     this.buttonBehavior = buttonBehavior;
+  }
+
+
+  /**
+   * Link the button to the form which contains it and with the specified the attribute.
+   * @param attributeName attribute name linked to the button
+   */
+  public final void setAttributeName(String attributeName) {
+    this.attributeName = attributeName;
+  }
+
+
+  /**
+   * @return attributeName attribute name linked to the input control
+   */
+  public final String getAttributeName() {
+    return attributeName;
   }
 
 

@@ -81,6 +81,9 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
   /** tree panel used in nested component container */
   private MinusPanel expTreePanel = new MinusPanel();
 
+  /** current expanded row; -1 if no row is currently expanded */
+  private int currentExpandedRow;
+
 
   public ExpandableRenderer(Grid grid,Grids grids,int expandableColumn,VOListAdapter modelAdapter) {
     this.grid = grid;
@@ -147,6 +150,21 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
   }
 
 
+  /**
+   * If expandableRenderer attribute is not null and
+   * there is an expanded row, then refresh it.
+   * This method can be invoked by Form when updating a nested Form panel,
+   * in order to refresh expanded row content.
+   */
+  public final void refreshExpandableRenderer() {
+    if (currentExpandedRow!=-1) {
+      int row = currentExpandedRow;
+      collapseRow(row);
+      expandRow(row);
+    }
+  }
+
+
   private void collapseAllRowsExcept(int row) {
     for(int i=0;i<grids.getVOListTableModel().getRowCount();i++)
       if (i!=row && grids.isRowExpanded(i))
@@ -155,6 +173,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
 
 
   public final void collapseRow(int row) {
+    currentExpandedRow = -1;
     ExpandablePanel c = (ExpandablePanel)grids.getComponentInCache(row);
     if (c!=null)
       grid.remove(c);
@@ -180,6 +199,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
         collapseAllRowsExcept(row);
       }
       grids.expandRow(row);
+      currentExpandedRow = row;
 
       ExpandablePanel expPanel = (ExpandablePanel)grids.getComponentInCache(row);
       Component c = null;

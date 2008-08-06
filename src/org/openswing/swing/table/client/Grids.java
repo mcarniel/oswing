@@ -169,6 +169,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** maximum number of rows to insert by pressing "down" key; default value: 1 */
   private int maxNumberOfRowsOnInsert = 1;
 
+  /** flag used to allow insert row (using DOWN key) in edit mode too; default value: <code>false</code> */
+  private boolean allowInsertInEdit = false;
+
   /** current number of new rows  */
   private int currentNumberOfNewRows = 0;
 
@@ -198,6 +201,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
   /** current nested component row index */
   private int currentNestedComponentRow = -1;
+
+  /** define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom; default value: <code>true</code> */
+  private boolean insertRowsOnTop = true;
 
 
   /**
@@ -586,6 +592,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 //        startIndex = Math.max(0,lastIndex-model.getRowCount()+1);
 
         // reload data...
+        currentNumberOfNewRows = 0;
         errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
         if (model.getRowCount()>0) {
           grid.setRowSelectionInterval(0,0);
@@ -810,9 +817,13 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
       }
       else if (mode==Consts.INSERT) {
+        int rowToSel = 0;
+        if (!isInsertRowsOnTop())
+          rowToSel = model.getRowCount()-1;
+
         try {
           // retrieve value object of the inserting row...
-          ValueObject vo = (ValueObject) model.getObjectForRow(0); // the first row is alsways the inserting row...
+          ValueObject vo = (ValueObject) model.getObjectForRow(rowToSel); // the first row is alsways the inserting row...
           // fire create v.o. event to the grid controller: used to fill in the v.o. with default values...
           gridController.createValueObject(vo);
 
@@ -822,7 +833,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
                 !((ComboColumn)colProps[i]).isNullAsDefaultValue())
               model.setValueAt(
                 ((ComboColumn)colProps[i]).getDomain().getDomainPairList()[0].getCode(),
-                0,
+                rowToSel,
                 model.findColumn(((ComboColumn)colProps[i]).getColumnName())
               );
 
@@ -830,19 +841,19 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         catch (Throwable ex) {
           Logger.error(this.getClass().getName(),"modeChanged","Error while constructing value object '"+modelAdapter.getValueObjectType().getName()+"'",ex);
         }
-        grid.setRowSelectionInterval(0,0);
+        grid.setRowSelectionInterval(rowToSel,rowToSel);
         grid.setColumnSelectionInterval(0,0);
-        grid.ensureRowIsVisible(0);
+        grid.ensureRowIsVisible(rowToSel);
 
         if (lockedGrid!=null) {
-          lockedGrid.setRowSelectionInterval(0,0);
+          lockedGrid.setRowSelectionInterval(rowToSel,rowToSel);
           lockedGrid.setColumnSelectionInterval(0,0);
-          lockedGrid.ensureRowIsVisible(0);
-          lockedGrid.editCellAt(0,0);
+          lockedGrid.ensureRowIsVisible(rowToSel);
+          lockedGrid.editCellAt(rowToSel,0);
           lockedGrid.requestFocus();
         }
         else {
-          grid.editCellAt(0, 0);
+          grid.editCellAt(rowToSel, 0);
           grid.requestFocus();
         }
       }
@@ -1553,12 +1564,21 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public final void reload() {
     if (getMode()!=Consts.READONLY) {
       // view confirmation dialog...
-      if (OptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
-                                    ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
-                                    ClientSettings.getInstance().getResources().getResource("Attention"),
-                                    JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+      boolean ok = true;
+      if (gridControl!=null && gridControl.isShowWarnMessageBeforeReloading())
+        ok = OptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
+                                      ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
+                                      ClientSettings.getInstance().getResources().getResource("Attention"),
+                                      JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION;
+      if (ok)
         executeReload();
     } else if (getMode()==Consts.READONLY) {
+
+      for(int i=0;i<expandedRows.size();i++)
+        grid.collapseRow( ((Integer)expandedRows.get(i)).intValue() );
+      currentNestedComponent = null;
+      currentNestedComponentRow = -1;
+
       if (grid.getTableHeader()!=null)
         grid.getTableHeader().repaint();
       if (lockedGrid!=null && lockedGrid.getTableHeader()!=null)
@@ -1761,8 +1781,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (getMode()==Consts.READONLY) {
       if (!gridController.beforeInsertGrid(gridControl))
         return;
-      model.setMode(Consts.INSERT);
       currentNumberOfNewRows = 1;
+      model.setMode(Consts.INSERT);
       if (getInsertButton()!=null)
         getInsertButton().setEnabled(false);
       if (getCopyButton()!=null)
@@ -1776,10 +1796,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         getReloadButton().setEnabled(true);
       if (getSaveButton()!=null)
         getSaveButton().setEnabled(true);
-      grid.setRowSelectionInterval(0,0);
+
+      int rowToSel = 0;
+      if (!isInsertRowsOnTop())
+        rowToSel = model.getRowCount()-1;
+
+      grid.setRowSelectionInterval(rowToSel,rowToSel);
       grid.setColumnSelectionInterval(0,0);
       if (lockedGrid!=null) {
-        lockedGrid.setRowSelectionInterval(0,0);
+        lockedGrid.setRowSelectionInterval(rowToSel,rowToSel);
         lockedGrid.setColumnSelectionInterval(0,0);
       }
 
@@ -1787,22 +1812,22 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
       int col = 0;
       if (lockedGrid!=null) {
-        while (col<lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(lockedGrid.getSelectedRow(),col))
+        while (col<lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(rowToSel,col))
           col++;
         if (col<lockedGrid.getColumnCount())
           lockedGrid.setColumnSelectionInterval(col,col);
         if (lockedGrid.getSelectedColumn()!=-1)
-          lockedGrid.editCellAt(lockedGrid.getSelectedRow(),lockedGrid.getSelectedColumn());
+          lockedGrid.editCellAt(rowToSel,lockedGrid.getSelectedColumn());
         lockedGrid.requestFocus();
       }
 
       if (lockedGrid==null || col==lockedGrid.getColumnCount()) {
         col = 0;
-        while (col<grid.getColumnCount() && !grid.isCellEditable(grid.getSelectedRow(),col))
+        while (col<grid.getColumnCount() && !grid.isCellEditable(rowToSel,col))
           col++;
         if (col<grid.getColumnCount())
           grid.setColumnSelectionInterval(col,col);
-        grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+        grid.editCellAt(rowToSel,grid.getSelectedColumn());
         grid.requestFocus();
       }
 
@@ -2428,18 +2453,50 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       catch (Exception ex) {
         Logger.error(this.getClass().getName(), "save", "Error on grid validation.", ex);
       }
+      int[] newRowsIndexes = new int[currentNumberOfNewRows];
       try {
         // call grid controller to save data...
         previousMode = getMode();
         if (getMode()==Consts.INSERT) {
           ArrayList newRows = new ArrayList();
-          int[] newRowsIndexes = new int[currentNumberOfNewRows];
           for(int i=0;i<currentNumberOfNewRows;i++)
-            newRows.add( model.getObjectForRow(i) );
+            if (isInsertRowsOnTop()) {
+              newRowsIndexes[i] = i;
+              newRows.add(model.getObjectForRow(newRowsIndexes[i]));
+            }
+            else {
+              newRowsIndexes[i] = model.getRowCount()-currentNumberOfNewRows+i;
+              newRows.add(model.getObjectForRow(newRowsIndexes[i]));
+            }
           response = gridController.insertRecords(newRowsIndexes,newRows);
         }
-        else if (getMode()==Consts.EDIT)
+        else if (getMode()==Consts.EDIT) {
+//          if (currentNumberOfNewRows>0) {
+//            ArrayList newRows = new ArrayList();
+//            for(int i=0;i<currentNumberOfNewRows;i++)
+//              if (isInsertRowsOnTop()) {
+//                newRowsIndexes[i] = i;
+//                newRows.add(model.getObjectForRow(newRowsIndexes[i]));
+//              }
+//              else {
+//                newRowsIndexes[i] = model.getRowCount()-currentNumberOfNewRows+i;
+//                newRows.add(model.getObjectForRow(newRowsIndexes[i]));
+//              }
+//            response = gridController.insertRecords(newRowsIndexes,newRows);
+//            if (response.isError()) {
+//              // saving operation throws an error: it will be viewed on a dialog...
+//              OptionPane.showMessageDialog(
+//                  ClientUtils.getParentFrame(this),
+//                  ClientSettings.getInstance().getResources().getResource("Error while saving")+":\n"+ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
+//                  ClientSettings.getInstance().getResources().getResource("Saving Error"),
+//                  JOptionPane.ERROR_MESSAGE
+//              );
+//              return !response.isError();
+//            }
+//          }
+
           response = gridController.updateRecords(model.getChangedRowNumbers(), model.getOldVOsChanged(), model.getChangedRows());
+        }
         if (!response.isError()) {
           try {
             // patch inserted to disable image cell editor...
@@ -2454,14 +2511,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           }
           if (getMode()==Consts.INSERT) {
             for(int i=0;i<currentNumberOfNewRows;i++)
-              model.updateObjectAt((ValueObject)((VOListResponse)response).getRows().get(i),i);
+              model.updateObjectAt((ValueObject)((VOListResponse)response).getRows().get(i),newRowsIndexes[i]);
             lastIndex = lastIndex+currentNumberOfNewRows;
-            currentNumberOfNewRows = 0;
           } else {
-            for(int i=0;i<model.getChangedRowNumbers().length;i++) {
+            for(int i=0;i<currentNumberOfNewRows;i++)
+              model.updateObjectAt((ValueObject)((VOListResponse)response).getRows().get(i),newRowsIndexes[i]);
+            for(int i=0;i<model.getChangedRowNumbers().length;i++)
               model.updateObjectAt((ValueObject)((VOListResponse)response).getRows().get(i),model.getChangedRowNumbers()[i]);
-            }
           }
+          currentNumberOfNewRows = 0;
 
           model.setMode(Consts.READONLY);
           if (getReloadButton()!=null)
@@ -2651,7 +2709,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         if (getMode() == Consts.INSERT) {
           rows = new int[currentNumberOfNewRows];
           for(int i=0;i<currentNumberOfNewRows;i++)
-            rows[i] = i;
+            if (isInsertRowsOnTop())
+              rows[i] = i;
+            else
+              rows[i] = model.getRowCount()-currentNumberOfNewRows+i;
         }
         else if (getMode() == Consts.EDIT)
           rows = model.getChangedRowNumbers();
@@ -2845,6 +2906,41 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    */
   public final void setMaxNumberOfRowsOnInsert(int maxNumberOfRowsOnInsert) {
     this.maxNumberOfRowsOnInsert = maxNumberOfRowsOnInsert;
+  }
+
+
+  /**
+   * @return allow insert row (using DOWN key) in edit mode too; default value: <code>false</code>
+   */
+  public final boolean isAllowInsertInEdit() {
+    return allowInsertInEdit;
+  }
+
+
+  /**
+   * Allow insert row (using DOWN key) in edit mode too; default value: <code>false</code>
+   * @param allowInsertInEdit allow insert row (using DOWN key) in edit mode too
+   */
+  public final void setAllowInsertInEdit(boolean allowInsertInEdit) {
+    this.allowInsertInEdit = allowInsertInEdit;
+  }
+
+
+
+  /**
+   * @return define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom
+   */
+  public final boolean isInsertRowsOnTop() {
+    return insertRowsOnTop;
+  }
+
+
+  /**
+   * Define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom; default value: <code>true</code>
+   * @param insertRowsOnTop define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom
+   */
+  public final void setInsertRowsOnTop(boolean insertRowsOnTop) {
+    this.insertRowsOnTop = insertRowsOnTop;
   }
 
 

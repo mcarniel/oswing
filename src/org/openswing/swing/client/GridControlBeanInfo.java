@@ -16,6 +16,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _allowInsertInEdit = new PropertyDescriptor("allowInsertInEdit", beanClass, "isAllowInsertInEdit", "setAllowInsertInEdit");
       PropertyDescriptor _anchorLastColumn = new PropertyDescriptor("anchorLastColumn", beanClass, "isAnchorLastColumn", "setAnchorLastColumn");
       PropertyDescriptor _autoLoadData = new PropertyDescriptor("autoLoadData", beanClass, "isAutoLoadData", "setAutoLoadData");
       PropertyDescriptor _colorsInReadOnlyMode = new PropertyDescriptor("colorsInReadOnlyMode", beanClass, "isColorsInReadOnlyMode", "setColorsInReadOnlyMode");
@@ -34,6 +35,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _exportButton = new PropertyDescriptor("exportButton", beanClass, "getExportButton", "setExportButton");
       PropertyDescriptor _filterButton = new PropertyDescriptor("filterButton", beanClass, "getFilterButton", "setFilterButton");
       PropertyDescriptor _intercellSpacing = new PropertyDescriptor("intercellSpacing", beanClass, "getIntercellSpacing", "setIntercellSpacing");
+      PropertyDescriptor _insertRowsOnTop = new PropertyDescriptor("insertRowsOnTop", beanClass, "isInsertRowsOnTop", "setInsertRowsOnTop");
       PropertyDescriptor _lockedColumns = new PropertyDescriptor("lockedColumns", beanClass, "getLockedColumns", "setLockedColumns");
       PropertyDescriptor _lockedRowsOnTop = new PropertyDescriptor("lockedRowsOnTop", beanClass, "getLockedRowsOnTop", "setLockedRowsOnTop");
       PropertyDescriptor _lockedRowsOnBottom = new PropertyDescriptor("lockedRowsOnBottom", beanClass, "getLockedRowsOnBottom", "setLockedRowsOnBottom");
@@ -54,10 +56,12 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _saveButton = new PropertyDescriptor("saveButton", beanClass, "getSaveButton", "setSaveButton");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
       PropertyDescriptor _showFilterPanelOnGrid = new PropertyDescriptor("showFilterPanelOnGrid", beanClass, "isShowFilterPanelOnGrid", "setShowFilterPanelOnGrid");
+      PropertyDescriptor _showWarnMessageBeforeReloading = new PropertyDescriptor("showWarnMessageBeforeReloading", beanClass, "isShowWarnMessageBeforeReloading", "setShowWarnMessageBeforeReloading");
       PropertyDescriptor _singleExpandableRow = new PropertyDescriptor("singleExpandableRow", beanClass, "isSingleExpandableRow", "setSingleExpandableRow");
       PropertyDescriptor _valueObjectClassName = new PropertyDescriptor("valueObjectClassName", beanClass, "getValueObjectClassName", "setValueObjectClassName");
       PropertyDescriptor _visibleStatusPanel = new PropertyDescriptor("visibleStatusPanel", beanClass, "isVisibleStatusPanel", "setVisibleStatusPanel");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _allowInsertInEdit,
         _anchorLastColumn,
         _autoLoadData,
         _colorsInReadOnlyMode,
@@ -73,6 +77,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _functionId,
         _gridDataLocator,
         _importButton,
+        _insertRowsOnTop,
         _intercellSpacing,
         _lockedColumns,
         _lockedRowsOnTop,
@@ -94,6 +99,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _saveButton,
         _selectionMode,
         _showFilterPanelOnGrid,
+        _showWarnMessageBeforeReloading,
         _singleExpandableRow,
         _valueObjectClassName,
         _visibleStatusPanel

@@ -13,6 +13,9 @@ import javax.swing.tree.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.tree.java.*;
 import org.openswing.swing.util.client.*;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeWillExpandListener;
+import javax.swing.event.TreeExpansionListener;
 
 
 /**
@@ -306,6 +309,20 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   public final void repaintTree() {
     TreePath selPath = tree.getSelectionPath();
     treePane.getViewport().remove(tree);
+
+    MouseMotionListener[] mml = null;
+    MouseWheelListener[] mwl = null;
+    TreeSelectionListener[] tsl = null;
+    TreeWillExpandListener[] twl = null;
+    TreeExpansionListener[] tel = null;
+    if (tree!=null) {
+      mml = tree.getMouseMotionListeners();
+      mwl = tree.getMouseWheelListeners();
+      tsl = tree.getTreeSelectionListeners();
+      twl = tree.getTreeWillExpandListeners();
+      tel = tree.getTreeExpansionListeners();
+    }
+
     tree = new JTree(treeModel) {
 
       public TreePath getNextMatch(String prefix, int startingRow,
@@ -337,6 +354,24 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
       tree.addKeyListener((KeyListener)keyListeners.get(i));
     for(int i=0;i<mouseListeners.size();i++)
       tree.addMouseListener((MouseListener)mouseListeners.get(i));
+
+    if (mml!=null)
+       for(int i=0;i<mml.length;i++)
+         tree.addMouseMotionListener(mml[i]);
+     if (mwl!=null)
+       for(int i=0;i<mwl.length;i++)
+         tree.addMouseWheelListener(mwl[i]);
+    if (tsl!=null)
+       for(int i=0;i<tsl.length;i++)
+         tree.addTreeSelectionListener(tsl[i]);
+    if (twl!=null)
+       for(int i=0;i<twl.length;i++)
+         tree.addTreeWillExpandListener(twl[i]);
+    if (tel!=null)
+       for(int i=0;i<tel.length;i++)
+         tree.addTreeExpansionListener(tel[i]);
+
+
 
     if (treeId != null && dndListener != null)
       enableDrag(treeId, dndListener);

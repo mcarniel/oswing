@@ -437,8 +437,15 @@ public class VOListAdapter {
     if (colIndex<colProperties.length) {
       if (mode==Consts.INSERT)
         return colProperties[colIndex].isEditableOnInsert();
-      else if (mode==Consts.EDIT)
-        return colProperties[colIndex].isEditableOnEdit();
+      else if (mode==Consts.EDIT) {
+        if (grids!=null &&
+            grids.isAllowInsertInEdit() &&
+            grids.getCurrentNumberOfNewRows()>0 &&
+            rowNumber>=grids.getVOListTableModel().getRowCount()-grids.getCurrentNumberOfNewRows())
+          return colProperties[colIndex].isEditableOnInsert();
+        else
+          return colProperties[colIndex].isEditableOnEdit();
+      }
       else {
         if (colProperties[colIndex].getColumnType()==Column.TYPE_BUTTON && ((ButtonColumn)colProperties[colIndex]).isEnableInReadOnlyMode())
           return true;

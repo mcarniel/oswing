@@ -283,21 +283,21 @@ public class VOListTableModel extends AbstractTableModel {
         return false;
       }
       else if (mode==Consts.INSERT) {
-        if (row<changedRows.size())
-//        return fieldAdapter.isFieldEditable(
-//          mode,
-//          row,
-//          column
-//        );
-          return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
-        else
-          return false;
+
+        if (fieldAdapter.getGrids().isInsertRowsOnTop()) {
+          if (row<changedRows.size())
+            return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
+          else
+            return false;
+        }
+        else {
+          if (row>=getRowCount()-changedRows.size())
+            return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
+          else
+            return false;
+        }
+
       } else
-//      return fieldAdapter.isFieldEditable(
-//          mode,
-//          row,
-//          column
-//      );
         return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
     }
     catch (Exception ex) {
@@ -319,8 +319,14 @@ public class VOListTableModel extends AbstractTableModel {
     changedVOs.clear();
     if (mode==Consts.INSERT) {
       try {
-        this.insertObjectAt((ValueObject) fieldAdapter.getValueObjectType().getConstructor(new Class[0]).newInstance(new Object[0]),0);
-        changedRows.add(new Integer(0));
+        if (fieldAdapter.getGrids().isInsertRowsOnTop()) {
+          this.insertObjectAt((ValueObject) fieldAdapter.getValueObjectType().getConstructor(new Class[0]).newInstance(new Object[0]),0);
+          changedRows.add(new Integer(0));
+        }
+        else {
+          this.insertObjectAt((ValueObject) fieldAdapter.getValueObjectType().getConstructor(new Class[0]).newInstance(new Object[0]),getRowCount());
+          changedRows.add(new Integer(getRowCount()-1));
+        }
       }
       catch (Exception ex) {
         ex.printStackTrace();
@@ -363,7 +369,8 @@ public class VOListTableModel extends AbstractTableModel {
     // store the original v.o. if grid mode is EDIT...
     try {
       if (mode == Consts.EDIT && !changedVOs.containsKey(new Integer(row))) {
-        changedVOs.put(new Integer(row), getObjectForRow(row).clone());
+        if (row<getRowCount()-fieldAdapter.getGrids().getCurrentNumberOfNewRows())
+          changedVOs.put(new Integer(row), getObjectForRow(row).clone());
       }
     }
     catch (CloneNotSupportedException ex) {
@@ -386,7 +393,8 @@ public class VOListTableModel extends AbstractTableModel {
     // store the original v.o. if grid mode is EDIT...
     try {
       if (mode == Consts.EDIT && !changedVOs.containsKey(new Integer(row))) {
-        changedVOs.put(new Integer(row), getObjectForRow(row).clone());
+        if (row<getRowCount()-fieldAdapter.getGrids().getCurrentNumberOfNewRows())
+          changedVOs.put(new Integer(row), getObjectForRow(row).clone());
       }
     }
     catch (CloneNotSupportedException ex) {
@@ -494,7 +502,7 @@ public class VOListTableModel extends AbstractTableModel {
     int[] rowNumbers = new int[this.changedRows.size()];
     for (int i=0; i<rowNumbers.length; i++)
       rowNumbers[i] = ((Integer) this.changedRows.get(i)).intValue();
-    return(rowNumbers);
+    return rowNumbers;
   }
 
 

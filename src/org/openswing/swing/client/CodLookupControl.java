@@ -98,6 +98,9 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
   /** used in addNotify method */
   private boolean firstTime = true;
 
+  private AutoCompletitionListener autoCompletitionListener = null;
+
+
 
   /**
    * Costructor.
@@ -265,6 +268,11 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    * @param code code to validate
    */
   public final void validateCode(String code) throws RestoreFocusOnInvalidCodeException {
+    if (autoCompletitionWaitTime>=0 &&
+        autoCompletitionListener!=null &&
+        autoCompletitionListener.isWindowVisible())
+      return;
+
     if (validationController!=null)
       validationController.validateCode(
           codBox,
@@ -335,17 +343,18 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
           validationController.setForm(form);
       }
 
-      if (!Beans.isDesignTime() && autoCompletitionWaitTime>=0) {
-        codBox.addKeyListener(
-          new AutoCompletitionListener(
-            this,
-            new LookupAutoCompletitionDataLocator(
-              validationController,
-              getAttributeName()
-            ),
-            autoCompletitionWaitTime
-          )
-        );
+      if (!Beans.isDesignTime() && autoCompletitionWaitTime>=0 && autoCompletitionListener==null) {
+        autoCompletitionListener =
+            new AutoCompletitionListener(
+              this,
+              new LookupAutoCompletitionDataLocator(
+                validationController,
+                getAttributeName()
+              ),
+              autoCompletitionWaitTime
+            );
+
+        codBox.addKeyListener(autoCompletitionListener);
       }
 
 

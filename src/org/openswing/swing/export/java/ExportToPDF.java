@@ -14,6 +14,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.*;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -101,23 +102,29 @@ public class ExportToPDF {
     table.setWidthPercentage(90);
     table.getDefaultCell().setBorderWidth(2);
     table.getDefaultCell().setBorderColor(Color.black);
-    table.getDefaultCell().setGrayFill(0.75f);
+    table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getHeaderGrayFill());
     table.getDefaultCell().setPadding(3);
     table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
     table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
 
     for(int i=0;i<opt.getExportColumns().size();i++)
-      table.addCell(new Phrase(opt.getExportColumns().get(i).toString(),new Font(Font.HELVETICA,Font.DEFAULTSIZE,Font.BOLD)));
+      table.addCell(
+        new Phrase(
+          opt.getExportColumns().get(i).toString(),
+          ClientSettings.EXPORT_TO_PDF_ADAPTER.getHeaderFont(
+            opt.getExportAttrColumns().get(i).toString()
+          )
+        )
+      );
 
     table.setHeaderRows(1);
     table.getDefaultCell().setBorderWidth(1);
     table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
     table.getDefaultCell().setVerticalAlignment(Element.ALIGN_TOP);
 
-    table.getDefaultCell().setGrayFill(0.95f);
-
     for(int j=0;j<opt.getTopRows().size();j++) {
       // create a row for each top rows...
+      table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getTopRowsGrayFill(j));
       vo = opt.getTopRows().get(j);
       appendRow(
         table,
@@ -148,10 +155,10 @@ public class ExportToPDF {
 
       for(int j=0;j<((VOListResponse)response).getRows().size();j++) {
         if (even) {
-          table.getDefaultCell().setGrayFill(0.95f);
+          table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getEvenRowsGrayFill());
           even = false;
         } else {
-          table.getDefaultCell().setGrayFill(1.00f);
+          table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getOddRowsGrayFill());
           even = true;
         }
 
@@ -180,6 +187,7 @@ public class ExportToPDF {
 
     for(int j=0;j<opt.getBottomRows().size();j++) {
       // create a row for each bottom rows...
+      table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getBottomRowsGrayFill(j));
       vo = opt.getBottomRows().get(j);
       appendRow(
         table,
@@ -214,36 +222,81 @@ public class ExportToPDF {
     SimpleDateFormat stf
   ) throws Throwable {
     int type;
-    Object value = null;
+    String aName = null;
+    Method getter = null;
+    Class clazz = null;
+    Object obj = null;
 
     for(int i=0;i<opt.getExportColumns().size();i++) {
-      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-      if (value!=null) {
-        if (value instanceof Date ||
-                 value instanceof java.util.Date ||
-                 value instanceof java.sql.Timestamp) {
+//      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
+
+      clazz = vo.getClass();
+      obj = vo;
+      aName = opt.getExportAttrColumns().get(i).toString();
+
+      // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+      while(aName.indexOf(".")!=-1) {
+        try {
+          getter = clazz.getMethod(
+            "get" +
+            aName.substring(0, 1).
+            toUpperCase() +
+            aName.substring(1,aName.indexOf(".")),
+            new Class[0]
+          );
+        }
+        catch (NoSuchMethodException ex2) {
+          getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+        }
+        aName = aName.substring(aName.indexOf(".")+1);
+        clazz = getter.getReturnType();
+        obj = getter.invoke(obj,new Object[0]);
+        if (obj==null)
+          break;
+      }
+
+      try {
+        getter = clazz.getMethod(
+          "get" +
+          aName.substring(0, 1).
+          toUpperCase() +
+          aName.substring(1),
+          new Class[0]
+        );
+      }
+      catch (NoSuchMethodException ex2) {
+        getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+      }
+
+      if (obj!=null)
+        obj = getter.invoke(obj,new Object[0]);
+
+      if (obj!=null) {
+        if (obj instanceof Date ||
+                 obj instanceof java.util.Date ||
+                 obj instanceof java.sql.Timestamp) {
           type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
           if (type==opt.TYPE_DATE) {
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(sdf.format((java.util.Date)value),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(sdf.format((java.util.Date)obj),ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
           }
           else if (type==opt.TYPE_DATE_TIME) {
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(sdatf.format((java.util.Date)value),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
           }
           else if (type==opt.TYPE_TIME) {
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(stf.format((java.util.Date)value),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(stf.format((java.util.Date)obj),ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
           }
         }
         else {
           table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-          table.addCell(new Phrase(value.toString(),new Font(Font.HELVETICA)));
+          table.addCell(new Phrase(obj.toString(),ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
         }
       }
       else {
         table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-        table.addCell(new Phrase("",new Font(Font.HELVETICA)));
+        table.addCell(new Phrase("",ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
       }
     }
 

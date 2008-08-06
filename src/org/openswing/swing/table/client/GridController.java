@@ -172,9 +172,9 @@ public class GridController {
 
   /**
    * Method invoked when the user has clicked on save button and the grid is in EDIT mode.
-   * @param rowNumbers row indexes related to the changed rows
-   * @param oldPersistentObjects old value objects, previous the changes
-   * @param persistentObjects value objects relatied to the changed rows
+   * @param rowNumbers row indexes related to the changed/new rows
+   * @param oldPersistentObjects old value objects, previous the changes; it can contains null objects, in case of new inserted rows
+   * @param persistentObjects value objects related to the changed/new rows
    * @return an ErrorResponse value object in case of errors, VOListResponse if the operation is successfully completed
    */
   public Response updateRecords(int[] rowNumbers,ArrayList oldPersistentObjects,ArrayList persistentObjects) throws Exception {

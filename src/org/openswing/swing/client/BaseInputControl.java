@@ -10,6 +10,7 @@ import javax.swing.*;
 import org.openswing.swing.form.model.client.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.util.client.*;
+import com.toedter.calendar.*;
 
 
 /**
@@ -205,6 +206,8 @@ public class BaseInputControl extends JPanel implements InputControl {
    * This method is called when the input control receives focus.
    */
   private void controlFocusGained(FocusEvent e) {
+    if (this instanceof DateControl)
+      maybeFireValueChangedEvent();
     oldValue = getValue();
     if (ClientSettings.VIEW_BACKGROUND_SEL_COLOR && isEnabled()) {
       getBindingComponent().setBackground(ClientSettings.BACKGROUND_SEL_COLOR);

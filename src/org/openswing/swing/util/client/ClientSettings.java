@@ -7,6 +7,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import org.openswing.swing.domains.java.*;
+import org.openswing.swing.export.java.*;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.lookup.client.*;
 import org.openswing.swing.mdi.client.*;
@@ -71,6 +72,9 @@ public class ClientSettings {
 
   /** flag used to show/hide a padlock in the tree menu panel; default value: <code>true</code> */
   public static boolean SHOW_PADLOCK_IN_TREE_MENU = true;
+
+  /** define if tree menu must by automatically expanded; default value: <code>false</code> */
+  public static boolean AUTO_EXPAND_TREE_MENU = false;
 
   /** image name for opened padlock icon in filter panel */
   public static String FILTER_PANEL_LOCK_ON = "lock.gif";
@@ -161,6 +165,9 @@ public class ClientSettings {
 
   /** masimum number of exportable rows */
   public static int MAX_EXPORTABLE_ROWS = 10000;
+
+  /** adapter used when exporting grid data in PDF format: it provides some overridable methods */
+  public static ExportToPDFAdapter EXPORT_TO_PDF_ADAPTER = new ExportToPDFAdapter();
 
   /** define if must be show the mandatory symbol "*" in mandatory input controls */
   public static boolean VIEW_MANDATORY_SYMBOL = false;

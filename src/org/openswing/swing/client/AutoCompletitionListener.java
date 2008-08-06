@@ -86,6 +86,27 @@ public final class AutoCompletitionListener extends KeyAdapter {
     window.setBackground(new Color(250,250,200));
     window.getContentPane().setLayout(new BorderLayout());
     window.getContentPane().add(scrollPane,BorderLayout.CENTER);
+
+    list.addMouseListener(new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+          list.setSelectedIndex(list.locationToIndex(e.getPoint()));
+          e.consume();
+          AutoCompletitionListener.this.inputControl.setValue(list.getSelectedValue());
+          if (AutoCompletitionListener.this.inputControl instanceof CodLookupControl)
+            ((CodLookupControl)AutoCompletitionListener.this.inputControl).getCodBox().forceValidate();
+          if (AutoCompletitionListener.this.inputControl instanceof CodLookupCellEditor)
+            ((CodLookupCellEditor)AutoCompletitionListener.this.inputControl).forceValidate();
+          window.setVisible(false);
+          try {
+            if (timer != null)
+              timer.interrupt();
+          }
+          catch (Exception ex) {
+          }
+          time = 0;
+        }
+    });
+
     inputControl.addAncestorListener(new AncestorListener() {
 
       public void ancestorAdded(AncestorEvent event) {
@@ -123,6 +144,15 @@ public final class AutoCompletitionListener extends KeyAdapter {
       }
 
     });
+
+  }
+
+
+  /**
+   * @return <code>true</code> if window for autocompletition codes is currently visible, <code>false</code> otherwise
+   */
+  public final boolean isWindowVisible() {
+    return window.isVisible();
   }
 
 
@@ -130,11 +160,11 @@ public final class AutoCompletitionListener extends KeyAdapter {
     if (e.getKeyCode()==e.VK_ENTER && window.isVisible() && list.getSelectedIndex()!=-1) {
       e.consume();
       inputControl.setValue(list.getSelectedValue());
+      window.setVisible(false);
       if (inputControl instanceof CodLookupControl)
         ((CodLookupControl)inputControl).getCodBox().forceValidate();
       if (inputControl instanceof CodLookupCellEditor)
         ((CodLookupCellEditor)inputControl).forceValidate();
-      window.setVisible(false);
       try {
         if (timer != null)
           timer.interrupt();

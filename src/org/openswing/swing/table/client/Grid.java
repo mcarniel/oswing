@@ -26,6 +26,7 @@ import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import org.openswing.swing.form.client.Form;
+import javax.swing.ListSelectionModel;
 
 
 /**
@@ -871,11 +872,16 @@ public class Grid extends JTable
                 // SHIFT+TAB pressed and grid is not in read only mode...
                 shiftTabPressed(e);
               }
-              else if (getMode()==Consts.INSERT &&
+
+
+
+              else if (getMode()==Consts.INSERT  && Grid.this.grids.isInsertRowsOnTop() &&
                        e.getKeyCode()==e.VK_DOWN &&
                        getSelectedRow()!=-1 &&
                        getSelectedRow()+1<Grid.this.grids.getMaxNumberOfRowsOnInsert() &&
-                       getSelectedRow()+1==Grid.this.grids.getCurrentNumberOfNewRows()) {
+                       getMode()==Consts.INSERT &&
+                       getSelectedRow()+1==Grid.this.grids.getCurrentNumberOfNewRows())
+              {
                 // user has pressed DOWN key and the grid is in INSERT mode and
                 // the current selected row is the last inserted row and
                 // grid is allowed to insert a new row (<max number of rows on insert...)
@@ -886,7 +892,9 @@ public class Grid extends JTable
                 try {
                   vo = (ValueObject)Grid.this.model.getValueObjectType().getConstructor(new Class[0]).newInstance(new Object[0]);
                   Grid.this.model.insertObjectAt(vo,Grid.this.grids.getCurrentNumberOfNewRows()-1);
-                  Grid.this.model.getChangedRowIndexes().add(new Integer(Grid.this.grids.getCurrentNumberOfNewRows()-1));
+                  Integer rIndex = new Integer(Grid.this.grids.getCurrentNumberOfNewRows()-1);
+                  if (!Grid.this.model.getChangedRowIndexes().contains(rIndex))
+                    Grid.this.model.getChangedRowIndexes().add(rIndex);
                 }
                 catch (Exception ex) {
                   ex.printStackTrace();
@@ -919,7 +927,7 @@ public class Grid extends JTable
 
                 if (Grid.this.grids.getLockedGrid()!=null) {
                   Grid.this.grids.getLockedGrid().setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-                  Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                  Grid.this.grids.getLockedGrid().setColumnSelectionInterval(0,0);
                   Grid.this.grids.getLockedGrid().ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
                   Grid.this.grids.getLockedGrid().editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
                   Grid.this.grids.getLockedGrid().requestFocus();
@@ -932,7 +940,75 @@ public class Grid extends JTable
                 e.consume();
               }
 
-              else if (getMode()==Consts.INSERT &&
+
+              else if ((getMode()==Consts.EDIT && Grid.this.grids.isAllowInsertInEdit() ||
+                        getMode()==Consts.INSERT && !Grid.this.grids.isInsertRowsOnTop()) &&
+                       e.getKeyCode()==e.VK_DOWN &&
+                       getSelectedRow()!=-1 &&
+                       Grid.this.grids.getCurrentNumberOfNewRows()<Grid.this.grids.getMaxNumberOfRowsOnInsert() &&
+                       getSelectedRow()==Grid.this.grids.getVOListTableModel().getRowCount()-1)
+              {
+                // user has pressed DOWN key and the grid is in INSERT mode and
+                // the current selected row is the last inserted row and
+                // grid is allowed to insert a new row (<max number of rows on insert...)
+                Grid.this.grids.setCurrentNumberOfNewRows( Grid.this.grids.getCurrentNumberOfNewRows()+1 );
+
+                // create a new v.o. and add it to the grid model...
+                ValueObject vo = null;
+                try {
+                  vo = (ValueObject)Grid.this.model.getValueObjectType().getConstructor(new Class[0]).newInstance(new Object[0]);
+                  Grid.this.model.insertObjectAt(vo,Grid.this.grids.getVOListTableModel().getRowCount());
+
+                  Integer rIndex = new Integer(Grid.this.grids.getVOListTableModel().getRowCount()-1);
+                  if (!Grid.this.model.getChangedRowIndexes().contains(rIndex))
+                    Grid.this.model.getChangedRowIndexes().add(rIndex);
+                }
+                catch (Exception ex) {
+                  ex.printStackTrace();
+                }
+                catch (Error er) {
+                  er.printStackTrace();
+                }
+
+                try {
+                  // fire create v.o. event to the grid controller: used to fill in the v.o. with default values...
+                  Grid.this.gridController.createValueObject(vo);
+
+                  // check if there exists a combo-box editable column to pre-set...
+                  for(int i=0;i<Grid.this.colProps.length;i++)
+                    if (Grid.this.colProps[i] instanceof ComboColumn &&
+                        !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue())
+                      Grid.this.model.setValueAt(
+                        ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode(),
+                        Grid.this.grids.getVOListTableModel().getRowCount()-1,
+                        Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName())
+                      );
+
+                }
+                catch (Throwable ex) {
+                  Logger.error(this.getClass().getName(),"modeChanged","Error while constructing value object '"+Grid.this.model.getValueObjectType().getName()+"'",ex);
+                }
+                setRowSelectionInterval(Grid.this.grids.getVOListTableModel().getRowCount()-1,0);
+                setColumnSelectionInterval(0,0);
+                ensureRowIsVisible(Grid.this.grids.getVOListTableModel().getRowCount()-1);
+
+                if (Grid.this.grids.getLockedGrid()!=null) {
+                  Grid.this.grids.getLockedGrid().setRowSelectionInterval(Grid.this.grids.getVOListTableModel().getRowCount()-1,0);
+                  Grid.this.grids.getLockedGrid().setColumnSelectionInterval(0,0);
+                  Grid.this.grids.getLockedGrid().ensureRowIsVisible(Grid.this.grids.getVOListTableModel().getRowCount()-1);
+                  Grid.this.grids.getLockedGrid().editCellAt(Grid.this.grids.getVOListTableModel().getRowCount()-1,0);
+                  Grid.this.grids.getLockedGrid().requestFocus();
+                }
+                else {
+                  editCellAt(Grid.this.grids.getVOListTableModel().getRowCount()-1, 0);
+                  requestFocus();
+                }
+
+                e.consume();
+              }
+
+
+              else if (getMode()==Consts.INSERT && Grid.this.grids.isInsertRowsOnTop() &&
                        e.getKeyCode()==e.VK_UP &&
                        getSelectedRow()>0 &&
                        getSelectedRow()+1==Grid.this.grids.getCurrentNumberOfNewRows()) {
@@ -974,7 +1050,7 @@ public class Grid extends JTable
 
                     if (Grid.this.grids.getLockedGrid()!=null) {
                       Grid.this.grids.getLockedGrid().setRowSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
-                      Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
+                      Grid.this.grids.getLockedGrid().setColumnSelectionInterval(0,0);
                       Grid.this.grids.getLockedGrid().ensureRowIsVisible(Grid.this.grids.getCurrentNumberOfNewRows()-1);
                       Grid.this.grids.getLockedGrid().editCellAt(Grid.this.grids.getCurrentNumberOfNewRows()-1,0);
                       Grid.this.grids.getLockedGrid().requestFocus();
@@ -992,6 +1068,73 @@ public class Grid extends JTable
                 }
 
               }
+
+
+              else if ((getMode()==Consts.EDIT && Grid.this.grids.isAllowInsertInEdit() ||
+                        getMode()==Consts.INSERT && !Grid.this.grids.isInsertRowsOnTop()) &&
+                       e.getKeyCode()==e.VK_UP &&
+                       getSelectedRow()>0 &&
+                       Grid.this.grids.getCurrentNumberOfNewRows()>0 &&
+                       getSelectedRow()==Grid.this.grids.getVOListTableModel().getRowCount()-1) {
+                // user has pressed UP key and the grid is in INSERT mode and
+                // the current selected row is NOT the first inserted and
+                // the selected row is the last inserted
+                // then check if the selected row's value object is null
+                // if it's null, then remove the related row from the grid...
+
+                try {
+                  ValueObject voToRemove = Grid.this.model.getObjectForRow(getSelectedRow());
+                  ValueObject clonedVO = (ValueObject) voToRemove.getClass().newInstance();
+                  Grid.this.gridController.createValueObject(clonedVO);
+                  boolean notNullValueFound = false;
+                  Object value = null;
+                  Object clonedValue = null;
+                  for(int i=0;i<Grid.this.model.getColumnCount();i++) {
+                    value = Grid.this.model.getValueAt(getSelectedRow(),i);
+                    if (value!=null) {
+                      // check if the value is the "default" value setted by createValueObject method,
+                      // by comparing "cloned v.o." attribute with "v.o. to remove" attribute
+                      clonedValue = clonedVO.getClass().getMethod("get"+Grid.this.model.getColumnName(i).toUpperCase().charAt(0)+Grid.this.model.getColumnName(i).substring(1),new Class[0]).invoke(clonedVO,new Object[0]);
+                      if (!value.equals(clonedValue) &&
+                          !(Grid.this.colProps[i] instanceof ComboColumn && !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue()) &&
+                          !(value.equals("") && clonedValue==null)
+                      ) {
+                        notNullValueFound = true;
+                        break;
+                      }
+                    }
+                  }
+                  if (!notNullValueFound) {
+                    Grid.this.grids.setCurrentNumberOfNewRows( Grid.this.grids.getCurrentNumberOfNewRows()-1 );
+                    Grid.this.model.removeObjectAt(Grid.this.grids.getVOListTableModel().getRowCount()-1);
+                    Grid.this.model.getChangedRowIndexes().remove(Grid.this.model.getChangedRowIndexes().size()-1);
+                    setRowSelectionInterval(Grid.this.grids.getVOListTableModel().getRowCount()-1,0);
+                    setColumnSelectionInterval(0,0);
+                    ensureRowIsVisible(Grid.this.grids.getVOListTableModel().getRowCount()-1);
+
+                    if (Grid.this.grids.getLockedGrid()!=null) {
+                      Grid.this.grids.getLockedGrid().setRowSelectionInterval(Grid.this.grids.getVOListTableModel().getRowCount()-1,0);
+                      Grid.this.grids.getLockedGrid().setColumnSelectionInterval(0,0);
+                      Grid.this.grids.getLockedGrid().ensureRowIsVisible(Grid.this.grids.getVOListTableModel().getRowCount()-1);
+                      Grid.this.grids.getLockedGrid().editCellAt(Grid.this.grids.getVOListTableModel().getRowCount()-1,0);
+                      Grid.this.grids.getLockedGrid().requestFocus();
+                    }
+                    else {
+                      editCellAt(Grid.this.grids.getVOListTableModel().getRowCount()-1, 0);
+                      requestFocus();
+                    }
+
+                    e.consume();
+                  }
+                }
+                catch (Exception ex2) {
+                  ex2.printStackTrace();
+                }
+
+              }
+
+
+
               else if (getSelectedRow()>=0 &&
                        getSelectedColumn()>=0 &&
                        getEditorComponent()!=null &&
@@ -1057,6 +1200,13 @@ public class Grid extends JTable
                  e.getKeyCode()==e.VK_DOWN ||
                  e.getKeyCode()==e.VK_PAGE_UP ||
                  e.getKeyCode()==e.VK_PAGE_DOWN)) {
+
+              int[] selRows = null;
+              if (e.isShiftDown() &&
+                  (e.getKeyCode()==e.VK_UP ||
+                   e.getKeyCode()==e.VK_DOWN))
+                selRows = Grid.this.getSelectedRows();
+
               if (e.getKeyCode()==e.VK_UP && getSelectedRow()>0)
                   Grid.this.grids.getNavBar().prevButton_actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,NavigatorBar.UP_KEY));
               else if (e.getKeyCode()==e.VK_UP && getSelectedRow()==0 && Grid.this.grids.getNavBar().isPrevButtonEnabled())
@@ -1131,6 +1281,23 @@ public class Grid extends JTable
               if (!(e.getKeyCode()==e.VK_PAGE_DOWN && !Grid.this.grids.isMoreRows()) &&
                   !(e.getKeyCode()==e.VK_PAGE_UP && Grid.this.grids.getstartIndex()==0))
                 e.consume();
+
+              if (e.isShiftDown() &&
+                  (e.getKeyCode()==e.VK_UP ||
+                   e.getKeyCode()==e.VK_DOWN) &&
+                  getSelectionModel().getSelectionMode()!=ListSelectionModel.SINGLE_SELECTION) {
+                if (selRows!=null) {
+                  for (int i = 0; i < selRows.length; i++)
+                    Grid.this.addRowSelectionInterval(selRows[i], selRows[i]);
+                }
+                int selRow = -1;
+                if (e.getKeyCode()==e.VK_DOWN &&
+                    selRows.length>1 &&
+                    selRows[selRows.length-1]+1<getRowCount()-1)
+                  selRow = selRows[selRows.length-1]+1;
+                if (selRow!=-1)
+                  Grid.this.addRowSelectionInterval(selRow,selRow);
+              }
             }
             else if (Grid.this.lockedGrid && getMode()==Consts.READONLY && Grid.this.grids.getNavBar()==null &&
                 (e.getKeyCode()==e.VK_PAGE_UP ||
@@ -2308,16 +2475,31 @@ public class Grid extends JTable
 
     if (model!=null && getMode()==Consts.INSERT) {
       // if grid is in insert mode then row selection is always forced to the inserted rows...
-      if (getSelectedRow()>=grids.getCurrentNumberOfNewRows()) {
-        setRowSelectionInterval(
-            Math.max(0,grids.getCurrentNumberOfNewRows()-1),
-            Math.max(0,grids.getCurrentNumberOfNewRows()-1)
-        );
-        grids.setRowSelectionInterval(
-            Math.max(0,grids.getCurrentNumberOfNewRows()-1),
-            Math.max(0,grids.getCurrentNumberOfNewRows()-1)
-        );
-        return;
+      if (grids.isInsertRowsOnTop()) {
+        if (getSelectedRow()>=grids.getCurrentNumberOfNewRows()) {
+          setRowSelectionInterval(
+              Math.max(0,grids.getCurrentNumberOfNewRows()-1),
+              Math.max(0,grids.getCurrentNumberOfNewRows()-1)
+          );
+          grids.setRowSelectionInterval(
+              Math.max(0,grids.getCurrentNumberOfNewRows()-1),
+              Math.max(0,grids.getCurrentNumberOfNewRows()-1)
+          );
+          return;
+        }
+      }
+      else {
+        if (getSelectedRow()<=model.getRowCount()-grids.getCurrentNumberOfNewRows()) {
+          setRowSelectionInterval(
+              Math.max(0,model.getRowCount()-grids.getCurrentNumberOfNewRows()),
+              Math.max(0,model.getRowCount()-grids.getCurrentNumberOfNewRows())
+          );
+          grids.setRowSelectionInterval(
+              Math.max(0,model.getRowCount()-grids.getCurrentNumberOfNewRows()),
+              Math.max(0,model.getRowCount()-grids.getCurrentNumberOfNewRows())
+          );
+          return;
+        }
       }
     }
 
@@ -3876,6 +4058,29 @@ public class Grid extends JTable
     }
 
     return rend;
+  }
+
+
+  /**
+   * If expandableRenderer attribute is not null and
+   * there is an expanded row, then refresh it.
+   * This method can be invoked by Form when updating a nested Form panel,
+   * in order to refresh expanded row content.
+   */
+  public final void refreshExpandableRenderer() {
+    if (expandableRenderer!=null)
+      expandableRenderer.refreshExpandableRenderer();
+  }
+
+
+  /**
+   * If expandableRenderer attribute is not null, then collapse the specified row.
+   * @param row row to collapse
+   */
+  public final void collapseRow(int row) {
+    if (expandableRenderer!=null) {
+      expandableRenderer.collapseRow(row);
+    }
   }
 
 

@@ -172,29 +172,74 @@ public class ExportToCSV {
     String sep
   ) throws Throwable {
     int type;
-    Object value = null;
+    String aName = null;
+    Method getter = null;
+    Class clazz = null;
+    Object obj = null;
     for(int i=0;i<opt.getExportColumns().size();i++) {
-      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-      if (value!=null) {
-        if (value instanceof Boolean) {
-          sb.append ((Boolean)value);
+//      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
+
+      clazz = vo.getClass();
+      obj = vo;
+      aName = opt.getExportAttrColumns().get(i).toString();
+
+      // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+      while(aName.indexOf(".")!=-1) {
+        try {
+          getter = clazz.getMethod(
+            "get" +
+            aName.substring(0, 1).
+            toUpperCase() +
+            aName.substring(1,aName.indexOf(".")),
+            new Class[0]
+          );
         }
-        else if (value.getClass().equals(boolean.class)) {
-          sb.append ((Boolean)value);
+        catch (NoSuchMethodException ex2) {
+          getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
         }
-        else if (value instanceof Date ||
-                 value instanceof java.util.Date ||
-                 value instanceof java.sql.Timestamp) {
+        aName = aName.substring(aName.indexOf(".")+1);
+        clazz = getter.getReturnType();
+        obj = getter.invoke(obj,new Object[0]);
+        if (obj==null)
+          break;
+      }
+
+      try {
+        getter = clazz.getMethod(
+          "get" +
+          aName.substring(0, 1).
+          toUpperCase() +
+          aName.substring(1),
+          new Class[0]
+        );
+      }
+      catch (NoSuchMethodException ex2) {
+        getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+      }
+
+      if (obj!=null)
+        obj = getter.invoke(obj,new Object[0]);
+
+      if (obj!=null) {
+        if (obj instanceof Boolean) {
+          sb.append ((Boolean)obj);
+        }
+        else if (obj.getClass().equals(boolean.class)) {
+          sb.append ((Boolean)obj);
+        }
+        else if (obj instanceof Date ||
+                 obj instanceof java.util.Date ||
+                 obj instanceof java.sql.Timestamp) {
           type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
           if (type==opt.TYPE_DATE)
-            sb.append( sdf.format((java.util.Date)value) );
+            sb.append( sdf.format((java.util.Date)obj) );
           else if (type==opt.TYPE_DATE_TIME)
-            sb.append( sdatf.format((java.util.Date)value) );
+            sb.append( sdatf.format((java.util.Date)obj) );
           else if (type==opt.TYPE_TIME)
-            sb.append( stf.format((java.util.Date)value) );
+            sb.append( stf.format((java.util.Date)obj) );
         }
         else {
-          sb.append( endodeText(value.toString(),sep) );
+          sb.append( endodeText(obj.toString(),sep) );
         }
       }
 

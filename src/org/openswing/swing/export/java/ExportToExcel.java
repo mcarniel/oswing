@@ -269,48 +269,92 @@ public class ExportToExcel {
     int rownum
   ) throws Throwable {
     int type;
-    Object value = null;
     HSSFRow r = null;
     HSSFCell c = null;
     r = s.createRow(rownum);
+    String aName = null;
+    Method getter = null;
+    Class clazz = null;
+    Object obj = null;
     for(short i=0;i<opt.getExportColumns().size();i++) {
       c = r.createCell(i);
-      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-      if (value!=null) {
-        if (value instanceof String) {
+      clazz = vo.getClass();
+      obj = vo;
+      aName = opt.getExportAttrColumns().get(i).toString();
+//      value = ((Method)gettersMethods.get(aName)).invoke(vo,new Object[0]);
+
+      // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+      while(aName.indexOf(".")!=-1) {
+        try {
+          getter = clazz.getMethod(
+            "get" +
+            aName.substring(0, 1).
+            toUpperCase() +
+            aName.substring(1,aName.indexOf(".")),
+            new Class[0]
+          );
+        }
+        catch (NoSuchMethodException ex2) {
+          getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+        }
+        aName = aName.substring(aName.indexOf(".")+1);
+        clazz = getter.getReturnType();
+        obj = getter.invoke(obj,new Object[0]);
+        if (obj==null)
+          break;
+      }
+
+      try {
+        getter = clazz.getMethod(
+          "get" +
+          aName.substring(0, 1).
+          toUpperCase() +
+          aName.substring(1),
+          new Class[0]
+        );
+      }
+      catch (NoSuchMethodException ex2) {
+        getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+      }
+
+      if (obj!=null)
+        obj = getter.invoke(obj,new Object[0]);
+
+      if (obj!=null) {
+        if (obj instanceof String) {
           c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
-          c.setCellValue(value.toString());
+          c.setCellValue(obj.toString());
           c.setCellStyle(csText);
         }
-        else if (value instanceof BigDecimal ||
-                 value instanceof Double ||
-                 value instanceof Float ||
-                 value.getClass()==Double.TYPE ||
-                 value.getClass()==Float.TYPE) {
-          c.setCellValue(Double.parseDouble(value.toString()));
+        else if (obj instanceof BigDecimal ||
+                 obj instanceof Double ||
+                 obj instanceof Float ||
+                 obj.getClass()==Double.TYPE ||
+                 obj.getClass()==Float.TYPE) {
+          c.setCellValue(Double.parseDouble(obj.toString()));
           c.setCellStyle(csDecNum);
         }
-        else if (value instanceof Integer ||
-                 value instanceof Short ||
-                 value instanceof Long ||
-                 value.getClass()==Integer.TYPE ||
-                 value.getClass()==Short.TYPE ||
-                 value.getClass()==Long.TYPE) {
-          c.setCellValue(Double.parseDouble(value.toString()));
+        else if (obj instanceof Integer ||
+                 obj instanceof Short ||
+                 obj instanceof Long ||
+                 obj.getClass()==Integer.TYPE ||
+                 obj.getClass()==Short.TYPE ||
+                 obj.getClass()==Long.TYPE) {
+          c.setCellValue(Double.parseDouble(obj.toString()));
           c.setCellStyle(csIntNum);
         }
-        else if (value instanceof Boolean) {
-          c.setCellValue(((Boolean)value).booleanValue());
+        else if (obj instanceof Boolean) {
+          c.setCellValue(((Boolean)obj).booleanValue());
           c.setCellStyle(csBool);
         }
-        else if (value.getClass().equals(boolean.class)) {
-          c.setCellValue(((Boolean)value).booleanValue());
+        else if (obj.getClass().equals(boolean.class)) {
+          c.setCellValue(((Boolean)obj).booleanValue());
           c.setCellStyle(csBool);
         }
-        else if (value instanceof Date ||
-                 value instanceof java.util.Date ||
-                 value instanceof java.sql.Timestamp) {
-          c.setCellValue((Date)value);
+        else if (obj instanceof Date ||
+                 obj instanceof java.util.Date ||
+                 obj instanceof java.sql.Timestamp) {
+          c.setCellValue((Date)obj);
           type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
           if (type==opt.TYPE_DATE)
             c.setCellStyle(csDate);

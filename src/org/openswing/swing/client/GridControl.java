@@ -265,6 +265,15 @@ public class GridControl extends JPanel {
   /** column properties */
   private Column[] columnProperties = null;
 
+  /** flag used to define if a warning message must be showed when reloading data in grid and grid is in EDIT/INSERT mode; default value: <code>true</code> */
+  private boolean showWarnMessageBeforeReloading = true;
+
+  /** flag used to allow insert row (using DOWN key) in edit mode too; default value: <code>false</code> */
+  private boolean allowInsertInEdit = false;
+
+  /** define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom; default value: <code>true</code> */
+  private boolean insertRowsOnTop = true;
+
 
   /**
    * Costructor.
@@ -971,6 +980,8 @@ public class GridControl extends JPanel {
 
       table.getVOListTableModel().setMode(mode);
       table.setMaxNumberOfRowsOnInsert(maxNumberOfRowsOnInsert);
+      table.setAllowInsertInEdit(allowInsertInEdit);
+      table.setInsertRowsOnTop(insertRowsOnTop);
 
       if (mode==Consts.READONLY && autoLoadData)
         table.reload();
@@ -2674,6 +2685,69 @@ public class GridControl extends JPanel {
       table.getGrid().requestFocus();
     else
       super.requestFocus();
+  }
+
+
+  /**
+   * @return define if a warning message must be showed when reloading data in grid and grid is in EDIT/INSERT mode
+   */
+  public final boolean isShowWarnMessageBeforeReloading() {
+    return showWarnMessageBeforeReloading;
+  }
+
+
+  /**
+   * Define if a warning message must be showed when reloading data in grid and grid is in EDIT/INSERT mode.
+   * @param showWarnMessageBeforeReloading flag used to define if a warning message must be showed when reloading data in grid and grid is in EDIT/INSERT mode
+   */
+  public final void setShowWarnMessageBeforeReloading(boolean showWarnMessageBeforeReloading) {
+    this.showWarnMessageBeforeReloading = showWarnMessageBeforeReloading;
+  }
+
+
+  /**
+   * @return allow insert row (using DOWN key) in edit mode too; default value: <code>false</code>
+   */
+  public final boolean isAllowInsertInEdit() {
+    if (table==null)
+      return allowInsertInEdit;
+    else
+      return table.isAllowInsertInEdit();
+  }
+
+
+  /**
+   * Allow insert row (using DOWN key) in edit mode too; default value: <code>false</code>
+   * @param allowInsertInEdit allow insert row (using DOWN key) in edit mode too
+   */
+  public final void setAllowInsertInEdit(boolean allowInsertInEdit) {
+    if (table==null)
+      this.allowInsertInEdit = allowInsertInEdit;
+    else
+      table.setAllowInsertInEdit(allowInsertInEdit);
+  }
+
+
+  /**
+   * @return define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom
+   */
+  public final boolean isInsertRowsOnTop() {
+    if (table==null)
+      return insertRowsOnTop;
+    else
+      return table.isInsertRowsOnTop();
+  }
+
+
+  /**
+   * Define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom; default value: <code>true</code>
+   * @param insertRowsOnTop define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom
+   */
+  public final void setInsertRowsOnTop(boolean insertRowsOnTop) {
+    if (table==null)
+      this.insertRowsOnTop = insertRowsOnTop;
+    else
+      table.setInsertRowsOnTop(insertRowsOnTop);
   }
 
 

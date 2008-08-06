@@ -190,7 +190,6 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("aboutmnemonic","I");
     dictionary.setProperty("are you sure to quit application?","Conferma uscita dall'applicazione?");
     dictionary.setProperty("quit application","Termina applicazione");
-    dictionary.setProperty("about","Informazioni");
     dictionary.setProperty("forcegcmnemonic","F");
     dictionary.setProperty("Force GC","Forza GC");
     dictionary.setProperty("Info","Info");

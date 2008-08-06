@@ -82,14 +82,52 @@ public class ExportToXML {
     sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(newline);
     sb.append("<content>").append(newline);
     sb.append("\t<header>").append(newline);
+    Method getter = null;
+    Class clazz = null;
+    String aName = null;
     for(int i=0;i<opt.getExportColumns().size();i++) {
+
+      clazz = opt.getValueObjectType();
+      aName = opt.getExportAttrColumns().get(i).toString();
+
+      // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+      while(aName.indexOf(".")!=-1) {
+        try {
+          getter = clazz.getMethod(
+            "get" +
+            aName.substring(0, 1).
+            toUpperCase() +
+            aName.substring(1,aName.indexOf(".")),
+            new Class[0]
+          );
+        }
+        catch (NoSuchMethodException ex2) {
+          getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+        }
+        aName = aName.substring(aName.indexOf(".")+1);
+        clazz = getter.getReturnType();
+      }
+
+      try {
+        getter = clazz.getMethod(
+          "get" +
+          aName.substring(0, 1).
+          toUpperCase() +
+          aName.substring(1),
+          new Class[0]
+        );
+      }
+      catch (NoSuchMethodException ex2) {
+        getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+      }
+
       sb.append("\t\t<col name=\"").
          append(opt.getExportColumns().get(i)).
          append("\" ").
          append("attributename=\"").
          append(opt.getExportAttrColumns().get(i)).
          append("\" type=\"").
-         append( ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).getReturnType().getName() ).
+         append( getter.getReturnType().getName() ).
          append("\" />").
          append(newline);
     }
@@ -193,25 +231,70 @@ public class ExportToXML {
     String newline
   ) throws Throwable {
     int type;
-    Object value = null;
+    String aName = null;
+    Method getter = null;
+    Class clazz = null;
+    Object obj = null;
 
     sb.append("\t<row>").append(newline);
     for(int i=0;i<opt.getExportColumns().size();i++) {
-      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
-      if (value!=null) {
-        if (value instanceof Date ||
-                 value instanceof java.util.Date ||
-                 value instanceof java.sql.Timestamp) {
+//      value = ((Method)gettersMethods.get(opt.getExportAttrColumns().get(i))).invoke(vo,new Object[0]);
+
+      clazz = vo.getClass();
+      obj = vo;
+      aName = opt.getExportAttrColumns().get(i).toString();
+
+      // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+      while(aName.indexOf(".")!=-1) {
+        try {
+          getter = clazz.getMethod(
+            "get" +
+            aName.substring(0, 1).
+            toUpperCase() +
+            aName.substring(1,aName.indexOf(".")),
+            new Class[0]
+          );
+        }
+        catch (NoSuchMethodException ex2) {
+          getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+        }
+        aName = aName.substring(aName.indexOf(".")+1);
+        clazz = getter.getReturnType();
+        obj = getter.invoke(obj,new Object[0]);
+        if (obj==null)
+          break;
+      }
+
+      try {
+        getter = clazz.getMethod(
+          "get" +
+          aName.substring(0, 1).
+          toUpperCase() +
+          aName.substring(1),
+          new Class[0]
+        );
+      }
+      catch (NoSuchMethodException ex2) {
+        getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+      }
+
+      if (obj!=null)
+        obj = getter.invoke(obj,new Object[0]);
+
+      if (obj!=null) {
+        if (obj instanceof Date ||
+                 obj instanceof java.util.Date ||
+                 obj instanceof java.sql.Timestamp) {
           type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
           if (type==opt.TYPE_DATE)
-            sb.append("\t\t<col>").append(sdf.format((java.util.Date)value)).append("</col>").append(newline);
+            sb.append("\t\t<col>").append(sdf.format((java.util.Date)obj)).append("</col>").append(newline);
           else if (type==opt.TYPE_DATE_TIME)
-            sb.append("\t\t<col>").append(sdatf.format((java.util.Date)value)).append("</col>").append(newline);
+            sb.append("\t\t<col>").append(sdatf.format((java.util.Date)obj)).append("</col>").append(newline);
           else if (type==opt.TYPE_TIME)
-            sb.append("\t\t<col>").append(stf.format((java.util.Date)value)).append("</col>").append(newline);
+            sb.append("\t\t<col>").append(stf.format((java.util.Date)obj)).append("</col>").append(newline);
         }
         else {
-            sb.append("\t\t<col>").append(encodeText(value.toString())).append("</col>").append(newline);
+            sb.append("\t\t<col>").append(encodeText(obj.toString())).append("</col>").append(newline);
         }
       }
     }

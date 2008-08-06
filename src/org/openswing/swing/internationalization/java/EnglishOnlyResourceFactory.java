@@ -80,7 +80,6 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Delete Confirmation","Delete Confirmation");
     dictionary.setProperty("Error while deleting rows.","Error while deleting rows.");
     dictionary.setProperty("Deleting Error","Deleting Error");
-    dictionary.setProperty("Error while deleting rows.","Error while deleting rows.");
     dictionary.setProperty("Error while saving","Error while saving");
     dictionary.setProperty("Saving Error","Saving Error");
     dictionary.setProperty("A mandatory column is empty.","A mandatory column is empty.");
@@ -204,7 +203,6 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("aboutmnemonic","A");
     dictionary.setProperty("are you sure to quit application?","Are you sure to quit application?");
     dictionary.setProperty("quit application","Quit Application");
-    dictionary.setProperty("about","About");
     dictionary.setProperty("forcegcmnemonic","F");
     dictionary.setProperty("Force GC","Force GC");
     dictionary.setProperty("Info","Info");

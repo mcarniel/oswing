@@ -202,9 +202,37 @@ public class TreeMenu extends JPanel {
       TreeNodeRenderer renderer = new TreeNodeRenderer(menuTree);
       menuTree.setCellRenderer(renderer);
       menuTree.revalidate();
+      if (ClientSettings.AUTO_EXPAND_TREE_MENU)
+        expandAllNodes();
     } catch (Throwable ex) {
       ex.printStackTrace();
     }
+  }
+
+
+
+  /**
+   * Expand all tree nodes.
+   */
+  public final void expandAllNodes() {
+    int i = 0;
+    try {
+      while (i < menuTree.getRowCount()) {
+        menuTree.expandRow(i++);
+      }
+    }
+    catch (Exception ex) {
+    }
+  }
+
+
+  /**
+   * Collapse all tree nodes.
+   */
+  public final void collapseAllNodes() {
+    int i = menuTree.getRowCount()-1;
+    while (i >0)
+      menuTree.collapseRow(i--);
   }
 
 

@@ -17,6 +17,8 @@ import org.openswing.swing.message.send.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import javax.swing.event.AncestorListener;
+import org.openswing.swing.table.client.Grid;
+import org.openswing.swing.table.renderers.client.ExpandablePanel;
 
 
 /**
@@ -129,6 +131,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   /** flag used to define if an inner v.o. must be automatically instantiated when a setter method is invoked; default value: <code>true</code> */
   private boolean createInnerVO = true;
 
+  /** collection of GenericButtons linked to this Form, i.e. whose text is setted with the attribute value; pairs of type (attribute name, List of GenericButtons objects) */
+  private Hashtable linkedButtons = new Hashtable();
+
 
   public Form() {}
 
@@ -154,6 +159,24 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             ((Component)ic).getParent().remove((Component)ic);
         }
       }
+
+      en = linkedButtons.keys();
+      GenericButton btn = null;
+      while(en.hasMoreElements()) {
+        attributeName = en.nextElement();
+
+        ArrayList list = (ArrayList)bindings.get(attributeName);
+        if (list==null)
+          continue;
+        for(int i=0;i<list.size();i++) {
+          btn = (GenericButton)list.get(i);
+          list.remove(btn);
+//          ic.removeValueChangedListener(Form.this);
+          if (((GenericButton)btn).getParent()!=null)
+            ((GenericButton)btn).getParent().remove((GenericButton)btn);
+        }
+      }
+
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -178,6 +201,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     grid = null;
     navBar = null;
     pkAttributes = null;
+    linkedButtons = null;
   }
 
 
@@ -292,7 +316,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     }
     if (!Beans.isDesignTime() && firstTime) {
       firstTime = false;
-      linkInputControls(Form.this.getComponents(),true);
+      linkInputControlsAndButtons(Form.this.getComponents(),true);
 
       notFocusedBorder = this.getBorder();
       addMouseListener(new MouseAdapter(){
@@ -1389,6 +1413,23 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     }
 
 
+    list = (ArrayList)linkedButtons.get(attributeName);
+    if (list!=null) {
+      GenericButton btn = null;
+      for(int i=0;i<list.size();i++) {
+        btn = (GenericButton)list.get(i);
+        try {
+          if (model.getValue(attributeName)!=null)
+            btn.setText( model.getValue(attributeName).toString() );
+          else
+            btn.setText("");
+        }
+        catch (Exception ex) {
+        }
+      }
+    }
+
+
     list = (ArrayList)bindings.get(attributeName);
     if (list!=null) {
       for(int i=0;i<list.size();i++) {
@@ -1539,6 +1580,11 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
                   });
                 }
               }
+
+              // if this Form is a nested component of a grid, then refresh grid row...
+              Grid grid = getParentGrid();
+              if (grid!=null)
+                grid.refreshExpandableRenderer();
             }
 
           }
@@ -1564,6 +1610,23 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       Logger.error(this.getClass().getName(), "save", "The form is in READONLY mode: operation not allowed.",null);
       return false;
     }
+  }
+
+
+  /**
+   * @return parent Grid that has this as nested grid; null if this is a main grid, not a nested grid
+   */
+  private final Grid getParentGrid() {
+    Component c = this;
+    while(c!=null && !(c instanceof ExpandablePanel))
+      c = c.getParent();
+    if (c!=null && c instanceof ExpandablePanel) {
+      while(c!=null && !(c instanceof Grid))
+        c = c.getParent();
+      if (c!=null)
+        return (Grid)c;
+    }
+    return null;
   }
 
 
@@ -1653,7 +1716,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @param form form to use to link the input controls
    * @param c components added to the container
    */
-  private void linkInputControls(Component[] c,boolean evalLinkedForm) {
+  private void linkInputControlsAndButtons(Component[] c,boolean evalLinkedForm) {
     for(int i=0;i<c.length;i++)
       if (c[i] instanceof InputControl)
         try {
@@ -1671,14 +1734,41 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         catch (Exception ex) {
           ex.printStackTrace();
         }
+      else if (c[i] instanceof GenericButton &&
+               ((GenericButton)c[i]).getAttributeName()!=null &&
+               !((GenericButton)c[i]).getAttributeName().equals("")) {
+        ArrayList list = (ArrayList)linkedButtons.get(((GenericButton)c[i]).getAttributeName());
+        if (list==null)
+          list = new ArrayList();
+        list.add(c[i]);
+        linkedButtons.put(
+          ((GenericButton)c[i]).getAttributeName(),
+          list
+        );
+        final ArrayList auxList = list;
+        final String attributeName = ((GenericButton)c[i]).getAttributeName();
+        model.addValueChangeListener(new ValueChangeListener() {
+
+          public void valueChanged(ValueChangeEvent e) {
+            if (e.getAttributeName().equals(attributeName)) {
+              for(int j=0;j<auxList.size();j++)
+                if (e.getNewValue()!=null)
+                  ((GenericButton)auxList.get(j)).setText(e.getNewValue().toString());
+                else
+                  ((GenericButton)auxList.get(j)).setText("");
+            }
+          }
+
+        });
+      }
       else if (c[i] instanceof Container)
-        linkInputControls(((Container)c[i]).getComponents(),false);
+        linkInputControlsAndButtons(((Container)c[i]).getComponents(),false);
 
       if (evalLinkedForm) {
         Container container = null;
         for(int i=0;i<linkedPanels.size();i++) {
           container = (Container)linkedPanels.get(i);
-          linkInputControls(container.getComponents(),false);
+          linkInputControlsAndButtons(container.getComponents(),false);
         }
       }
 
@@ -1710,7 +1800,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           }
         }
     }
-    linkInputControls(this.getComponents(),true);
+    linkInputControlsAndButtons(this.getComponents(),true);
   }
 
 
@@ -1725,7 +1815,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       ((Form)c).setFormController(getFormController());
     linkedPanels.add(c);
     if (!firstTime)
-      linkInputControls(c.getComponents(),false);
+      linkInputControlsAndButtons(c.getComponents(),false);
   }
 
 

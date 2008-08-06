@@ -2405,8 +2405,10 @@ public class QueryUtil {
               newObj = booleanFalseValue;
           }
 
-          sql += field+"=?, ";
-          values.add(newObj);
+          if (!pkAttributes.contains(attributeName)) {
+            sql += field+"=?, ";
+            values.add(newObj);
+          }
         }
 
         if (oldObj==null) {
