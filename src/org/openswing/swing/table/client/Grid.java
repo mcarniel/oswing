@@ -1202,6 +1202,7 @@ public class Grid extends JTable
                  e.getKeyCode()==e.VK_PAGE_DOWN)) {
 
               int[] selRows = null;
+              int currentSelRow = Grid.this.getSelectionModel().getLeadSelectionIndex();
               if (e.isShiftDown() &&
                   (e.getKeyCode()==e.VK_UP ||
                    e.getKeyCode()==e.VK_DOWN))
@@ -1286,17 +1287,35 @@ public class Grid extends JTable
                   (e.getKeyCode()==e.VK_UP ||
                    e.getKeyCode()==e.VK_DOWN) &&
                   getSelectionModel().getSelectionMode()!=ListSelectionModel.SINGLE_SELECTION) {
+                int min = 0;
+                int max = selRows.length;
+                if (e.getKeyCode()==e.VK_UP && currentSelRow==selRows[selRows.length-1] && selRows.length>1)
+                  max--;
+                if (e.getKeyCode()==e.VK_DOWN && currentSelRow==selRows[0] && selRows.length>1)
+                  min++;
+
+                Grid.this.clearSelection();
                 if (selRows!=null) {
-                  for (int i = 0; i < selRows.length; i++)
+                  for (int i = min; i < max; i++)
                     Grid.this.addRowSelectionInterval(selRows[i], selRows[i]);
                 }
                 int selRow = -1;
                 if (e.getKeyCode()==e.VK_DOWN &&
-                    selRows.length>1 &&
-                    selRows[selRows.length-1]+1<getRowCount()-1)
+                    selRows.length>0 &&
+                    currentSelRow==selRows[selRows.length-1] &&
+                    selRows[selRows.length-1]+1<getRowCount()) {
                   selRow = selRows[selRows.length-1]+1;
-                if (selRow!=-1)
-                  Grid.this.addRowSelectionInterval(selRow,selRow);
+                  if (selRow!=-1)
+                    Grid.this.addRowSelectionInterval(selRow,selRow);
+                }
+                else if (e.getKeyCode()==e.VK_UP &&
+                         selRows.length>0 &&
+                         currentSelRow==selRows[0] ) {
+                  selRow = selRows[0]-1;
+                  if (selRow>=0)
+                    Grid.this.addRowSelectionInterval(selRow,selRow);
+                }
+
               }
             }
             else if (Grid.this.lockedGrid && getMode()==Consts.READONLY && Grid.this.grids.getNavBar()==null &&
@@ -2599,6 +2618,7 @@ public class Grid extends JTable
       gridController.rowChanged(this.getSelectedRow());
 
   }
+
 
 
   /**

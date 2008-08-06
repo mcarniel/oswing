@@ -1705,7 +1705,7 @@ public class QueryUtil {
                     "Error while executing the SQL:\n"+
                     baseSQL+"\n"+
                     params+"\n"+
-                    "Incompatible type found between value read ("+value.getClass().getName()+") and value exptected ("+parType.getClass().getName()+") in setter '"+setterMethods[i].getName()+"'.",
+                    "Incompatible type found between value read ("+value.getClass().getName()+") and value expected ("+parType.getClass().getName()+") in setter '"+setterMethods[i].getName()+"'.",
                     null
                 );
             }
@@ -2536,5 +2536,325 @@ public class QueryUtil {
       }
     }
  }
+
+
+   /**
+    * This method can be used to convert a list of Object[], one for each record already read,
+    * in a list of ValueObjects.
+    * @param attributes list of attribute names of the specified value object, exactly one for each fields is the select clause (i.e. one for each elements of Object[])
+    * @param valueObjectClass value object class to use to generate the result
+    * @param rows list of Object[] elements, one for each record already read
+    * @param moreRows <code>true</code> if there are still other records to read after these ones, <code>false</code> if no other records ara available
+    * @return a list of value objects or an error response
+    */
+   public static Response getQuery(
+       String[] attributes,
+       Class valueObjectClass,
+       List rows,
+       boolean moreRows
+   ) throws Exception {
+     try {
+       Object[] row = null;
+
+       Method[] setterMethods = new Method[attributes.length];
+       Method getter = null;
+       Method setter = null;
+       String aName = null;
+       ArrayList[] getters = new ArrayList[attributes.length];
+       ArrayList[] setters = new ArrayList[attributes.length];
+       Class clazz = null;
+       Object vo = null;
+       Object value = null;
+
+       for(int i=0;i<attributes.length;i++) {
+         aName = attributes[i];
+         getters[i] = new ArrayList(); // list of Methods objects (getters for accessing inner vos)
+         setters[i] = new ArrayList(); // list of Methods objects (setters for instantiating inner vos)
+         clazz = valueObjectClass;
+
+         // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+         while(aName.indexOf(".")!=-1) {
+           try {
+             getter = clazz.getMethod(
+               "get" +
+               aName.substring(0, 1).
+               toUpperCase() +
+               aName.substring(1,aName.indexOf(".")),
+               new Class[0]
+             );
+           }
+           catch (NoSuchMethodException ex2) {
+             getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+           }
+           setter = clazz.getMethod("set"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[]{getter.getReturnType()});
+           aName = aName.substring(aName.indexOf(".")+1);
+           clazz = getter.getReturnType();
+           getters[i].add(getter);
+           setters[i].add(setter);
+         }
+
+         try {
+           getter = clazz.getMethod(
+             "get" +
+             aName.substring(0, 1).
+             toUpperCase() +
+             aName.substring(1),
+             new Class[0]
+           );
+         }
+         catch (NoSuchMethodException ex2) {
+           getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+         }
+
+         setterMethods[i] = clazz.getMethod("set"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[]{getter.getReturnType()});
+       }
+
+
+       ArrayList list = new ArrayList();
+       while(rows.size()>0) {
+         row = (Object[])rows.remove(0);
+         if (row.length!=attributes.length) {
+           String msg = "row.length ("+row.length+") is not equals to attributes.length ("+attributes.length+")";
+           return new ErrorResponse(msg);
+         }
+
+         vo = valueObjectClass.newInstance();
+         Object currentVO = null;
+         Object innerVO = null;
+         for(int i=0;i<row.length;i++) {
+           currentVO = vo;
+           for(int j=0;j<getters[i].size();j++) {
+             if (((Method)getters[i].get(j)).invoke(currentVO,new Object[0])==null) {
+               innerVO = ((Method)getters[i].get(j)).getReturnType().newInstance();  // instantiate the inner v.o.
+               ((Method)setters[i].get(j)).invoke(currentVO,new Object[]{ innerVO });
+               currentVO = innerVO;
+             }
+             else
+               currentVO = ((Method)getters[i].get(j)).invoke(currentVO,new Object[0]);
+           }
+
+           Class parType = setterMethods[i].getParameterTypes()[0];
+           if (parType.equals(String.class))
+             value = row[i];
+//           else if (parType.equals(Boolean.class) ||
+//                    parType.equals(boolean.class)) {
+//             value = row[i];
+//             if (value!=null && value.equals(booleanTrueValue))
+//               value = Boolean.TRUE;
+//             else if (value!=null && value.equals(booleanFalseValue))
+//               value = Boolean.FALSE;
+//           }
+           else if (parType.equals(BigDecimal.class))
+             value = row[i];
+           else if (parType.equals(Double.class) || parType==Double.TYPE) {
+             value = row[i];
+             if (value!=null)
+               value = new Double(((BigDecimal)value).doubleValue());
+           }
+           else if (parType.equals(Float.class) || parType==Float.TYPE) {
+             value = row[i];
+             if (value!=null)
+               value = new Float(((BigDecimal)value).floatValue());
+           }
+           else if (parType.equals(Integer.class) || parType==Integer.TYPE) {
+             value = row[i];
+             if (value!=null)
+               value = new Integer(((BigDecimal)value).intValue());
+           }
+           else if (parType.equals(Long.class) || parType==Long.TYPE) {
+             value = row[i];
+             if (value!=null)
+               value = new Long(((BigDecimal)value).longValue());
+           }
+           else if (parType.equals(Short.class) || parType==Short.TYPE) {
+             value = row[i];
+             if (value!=null)
+               value = new Long(((BigDecimal)value).longValue());
+           }
+           else if (parType.equals(java.util.Date.class) ||
+                    parType.equals(java.sql.Date.class))
+             value = row[i];
+           else if (parType.equals(java.sql.Timestamp.class))
+             value = row[i];
+           else
+             value = row[i];
+
+           try {
+             setterMethods[i].invoke(currentVO, new Object[] {value});
+           }
+           catch (IllegalArgumentException ex5) {
+               if (value!=null && !value.getClass().getName().equals(parType.getClass().getName()))
+                 throw new Exception(
+                     "Incompatible type found between value read ("+value.getClass().getName()+") and value expected ("+parType.getClass().getName()+") in setter '"+setterMethods[i].getName()+"'."
+                 );
+           }
+         } // end for
+
+         list.add(vo);
+
+       } // end while on rows
+       return new VOListResponse(list,moreRows,list.size());
+
+     } catch (Throwable ex) {
+      return new ErrorResponse(ex.getMessage());
+     }
+  }
+
+
+  /**
+   * This method can be used to convert a single record Object[]to a ValueObject.
+   * @param attributes list of attribute names of the specified value object, exactly one for each fields is the select clause (i.e. one for each elements of Object[])
+   * @param valueObjectClass value object class to use to generate the result
+   * @param row Object[], related to the record already read
+   * @param booleanTrueValue read value to interpret as true
+   * @param booleanFalseValue read value to interpret as false
+   * @param context servlet context; this may be null
+   * @return value object or an error response
+   */
+  public static Response getQuery(
+      String[] attributes,
+      Class valueObjectClass,
+      Object[] row
+  ) throws Exception {
+    try {
+      Method[] setterMethods = new Method[attributes.length];
+      Method getter = null;
+      Method setter = null;
+      String aName = null;
+      ArrayList[] getters = new ArrayList[attributes.length];
+      ArrayList[] setters = new ArrayList[attributes.length];
+      Class clazz = null;
+      Object vo = null;
+      Object value = null;
+
+      for(int i=0;i<attributes.length;i++) {
+        aName = attributes[i];
+        getters[i] = new ArrayList(); // list of Methods objects (getters for accessing inner vos)
+        setters[i] = new ArrayList(); // list of Methods objects (setters for instantiating inner vos)
+        clazz = valueObjectClass;
+
+        // check if the specified attribute is a composed attribute and there exist inner v.o. to instantiate...
+        while(aName.indexOf(".")!=-1) {
+          try {
+            getter = clazz.getMethod(
+              "get" +
+              aName.substring(0, 1).
+              toUpperCase() +
+              aName.substring(1,aName.indexOf(".")),
+              new Class[0]
+            );
+          }
+          catch (NoSuchMethodException ex2) {
+            getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+          }
+          setter = clazz.getMethod("set"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[]{getter.getReturnType()});
+          aName = aName.substring(aName.indexOf(".")+1);
+          clazz = getter.getReturnType();
+          getters[i].add(getter);
+          setters[i].add(setter);
+        }
+
+        try {
+          getter = clazz.getMethod(
+            "get" +
+            aName.substring(0, 1).
+            toUpperCase() +
+            aName.substring(1),
+            new Class[0]
+          );
+        }
+        catch (NoSuchMethodException ex2) {
+          getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+        }
+
+        setterMethods[i] = clazz.getMethod("set"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[]{getter.getReturnType()});
+      }
+
+
+      if (row.length!=attributes.length) {
+        String msg = "row.length ("+row.length+") is not equals to attributes.length ("+attributes.length+")";
+        return new ErrorResponse(msg);
+      }
+
+      vo = valueObjectClass.newInstance();
+      Object currentVO = null;
+      Object innerVO = null;
+      for(int i=0;i<row.length;i++) {
+        currentVO = vo;
+        for(int j=0;j<getters[i].size();j++) {
+          if (((Method)getters[i].get(j)).invoke(currentVO,new Object[0])==null) {
+            innerVO = ((Method)getters[i].get(j)).getReturnType().newInstance();  // instantiate the inner v.o.
+            ((Method)setters[i].get(j)).invoke(currentVO,new Object[]{ innerVO });
+            currentVO = innerVO;
+          }
+          else
+            currentVO = ((Method)getters[i].get(j)).invoke(currentVO,new Object[0]);
+        }
+
+        Class parType = setterMethods[i].getParameterTypes()[0];
+        if (parType.equals(String.class))
+          value = row[i];
+//        else if (parType.equals(Boolean.class) ||
+//                 parType.equals(boolean.class)) {
+//          value = row[i];
+//          if (value!=null && value.equals(booleanTrueValue))
+//            value = Boolean.TRUE;
+//          else if (value!=null && value.equals(booleanFalseValue))
+//            value = Boolean.FALSE;
+//        }
+        else if (parType.equals(BigDecimal.class))
+          value = row[i];
+        else if (parType.equals(Double.class) || parType==Double.TYPE) {
+          value = row[i];
+          if (value!=null)
+            value = new Double(((BigDecimal)value).doubleValue());
+        }
+        else if (parType.equals(Float.class) || parType==Float.TYPE) {
+          value = row[i];
+          if (value!=null)
+            value = new Float(((BigDecimal)value).floatValue());
+        }
+        else if (parType.equals(Integer.class) || parType==Integer.TYPE) {
+          value = row[i];
+          if (value!=null)
+            value = new Integer(((BigDecimal)value).intValue());
+        }
+        else if (parType.equals(Long.class) || parType==Long.TYPE) {
+          value = row[i];
+          if (value!=null)
+            value = new Long(((BigDecimal)value).longValue());
+        }
+        else if (parType.equals(Short.class) || parType==Short.TYPE) {
+          value = row[i];
+          if (value!=null)
+            value = new Long(((BigDecimal)value).longValue());
+        }
+        else if (parType.equals(java.util.Date.class) ||
+                 parType.equals(java.sql.Date.class))
+          value = row[i];
+        else if (parType.equals(java.sql.Timestamp.class))
+          value = row[i];
+        else
+          value = row[i];
+
+        try {
+          setterMethods[i].invoke(currentVO, new Object[] {value});
+        }
+        catch (IllegalArgumentException ex5) {
+          throw new Exception(
+                  "Error while converting Object[] to value object:\n"+
+                  "Incompatible type found between value read ("+value.getClass().getName()+") and value expected ("+parType.getClass().getName()+") in setter '"+setterMethods[i].getName()+"'."
+          );
+        }
+      } // end for
+
+      return new VOResponse(vo);
+
+    } catch (Throwable ex) {
+     return new ErrorResponse(ex.getMessage());
+    }
+ }
+
+
 
 }
