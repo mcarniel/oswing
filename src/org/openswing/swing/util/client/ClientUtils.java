@@ -248,6 +248,8 @@ public class ClientUtils extends JApplet {
       String servletURL = getServerURL();
       URLConnection urlC = new URL(servletURL).openConnection();
 
+      urlC.setRequestProperty ("Content-Type","application/octet-stream");
+
       // set POST method...
       urlC.setDoOutput(true);
 
