@@ -354,7 +354,7 @@ public class ExportToExcel {
         else if (obj instanceof Date ||
                  obj instanceof java.util.Date ||
                  obj instanceof java.sql.Timestamp) {
-          c.setCellValue((Date)obj);
+          c.setCellValue((java.util.Date)obj);
           type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
           if (type==opt.TYPE_DATE)
             c.setCellStyle(csDate);
