@@ -47,30 +47,13 @@ import org.openswing.swing.util.client.*;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ListControl extends BaseInputControl implements InputControl,SearchControl,MouseListener {
-
-  private ArrayList mouseListeners = new ArrayList();
+public class ListControl extends BaseInputControl implements InputControl,SearchControl {
 
   /** flag used in addNotify method */
   private boolean firstTime = false;
 
   /** list */
-  private JList list = new JList() {
-
-    public void addMouseListener(MouseListener listener) {
-      try {
-        if (listener.equals(ListControl.this)) {
-          super.addMouseListener(listener);
-        }
-        else {
-          mouseListeners.add(listener);
-        }
-      }
-      catch (Exception ex) {
-      }
-    }
-
-  };
+  private JList list = new JList();
 
   /** domain related to this input control */
   private Domain domain = null;
@@ -865,7 +848,6 @@ public class ListControl extends BaseInputControl implements InputControl,Search
           list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
       }
-      list.addMouseListener(ListControl.this);
     }
 
 
@@ -926,64 +908,6 @@ public class ListControl extends BaseInputControl implements InputControl,Search
 
   } // end inner class...
 
-
-  public void mouseEntered(MouseEvent e) {
-    if (!isShowCheckBoxes())
-      for(int i=0;i<mouseListeners.size();i++)
-        ((MouseListener)mouseListeners.get(i)).mouseEntered(e);
-  }
-
-
-  public void mouseExited(MouseEvent e) {
-    if (!isShowCheckBoxes())
-      for(int i=0;i<mouseListeners.size();i++)
-        ((MouseListener)mouseListeners.get(i)).mouseExited(e);
-  }
-
-
-  public void mouseReleased(MouseEvent e) {
-    if (!isShowCheckBoxes())
-      for(int i=0;i<mouseListeners.size();i++)
-        ((MouseListener)mouseListeners.get(i)).mouseReleased(e);
-  }
-
-
-  public void mousePressed(MouseEvent e) {
-    if (!isShowCheckBoxes())
-      for(int i=0;i<mouseListeners.size();i++)
-        ((MouseListener)mouseListeners.get(i)).mousePressed(e);
-  }
-
-
-  public void mouseClicked(MouseEvent e) {
-    if (isShowCheckBoxes()) {
-      if (isEnabled()) {
-        try {
-          int row = list.locationToIndex(e.getPoint());
-          if (row!=-1) {
-            if (list.getSelectionMode()==ListSelectionModel.SINGLE_SELECTION) {
-              list.setSelectedIndex(row);
-            }
-            else {
-              int[] indexes = list.getSelectedIndices();
-              for(int i=0;i<indexes.length;i++)
-                if (indexes[i]==row) {
-                  list.getSelectionModel().removeSelectionInterval(row,row);
-                  return;
-                }
-              list.getSelectionModel().addSelectionInterval(row,row);
-            }
-          }
-        }
-        catch (Exception ex) {
-        }
-      }
-    }
-    else {
-      for(int i=0;i<mouseListeners.size();i++)
-        ((MouseListener)mouseListeners.get(i)).mouseClicked(e);
-    }
-  }
 
 
   /**

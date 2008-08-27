@@ -69,12 +69,14 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Deleting Error","Errore di cancellazione");
     dictionary.setProperty("Error while saving","Errore durante il salvataggio dei dati");
     dictionary.setProperty("Saving Error","Errore in salvataggio");
-    dictionary.setProperty("A mandatory column is empty.","Una colonna obbligatoria è vuota.");
+    dictionary.setProperty("A mandatory column is empty.","Una colonna obbligatoria è vuota");
     dictionary.setProperty("Value not valid","Valore non valido");
     dictionary.setProperty("sorting conditions","Condizioni di ordinamento");
     dictionary.setProperty("filtering conditions","Condizioni di filtro");
     dictionary.setProperty("filtering and sorting settings","Impostazione di filtro e ordinamento");
     dictionary.setProperty("Filtering/Sorting data (CTRL+F)","Filtraggio/ordinamento dati (CTRL+F)");
+    dictionary.setProperty("upload file","Upload File");
+    dictionary.setProperty("download file","Download File");
 
     // export...
     dictionary.setProperty("grid export","Esportazione dati da griglia");

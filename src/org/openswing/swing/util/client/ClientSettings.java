@@ -169,6 +169,12 @@ public class ClientSettings {
   /** adapter used when exporting grid data in PDF format: it provides some overridable methods */
   public static ExportToPDFAdapter EXPORT_TO_PDF_ADAPTER = new ExportToPDFAdapter();
 
+  /** flag used to add a filter panel on top of the exported grid, in order to show filtering conditions; this pane is visibile only whether there is at least one filtering condition applied; default value: <code>false</code> */
+  public static boolean SHOW_FILTERING_CONDITIONS_IN_EXPORT = false;
+
+  /** flag used to show the title of the frame that contains the grid component currently exported; title is showed on top of the exported grid, in order to show filtering conditions; default value: <code>false</code> */
+  public static boolean SHOW_FRAME_TITLE_IN_EXPORT = false;
+
   /** define if must be show the mandatory symbol "*" in mandatory input controls */
   public static boolean VIEW_MANDATORY_SYMBOL = false;
 
@@ -297,6 +303,12 @@ public class ClientSettings {
 
   /** shortcut key used to collable an already expanded row in grid; default value: KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK) */
   public static KeyStroke COLLAPSE_CELL_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK);
+
+  /** shortcut key used to add new row in grid, in insert mode (or edit mode) */
+  public static KeyStroke ADD_ROW_IN_GRID = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,0);
+
+  /** shortcut key used to remove an already added row in grid, in insert mode (or edit mode) */
+  public static KeyStroke REMOVE_ROW_FROM_GRID = KeyStroke.getKeyStroke(KeyEvent.VK_UP,0);
 
   /** define if a warning dialog must be showed when closing an internal frame that contains a Form/GridControl in edit/insert mode */
   public static boolean ASK_BEFORE_CLOSE = false;

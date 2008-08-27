@@ -140,6 +140,27 @@ public class ExportToExcel {
     int type;
     boolean firstRow = true;
 
+    if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
+      r = s.createRow(rownum);
+      c = r.createCell((short)0);
+      c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+      c.setCellValue(opt.getTitle());
+      c.setCellStyle(csTitle);
+      rownum++;
+      rownum++;
+    }
+    String[] filters = opt.getFilteringConditions();
+    if (filters!=null) {
+      for(int i=0;i<filters.length;i++) {
+        r = s.createRow(rownum);
+        c = r.createCell((short)0);
+        c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+        c.setCellValue(filters[i]);
+        rownum++;
+      }
+      rownum++;
+    }
+
 
     do {
       response=opt.getGridDataLocator().loadData(

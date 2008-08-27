@@ -274,6 +274,12 @@ public class GridControl extends JPanel {
   /** define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom; default value: <code>true</code> */
   private boolean insertRowsOnTop = true;
 
+  /**  header height; default value: <code>ClientSettings.HEADER_HEIGHT</code> */
+  private int headerHeight = ClientSettings.HEADER_HEIGHT;
+
+  /** flag used to force the editing of one row only: the current selected row; default value: <code>false</code>, i.e. all rows are editable */
+  private boolean editOnSingleRow = false;
+
 
   /**
    * Costructor.
@@ -355,8 +361,10 @@ public class GridControl extends JPanel {
           singleExpandableRow,
           overwriteRowWhenExpanding,
           expandableRowController,
+          headerHeight,
           Grid.MAIN_GRID
-          );
+      );
+      table.setEditOnSingleRow(editOnSingleRow);
       for (int i = 0; i < columnProperties.length; i++) {
         columnProperties[i].setTable(table);
       }
@@ -655,8 +663,10 @@ public class GridControl extends JPanel {
             false,
             false,
             null,
+            headerHeight,
             Grid.TOP_GRID
         );
+        topTable.setEditOnSingleRow(editOnSingleRow);
         topTable.setReorderingAllowed(reorderingAllowed);
         topTable.setResizingAllowed(resizingAllowed);
         topTable.setSelectionMode(selectionMode);
@@ -739,8 +749,10 @@ public class GridControl extends JPanel {
             false,
             false,
             null,
+            headerHeight,
             Grid.BOTTOM_GRID
         );
+        bottomTable.setEditOnSingleRow(editOnSingleRow);
         bottomTable.setReorderingAllowed(reorderingAllowed);
         bottomTable.setResizingAllowed(resizingAllowed);
         bottomTable.setSelectionMode(selectionMode);
@@ -2748,6 +2760,42 @@ public class GridControl extends JPanel {
       this.insertRowsOnTop = insertRowsOnTop;
     else
       table.setInsertRowsOnTop(insertRowsOnTop);
+  }
+
+
+  /**
+   * @return header height
+   */
+  public final int getHeaderHeight() {
+      return headerHeight;
+  }
+
+
+  /**
+   * Set the header height.
+   * This method can be invoked only before grid control is visible.
+   * @param headerHeight header height
+   */
+  public final void setHeaderHeight(int headerHeight) {
+    if (table==null)
+    this.headerHeight = headerHeight;
+  }
+
+
+  /**
+   * @return force the editing of one row only: the current selected row: <code>false</code> all rows are editable, <code>true</code> edit is allowed only on current selected row
+   */
+  public final boolean isEditOnSingleRow() {
+    return editOnSingleRow;
+  }
+
+
+  /**
+   * Define if cell editing is allows on one row only or on all rows: <code>false</code> all rows are editable, <code>true</code> edit is allowed only on current selected row
+   * @param editOnSingleRow <code>false</code> all rows are editable, <code>true</code> edit is allowed only on current selected row
+   */
+  public final void setEditOnSingleRow(boolean editOnSingleRow) {
+    this.editOnSingleRow = editOnSingleRow;
   }
 
 

@@ -80,7 +80,7 @@ public class VOListAdapter {
     this.colProperties = colProperties;
     this.grids = grids;
     this.valueObjectType = valueObjectType;
-    analyzeClassFields("",new Method[0],valueObjectType);
+    analyzeClassFields(new Hashtable(),"",new Method[0],valueObjectType);
   }
 
 
@@ -90,8 +90,17 @@ public class VOListAdapter {
    * @param parentMethods getter methods of parent v.o.
    * @param classType class to analyze
    */
-    private void analyzeClassFields(String prefix,Method[] parentMethods,Class classType) {
+
+  private void analyzeClassFields(Hashtable vosAlreadyProcessed,String prefix,Method[] parentMethods,Class classType) {
     try {
+      Integer num = (Integer)vosAlreadyProcessed.get(classType);
+      if (num==null)
+        num = new Integer(0);
+      num = new Integer(num.intValue()+1);
+      if (num.intValue()>10)
+        return;
+      vosAlreadyProcessed.put(classType,num);
+
       // retrieve all getter and setter methods defined in the specified value object...
       String attributeName = null;
       Method[] methods = classType.getMethods();
@@ -105,7 +114,7 @@ public class VOListAdapter {
           Method[] newparentMethods = new Method[parentMethods.length+1];
           System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
           newparentMethods[parentMethods.length] = methods[i];
-          analyzeClassFields(prefix+aName+".",newparentMethods,methods[i].getReturnType());
+          analyzeClassFields(vosAlreadyProcessed,prefix+aName+".",newparentMethods,methods[i].getReturnType());
         }
 
         if (attributeName.startsWith("get") && methods[i].getParameterTypes().length==0 &&
@@ -443,10 +452,17 @@ public class VOListAdapter {
             grids.getCurrentNumberOfNewRows()>0 &&
             rowNumber>=grids.getVOListTableModel().getRowCount()-grids.getCurrentNumberOfNewRows())
           return colProperties[colIndex].isEditableOnInsert();
+        else if (grids!=null &&
+                 grids.isEditOnSingleRow() &&
+                 rowNumber!=grids.getCurrentEditingRow())
+          return false;
         else
           return colProperties[colIndex].isEditableOnEdit();
       }
       else {
+//        if (colProperties[colIndex].getColumnType()==Column.TYPE_FILE)
+//          return true;
+//        else
         if (colProperties[colIndex].getColumnType()==Column.TYPE_BUTTON && ((ButtonColumn)colProperties[colIndex]).isEnableInReadOnlyMode())
           return true;
         else if (colProperties[colIndex].getColumnType()==Column.TYPE_CHECK && ((CheckBoxColumn)colProperties[colIndex]).isEnableInReadOnlyMode())

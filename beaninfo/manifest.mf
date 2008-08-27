@@ -109,6 +109,12 @@ Java-Bean: True
 Name: org/openswing/swing/table/columns/client/TimeColumn.class
 Java-Bean: True
 
+Name: org/openswing/swing/table/columns/client/FileColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/ImageColumn.class
+Java-Bean: True
+
 Name: org/openswing/swing/tree/client/TreePanel.class
 Java-Bean: True
 
@@ -140,6 +146,9 @@ Name: org/openswing/swing/client/FormattedTextControl.class
 Java-Bean: True
 
 Name: org/openswing/swing/client/ListControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/CheckBoxListControl.class
 Java-Bean: True
 
 Name: org/openswing/swing/client/PropertyGridControl.class

@@ -385,6 +385,63 @@ public class HibernateUtils {
 
   /**
    * Read the whole result set, by applying filtering and sorting conditions + query parameters.
+   * @param decodedAttributes collection of pairs <value object attribute name,attribute defined in HSQL query>
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param baseSQL base SQL
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param paramTypes parameters types, related to "?" in "baseSQL" (optional)
+   * @param tableName table name related to baseSQL and v.o.
+   * @param sessions SessionFactory
+   * @param sess Session
+   */
+  public static Response getAllFromQuery(
+    Map decodedAttributes,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String baseSQL,
+    Object[] paramValues,
+    Type[] paramTypes,
+    String tableName,
+    SessionFactory sessions,
+    Session sess
+  ) throws Exception {
+
+    ArrayList values = new ArrayList();
+    values.addAll(Arrays.asList(paramValues));
+    ArrayList types = new ArrayList();
+    types.addAll(Arrays.asList(paramTypes));
+    baseSQL = applyFiltersAndSorter(
+        decodedAttributes,
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        valueObjectType,
+        baseSQL,
+        values,
+        types,
+        tableName,
+        sessions
+    );
+
+    ArrayList gridList = new ArrayList();
+    boolean moreRows = false;
+    int resultSetLength = -1;
+
+    // read the whole result set...
+    List list = sess.createQuery(baseSQL).setParameters(values.toArray(),(Type[])types.toArray(new Type[types.size()])).list();
+    gridList.addAll(list);
+    resultSetLength = gridList.size();
+    return new VOListResponse(gridList,moreRows,resultSetLength);
+  }
+
+
+  /**
+   * Read the whole result set, by applying filtering and sorting conditions + query parameters.
    * @param filteredColumns filtering conditions
    * @param currentSortedColumns sorting conditions (attribute names)
    * @param currentSortedVersusColumns sorting conditions (order versus)
@@ -408,17 +465,86 @@ public class HibernateUtils {
     SessionFactory sessions,
     Session sess
   ) throws Exception {
+    return getAllFromQuery(
+    new HashMap(),
+    filteredColumns,
+    currentSortedColumns,
+    currentSortedVersusColumns,
+    valueObjectType,
+    baseSQL,
+    paramValues,
+    paramTypes,
+    tableName,
+    sessions,
+    sess
+    );
+  }
+
+
+  /**
+   * Read the whole result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companiesVO order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companiesVO","","customer_code asc","","",...);
+   *
+   * @param decodedAttributes collection of pairs <value object attribute name,attribute defined in HSQL query>
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param paramTypes parameters types, related to "?" in "baseSQL" (optional)
+   * @param tableName table name related to baseSQL and v.o.
+   * @param sessions SessionFactory
+   * @param sess Session
+   */
+  public static Response getAllFromQuery(
+    Map decodedAttributes,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    Type[] paramTypes,
+    String tableName,
+    SessionFactory sessions,
+    Session sess
+  ) throws Exception {
 
     ArrayList values = new ArrayList();
     values.addAll(Arrays.asList(paramValues));
     ArrayList types = new ArrayList();
     types.addAll(Arrays.asList(paramTypes));
-    baseSQL = applyFiltersAndSorter(
+    String baseSQL = applyFiltersAndSorter(
+        decodedAttributes,
         filteredColumns,
         currentSortedColumns,
         currentSortedVersusColumns,
         valueObjectType,
-        baseSQL,
+        select,
+        from,
+        where,
+        group,
+        having,
+        order,
         values,
         types,
         tableName,
@@ -482,38 +608,25 @@ public class HibernateUtils {
     SessionFactory sessions,
     Session sess
   ) throws Exception {
-
-    ArrayList values = new ArrayList();
-    values.addAll(Arrays.asList(paramValues));
-    ArrayList types = new ArrayList();
-    types.addAll(Arrays.asList(paramTypes));
-    String baseSQL = applyFiltersAndSorter(
-        filteredColumns,
-        currentSortedColumns,
-        currentSortedVersusColumns,
-        valueObjectType,
-        select,
-        from,
-        where,
-        group,
-        having,
-        order,
-        values,
-        types,
-        tableName,
-        sessions
-    );
-
-    ArrayList gridList = new ArrayList();
-    boolean moreRows = false;
-    int resultSetLength = -1;
-
-    // read the whole result set...
-    List list = sess.createQuery(baseSQL).setParameters(values.toArray(),(Type[])types.toArray(new Type[types.size()])).list();
-    gridList.addAll(list);
-    resultSetLength = gridList.size();
-    return new VOListResponse(gridList,moreRows,resultSetLength);
-  }
+  return getAllFromQuery(
+    new HashMap(),
+    filteredColumns,
+    currentSortedColumns,
+    currentSortedVersusColumns,
+    valueObjectType,
+    select,
+    from,
+    where,
+    group,
+    having,
+    order,
+    paramValues,
+    paramTypes,
+    tableName,
+    sessions,
+    sess
+  );
+}
 
 
   /**

@@ -502,6 +502,7 @@ public class LookupController {
           false,
           false,
           null,
+          ClientSettings.HEADER_HEIGHT,
           Grid.MAIN_GRID
       );
       lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);
@@ -641,6 +642,7 @@ public class LookupController {
           false,
           false,
           null,
+          ClientSettings.HEADER_HEIGHT,
           Grid.MAIN_GRID
       );
       lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);

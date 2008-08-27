@@ -82,12 +82,14 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Deleting Error","Deleting Error");
     dictionary.setProperty("Error while saving","Error while saving");
     dictionary.setProperty("Saving Error","Saving Error");
-    dictionary.setProperty("A mandatory column is empty.","A mandatory column is empty.");
+    dictionary.setProperty("A mandatory column is empty.","A mandatory column is empty");
     dictionary.setProperty("Value not valid","Value not valid");
     dictionary.setProperty("sorting conditions","Sorting conditions");
     dictionary.setProperty("filtering conditions","Filtering conditions");
     dictionary.setProperty("filtering and sorting settings","Filtering and sorting settings");
     dictionary.setProperty("Filtering/Sorting data (CTRL+F)","Filtering/Sorting data (CTRL+F)");
+    dictionary.setProperty("upload file","Upload File");
+    dictionary.setProperty("download file","Download File");
 
     // export...
     dictionary.setProperty("grid export","Grid Export");

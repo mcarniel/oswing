@@ -143,6 +143,27 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
 
 
   /**
+   * Reset list content, by invoking ItemsDataLocator.loadData() method again.
+   */
+  public final void reloadItems() {
+    if (itemsDataLocator!=null && itemsVO!=null) {
+      Response res = itemsDataLocator.loadData(itemsVO.getClass());
+      if (!res.isError()) {
+        model.clear();
+        ArrayList items = ((VOListResponse)res).getRows();
+        for(int i=0;i<items.size();i++) {
+          model.addElement(items.get(i));
+        }
+        list.setModel(model);
+        list.revalidate();
+        list.repaint();
+        list.setSelectedIndex(-1);
+      }
+    }
+  }
+
+
+  /**
    * Retrieve items.
    */
   public final void addNotify() {

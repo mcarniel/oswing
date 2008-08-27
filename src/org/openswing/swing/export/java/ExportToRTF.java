@@ -96,6 +96,24 @@ public class ExportToRTF {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     RtfWriter2 w = RtfWriter2.getInstance(document,baos);
     document.open();
+
+    Paragraph line = null;
+    if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
+      line = new Paragraph(opt.getTitle());
+      line.setAlignment(Element.ALIGN_CENTER);
+      document.add(line);
+      document.add(new Paragraph(""));
+    }
+    String[] filters = opt.getFilteringConditions();
+    if (filters!=null) {
+      for(int i=0;i<filters.length;i++) {
+        line = new Paragraph(filters[i]);
+        document.add(line);
+      }
+      document.add(new Paragraph(""));
+    }
+
+
     Table table = new Table(opt.getExportColumns().size());
     table.setWidths(headerwidths);
     table.setBorderWidth(2);

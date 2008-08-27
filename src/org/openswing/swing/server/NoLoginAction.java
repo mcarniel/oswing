@@ -1,5 +1,6 @@
 package org.openswing.swing.server;
 
+import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -45,6 +46,21 @@ public class NoLoginAction extends LoginAction {
     Response r = new VOResponse(new Boolean(true));
     SessionIdGenerator generator = (SessionIdGenerator)context.getAttribute(Controller.SESSION_ID_GENERATOR);
     r.setSessionId(generator.getSessionId(request,response,userSession,context));
+
+    Hashtable userSessions = (Hashtable)context.getAttribute(Controller.USER_SESSIONS);
+    HashSet authenticatedIds = (HashSet)context.getAttribute(Controller.SESSION_IDS);
+    if (userSessionPars!=null) {
+      userSessions.remove(userSessionPars.getSessionId());
+      authenticatedIds.remove(userSessionPars.getSessionId());
+    }
+    userSessionPars = new UserSessionParameters();
+    userSessionPars.setSessionId(r.getSessionId());
+    userSessionPars.setUsername("UNDEFINED");
+    userSessions.put(r.getSessionId(),userSessionPars);
+    userSessionPars.setLanguageId("UNDEFINED");
+
+    authenticatedIds.add(r.getSessionId());
+
     return r;
   }
 

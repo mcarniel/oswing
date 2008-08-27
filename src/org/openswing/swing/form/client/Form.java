@@ -142,38 +142,42 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     ClientUtils.disposeComponents(Form.this.getComponents());
 
     try {
-      Enumeration en = bindings.keys();
+      Enumeration en = null;
       Object attributeName = null;
-      InputControl ic = null;
-      while(en.hasMoreElements()) {
-        attributeName = en.nextElement();
+      if (bindings!=null) {
+        en = bindings.keys();
+        InputControl ic = null;
+        while(en.hasMoreElements()) {
+          attributeName = en.nextElement();
 
-        ArrayList list = (ArrayList)bindings.get(attributeName);
-        if (list==null)
-          continue;
-        for(int i=0;i<list.size();i++) {
-          ic = (InputControl)list.get(i);
-          list.remove(ic);
-          ic.removeValueChangedListener(Form.this);
-          if (((Component)ic).getParent()!=null)
-            ((Component)ic).getParent().remove((Component)ic);
+          ArrayList list = (ArrayList)bindings.get(attributeName);
+          if (list==null)
+            continue;
+          for(int i=0;i<list.size();i++) {
+            ic = (InputControl)list.get(i);
+            list.remove(ic);
+            ic.removeValueChangedListener(Form.this);
+            if (((Component)ic).getParent()!=null)
+              ((Component)ic).getParent().remove((Component)ic);
+          }
         }
       }
+      if (linkedButtons!=null) {
+        en = linkedButtons.keys();
+        GenericButton btn = null;
+        while(en.hasMoreElements()) {
+          attributeName = en.nextElement();
 
-      en = linkedButtons.keys();
-      GenericButton btn = null;
-      while(en.hasMoreElements()) {
-        attributeName = en.nextElement();
-
-        ArrayList list = (ArrayList)bindings.get(attributeName);
-        if (list==null)
-          continue;
-        for(int i=0;i<list.size();i++) {
-          btn = (GenericButton)list.get(i);
-          list.remove(btn);
+          ArrayList list = (ArrayList)bindings.get(attributeName);
+          if (list==null)
+            continue;
+          for(int i=0;i<list.size();i++) {
+            btn = (GenericButton)list.get(i);
+            list.remove(btn);
 //          ic.removeValueChangedListener(Form.this);
-          if (((GenericButton)btn).getParent()!=null)
-            ((GenericButton)btn).getParent().remove((GenericButton)btn);
+            if (((GenericButton)btn).getParent()!=null)
+              ((GenericButton)btn).getParent().remove((GenericButton)btn);
+          }
         }
       }
 
@@ -1011,13 +1015,25 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * Method called by refresh/cancel button.
    */
   public final void reload() {
+    if (getReloadButton()!=null)
+      getReloadButton().requestFocus();
+
     if (getMode()!=Consts.READONLY) {
-      // show message dialog to confirm the refresh/cancel operation...
-      if (OptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
-                                    ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
-                                    ClientSettings.getInstance().getResources().getResource("Attention"),
-                                    JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
-        executeReload();
+      boolean canReload = true;
+      if (isChanged())
+        // data in changed: show message dialog to confirm the refresh/cancel operation...
+        canReload = OptionPane.showConfirmDialog(
+          ClientUtils.getParentFrame(this),
+          ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
+          ClientSettings.getInstance().getResources().getResource("Attention"),
+          JOptionPane.YES_NO_OPTION
+        )==JOptionPane.YES_OPTION;
+      if (canReload) {
+        if (getMode()==Consts.INSERT)
+          setMode(Consts.INSERT);
+        else
+         executeReload();
+      }
     } else if (getMode()==Consts.READONLY) {
       reloadData();
     }

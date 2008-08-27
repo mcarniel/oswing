@@ -20,7 +20,7 @@
   <object key="Error while deleting rows." value="Error while deleting rows." />
   <object key="Error while saving" value="Error while saving" />
   <object key="Saving Error" value="Saving Error" />
-  <object key="A mandatory column is empty." value="A mandatory column is empty." />
+  <object key="A mandatory column is empty." value="A mandatory column is empty" />
   <object key="Value not valid" value="Value not valid" />
   <object key="Select the previous row in grid" value="Select the previous row in grid" />
   <object key="Select the next row in grid" value="Select the next row in grid" />

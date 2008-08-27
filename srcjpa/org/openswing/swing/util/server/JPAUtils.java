@@ -49,18 +49,24 @@ public class JPAUtils {
     Class valueObjectType,
     String baseSQL
   ) throws Exception {
-    String valueObjectAlias = valueObjectType.getName();
+    String valueObjectAlias = valueObjectType.getName(); // e.g. "xxx.yyy.ZZZ"
     if (valueObjectAlias.indexOf(".")!=-1)
       valueObjectAlias = valueObjectAlias.substring(valueObjectAlias.lastIndexOf(".")+1);
-    String valueObjectName = valueObjectAlias;
+    String valueObjectName = valueObjectAlias; // e.g. "ZZZ"
 
-    baseSQL = baseSQL.replace('\t',' ').replace('\n',' ').replace('\r',' ')+" ";
-    int index = baseSQL.indexOf(" "+valueObjectName+" ")+valueObjectName.length()+2;
-    valueObjectAlias = baseSQL.substring(index).trim();
-    String[] tokens = valueObjectAlias.split(" ");
-    for(int i=0;i<tokens.length;i++)
-        if (tokens[i].length()>0)
-            return tokens[i];
+    baseSQL = baseSQL.replace('\t',' ').replace('\n',' ').replace('\r',' ')+" "; // e.g. " xxx.yyy.ZZZ " or " xxx.yyy.ZZZ alias " or " ZZZ " or " ZZZ alias " or " select ... from xxx.yyy.ZZZ alias where ..." or " select ... from xxx.yyy.ZZZ where ..." 
+    int index = baseSQL.indexOf(" "+valueObjectName+" ");
+    if (index==-1)
+      index = baseSQL.indexOf(valueObjectName+" ");
+    else
+      index++;
+    index += valueObjectName.length()+1;
+    valueObjectAlias = baseSQL.substring(index).trim(); // e.g. "" or "alias" or "" or "alias" or "alias where ..." or "where ..."
+    String[] tokens = valueObjectAlias.split(" "); // e.g. [""] or ["alias"] or [""] or ["alias"] or ["alias,"where","..."] or ["where","..."]
+    for (int i = 0; i < tokens.length; i++)
+      if (tokens[i].length() > 0) {
+        return tokens[i];
+    }
     return valueObjectAlias;
   }
 

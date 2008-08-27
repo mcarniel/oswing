@@ -88,7 +88,7 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,INTNUM NUMERIC(10),DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 
@@ -97,7 +97,7 @@ public class ClientApplication {
 
         for(int i=0;i<10;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',"+12+i+0.333+","+1234+i+0.56+",?,'ABC','Y','Y','A"+i+"')");
+          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',"+i+","+12+i+0.333+","+1234+i+0.56+",?,'ABC','Y','Y','A"+i+"')");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }

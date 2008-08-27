@@ -27,6 +27,7 @@ public class GridFrame extends JFrame {
   DeleteButton deleteButton = new DeleteButton();
   FlowLayout flowLayout1 = new FlowLayout();
   TextColumn colText = new TextColumn();
+  IntegerColumn colInt = new IntegerColumn();
   DecimalColumn colDecimal = new DecimalColumn();
   CurrencyColumn colCurrency = new CurrencyColumn();
   DateColumn colDate = new DateColumn();
@@ -41,6 +42,8 @@ public class GridFrame extends JFrame {
   CopyButton copyButton = new CopyButton();
   ExportButton exportButton = new ExportButton();
   ButtonColumn colButton = new ButtonColumn();
+  FilterButton filterButton = new FilterButton();
+
 
   public GridFrame(Connection conn,GridFrameController controller) {
     this.conn = conn;
@@ -69,8 +72,10 @@ public class GridFrame extends JFrame {
 
   private void jbInit() throws Exception {
     grid.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    grid.setHeaderHeight(40);
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
+    grid.setMaxSortedColumns(1);
     grid.setCopyButton(copyButton);
     grid.setDeleteButton(deleteButton);
     grid.setEditButton(editButton);
@@ -79,6 +84,7 @@ public class GridFrame extends JFrame {
     grid.setMaxNumberOfRowsOnInsert(50);
     grid.setAllowInsertInEdit(true);
     grid.setInsertButton(insertButton);
+    grid.setFilterButton(filterButton);
     grid.setReloadButton(reloadButton);
     grid.setSaveButton(saveButton);
     grid.setValueObjectClassName("demo9.TestVO");
@@ -95,6 +101,15 @@ public class GridFrame extends JFrame {
     colDecimal.setColumnRequired(false);
     colDecimal.setEditableOnEdit(true);
     colDecimal.setEditableOnInsert(true);
+
+    colInt.setColumnFilterable(true);
+    colInt.setColumnSortable(true);
+    colInt.setColumnDuplicable(true);
+    colInt.setColumnName("intValue");
+    colInt.setColumnRequired(false);
+    colInt.setEditableOnEdit(true);
+    colInt.setEditableOnInsert(true);
+
     colCurrency.setColumnDuplicable(true);
     colCurrency.setColumnName("currencyValue");
     colCurrency.setColumnRequired(false);
@@ -114,6 +129,7 @@ public class GridFrame extends JFrame {
     colCombo.setEditableOnInsert(true);
     colLookup.setColumnDuplicable(true);
     colLookup.setColumnName("lookupValue");
+    colLookup.setPreferredWidth(60);
     colLookup.setEditableOnEdit(true);
     colLookup.setEditableOnInsert(true);
     colLookup.setMaxCharacters(5);
@@ -153,7 +169,9 @@ public class GridFrame extends JFrame {
     buttonsPanel.add(saveButton, null);
     buttonsPanel.add(exportButton, null);
     buttonsPanel.add(deleteButton, null);
+    buttonsPanel.add(filterButton, null);
     grid.getColumnContainer().add(colText, null);
+    grid.getColumnContainer().add(colInt, null);
     grid.getColumnContainer().add(colDecimal, null);
     grid.getColumnContainer().add(colCurrency, null);
     grid.getColumnContainer().add(colDate, null);

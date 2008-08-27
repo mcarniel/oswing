@@ -79,6 +79,7 @@ public class ProgressPanel extends JPanel {
       // set text content...
       labelMainTitle.setText(ClientSettings.getInstance().getResources().getResource(mainTitle));
       controlMainMessage.setFont(new JLabel().getFont());
+      controlMainMessage.setBackground(progressPanel.getBackground());
 
       for(int i=0;i<messageLabels.length;i++) {
         JLabel label1a = new JLabel(ClientSettings.getInstance().getResources().getResource(messageLabels[i]));
@@ -125,7 +126,7 @@ public class ProgressPanel extends JPanel {
     titlePanel.setLayout(gridBagLayout1);
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
-    controlMainMessage.setBackground(SystemColor.scrollbar);
+//    controlMainMessage.setBackground(SystemColor.scrollbar);
     controlMainMessage.setDoubleBuffered(false);
     controlMainMessage.setEditable(false);
     controlMainMessage.setText("");

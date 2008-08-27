@@ -81,6 +81,19 @@ public class ExportToXML {
 
     sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(newline);
     sb.append("<content>").append(newline);
+
+    if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
+      sb.append("<title>").append(opt.getTitle()).append("</title>").append(newline);;
+    }
+    String[] filters = opt.getFilteringConditions();
+    if (filters!=null) {
+      sb.append("\t<filters>").append(newline);;
+      for(int i=0;i<filters.length;i++) {
+        sb.append("\t\t<filter>").append(filters[i]).append("</filter>").append(newline);;
+      }
+      sb.append("\t</filters>").append(newline);;
+    }
+
     sb.append("\t<header>").append(newline);
     Method getter = null;
     Class clazz = null;

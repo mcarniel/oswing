@@ -12,8 +12,10 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.plaf.*;
 import javax.swing.table.*;
+import javax.swing.text.*;
 
 import org.openswing.swing.client.*;
+import org.openswing.swing.form.client.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.message.receive.java.*;
@@ -25,8 +27,6 @@ import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import org.openswing.swing.form.client.Form;
-import javax.swing.ListSelectionModel;
 
 
 /**
@@ -192,6 +192,9 @@ public class Grid extends JTable
   /** flag used by getParentGrid method to set "parentGrid" property */
   private boolean parentGridAlreadyCalculated = false;
 
+  /**  header height */
+  private int headerHeight = ClientSettings.HEADER_HEIGHT;
+
 //  /** parent frame: JFrame or JInternalFrame */
 //  private Container parentFrame = null;
 
@@ -226,6 +229,7 @@ public class Grid extends JTable
       boolean singleExpandableRow,
       boolean overwriteRowWhenExpanding,
       ExpandableRowController expandableRowController,
+      int headerHeight,
       int gridType) {
     super();
     this.grids = grids;
@@ -251,6 +255,7 @@ public class Grid extends JTable
     this.setForeground(ClientSettings.GRID_CELL_FOREGROUND);
     this.setSelectionBackground(ClientSettings.GRID_SELECTION_BACKGROUND);
     this.setSelectionForeground(ClientSettings.GRID_SELECTION_FOREGROUND);
+    this.headerHeight = headerHeight;
     this.gridType = gridType;
 
     if (expandableColumn>=0)
@@ -876,7 +881,9 @@ public class Grid extends JTable
 
 
               else if (getMode()==Consts.INSERT  && Grid.this.grids.isInsertRowsOnTop() &&
-                       e.getKeyCode()==e.VK_DOWN &&
+                       e.getKeyCode()==ClientSettings.ADD_ROW_IN_GRID.getKeyCode() &&
+                       e.getModifiers()+e.getModifiersEx()==ClientSettings.ADD_ROW_IN_GRID.getModifiers() &&
+//                       e.getKeyCode()==e.VK_DOWN &&
                        getSelectedRow()!=-1 &&
                        getSelectedRow()+1<Grid.this.grids.getMaxNumberOfRowsOnInsert() &&
                        getMode()==Consts.INSERT &&
@@ -937,13 +944,18 @@ public class Grid extends JTable
                   requestFocus();
                 }
 
+                if (Grid.this.grids.getDeleteButton()!=null)
+                  Grid.this.grids.getDeleteButton().setEnabled(true);
+
                 e.consume();
               }
 
 
               else if ((getMode()==Consts.EDIT && Grid.this.grids.isAllowInsertInEdit() ||
                         getMode()==Consts.INSERT && !Grid.this.grids.isInsertRowsOnTop()) &&
-                       e.getKeyCode()==e.VK_DOWN &&
+//                       e.getKeyCode()==e.VK_DOWN &&
+                       e.getKeyCode()==ClientSettings.ADD_ROW_IN_GRID.getKeyCode() &&
+                       e.getModifiers()+e.getModifiersEx()==ClientSettings.ADD_ROW_IN_GRID.getModifiers() &&
                        getSelectedRow()!=-1 &&
                        Grid.this.grids.getCurrentNumberOfNewRows()<Grid.this.grids.getMaxNumberOfRowsOnInsert() &&
                        getSelectedRow()==Grid.this.grids.getVOListTableModel().getRowCount()-1)
@@ -1004,12 +1016,17 @@ public class Grid extends JTable
                   requestFocus();
                 }
 
+                if (Grid.this.grids.getDeleteButton()!=null)
+                  Grid.this.grids.getDeleteButton().setEnabled(true);
+
                 e.consume();
               }
 
 
               else if (getMode()==Consts.INSERT && Grid.this.grids.isInsertRowsOnTop() &&
-                       e.getKeyCode()==e.VK_UP &&
+//                       e.getKeyCode()==e.VK_UP &&
+                       e.getKeyCode()==ClientSettings.REMOVE_ROW_FROM_GRID.getKeyCode() &&
+                       e.getModifiers()+e.getModifiersEx()==ClientSettings.REMOVE_ROW_FROM_GRID.getModifiers() &&
                        getSelectedRow()>0 &&
                        getSelectedRow()+1==Grid.this.grids.getCurrentNumberOfNewRows()) {
                 // user has pressed UP key and the grid is in INSERT mode and
@@ -1022,6 +1039,17 @@ public class Grid extends JTable
                   ValueObject voToRemove = Grid.this.model.getObjectForRow(getSelectedRow());
                   ValueObject clonedVO = (ValueObject) voToRemove.getClass().newInstance();
                   Grid.this.gridController.createValueObject(clonedVO);
+
+                  // check if there exists a combo-box editable column to pre-set...
+                  for(int i=0;i<Grid.this.colProps.length;i++)
+                    if (Grid.this.colProps[i] instanceof ComboColumn &&
+                        !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue())
+                      Grid.this.modelAdapter.setField(
+                        clonedVO,
+                        Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName()),
+                        ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode()
+                      );
+
                   boolean notNullValueFound = false;
                   Object value = null;
                   Object clonedValue = null;
@@ -1060,6 +1088,17 @@ public class Grid extends JTable
                       requestFocus();
                     }
 
+                    if (Grid.this.grids.getDeleteButton()!=null &&
+                        Grid.this.grids.getMode()==Consts.INSERT &&
+                        Grid.this.grids.getCurrentNumberOfNewRows()==1) {
+                      Grid.this.grids.getDeleteButton().setEnabled(false);
+                    }
+                    else if (Grid.this.grids.getDeleteButton()!=null &&
+                             Grid.this.grids.getMode()==Consts.EDIT &&
+                             Grid.this.grids.getCurrentNumberOfNewRows()==0) {
+                      Grid.this.grids.getDeleteButton().setEnabled(false);
+                    }
+
                     e.consume();
                   }
                 }
@@ -1072,9 +1111,12 @@ public class Grid extends JTable
 
               else if ((getMode()==Consts.EDIT && Grid.this.grids.isAllowInsertInEdit() ||
                         getMode()==Consts.INSERT && !Grid.this.grids.isInsertRowsOnTop()) &&
-                       e.getKeyCode()==e.VK_UP &&
+//                       e.getKeyCode()==e.VK_UP &&
+                       e.getKeyCode()==ClientSettings.REMOVE_ROW_FROM_GRID.getKeyCode() &&
+                       e.getModifiers()+e.getModifiersEx()==ClientSettings.REMOVE_ROW_FROM_GRID.getModifiers() &&
                        getSelectedRow()>0 &&
-                       Grid.this.grids.getCurrentNumberOfNewRows()>0 &&
+                       (Grid.this.grids.getCurrentNumberOfNewRows()>1 && getMode()==Consts.INSERT ||
+                        Grid.this.grids.getCurrentNumberOfNewRows()>0 && getMode()==Consts.EDIT) &&
                        getSelectedRow()==Grid.this.grids.getVOListTableModel().getRowCount()-1) {
                 // user has pressed UP key and the grid is in INSERT mode and
                 // the current selected row is NOT the first inserted and
@@ -1086,6 +1128,17 @@ public class Grid extends JTable
                   ValueObject voToRemove = Grid.this.model.getObjectForRow(getSelectedRow());
                   ValueObject clonedVO = (ValueObject) voToRemove.getClass().newInstance();
                   Grid.this.gridController.createValueObject(clonedVO);
+
+                  // check if there exists a combo-box editable column to pre-set...
+                  for(int i=0;i<Grid.this.colProps.length;i++)
+                    if (Grid.this.colProps[i] instanceof ComboColumn &&
+                        !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue())
+                      Grid.this.modelAdapter.setField(
+                        clonedVO,
+                        Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName()),
+                        ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode()
+                      );
+
                   boolean notNullValueFound = false;
                   Object value = null;
                   Object clonedValue = null;
@@ -1122,6 +1175,17 @@ public class Grid extends JTable
                     else {
                       editCellAt(Grid.this.grids.getVOListTableModel().getRowCount()-1, 0);
                       requestFocus();
+                    }
+
+                    if (Grid.this.grids.getDeleteButton()!=null &&
+                        Grid.this.grids.getMode()==Consts.INSERT &&
+                        Grid.this.grids.getCurrentNumberOfNewRows()==1) {
+                      Grid.this.grids.getDeleteButton().setEnabled(false);
+                    }
+                    else if (Grid.this.grids.getDeleteButton()!=null &&
+                             Grid.this.grids.getMode()==Consts.EDIT &&
+                             Grid.this.grids.getCurrentNumberOfNewRows()==0) {
+                      Grid.this.grids.getDeleteButton().setEnabled(false);
                     }
 
                     e.consume();
@@ -1502,6 +1566,10 @@ public class Grid extends JTable
 //          return true;
 
         for(int i=0;i<colProps.length;i++)
+//          if (colProps[i].getColumnType()==Column.TYPE_FILE) {
+//            return super.editCellAt(row, column, e);
+//          }
+//          else
           if (colProps[i].getColumnType()==Column.TYPE_BUTTON && ((ButtonColumn)colProps[i]).isEnableInReadOnlyMode()) {
             return super.editCellAt(row, column, e);
           }
@@ -1858,7 +1926,7 @@ public class Grid extends JTable
       ));
     }
     JTableHeader th = this.getTableHeader();
-    th.setPreferredSize(new Dimension(th.getPreferredSize().width,ClientSettings.HEADER_HEIGHT));
+    th.setPreferredSize(new Dimension(th.getPreferredSize().width,headerHeight));
     th.setReorderingAllowed(reorderingAllowed);
     th.setResizingAllowed(resizingAllowed);
     sortingMouseListener = new MouseAdapter() {
@@ -2168,22 +2236,91 @@ public class Grid extends JTable
    */
   class TableColumnHeaderRenderer extends JPanel implements TableCellRenderer {
 
-    private Icon sortIcon;
-    private JLabel l_text, l_icon;
+    private JLabel l_text,l_icon;
+    private MultiLineHeader l_text2;
+    private Font headerFont;
+    private SimpleAttributeSet simpleattributeset = new SimpleAttributeSet();
+
+
+    class MultiLineHeader extends JTextPane {
+
+
+      public MultiLineHeader(int align) {
+        StyleConstants.setAlignment(simpleattributeset,StyleConstants.ALIGN_CENTER);
+
+        if (align==SwingConstants.LEFT)
+          StyleConstants.setAlignment(simpleattributeset,StyleConstants.ALIGN_LEFT);
+        else if (align==SwingConstants.CENTER)
+          StyleConstants.setAlignment(simpleattributeset,StyleConstants.ALIGN_CENTER);
+        else if (align==SwingConstants.RIGHT)
+          StyleConstants.setAlignment(simpleattributeset,StyleConstants.ALIGN_RIGHT);
+
+        StyleConstants.setFontFamily(simpleattributeset,Grid.this.getFont().getFontName());
+        StyleConstants.setFontSize(simpleattributeset,Grid.this.getFont().getSize());
+        setParagraphAttributes( simpleattributeset, true);
+      }
+
+
+
+    }
+
+
+//    class MultiLineHeader extends MultiLineLabelControl {
+//
+//      private int align = SwingUtilities.CENTER;
+//
+//      public void paint(Graphics g) {
+//        int w = getWidth();
+//        int h = getHeight();
+//        if (g.getFontMetrics().stringWidth(getText())<w) {
+//          if (align==SwingUtilities.CENTER)
+//            g.translate(w/2-g.getFontMetrics().stringWidth(getText())/2,h/2-g.getFontMetrics().getHeight()/2);
+//          else if (align==SwingUtilities.CENTER)
+//            g.translate(w-g.getFontMetrics().stringWidth(getText())-1,h/2-g.getFontMetrics().getHeight()/2);
+//          else
+//            g.translate(1,h/2-g.getFontMetrics().getHeight()/2);
+//        }
+//        else {
+//
+//            g.translate(TableColumnHeaderRenderer.this.getWidth()/2-w/2,TableColumnHeaderRenderer.this.getHeight()/2-h/2);
+//        }
+//        super.paint(g);
+//      }
+//
+//
+//      public void setHorizontalAlignment(int align) {
+//        this.align = align;
+//      }
+//
+//    }
+
 
     public TableColumnHeaderRenderer(String attributeName,int headerTextAlignment,Font headerFont,Color headerColor) {
+      this.headerFont = headerFont;
       setOpaque(false);
       setBorder(columnHeaderBorder);
       setLayout(new BorderLayout(0, 0));
       l_text = new JLabel();
-      if (headerFont!=null)
-        l_text.setFont(headerFont);
-      if (headerColor!=null)
-        l_text.setForeground(headerColor);
-      l_text.setVerticalTextPosition(SwingConstants.CENTER);
-      l_text.setHorizontalAlignment(headerTextAlignment);
-      l_text.setOpaque(false);
-      add(l_text, BorderLayout.CENTER);
+      if (headerHeight<l_text.getFontMetrics(headerFont!=null?headerFont:l_text.getFont()).getHeight()*2) {
+        add(l_text, BorderLayout.CENTER);
+        if (headerFont!=null)
+          l_text.setFont(headerFont);
+        if (headerColor!=null)
+          l_text.setForeground(headerColor);
+        l_text.setVerticalTextPosition(SwingConstants.CENTER);
+        l_text.setHorizontalAlignment(headerTextAlignment);
+        l_text.setOpaque(false);
+      } else {
+        l_text2 = new MultiLineHeader(headerTextAlignment);
+        add(l_text2, BorderLayout.CENTER);
+        if (headerFont!=null)
+          l_text2.setFont(headerFont);
+        if (headerColor!=null)
+          l_text2.setForeground(headerColor);
+//        l_text2.setVerticalTextPosition(SwingConstants.CENTER);
+        l_text2.setOpaque(false);
+      }
+
       l_icon = new JLabel("");
       if (headerFont!=null)
         l_icon.setFont(headerFont);
@@ -2222,7 +2359,12 @@ public class Grid extends JTable
          else
            setIcon(descSort,i+1);
        }
-      l_text.setText(value.toString());
+
+      if (headerHeight<l_text.getFontMetrics(headerFont!=null?headerFont:l_text.getFont()).getHeight()*2)
+        l_text.setText(value.toString());
+      else
+        l_text2.setText(value.toString());
+
       return this;
     }
 
@@ -2487,6 +2629,11 @@ public class Grid extends JTable
    * @param e grid selection event
    */
   public final void valueChanged(ListSelectionEvent e) {
+    if (model!=null && getMode()==Consts.EDIT && grids!=null && grids.isEditOnSingleRow() && getSelectedRow()!=-1) {
+      setRowSelectionInterval(grids.getCurrentEditingRow(),grids.getCurrentEditingRow());
+      return;
+    }
+
     super.valueChanged(e);
 
     if (gridType!=MAIN_GRID)
@@ -2798,7 +2945,7 @@ public class Grid extends JTable
               headerToAdditionalHeader.put(new Integer(i),hp);
             }
             if (rest==0 && h!=null) {
-              hp.setPreferredSize(new Dimension(w,ClientSettings.HEADER_HEIGHT));
+              hp.setPreferredSize(new Dimension(w,headerHeight));
               if (i>=fromColIndex && i<toColIndex) {
                 additionalColHeaders.add(hp,null);
               }
@@ -3542,7 +3689,7 @@ public class Grid extends JTable
       int width = 0;
       for(int i=0;i<tableHeader.getColumnModel().getColumnCount();i++)
         width += tableHeader.getColumnModel().getColumn(i).getWidth();
-      tableHeader.setPreferredSize(new Dimension(width,ClientSettings.HEADER_HEIGHT));
+      tableHeader.setPreferredSize(new Dimension(width,headerHeight));
 
       // also to other grids???
     }

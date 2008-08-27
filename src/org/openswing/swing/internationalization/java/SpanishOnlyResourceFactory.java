@@ -69,12 +69,14 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Deleting Error","Error Borrando");
     dictionary.setProperty("Error while saving","Ha ocurrido un error mientras se guardaba");
     dictionary.setProperty("Saving Error","Error Guardando");
-    dictionary.setProperty("A mandatory column is empty.","Una columna obligatoria está vacía.");
+    dictionary.setProperty("A mandatory column is empty.","Una columna obligatoria está vacía");
     dictionary.setProperty("Value not valid","Valor no válido");
     dictionary.setProperty("sorting conditions","Condiciones de ordenación");
     dictionary.setProperty("filtering conditions","Condiciones de filtrado");
     dictionary.setProperty("filtering and sorting settings","Ajustes de ordenación y filtrado");
     dictionary.setProperty("Filtering/Sorting data (CTRL+F)","Filtrado/Ordenación de datos (CTRL+F)");
+    dictionary.setProperty("upload file","Upload File");
+    dictionary.setProperty("download file","Download File");
 
     // export...
     dictionary.setProperty("grid export","Exportar Tabla");

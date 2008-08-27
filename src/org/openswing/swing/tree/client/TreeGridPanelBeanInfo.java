@@ -27,7 +27,7 @@ public class TreeGridPanelBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _folderIconName = new PropertyDescriptor("folderIconName", beanClass, "getFolderIconName", "setFolderIconName");
       PropertyDescriptor _leavesImageName = new PropertyDescriptor("leavesImageName", beanClass, "getLeavesImageName", "setLeavesImageName");
       PropertyDescriptor _loadWhenVisibile = new PropertyDescriptor("loadWhenVisibile", beanClass, "isLoadWhenVisibile", "setLoadWhenVisibile");
-      PropertyDescriptor _rootVisibile = new PropertyDescriptor("rootVisibile", beanClass, "isRootVisibile", "setRootVisibile");
+      PropertyDescriptor _rootVisible = new PropertyDescriptor("rootVisible", beanClass, "isRootVisible", "setRootVisible");
       PropertyDescriptor _treeController = new PropertyDescriptor("treeController", beanClass, "getTreeController", "setTreeController");
       PropertyDescriptor _treeDataLocator = new PropertyDescriptor("treeDataLocator", beanClass, "getTreeDataLocator", "setTreeDataLocator");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
@@ -36,7 +36,7 @@ public class TreeGridPanelBeanInfo extends SimpleBeanInfo {
         _folderIconName,
         _leavesImageName,
         _loadWhenVisibile,
-        _rootVisibile,
+        _rootVisible,
         _treeController,
         _treeDataLocator};
       return pds;

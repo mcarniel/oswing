@@ -5,9 +5,9 @@ import java.util.*;
 import java.awt.*;
 
 import org.openswing.swing.client.*;
+import org.openswing.swing.export.java.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.table.columns.client.Column;
 
 
 /**
@@ -354,6 +354,15 @@ public class GridController {
   public Object beforeFilterGrid(String attributeName,Object value) {
     return value;
   }
+
+
+  /**
+   * Callback method invoked by grid when exporting data from grid.
+   * @param exportOptions options used to export data; these options can be programmatically changed, in order to customize esporting result
+   */
+  public void exportGrid(ExportOptions exportOptions) {
+  }
+
 
 
   /************************************************************

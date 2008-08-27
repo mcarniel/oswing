@@ -19,6 +19,7 @@ public class TestVO extends ValueObjectImpl {
 
   private String stringValue;
   private String comboValue;
+  private BigDecimal intValue;
   private BigDecimal numericValue;
   private BigDecimal currencyValue;
   private Boolean checkValue;
@@ -91,6 +92,12 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setButton(Icon button) {
     this.button = button;
+  }
+  public BigDecimal getIntValue() {
+    return intValue;
+  }
+  public void setIntValue(BigDecimal intValue) {
+    this.intValue = intValue;
   }
 
 

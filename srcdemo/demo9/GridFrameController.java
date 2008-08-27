@@ -54,15 +54,26 @@ public class GridFrameController extends GridController implements GridDataLocat
       Map otherGridParams) {
     PreparedStatement stmt = null;
     try {
-      String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK_BOX,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
+      String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK_BOX,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE,DEMO3.INTNUM from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
         FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("stringValue");
-        sql += " and DEMO3.TEXT "+ filter[0].getOperator()+"?";
-        vals.add(filter[0].getValue());
-        if (filter[1]!=null) {
-          sql += " and DEMO3.TEXT "+ filter[1].getOperator()+"?";
-          vals.add(filter[1].getValue());
+        if (filter!=null) {
+          sql += " and DEMO3.TEXT "+ filter[0].getOperator()+"?";
+          vals.add(filter[0].getValue());
+          if (filter[1]!=null) {
+            sql += " and DEMO3.TEXT "+ filter[1].getOperator()+"?";
+            vals.add(filter[1].getValue());
+          }
+        }
+        filter = (FilterWhereClause[])filteredColumns.get("intValue");
+        if (filter!=null) {
+          sql += " and DEMO3.INTNUM "+ filter[0].getOperator()+"?";
+          vals.add(filter[0].getValue());
+          if (filter[1]!=null) {
+            sql += " and DEMO3.INTNUM "+ filter[1].getOperator()+"?";
+            vals.add(filter[1].getValue());
+          }
         }
       }
       if (currentSortedColumns.size()>0) {
@@ -89,6 +100,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         vo.setStringValue(rset.getString(1));
         vo.setLookupValue(rset.getString(8));
         vo.setDescrLookupValue(rset.getString(9));
+        vo.setIntValue(rset.getBigDecimal(10));
         vo.setButton( getButtonIcon(vo.getCheckValue()) );
         list.add(vo);
       }
@@ -159,6 +171,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       map.put("checkValue","CHECK_BOX");
       map.put("radioButtonValue","RADIO");
       map.put("lookupValue","CODE");
+      map.put("intValue","INTNUM");
       return QueryUtil.insertTable(
           conn,
           new UserSessionParameters(),
@@ -197,8 +210,8 @@ public class GridFrameController extends GridController implements GridDataLocat
     PreparedStatement stmt = null;
     PreparedStatement stmt2 = null;
     try {
-      stmt = conn.prepareStatement("update DEMO3 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=? where TEXT=?");
-      stmt2 = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE) values(?,?,?,?,?,?,?,?)");
+      stmt = conn.prepareStatement("update DEMO3 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,INTNUM=? where TEXT=?");
+      stmt2 = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,INTNUM) values(?,?,?,?,?,?,?,?,?)");
       TestVO vo = null;
       TestVO oldVO = null;
       for(int i=0;i<persistentObjects.size();i++) {
@@ -213,7 +226,8 @@ public class GridFrameController extends GridController implements GridDataLocat
           stmt.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");
           stmt.setString(1,vo.getStringValue());
           stmt.setString(8,vo.getLookupValue());
-          stmt.setString(9,vo.getStringValue());
+          stmt.setBigDecimal(9,vo.getIntValue());
+          stmt.setString(10,vo.getStringValue());
           stmt.execute();
         }
         else {
@@ -225,6 +239,7 @@ public class GridFrameController extends GridController implements GridDataLocat
           stmt2.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");
           stmt2.setString(1,vo.getStringValue());
           stmt2.setString(8,vo.getLookupValue());
+          stmt2.setBigDecimal(9,vo.getIntValue());
           stmt2.execute();
         }
 

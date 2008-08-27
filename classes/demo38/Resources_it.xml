@@ -19,7 +19,7 @@
   <object key="Deleting Error" value="Errore di cancellazione" />
   <object key="Error while saving" value="Errore durante il salvataggio" />
   <object key="Saving Error" value="Errore di salvataggio" />
-  <object key="A mandatory column is empty." value="Una colonna obbligatoria ha una cella vuota." />
+  <object key="A mandatory column is empty." value="Una colonna obbligatoria ha una cella vuota" />
   <object key="Value not valid" value="Valore non valido" />
   <object key="Select the previous row in grid" value="Seleziona la riga precedente in griglia" />
   <object key="Select the next row in grid" value="Seleziona la riga successiva in griglia" />
@@ -226,6 +226,8 @@
       <object key="E" value="A" />
       <object key="Store Account" value="Memorizza Account" />
       <object key="DEMO38" value="DEMO38" />      
+      <object key="Username" value="Username" />
+      <object key="Password" value="Password" />
 
 
   <currencySymbol>E</currencySymbol>

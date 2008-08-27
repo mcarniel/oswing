@@ -205,6 +205,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom; default value: <code>true</code> */
   private boolean insertRowsOnTop = true;
 
+  /** flag used to force the editing of one row only: the current selected row; default value: <code>false</code>, i.e. all rows are editable */
+  private boolean editOnSingleRow = false;
+
+  /** current selected row when grid is switched to EDIT mod and "editOnSingleRow" property is set to <code>true</code> */
+  private int currentEditingRow = -1;
+
+  /** selected row selected before reloading data on grid; used to reset selected row */
+  private int selectedRowBeforeReloading = -1;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -233,6 +242,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       boolean singleExpandableRow,
       boolean overwriteRowWhenExpanding,
       ExpandableRowController expandableRowController,
+      int headerHeight,
       int gridType
   ) {
     this.gridControl = gridControl;
@@ -274,6 +284,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         singleExpandableRow,
         overwriteRowWhenExpanding,
         expandableRowController,
+        headerHeight,
         gridType
     );
 
@@ -296,6 +307,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           singleExpandableRow,
           overwriteRowWhenExpanding,
           expandableRowController,
+          headerHeight,
           gridType
       );
       this.lockedGrid.setReorderingAllowed(false);
@@ -593,16 +605,33 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
         // reload data...
         currentNumberOfNewRows = 0;
+        selectedRowBeforeReloading = getSelectedRow();
         errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
         if (model.getRowCount()>0) {
-          grid.setRowSelectionInterval(0,0);
+          if (selectedRowBeforeReloading==-1)
+            selectedRowBeforeReloading = 0;
+          else if (selectedRowBeforeReloading>model.getRowCount()-1)
+            selectedRowBeforeReloading = model.getRowCount()-1;
+
+          grid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
           if (lockedGrid!=null)
-            lockedGrid.setRowSelectionInterval(0,0);
-        } else
+            lockedGrid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              if (selectedRowBeforeReloading==-1)
+                return;
+              grid.ensureRowIsVisible(selectedRowBeforeReloading);
+              if (lockedGrid!=null)
+                lockedGrid.ensureRowIsVisible(selectedRowBeforeReloading);
+            }
+          });
+        } else {
           statusPanel.setText("");
-        grid.ensureRowIsVisible(grid.getSelectedRow());
-        if (lockedGrid!=null)
-          lockedGrid.ensureRowIsVisible(grid.getSelectedRow());
+          selectedRowBeforeReloading = 0;
+        }
+//        grid.ensureRowIsVisible(grid.getSelectedRow());
+//        if (lockedGrid!=null)
+//          lockedGrid.ensureRowIsVisible(grid.getSelectedRow());
         if (navBar!=null) {
           if (grid.getSelectedRow() != -1 && !moreRows &&
               grid.getSelectedRow() == model.getRowCount() - 1 ||
@@ -876,6 +905,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             lockedGrid.editCellAt(lockedGrid.getSelectedRow(),lockedGrid.getSelectedColumn()==-1?0:lockedGrid.getSelectedColumn());
             lockedGrid.requestFocus();
           }
+          currentEditingRow = grid.getSelectedRow();
         }
       }
 
@@ -1914,6 +1944,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (gridControl!=null && gridControl.getBottomTable()!=null)
       bottomRows.addAll( gridControl.getBottomTable().getVOListTableModel().getDataVector() );
 
+    Hashtable attributeDescriptions = new Hashtable();
+    for(int i=0;i<colProps.length;i++)
+        attributeDescriptions.put(colProps[i].getColumnName(),ClientSettings.getInstance().getResources().getResource(colProps[i].getHeaderColumnName()));
+
     ExportOptions opt = new ExportOptions(
         exportColumns,
         exportAttrColumns,
@@ -1926,6 +1960,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         gridDataLocator,
         columnsWidth,
         columnsType,
+        attributeDescriptions,
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE),
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_TIME),
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE_TIME),
@@ -1933,6 +1968,20 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         topRows,
         bottomRows
     );
+    opt.setShowFilteringConditions(ClientSettings.SHOW_FILTERING_CONDITIONS_IN_EXPORT);
+    if (ClientSettings.SHOW_FRAME_TITLE_IN_EXPORT) {
+      JInternalFrame intFrame = ClientUtils.getParentInternalFrame(this);
+      if (intFrame!=null) {
+       if (!intFrame.getTitle().equals(""))
+        opt.setTitle(intFrame.getTitle());
+      }
+      else {
+        JFrame frame = ClientUtils.getParentFrame(this);
+        if (frame!=null && !frame.getTitle().equals(""))
+          opt.setTitle(frame.getTitle());
+      }
+    }
+    gridController.exportGrid(opt);
 
     try {
       if (gridDataLocator instanceof ServerGridDataLocator) {
@@ -2432,8 +2481,57 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         }
       }
     }
-    else
-      Logger.error(this.getClass().getName(),"delete","Delete rows is not allowed: grid must be in read only mode.",null);
+    else {
+      if ((getMode()==Consts.INSERT || getMode()==Consts.EDIT) &&
+          getCurrentNumberOfNewRows()>0 && grid.getSelectedRow()!=-1) {
+
+        grid.stopCellEditing();
+
+        int row = grid.getSelectedRow();
+        setCurrentNumberOfNewRows( getCurrentNumberOfNewRows()-1 );
+        model.removeObjectAt(row);
+        model.getChangedRowIndexes().remove(new Integer(row));
+        if (model.getRowCount()>0 && row>0)
+          row--;
+        else if (model.getRowCount()>0)
+          row = 0;
+        else
+          row = -1;
+
+        if (row!=-1) {
+          setRowSelectionInterval(row,row);
+          grid.setColumnSelectionInterval(0,0);
+          grid.ensureRowIsVisible(row);
+
+          if (getLockedGrid()!=null) {
+            getLockedGrid().setRowSelectionInterval(row,row);
+            getLockedGrid().setColumnSelectionInterval(0,0);
+            getLockedGrid().ensureRowIsVisible(row);
+            getLockedGrid().editCellAt(row,0);
+            getLockedGrid().requestFocus();
+          }
+          else {
+            grid.editCellAt(row, 0);
+            requestFocus();
+          }
+        }
+
+
+        if (getDeleteButton()!=null &&
+            getMode()==Consts.INSERT &&
+            getCurrentNumberOfNewRows()==1) {
+          getDeleteButton().setEnabled(false);
+        }
+        else if (getDeleteButton()!=null &&
+                 getMode()==Consts.EDIT &&
+                 getCurrentNumberOfNewRows()==0) {
+          getDeleteButton().setEnabled(false);
+        }
+
+      }
+      else
+        Logger.error(this.getClass().getName(),"delete","Delete rows is not allowed: grid must be in read only mode.",null);
+    }
   }
 
 
@@ -2725,13 +2823,13 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               !((CodLookupColumn)this.colProps[j]).getLookupController().isCodeValid())
               return false;
             else if (this.colProps[j].isColumnRequired())
-              if ((model.getValueAt(i, j)==null) || (model.getValueAt(i, j).toString().equals(""))) {
+              if ((model.getValueAt(rows[i], j)==null) || (model.getValueAt(rows[i], j).toString().equals(""))) {
                 OptionPane.showMessageDialog(ClientUtils.getParentFrame(this),
-                                              ClientSettings.getInstance().getResources().getResource("A mandatory column is empty."),
+                                              ClientSettings.getInstance().getResources().getResource("A mandatory column is empty.")+": "+ClientSettings.getInstance().getResources().getResource(this.colProps[j].getHeaderColumnName()),
                                               ClientSettings.getInstance().getResources().getResource("Value not valid"),
                                               JOptionPane.ERROR_MESSAGE);
                 if (j<lockedColumns) {
-                  lockedGrid.editCellAt(i, j);
+                  lockedGrid.editCellAt(rows[i], j);
                   lockedGrid.requestFocus();
                 }
                 else {
@@ -3225,6 +3323,29 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   }
 
 
+  /**
+   * @return force the editing of one row only: the current selected row: <code>false</code> all rows are editable, <code>true</code> edit is allowed only on current selected row
+   */
+  public final boolean isEditOnSingleRow() {
+    return editOnSingleRow;
+  }
+
+
+  /**
+   * Define if cell editing is allows on one row only or on all rows: <code>false</code> all rows are editable, <code>true</code> edit is allowed only on current selected row
+   * @param editOnSingleRow <code>false</code> all rows are editable, <code>true</code> edit is allowed only on current selected row
+   */
+  public final void setEditOnSingleRow(boolean editOnSingleRow) {
+    this.editOnSingleRow = editOnSingleRow;
+  }
+
+
+  /**
+   * @return current selected row when grid is switched to EDIT mod and "editOnSingleRow" property is set to <code>true</code>
+   */
+  public final int getCurrentEditingRow() {
+    return currentEditingRow;
+  }
 
 
   /**

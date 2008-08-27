@@ -274,6 +274,9 @@ public class VOListTableModel extends AbstractTableModel {
     try {
       if (mode==Consts.READONLY) {
         Column col = fieldAdapter.getFieldColumn(column);
+//        if (col.getColumnType()==col.TYPE_FILE)
+//          return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
+//        else
         if (col.getColumnType()==col.TYPE_BUTTON && ((ButtonColumn)col).isEnableInReadOnlyMode())
 //          return true;
           return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
@@ -297,8 +300,15 @@ public class VOListTableModel extends AbstractTableModel {
             return false;
         }
 
-      } else
+      } else {
+        // edit mode...
+        if (fieldAdapter.getGrids()!=null &&
+            fieldAdapter.getGrids().isEditOnSingleRow() &&
+            row!=fieldAdapter.getGrids().getCurrentEditingRow())
+          return false;
+
         return fieldAdapter.getTableContainer().isCellEditable(fieldAdapter.getGrids().getGridControl(),row,fieldAdapter.getFieldName(column));
+      }
     }
     catch (Exception ex) {
       Logger.error(this.getClass().getName(),"isCellEditable","Error defining cell editability",ex);
@@ -359,9 +369,24 @@ public class VOListTableModel extends AbstractTableModel {
 
 
   /**
+   * Get value within a value object, for the specified attribute name.
+   * @param row row index
+   * @param attribute name
+   * @return object value related to the specified attribute name and row
+   */
+  public final Object getField(int row, String attributeName) {
+    int colIndex = fieldAdapter.getFieldIndex(attributeName);
+    if (colIndex!=-1)
+      return fieldAdapter.getField(getObjectForRow(row),colIndex);
+    else
+      return null;
+  }
+
+
+  /**
    * Set value within a value object, for the specified attribute name.
    * Note: no validation task is performed.
-   * @param tow row index
+   * @param row row index
    * @param attribute name
    * @param value new Object to set onto ValueObject
    */

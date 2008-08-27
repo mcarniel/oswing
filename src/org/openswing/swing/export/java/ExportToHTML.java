@@ -81,6 +81,22 @@ public class ExportToHTML {
 
     sb.append("<HTML><HEAD><TITLE></TITLE></HEAD>").append(newline);
     sb.append("<BODY>").append(newline);
+
+
+    if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
+      sb.append("<B>").append(opt.getTitle()).append("</B><BR/><BR/>").append(newline);
+    }
+    String[] filters = opt.getFilteringConditions();
+    if (filters!=null) {
+      for(int i=0;i<filters.length;i++) {
+        sb.append(filters[i]+"<BR/>").append(newline);
+      }
+      sb.append("<BR/>").append(newline);
+    }
+
+
+
+
     sb.append("<TABLE BORDER=1>").append(newline);
     // create tag related to column headers...
     sb.append("<TR>").append(newline);

@@ -10,6 +10,7 @@ import org.openswing.swing.logger.server.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.*;
 import org.openswing.swing.util.server.*;
+import java.lang.reflect.*;
 
 
 /**
@@ -212,8 +213,7 @@ public class Controller extends HttpServlet {
       String docId = request.getParameter("docId");
 
       // retrieve session identifiers...
-      HashSet authenticatedIds = (HashSet)this.getServletContext().getAttribute(
-          SESSION_IDS);
+      HashSet authenticatedIds = (HashSet)this.getServletContext().getAttribute(SESSION_IDS);
       if (authenticatedIds == null) {
         authenticatedIds = new HashSet();
         this.getServletContext().setAttribute(SESSION_IDS, authenticatedIds);
@@ -230,8 +230,7 @@ public class Controller extends HttpServlet {
             );
         PrintWriter pw = response.getWriter();
         pw.println("<html><head><title>ERROR</title></html>");
-        pw.println(
-            "<body>Access denied: you must specify a session identifier</body>");
+        pw.println("<body>Access denied: you must specify a session identifier</body>");
         pw.println("</html>");
         pw.close();
       }
@@ -363,9 +362,9 @@ public class Controller extends HttpServlet {
 
       if (!ConnectionManager.isConnectionSourceCreated() || command.getMethodName().equals("databaseAlreadyExixts")) {
         // database connection error: all requests will pass. throught..
-        Action action = (Action)actions.get( command.getMethodName() );
-        if (action!=null)
-          answer = action.executeCommand(
+        Object action = actions.get( command.getMethodName() );
+        if (action!=null && action instanceof Action)
+          answer = ((Action)action).executeCommand(
               command.getInputParam(),
               null,
               request,
@@ -373,6 +372,9 @@ public class Controller extends HttpServlet {
               request.getSession(true),
               this.getServletContext()
           );
+        else if (action!=null && action instanceof GenericAction) {
+          answer = processGenericAction(request,response,factory,userSessions,action.getClass(),command);
+        }
       } else if (command.getSessionId()==null &&
           !command.getMethodName().equals("login")) {
         // received a client request BEFORE authentication...
@@ -393,9 +395,9 @@ public class Controller extends HttpServlet {
         // received a client request BEFORE authentication AND method is login
         // OR
         // received a client request AFTER authentication...
-        Action action = (Action)actions.get( command.getMethodName() );
-        if (action!=null)
-          answer = action.executeCommand(
+        Object action = actions.get( command.getMethodName() );
+        if (action!=null && action instanceof Action)
+          answer = ((Action)action).executeCommand(
               command.getInputParam(),
               command.getSessionId()==null?null:(UserSessionParameters)userSessions.get(command.getSessionId()),
               request,
@@ -403,6 +405,9 @@ public class Controller extends HttpServlet {
               request.getSession(true),
               this.getServletContext()
           );
+        else if (action!=null && action instanceof GenericAction) {
+          answer = processGenericAction(request,response,factory,userSessions,action.getClass(),command);
+        }
         else {
           String msg = "Client request not supported";
           if (command.getSessionId()!=null) {
@@ -413,7 +418,7 @@ public class Controller extends HttpServlet {
         }
       }
     }
-    catch (Exception ex) {
+    catch (Throwable ex) {
       this.getServletContext().log("Error on processing client request",ex);
       try {
         objectReceiver.setObjectToResponse(response, new ErrorResponse(ex.getMessage()));
@@ -434,6 +439,68 @@ public class Controller extends HttpServlet {
       return;
     }
   }
+
+
+  private Response processGenericAction(HttpServletRequest request, HttpServletResponse response,ServerResourcesFactory factory,Hashtable userSessions,Class genericAction,Command command) throws Throwable {
+    GenericAction action = (GenericAction)genericAction.newInstance();
+    action.context = this.getServletContext();
+    action.request = request;
+    action.response = response;
+    action.userSession = request.getSession(true);
+    action.userSessionPars = command.getSessionId()==null?null:(UserSessionParameters)userSessions.get(command.getSessionId());
+
+    Object[] args = null;
+    if (command.getInputParam() instanceof Object[]) {
+      args = (Object[])command.getInputParam();
+    }
+    else
+      args = new Object[]{command.getInputParam()};
+
+    Class[] argsType = new Class[args.length];
+    boolean nullValue = false;
+    for(int i=0;i<args.length;i++) {
+      if (args[i]==null) {
+        nullValue = true;
+        break;
+      }
+      else
+        argsType[i] = args[i].getClass();
+    }
+    if (!nullValue)
+      try {
+        return (Response) genericAction.getMethod(command.getMethodName(),argsType).invoke(action, args);
+      }
+      catch (NoSuchMethodException ex) {
+      }
+    // NoSuchMethodException or nullValue...
+    Method[] mm = genericAction.getMethods();
+    ArrayList aux = new ArrayList();
+    for(int i=0;i<mm.length;i++)
+      if (mm[i].getName().equals(command.getMethodName()) && mm[i].getParameterTypes().length==args.length)
+        aux.add(mm);
+    Method m = null;
+    boolean methodFound = false;
+    for(int i=0;i<aux.size();i++) {
+      m = (Method) aux.get(i);
+      methodFound = true;
+      for(int j=0;j<args.length;j++)
+        if (args[j]!=null && !m.getParameterTypes()[j].isAssignableFrom(args[j].getClass())) {
+          methodFound = false;
+          break;
+        }
+      if (methodFound) {
+        return (Response)m.invoke(action,args);
+      }
+    }
+
+    String msg = "Client request not supported";
+    if (command.getSessionId()!=null) {
+      // translate the error message...
+      msg = factory.getResources(((UserSessionParameters)userSessions.get(command.getSessionId())).getLanguageId()).getResource(msg);
+    }
+    return new ErrorResponse( msg + ": '" + command.getMethodName() + "'" );
+  }
+
 
 
   /**

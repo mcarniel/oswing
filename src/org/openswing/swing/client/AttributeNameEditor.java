@@ -1,21 +1,11 @@
 package org.openswing.swing.client;
 
-import java.beans.PropertyEditorSupport;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import org.openswing.swing.message.receive.java.ValueObject;
-import org.openswing.swing.form.client.Form;
-import org.openswing.swing.table.columns.client.*;
-import org.openswing.swing.message.receive.java.ValueObjectImpl;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.beans.Beans;
-import java.util.Enumeration;
-import java.util.HashSet;
+import java.beans.*;
+import java.util.*;
+
+import javax.swing.*;
+
+import org.openswing.swing.message.receive.java.*;
 
 
 /**

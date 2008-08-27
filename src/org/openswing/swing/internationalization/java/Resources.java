@@ -131,6 +131,14 @@ public class Resources implements Serializable {
 
 
   /**
+   * @return Enumeration of all entries in dictionary
+   */
+  public final Enumeration getEntries() {
+    return dictionary.keys();
+  }
+
+
+  /**
    * @param text text to translate
    * @return translated text
    */

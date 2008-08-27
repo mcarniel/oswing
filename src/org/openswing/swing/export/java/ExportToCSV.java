@@ -78,6 +78,16 @@ public class ExportToCSV {
     String sep = opt.getExportType().endsWith(opt.CSV_FORMAT1) ? "," : ";";
     StringBuffer sb = new StringBuffer("");
 
+    if (opt.getTitle()!=null && !opt.getTitle().equals(""))
+      sb.append(opt.getTitle()).append("\n\n");
+
+    String[] filters = opt.getFilteringConditions();
+    if (filters!=null) {
+      for(int i=0;i<filters.length;i++)
+      sb.append(filters[i]).append("\n");
+    sb.append("\n");
+    }
+
     SimpleDateFormat sdf = new SimpleDateFormat(opt.getDateFormat());
     SimpleDateFormat sdatf = new SimpleDateFormat(opt.getDateTimeFormat());
     SimpleDateFormat stf = new SimpleDateFormat(opt.getTimeFormat());

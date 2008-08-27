@@ -4,11 +4,13 @@ import java.io.*;
 import java.util.*;
 
 import org.openswing.swing.table.java.*;
+import org.openswing.swing.message.send.java.FilterWhereClause;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: Export information needed to export data on the server side.</p>
+ * <p>Description: Export information needed to export data related to a grid on the server side.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -111,6 +113,15 @@ public class ExportOptions implements Serializable {
   /** list of locked rows at the bottom of the grid */
   private ArrayList bottomRows = new ArrayList();
 
+  /** flag used to add a filter panel on top of the grid, in order to show filtering conditions; this pane is visibile only whether there is at least one filtering condition applied; default value: <code>ClientSettings.SHOW_FILTERING_CONDITIONS_IN_EXPORT</code> */
+  private boolean showFilteringConditions = false;
+
+  /** export document title (optional) */
+  private String title = null;
+
+  /** collection of pairs <attribute name, translation> */
+  private Hashtable attributeDescriptions = null;
+
 
   /**
    * Method called by Grid.
@@ -125,6 +136,7 @@ public class ExportOptions implements Serializable {
    * @param gridDataLocator grid data locator
    * @param columnsWidth columns width
    * @param columnsType columns type
+   * @param attributeDescriptions collection of pairs <attribute name, translation>
    * @param dateFormat date format
    * @param timeFormat time format
    * @param dateTimeFormat date+time format
@@ -144,6 +156,7 @@ public class ExportOptions implements Serializable {
       GridDataLocator gridDataLocator,
       Hashtable columnsWidth,
       Hashtable columnsType,
+      Hashtable attributeDescriptions,
       String dateFormat,
       String timeFormat,
       String dateTimeFormat,
@@ -162,6 +175,7 @@ public class ExportOptions implements Serializable {
     this.gridDataLocator = gridDataLocator;
     this.columnsWidth = columnsWidth;
     this.columnsType = columnsType;
+    this.attributeDescriptions = attributeDescriptions;
     this.dateFormat = dateFormat;
     this.timeFormat = timeFormat;
     this.dateTimeFormat = dateTimeFormat;
@@ -329,6 +343,80 @@ public class ExportOptions implements Serializable {
     return bottomRows;
   }
 
+
+  /**
+   * Used to add a filter panel on top of the grid, in order to show filtering conditions.
+   * This pane is visibile only whether "showFilteringConditions" is set to <code>true</code> and there is at least one filtering condition applied.
+   * @param showFilteringConditions used to add a filter panel on top of the grid, in order to show filtering conditions
+   */
+  public final void setShowFilteringConditions(boolean showFilteringConditions) {
+    this.showFilteringConditions = showFilteringConditions;
+  }
+
+
+  /**
+   * @return export document title (optional)
+   */
+  public final String getTitle() {
+    return title;
+  }
+
+
+  /**
+   * Set the export document title.
+   * @param title export document title
+   */
+  public final void setTitle(String title) {
+    this.title = title;
+  }
+
+
+  public String[] getFilteringConditions() {
+    if (showFilteringConditions && filteredColumns.size()>0) {
+      ArrayList filters = new ArrayList();
+      Iterator it = filteredColumns.keySet().iterator();
+      FilterWhereClause[] filter = null;
+      String attr = null;
+      Object value = null;
+      while(it.hasNext()) {
+        attr = it.next().toString();
+        filter = (FilterWhereClause[])filteredColumns.get(attr);
+
+        value = filter[0].getValue();
+        if(value==null)
+          value = "";
+        else if (value instanceof ArrayList) {
+          ArrayList list = (ArrayList)value;
+          value += "(";
+          for(int i=0;i<list.size();i++)
+            value += (list.get(i)==null?"":list.get(i))+",";
+          if (list.size()>0)
+            value = value.toString().substring(0,value.toString().length()-1);
+          value += ")";
+        }
+        filters.add(attributeDescriptions.get(filter[0].getAttributeName())+" "+filter[0].getOperator()+value);
+
+        if (filter[1]!=null) {
+          value = filter[1].getValue();
+          if(value==null)
+            value = "";
+          else if (value instanceof ArrayList) {
+            ArrayList list = (ArrayList)value;
+            value += "(";
+            for(int i=0;i<list.size();i++)
+              value += (list.get(i)==null?"":list.get(i))+",";
+            if (list.size()>0)
+              value = value.toString().substring(0,value.toString().length()-1);
+            value += ")";
+          }
+          filters.add(attributeDescriptions.get(filter[1].getAttributeName())+" "+filter[1].getOperator()+value);
+        }
+      }
+      return (String[])filters.toArray(new String[filters.size()]);
+    }
+    else
+      return null;
+  }
 
 
 

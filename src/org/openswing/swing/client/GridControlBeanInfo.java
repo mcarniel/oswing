@@ -25,10 +25,12 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       _defaultQuickFilterCriteria.setPropertyEditorClass(org.openswing.swing.client.QuickFilterCriteriaEditor.class);
       PropertyDescriptor _deleteButton = new PropertyDescriptor("deleteButton", beanClass, "getDeleteButton", "setDeleteButton");
       PropertyDescriptor _editButton = new PropertyDescriptor("editButton", beanClass, "getEditButton", "setEditButton");
+      PropertyDescriptor _editOnSingleRow = new PropertyDescriptor("editOnSingleRow", beanClass, "isEditOnSingleRow", "setEditOnSingleRow");
       PropertyDescriptor _expandableColumn = new PropertyDescriptor("expandableColumn", beanClass, "getExpandableColumn", "setExpandableColumn");
       PropertyDescriptor _filterPanelOnGridPolicy = new PropertyDescriptor("filterPanelOnGridPolicy", beanClass, "getFilterPanelOnGridPolicy", "setFilterPanelOnGridPolicy");
       _filterPanelOnGridPolicy.setPropertyEditorClass(org.openswing.swing.client.FilterPanelOnGridPolicyEditor.class);
       PropertyDescriptor _gridDataLocator = new PropertyDescriptor("gridDataLocator", beanClass, "getGridDataLocator", "setGridDataLocator");
+      PropertyDescriptor _headerHeight = new PropertyDescriptor("headerHeight", beanClass, "getHeaderHeight", "setHeaderHeight");
       PropertyDescriptor _importButton = new PropertyDescriptor("importButton", beanClass, "getImportButton", "setImportButton");
       PropertyDescriptor _insertButton = new PropertyDescriptor("insertButton", beanClass, "getInsertButton", "setInsertButton");
       PropertyDescriptor _expandableRowController = new PropertyDescriptor("expandableRowController", beanClass, "getExpandableRowController", "setExpandableRowController");
@@ -69,6 +71,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _defaultQuickFilterCriteria,
         _deleteButton,
         _editButton,
+        _editOnSingleRow,
         _expandableColumn,
         _expandableRowController,
         _exportButton,
@@ -76,6 +79,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _filterPanelOnGridPolicy,
         _functionId,
         _gridDataLocator,
+        _headerHeight,
         _importButton,
         _insertRowsOnTop,
         _intercellSpacing,

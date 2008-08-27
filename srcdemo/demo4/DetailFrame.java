@@ -64,7 +64,7 @@ public class DetailFrame extends JFrame {
   RadioButtonControl controlRadioButton2 = new RadioButtonControl();
   NavigatorBar navigatorBar = new NavigatorBar();
   FormattedTextControl controlFormattedText = new FormattedTextControl();
-  ListControl listControl1 = new ListControl();
+  CheckBoxListControl listControl1 = new CheckBoxListControl();
   PasswordControl controlPasswd = new PasswordControl();
   LinkButton linkButton1 = new LinkButton();
   GenericButton buttonPressMe = new GenericButton();

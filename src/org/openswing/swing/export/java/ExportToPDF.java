@@ -82,6 +82,7 @@ public class ExportToPDF {
     SimpleDateFormat sdatf = new SimpleDateFormat(opt.getDateTimeFormat());
     SimpleDateFormat stf = new SimpleDateFormat(opt.getTimeFormat());
 
+
     int headerwidths[] = new int[opt.getExportColumns().size()];
     int total = 0;
     for(int i=0;i<opt.getExportColumns().size();i++) {
@@ -96,6 +97,24 @@ public class ExportToPDF {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PdfWriter w = PdfWriter.getInstance(document,baos);
     document.open();
+
+
+    Paragraph line = null;
+    if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
+      line = new Paragraph(opt.getTitle());line.setAlignment(Element.ALIGN_CENTER);
+      document.add(line);
+      document.add(new Paragraph("\n"));
+    }
+    String[] filters = opt.getFilteringConditions();
+    if (filters!=null) {
+      for(int i=0;i<filters.length;i++) {
+        line = new Paragraph(filters[i]);
+        document.add(line);
+      }
+      document.add(new Paragraph("\n"));
+    }
+
+
 
     PdfPTable table = new PdfPTable(opt.getExportColumns().size());
     table.setWidths(headerwidths);

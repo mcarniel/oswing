@@ -82,6 +82,18 @@ public class ExportToXMLFat {
     sb.append("<content>").append(newline);
     String tagName = null;
 
+    if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
+      sb.append("<title>").append(opt.getTitle()).append("</title>").append(newline);;
+    }
+    String[] filters = opt.getFilteringConditions();
+    if (filters!=null) {
+      sb.append("<filters>").append(newline);;
+      for(int i=0;i<filters.length;i++) {
+        sb.append("<filter>").append(filters[i]).append("</filter>").append(newline);;
+      }
+      sb.append("</filters>").append(newline);;
+    }
+
 
     for(int j=0;j<opt.getTopRows().size();j++) {
       // create a row for each top rows...
