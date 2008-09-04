@@ -58,9 +58,12 @@ public class DeptDetailFrame extends InternalFrame {
   FlowLayout flowLayout2 = new FlowLayout();
   NavigatorBar navigatorBar = new NavigatorBar();
   LabelControl labelState = new LabelControl();
+  CodLookupControl controlAddressLookup = new CodLookupControl();
+  private DeptDetailFrameController dataController = null;
 
 
   public DeptDetailFrame(DeptDetailFrameController dataController) {
+    this.dataController = dataController;
     try {
       jbInit();
 
@@ -89,17 +92,32 @@ public class DeptDetailFrame extends InternalFrame {
     labelAddress.setText("address");
     labelDeptCode.setText("deptCode");
     controlCity.setCanCopy(true);
-    controlCity.setAttributeName("city");
+    controlCity.setAttributeName("address.city");
     controlCity.setLinkLabel(labelCity);
     controlCity.setRequired(true);
+    controlCity.setEnabledOnInsert(false);
+    controlCity.setEnabledOnEdit(false);
     controlState.setCanCopy(true);
     controlState.setRequired(false);
-    controlState.setAttributeName("state");
+    controlState.setEnabledOnInsert(false);
+    controlState.setEnabledOnEdit(false);
+    controlState.setAttributeName("address.state");
     controlDeptCode.setMaxCharacters(5);
     controlDeptCode.setTrimText(true);
     controlDeptCode.setUpperCase(true);
     controlDeptCode.setEnabledOnEdit(false);
     controlDeptCode.setAttributeName("deptCode");
+
+    controlAddressLookup.setMaxCharacters(5);
+    controlAddressLookup.setAllowOnlyNumbers(true);
+    controlAddressLookup.setEnabledOnEdit(false);
+    controlAddressLookup.setEnabledOnInsert(true);
+    controlAddressLookup.setAttributeName("address");
+
+    AddressLookupController controlAddressLookupController = new AddressLookupController(dataController.getSessions());
+    controlAddressLookup.setLookupController(controlAddressLookupController);
+
+
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     mainPanel.setInsertButton(insertButton);
@@ -109,11 +127,15 @@ public class DeptDetailFrame extends InternalFrame {
     mainPanel.setDeleteButton(deleteButton);
     mainPanel.setSaveButton(saveButton);
     saveButton.setEnabled(false);
+    controlAddress.setEnabledOnInsert(false);
+    controlAddress.setEnabledOnEdit(false);
     controlAddress.setCanCopy(true);
     controlAddress.setRequired(false);
-    controlAddress.setAttributeName("address");
+    controlAddress.setAttributeName("address.address");
     copyButton.setText("copyButton1");
-    controlCountry.setAttributeName("country");
+    controlCountry.setAttributeName("address.country");
+    controlCountry.setEnabledOnInsert(false);
+    controlCountry.setEnabledOnEdit(false);
     labelDeptDescr.setRequestFocusEnabled(true);
     labelDeptDescr.setLabel("description");
     labelDeptDescr.setText("description");
@@ -125,6 +147,7 @@ public class DeptDetailFrame extends InternalFrame {
     buttons2Panel.setLayout(flowLayout2);
     flowLayout2.setAlignment(FlowLayout.LEFT);
     labelState.setText("state");
+    controlAddressLookup.setCodBoxVisible(false);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(copyButton, null);
@@ -134,29 +157,31 @@ public class DeptDetailFrame extends InternalFrame {
     buttonsPanel.add(deleteButton, null);
     buttonsPanel.add(navigatorBar, null);
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);
-    mainPanel.add(controlDeptCode,                       new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(controlCountry,                          new GridBagConstraints(3, 2, 4, 1, 0.0, 0.0
+    mainPanel.add(controlDeptCode,                          new GridBagConstraints(1, 0, 2, 1, 1.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 0, 0), 0, 0));
+    mainPanel.add(controlCountry,                             new GridBagConstraints(4, 3, 3, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelDeptCode,                     new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+    mainPanel.add(labelDeptCode,                        new GridBagConstraints(0, 0, 1, 2, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelCity,                  new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
+    mainPanel.add(labelCity,                     new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelDeptDescr,       new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0
+    mainPanel.add(labelDeptDescr,          new GridBagConstraints(3, 0, 1, 2, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlDescr,    new GridBagConstraints(3, 0, 2, 1, 1.0, 0.0
+    mainPanel.add(controlDescr,       new GridBagConstraints(4, 0, 1, 2, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlCity,    new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0
+    mainPanel.add(controlCity,       new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelAddress,   new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0
+    mainPanel.add(labelAddress,      new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlAddress,    new GridBagConstraints(3, 1, 2, 1, 1.0, 0.0
+    mainPanel.add(controlAddress,       new GridBagConstraints(2, 2, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 0), 0, 0));
+    mainPanel.add(controlState,       new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(controlState,    new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(labelCountry,  new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0
+    mainPanel.add(labelCountry,     new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelState,  new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
+    mainPanel.add(labelState,     new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    mainPanel.add(controlAddressLookup,   new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     controlDeptCode.setAttributeName("deptCode");
     controlDeptCode.setRequired(true);

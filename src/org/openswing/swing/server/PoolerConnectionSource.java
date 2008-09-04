@@ -84,7 +84,7 @@ public class PoolerConnectionSource implements ConnectionSource {
       props.setProperty("user", user);
       props.setProperty("password", password);
       props.setProperty("url", url);
-      props.save(new FileOutputStream(this.getClass().getResource("/").getPath()+"pooler.ini"), "POOLER PROPERTIES");
+      props.save(new FileOutputStream(this.getClass().getResource("/").getPath().replaceAll("%20"," ")+"pooler.ini"), "POOLER PROPERTIES");
     }
     catch (Throwable ex) {
       context.log("Error while creating connection pooler",ex);
@@ -102,7 +102,7 @@ public class PoolerConnectionSource implements ConnectionSource {
     try {
       // load file "pooler.ini" config properties
       Properties props = new Properties();
-      props.load(new FileInputStream(this.getClass().getResource("/").getPath()+"pooler.ini"));
+      props.load(new FileInputStream(this.getClass().getResource("/").getPath().replaceAll("%20"," ")+"pooler.ini"));
 
       if (props.getProperty("logLevel")==null || props.getProperty("logLevel").equals(""))
         props.setProperty("logLevel","1");

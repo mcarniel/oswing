@@ -244,6 +244,7 @@ public class WindowMenu extends JMenu {
     this.menuWindowCascade.setEnabled(internalFrames.size()>1);
     this.menuWindowMinimize.setEnabled(internalFrames.size()>0);
     this.menuWindowMinimizeAll.setEnabled(internalFrames.size()>0);
+    MDIFrame.getInstance().windowClosed();
 
     System.gc();
   }

@@ -146,6 +146,7 @@ public class FileCellEditor extends AbstractCellEditor implements TableCellEdito
             in.read(bytes);
             in.close();
             table.getModel().setValueAt(bytes,row,col);
+            cellContent = bytes;
             download.setEnabled(true);
           }
           catch (Exception ex) {
@@ -193,6 +194,7 @@ public class FileCellEditor extends AbstractCellEditor implements TableCellEdito
    * @return <code>true</code> if cell editing may stop, and <code>false</code> otherwise.
    */
   public final boolean stopCellEditing() {
+    fireEditingStopped();
     return true;
   }
 

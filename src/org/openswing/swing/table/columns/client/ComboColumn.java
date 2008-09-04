@@ -68,6 +68,9 @@ public class ComboColumn extends Column {
   /** component bottom margin, with respect to component container; defaut value: 0 */
   private int bottomMargin = 0;
 
+  /** define if description in combo items must be translated; default value: <code>true</code> */
+  private boolean translateItemDescriptions = true;
+
 
   public ComboColumn() { }
 
@@ -227,6 +230,23 @@ public class ComboColumn extends Column {
 
 
   /**
+   * @return define if description in combo items must be translated
+   */
+  public final boolean isTranslateItemDescriptions() {
+    return translateItemDescriptions;
+  }
+
+
+  /**
+   * Define if description in combo items must be translated; default value: <code>true</code>.
+   * @param translateItemDescriptions flag used to define if description in combo items must be translated
+   */
+  public final void setTranslateItemDescriptions(boolean translateItemDescriptions) {
+    this.translateItemDescriptions = translateItemDescriptions;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -241,6 +261,7 @@ public class ComboColumn extends Column {
     if (domain!=null)
       return new DomainTableCellRenderer(
         domain,
+        translateItemDescriptions,
         tableContainer,
         getTextAlignment(),
         getLeftMargin(),
@@ -271,6 +292,7 @@ public class ComboColumn extends Column {
     if (domain!=null)
       return new DomainCellEditor(
           domain,
+          translateItemDescriptions,
           isColumnRequired(),
           getItemListeners()
       );

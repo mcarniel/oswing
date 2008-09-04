@@ -18,6 +18,7 @@
                 <property name="salary" column="SALARY" type="java.math.BigDecimal"/>
                 <property name="hireDate" column="HIRE_DATE" type="java.sql.Date"/>
                 <property name="note" column="NOTE" type="java.lang.String"/>
+                <property name="workingPlace" column="WORKING_PLACE" type="java.lang.String"/>
         </class>
 
 </hibernate-mapping>

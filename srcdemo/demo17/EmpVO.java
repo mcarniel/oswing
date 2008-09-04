@@ -24,6 +24,7 @@ public class EmpVO extends ValueObjectImpl {
   private Date hireDate;
   private String note;
   private TaskVO task;
+  private String workingPlace;
 
 
   public EmpVO() {
@@ -84,6 +85,12 @@ public class EmpVO extends ValueObjectImpl {
   }
   public void setTask(TaskVO task) {
     this.task = task;
+  }
+  public String getWorkingPlace() {
+    return workingPlace;
+  }
+  public void setWorkingPlace(String workingPlace) {
+    this.workingPlace = workingPlace;
   }
 
 

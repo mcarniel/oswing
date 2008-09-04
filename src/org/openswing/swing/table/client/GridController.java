@@ -357,8 +357,29 @@ public class GridController {
 
 
   /**
+   * Callback method invoked by grid before showing exporting dialog;
+   * this method can be overrided to redefine dialog size
+   * @param dialogSize default dimension of exporting dialog
+   * @return size to set for exporting dialog
+   */
+  public Dimension getExportDialogSize(Dimension dialogSize) {
+    return dialogSize;
+  }
+
+
+  /**
+   * Callback method invoked by grid before showing exporting dialog;
+   * this method can be overrided to redefine document formats allowed for the grid
+   * @return list of available formats; possible values: ExportOptions.XLS_FORMAT, ExportOptions.CSV_FORMAT1, ExportOptions.CSV_FORMAT2, ExportOptions.XML_FORMAT, ExportOptions.XML_FORMAT_FAT, ExportOptions.HTML_FORMAT, ExportOptions.PDF_FORMAT, ExportOptions.RTF_FORMAT; default value: ClientSettings.EXPORTING_FORMATS
+   */
+  public String[] getExportingFormats() {
+    return ClientSettings.EXPORTING_FORMATS;
+  }
+
+
+  /**
    * Callback method invoked by grid when exporting data from grid.
-   * @param exportOptions options used to export data; these options can be programmatically changed, in order to customize esporting result
+   * @param exportOptions options used to export data; these options can be programmatically changed, in order to customize exporting result
    */
   public void exportGrid(ExportOptions exportOptions) {
   }

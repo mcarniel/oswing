@@ -186,7 +186,7 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
 
 
       ItemRenderer rend = new ItemRenderer();
-      rend.init(getters,colProperties);
+      rend.init(getters,colProperties,1,0,0,0);
       list.setCellRenderer(rend);
 
       list.addListSelectionListener(new ListSelectionListener() {

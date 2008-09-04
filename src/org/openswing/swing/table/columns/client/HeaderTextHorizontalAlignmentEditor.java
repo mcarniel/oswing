@@ -33,7 +33,7 @@ import javax.swing.*;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class HeaderTextAlignmentEditor extends PropertyEditorSupport {
+public class HeaderTextHorizontalAlignmentEditor extends PropertyEditorSupport {
 
   static private int[] alignmentValues = new int[]{
     SwingConstants.LEFT,

@@ -1,5 +1,29 @@
 
 
+Release Notes 1.7.3
+-------------------
+
+Final release 1.7.3 available
+Fixed problems related to vertical alignment and margins with ComboBoxVOControl and ComboVOColumn.
+Fixed problems related to margins with ListVOControl.
+Fixed problem with progress bar stopping of MDIFrame.
+Fixed problem with FileColumn when uploading files and with upload button editability.
+Fixed problem in lookup component when binding inner value object in lookup v.o. to parent v.o.
+Improved HibernateUtils by internally supporting Criteria object: new methods getBlockFromClass and getAllFromClass allow to specify FetchMode setting, 
+in order to apply the correct optimization to query (e.g. inner join, secondary select, etc.).
+Improved DomainColumn and ComboBoxControl: added "translateItemDescriptions" boolean property, in order to avoid translation of item descriptions.
+Improved GridControl:
+- cell selection can be moved up/down by using up/down keys also when cell is in edit.
+- renamed "headerTextAlignment" property in "HeaderTextHorizontalAlignment"
+- added "headerTextVerticalAlignment" property, in order to set vertical text alignment in column headers
+- added global property ClientSettings.HEADER_TEXT_VERTICAL_ALIGNMENT, in order to define the default value of "headerTextVerticalAlignment" grid column property
+- added "getExportDialogSize" to GridController, in order to redefine the exporting dialog size
+- added "getExportingFormats" to GridController, in order to redefine the document formats to propose in exporting dialog
+Added to ClientSettings the global property EXPORTING_FORMATS used to define the default document formats when exporting the grid content.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.7.2
 -------------------
 

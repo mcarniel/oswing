@@ -66,6 +66,8 @@ public class EmpDetailFrame extends InternalFrame {
 
   NavigatorBar navigatorBar = new NavigatorBar();
   private EmpDetailFrameController dataController = null;
+  LabelControl labelCity = new LabelControl();
+  TextControl controlCity = new TextControl();
 
 
   public EmpDetailFrame(EmpDetailFrameController dataController) {
@@ -158,6 +160,10 @@ public class EmpDetailFrame extends InternalFrame {
     controlTaskDescr.setEnabledOnEdit(false);
     whPanel.setPreferredSize(new Dimension(132, 250));
     whPanel.setLayout(borderLayout1);
+    labelCity.setText("working place");
+    controlCity.setEnabledOnInsert(false);
+    controlCity.setEnabledOnEdit(false);
+    controlCity.setAttributeName("workingPlace");
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(copyButton, null);
@@ -167,45 +173,49 @@ public class EmpDetailFrame extends InternalFrame {
     buttonsPanel.add(deleteButton, null);
     buttonsPanel.add(navigatorBar, null);
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);
-    mainPanel.add(controlempCode,            new GridBagConstraints(1, 0, 3, 1, 1.0, 0.0
+    mainPanel.add(controlempCode,              new GridBagConstraints(1, 0, 3, 1, 1.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(controlSex,     new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0
+    mainPanel.add(controlSex,       new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlFName,             new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0
+    mainPanel.add(controlFName,               new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelLName,          new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0
+    mainPanel.add(labelLName,            new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(controlLName,          new GridBagConstraints(3, 1, 3, 1, 1.0, 0.0
+    mainPanel.add(controlLName,            new GridBagConstraints(3, 1, 3, 1, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlCurrency,              new GridBagConstraints(1, 2, 5, 1, 0.0, 0.0
+    mainPanel.add(controlCurrency,                new GridBagConstraints(1, 2, 5, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlDate,          new GridBagConstraints(1, 3, 4, 1, 0.0, 0.0
+    mainPanel.add(controlDate,            new GridBagConstraints(1, 3, 4, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(controlLookup,      new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(controlDeptDescr,                 new GridBagConstraints(2, 4, 3, 2, 1.0, 0.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 5), 0, 0));
-    mainPanel.add(controlCodTask,      new GridBagConstraints(1, 5, 1, 2, 1.0, 0.0
+    mainPanel.add(controlLookup,         new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+    mainPanel.add(controlDeptDescr,                    new GridBagConstraints(2, 4, 3, 1, 1.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+    mainPanel.add(controlCodTask,        new GridBagConstraints(1, 7, 1, 2, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(controlTaskDescr,     new GridBagConstraints(2, 6, 3, 1, 1.0, 0.0
+    mainPanel.add(controlTaskDescr,       new GridBagConstraints(2, 8, 3, 1, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlNote,              new GridBagConstraints(0, 7, 6, 1, 1.0, 1.0
+    mainPanel.add(controlNote,                new GridBagConstraints(0, 9, 6, 1, 1.0, 1.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelEmpCode,           new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+    mainPanel.add(labelEmpCode,             new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelDate,           new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
+    mainPanel.add(labelDate,             new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelFName,            new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
+    mainPanel.add(labelFName,              new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelSalary,       new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
+    mainPanel.add(labelSalary,         new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelSex,       new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0
+    mainPanel.add(labelSex,         new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelTask,       new GridBagConstraints(0, 5, 1, 2, 0.0, 0.0
+    mainPanel.add(labelTask,         new GridBagConstraints(0, 7, 1, 2, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelDeptCode,      new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
+    mainPanel.add(labelDeptCode,        new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 0, 5), 0, 0));
+    mainPanel.add(labelCity,   new GridBagConstraints(0, 5, 1, 2, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     this.getContentPane().add(whPanel, BorderLayout.SOUTH);
+    mainPanel.add(controlCity,  new GridBagConstraints(1, 6, 1, 1, 1.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
     controlempCode.setAttributeName("empCode");
     controlempCode.setRequired(true);
 //    controlDate.setDateType(Consts.TYPE_DATE_TIME);

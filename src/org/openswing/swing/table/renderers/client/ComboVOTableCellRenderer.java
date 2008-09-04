@@ -136,7 +136,7 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
       }
     }
 
-    rend.init(getters,colProperties);
+    rend.init(getters,colProperties,leftMargin,rightMargin,topMargin,bottomMargin);
   }
 
 

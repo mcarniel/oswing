@@ -34,6 +34,7 @@ public class ComboBoxControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _enabledOnInsert = new PropertyDescriptor("enabledOnInsert", beanClass, "isEnabledOnInsert", "setEnabledOnInsert");
       PropertyDescriptor _enabledOnEdit = new PropertyDescriptor("enabledOnEdit", beanClass, "isEnabledOnEdit", "setEnabledOnEdit");
       PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
+      PropertyDescriptor _translateItemDescriptions = new PropertyDescriptor("translateItemDescriptions", beanClass, "isTranslateItemDescriptions", "setTranslateItemDescriptions");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
           _attributeName,
           _canCopy,
@@ -45,7 +46,9 @@ public class ComboBoxControlBeanInfo extends SimpleBeanInfo {
           _enabled,
           _enabledOnInsert,
           _enabledOnEdit,
-          _toolTipText};
+          _toolTipText,
+          _translateItemDescriptions
+      };
       return pds;
     }
     catch(IntrospectionException ex) {

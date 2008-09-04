@@ -66,6 +66,9 @@ public class ComboBoxControl extends BaseInputControl implements InputControl,Se
   /** define if in insert mode combo box has no item selected; default value: <code>false</code> i.e. the first item is pre-selected */
   private boolean nullAsDefaultValue = false;
 
+  /** define if description in combo items must be translated; default value: <code>true</code> */
+  private boolean translateItemDescriptions = true;
+
 
   /**
    * Contructor.
@@ -121,7 +124,10 @@ public class ComboBoxControl extends BaseInputControl implements InputControl,Se
     if (domain!=null) {
       DomainPair[] pairs = domain.getDomainPairList();
       for(int i=0;i<pairs.length;i++)
-        model.addElement(ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()));
+        if (translateItemDescriptions)
+          model.addElement(ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()));
+        else
+          model.addElement(pairs[i].getDescription());
       combo.setModel(model);
       combo.revalidate();
       combo.setSelectedIndex(-1);
@@ -147,8 +153,12 @@ public class ComboBoxControl extends BaseInputControl implements InputControl,Se
     if (domain==null)
       return;
     DomainPair pair = domain.getDomainPair(code);
-    if (pair!=null)
-      combo.setSelectedItem( ClientSettings.getInstance().getResources().getResource(pair.getDescription()) );
+    if (pair!=null) {
+      if (translateItemDescriptions)
+        combo.setSelectedItem( ClientSettings.getInstance().getResources().getResource(pair.getDescription()) );
+      else
+        combo.setSelectedItem( pair.getDescription() );
+    }
   }
 
 
@@ -162,8 +172,16 @@ public class ComboBoxControl extends BaseInputControl implements InputControl,Se
     for(int i=0;i<pairs.length;i++)
       if (combo.getSelectedItem()==null)
         return null;
-      else if (combo.getSelectedItem().equals( ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()) ))
-        return pairs[i].getCode();
+      else {
+        if (translateItemDescriptions) {
+          if (combo.getSelectedItem().equals( ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()) ))
+            return pairs[i].getCode();
+        }
+        else {
+          if (combo.getSelectedItem().equals( pairs[i].getDescription()) )
+            return pairs[i].getCode();
+        }
+      }
     return null;
   }
 
@@ -385,6 +403,23 @@ public class ComboBoxControl extends BaseInputControl implements InputControl,Se
    */
   public final boolean disableListener() {
     return false;
+  }
+
+
+  /**
+   * @return define if description in combo items must be translated
+   */
+  public final boolean isTranslateItemDescriptions() {
+    return translateItemDescriptions;
+  }
+
+
+  /**
+   * Define if description in combo items must be translated; default value: <code>true</code>.
+   * @param translateItemDescriptions flag used to define if description in combo items must be translated
+   */
+  public final void setTranslateItemDescriptions(boolean translateItemDescriptions) {
+    this.translateItemDescriptions = translateItemDescriptions;
   }
 
 

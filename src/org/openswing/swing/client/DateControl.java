@@ -455,6 +455,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 
 
   public void setEnabled(boolean enabled) {
+    if (date==null)
+      return;
     date.setEnabled(true); // otherwise the disabled text is not selectable...
     date.setEditable(enabled);
     calendar.setEnabled(enabled);

@@ -29,7 +29,6 @@ public class DeptGridFrame extends InternalFrame {
   InsertButton insertButton = new InsertButton();
   EditButton editButton = new EditButton();
   SaveButton saveButton = new SaveButton();
-  CopyButton copyButton = new CopyButton();
   ExportButton exportButton = new ExportButton();
   NavigatorBar navigatorBar1 = new NavigatorBar();
   private DeptGridFrameController controller = null;
@@ -60,7 +59,6 @@ public class DeptGridFrame extends InternalFrame {
   private void jbInit() throws Exception {
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
-    grid.setCopyButton(copyButton);
     grid.setDeleteButton(deleteButton);
     grid.setEditButton(editButton);
     grid.setExportButton(exportButton);
@@ -82,6 +80,7 @@ public class DeptGridFrame extends InternalFrame {
     colDescription.setEditableOnEdit(true);
     colDescription.setEditableOnInsert(true);
     colDescription.setPreferredWidth(350);
+
     insertButton.setText("insertButton1");
     insertButton.addActionListener(new DeptGridFrame_insertButton_actionAdapter(this));
     editButton.setText("editButton1");
@@ -89,7 +88,6 @@ public class DeptGridFrame extends InternalFrame {
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
-    buttonsPanel.add(copyButton, null);
     buttonsPanel.add(editButton, null);
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(saveButton, null);
@@ -98,7 +96,6 @@ public class DeptGridFrame extends InternalFrame {
     buttonsPanel.add(navigatorBar1, null);
     grid.getColumnContainer().add(colDeptCode, null);
     grid.getColumnContainer().add(colDescription, null);
-
 
   }
 

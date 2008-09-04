@@ -335,8 +335,24 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
     codBox.addKeyListener(new KeyAdapter() {
 
       public void keyPressed(KeyEvent e) {
-        if (table!=null && (e.getKeyCode()==e.VK_UP || e.getKeyCode()==e.VK_DOWN) && autoCompletitionWaitTime<0)
+        if (table!=null && (e.getKeyCode()==e.VK_UP || e.getKeyCode()==e.VK_DOWN) && autoCompletitionWaitTime<0) {
+          stopCellEditing();
+          if (table!=null) {
+            new Thread() {
+              public void run() {
+                yield();
+                try {
+                  sleep(500);
+                }
+                catch (InterruptedException ex) {
+                }
+                table.requestFocus();
+//                table.setColumnSelectionInterval(grid.g,selectedCol);
+              }
+            }.start();
+          }
           table.dispatchEvent(e);
+        }
         else if (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_ENTER) {
 
           // used to validate editable codes...

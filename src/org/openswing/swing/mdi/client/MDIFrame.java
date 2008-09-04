@@ -530,10 +530,15 @@ public class MDIFrame extends JFrame implements BusyListener {
    */
   public static final void add(InternalFrame frame,boolean maximum) {
     ClientUtils.fireBusyEvent(true);
-    desktopPane.add(frame,maximum);
-    menuWindow.addWindow(frame);
-    if (client.viewOpenedWindowIcons())
-      winIconsPanel.add(frame);
+    try {
+      desktopPane.add(frame, maximum);
+      menuWindow.addWindow(frame);
+      if (client.viewOpenedWindowIcons()) {
+        winIconsPanel.add(frame);
+      }
+    }
+    catch (Throwable ex) {
+    }
     ClientUtils.fireBusyEvent(false);
   }
 
@@ -581,7 +586,7 @@ public class MDIFrame extends JFrame implements BusyListener {
    * Start the progress bar.
    * @param busy <code>true</code> to start progress bar, <code>false</code> to stop it
    */
-  public void setBusy(boolean busy) {
+  public synchronized void setBusy(boolean busy) {
     if (client==null)
       return;
     if (busyCount==0 && busy) {
@@ -595,7 +600,7 @@ public class MDIFrame extends JFrame implements BusyListener {
       } catch (Exception ex) {}
     } if (busy)
       busyCount = busyCount+1;
-    else
+    else if (busyCount>0)
       busyCount = busyCount-1;
     if (busyCount==0) {
       statusBar.setBusy(false);
@@ -607,6 +612,15 @@ public class MDIFrame extends JFrame implements BusyListener {
         treeMenu.getToolkit().sync();
       } catch (Exception ex) {}
     }
+  }
+
+
+  /**
+   * Callback invoked by WindowMenu when closing an internal frame.
+   */
+  public final void windowClosed() {
+    busyCount = 1;
+    setBusy(false);
   }
 
 

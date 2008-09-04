@@ -97,12 +97,12 @@ public class XMLResourcesFactory extends ResourcesFactory {
       try {
         InputStream in = null;
         try {
-          in = this.getClass().getClassLoader().getResourceAsStream(xmlFile);
+          in = this.getClass().getClassLoader().getResourceAsStream(xmlFile.replaceAll("%20"," "));
           if (in==null)
-            in = new FileInputStream(xmlFile);
+            in = new FileInputStream(xmlFile.replaceAll("%20"," "));
         }
         catch (Exception ex1) {
-          in = new FileInputStream(xmlFile);
+          in = new FileInputStream(xmlFile.replaceAll("%20"," "));
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();

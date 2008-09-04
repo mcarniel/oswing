@@ -44,9 +44,4 @@ public class EmpDeptVO extends ValueObjectImpl {
   }
 
 
-
-
-
-
-
 }

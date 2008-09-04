@@ -64,16 +64,8 @@ public class ExportDialog extends JDialog {
   LabelControl labelExportType = new LabelControl();
 
   /** export format combo-box*/
-  JComboBox controlExportType = new JComboBox(new Object[]{
-    ExportOptions.XLS_FORMAT,
-    ExportOptions.CSV_FORMAT1,
-    ExportOptions.CSV_FORMAT2,
-    ExportOptions.XML_FORMAT,
-    ExportOptions.XML_FORMAT_FAT,
-    ExportOptions.HTML_FORMAT,
-    ExportOptions.PDF_FORMAT,
-    ExportOptions.RTF_FORMAT
-  });
+  JComboBox controlExportType = new JComboBox(new Object[0]);
+
 
   /**
    * Constructor called by Grid.
@@ -86,9 +78,10 @@ public class ExportDialog extends JDialog {
     this.frame = frame;
     this.grids = grids;
     try {
+      controlExportType = new JComboBox(grids.getGridController().getExportingFormats());
       controlExportType.setSelectedIndex(0);
       jbInit();
-      setSize(260,300);
+      setSize(grids.getGridController().getExportDialogSize(new Dimension(260,300)));
       init(grids,colsVisible);
       ClientUtils.centerDialog(frame,this);
       setVisible(true);

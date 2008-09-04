@@ -317,7 +317,7 @@ public class LookupController {
       try {
         // update lookup container vo from lookup vo values...
         Enumeration lookupAttributes = lookupMapper.getLookupChangedAttributes();
-        String lookupAttributeName, lookupMethodName;
+        String lookupAttributeName;
         Method lookupMethod;
         String attrName = null;
         while (lookupAttributes.hasMoreElements()) {
@@ -338,13 +338,53 @@ public class LookupController {
              }
          }
          else if (lookupVO!=null) {
-           lookupMethodName = "get" + String.valueOf(Character.toUpperCase(lookupAttributeName.charAt(0))) + lookupAttributeName.substring(1);
-           lookupMethod = lookupVO.getClass().getMethod(lookupMethodName, new Class[0]);
+           String aName = lookupAttributeName;
+           Method getter = null;
+           Class clazz = lookupVO.getClass();
+           Object obj = lookupVO;
+           while(aName.indexOf(".")!=-1) {
+             try {
+               getter = clazz.getMethod(
+                 "get" +
+                 aName.substring(0, 1).
+                 toUpperCase() +
+                 aName.substring(1,aName.indexOf(".")),
+                 new Class[0]
+               );
+             }
+             catch (NoSuchMethodException ex2) {
+               getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+             }
+             obj = getter.invoke(obj,new Object[0]);
+             if (obj==null)
+               break;
+             aName = aName.substring(aName.indexOf(".")+1);
+             clazz = getter.getReturnType();
+           }
+
+           if (obj!=null) {
+             try {
+               getter = clazz.getMethod(
+                 "get" +
+                 aName.substring(0, 1).
+                 toUpperCase() +
+                 aName.substring(1),
+                 new Class[0]
+               );
+             }
+             catch (NoSuchMethodException ex2) {
+               getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+             }
+             obj = getter.invoke(obj,new Object[0]);
+           }
+
+//           lookupMethodName = "get" + String.valueOf(Character.toUpperCase(lookupAttributeName.charAt(0))) + lookupAttributeName.substring(1);
+//           lookupMethod = lookupVO.getClass().getMethod(lookupMethodName, new Class[0]);
            if (!lookupMapper.setParentAttribute(
                  lookupParent,
                  lookupAttributeName,
-                 lookupMethod.getReturnType(),
-                 lookupMethod.invoke(lookupVO, new Object[0])
+                 getter.getReturnType(),
+                 obj
            ))
              Logger.error(this.getClass().getName(),"updateParentModel","Error while setting lookup container value object.",null);
            else if (form!=null) {

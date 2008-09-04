@@ -57,6 +57,18 @@ public class ItemRenderer extends JPanel implements ListCellRenderer, Serializab
 
     private SimpleDateFormat sdf = null;
 
+    /** component left margin, with respect to component container */
+    private int leftMargin = 0;
+
+    /** component right margin, with respect to component container */
+    private int rightMargin = 0;
+
+    /** component top margin, with respect to component container */
+    private int topMargin = 0;
+
+    /** component bottom margin, with respect to component container */
+    private int bottomMargin = 0;
+
 
     public ItemRenderer() {
       super();
@@ -66,9 +78,13 @@ public class ItemRenderer extends JPanel implements ListCellRenderer, Serializab
     }
 
 
-    public void init(Hashtable getters,Column[] colProperties) {
+    public void init(Hashtable getters,Column[] colProperties,int leftMargin,int rightMargin,int topMargin,int bottomMargin) {
         this.getters = getters;
         this.colProperties = colProperties;
+        this.leftMargin = leftMargin;
+        this.rightMargin = rightMargin;
+        this.topMargin = topMargin;
+        this.bottomMargin = bottomMargin;
     }
 
 
@@ -137,7 +153,10 @@ public class ItemRenderer extends JPanel implements ListCellRenderer, Serializab
               }
               if (valS != null) {
                 g.setColor(col);
-                g.drawString(valS, x, getHeight()-g.getFontMetrics().getDescent());
+//                g.drawString(valS, x, getHeight()-g.getFontMetrics().getDescent());
+
+                int hOffset= Math.max(0,( getHeight()+1 - g.getFontMetrics().getHeight() )/2);
+                g.drawString(valS, x+leftMargin, getHeight()+topMargin - g.getFontMetrics().getDescent() - hOffset);
               }
               x += colProperties[i].getPreferredWidth() + 6;
             }

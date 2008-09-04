@@ -29,6 +29,7 @@ public class EmpDeptGridFrame extends InternalFrame {
   ExportButton exportButton = new ExportButton();
   NavigatorBar navigatorBar1 = new NavigatorBar();
   private EmpDeptGridFrameController controller = null;
+  CopyButton copyButton = new CopyButton();
 
 
   public EmpDeptGridFrame(EmpDeptGridFrameController controller) {
@@ -86,15 +87,17 @@ public class EmpDeptGridFrame extends InternalFrame {
 
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
+    grid.setCopyButton(copyButton);
+    buttonsPanel.add(copyButton, null);
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(exportButton, null);
     buttonsPanel.add(navigatorBar1, null);
     grid.getColumnContainer().add(colEmpCode, null);
     grid.getColumnContainer().add(colDeptCode, null);
     grid.getColumnContainer().add(colDescription, null);
-
-
   }
+
+
   public GridControl getGrid() {
     return grid;
   }

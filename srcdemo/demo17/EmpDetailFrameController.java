@@ -159,7 +159,7 @@ public class EmpDetailFrameController extends FormController {
     try {
       session = sessions.getCurrentSession();
       session.beginTransaction();
-      session.update(persistentObject);
+      session.merge(persistentObject);
       session.flush();
       session.connection().commit();
 

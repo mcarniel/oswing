@@ -21,11 +21,11 @@ public class ClientApplication {
 
   public ClientApplication() {
 
-    java.util.Enumeration en = System.getProperties().keys();
-    while(en.hasMoreElements()) {
-      String k = en.nextElement().toString();
-      System.out.println(k+"="+System.getProperty(k));
-    }
+//    java.util.Enumeration en = System.getProperties().keys();
+//    while(en.hasMoreElements()) {
+//      String k = en.nextElement().toString();
+//      System.out.println(k+"="+System.getProperty(k));
+//    }
 
     Hashtable domains = new Hashtable();
     Properties props = new Properties();

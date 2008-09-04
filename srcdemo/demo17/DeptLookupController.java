@@ -16,6 +16,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.type.Type;
 import org.hibernate.Session;
 import org.openswing.swing.util.server.HibernateUtils;
+import org.hibernate.FetchMode;
+import org.openswing.swing.message.send.java.FilterWhereClause;
+import org.openswing.swing.util.java.Consts;
+import java.awt.Dimension;
 
 
 /**
@@ -87,7 +91,7 @@ public class DeptLookupController extends LookupController {
           Class valueObjectType
           ) {
         try {
-          String baseSQL = "from demo17.DeptVO as DeptVO where status='E'";
+//          String baseSQL = "from demo17.DeptVO as DeptVO where status='E'";
           Session sess = DeptLookupController.this.sessions.openSession(); // obtain a JDBC connection and instantiate a new Session
 
 //      READ WHOLE RESULT-SET...
@@ -108,22 +112,41 @@ public class DeptLookupController extends LookupController {
 //      END READ WHOLE RESULT-SET...
 
 
+      filteredColumns.put("status",new FilterWhereClause[]{
+        new FilterWhereClause("status",Consts.EQ,"E"),
+        null
+      });
+
 //    READ A BLOCK OF DATA FROM RESULT-SET...
-          Response res = HibernateUtils.getBlockFromQuery(
-            action,
-            startIndex,
-            50, // block size...
+
+          Response res = HibernateUtils.getBlockFromClass(
+            valueObjectType,
             filteredColumns,
             currentSortedColumns,
             currentSortedVersusColumns,
-            valueObjectType,
-            baseSQL,
-            new Object[0],
-            new Type[0],
-            "DeptVO",
-            DeptLookupController.this.sessions,
+            action,
+            startIndex,
+            50, // block size...
+            FetchMode.JOIN,
             sess
           );
+
+
+//          Response res = HibernateUtils.getBlockFromQuery(
+//            action,
+//            startIndex,
+//            50, // block size...
+//            filteredColumns,
+//            currentSortedColumns,
+//            currentSortedVersusColumns,
+//            valueObjectType,
+//            baseSQL,
+//            new Object[0],
+//            new Type[0],
+//            "DeptVO",
+//            DeptLookupController.this.sessions,
+//            sess
+//          );
           sess.close();
           return res;
 //    END READ A BLOCK OF DATA FROM RESULT-SET...
@@ -149,10 +172,12 @@ public class DeptLookupController extends LookupController {
     this.setLookupValueObjectClassName("demo17.DeptVO");
     this.addLookup2ParentLink("deptCode", "dept.deptCode");
     this.addLookup2ParentLink("description", "dept.description");
+    this.addLookup2ParentLink("address.city", "workingPlace");
     this.setAllColumnVisible(true);
     this.setVisibleColumn("address",false);
     this.setVisibleColumn("status",false);
     this.setPreferredWidthColumn("description", 200);
+    this.setFramePreferedSize(new Dimension(350,400));
   }
 
 

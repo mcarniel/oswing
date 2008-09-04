@@ -153,8 +153,12 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
 
 
       ItemRenderer rend = new ItemRenderer();
-      rend.init(getters,colProperties);
+      rend.init(getters,colProperties,1,0,0,0);
       combo.setRenderer(rend);
+
+      combo.setMinimumSize(new Dimension((int)this.getPreferredSize().getWidth(),(int)new JTextField().getPreferredSize().getHeight()));
+      combo.setPreferredSize(new Dimension((int)this.getPreferredSize().getWidth(),(int)new JTextField().getPreferredSize().getHeight()));
+      combo.setSize(new Dimension((int)this.getPreferredSize().getWidth(),(int)new JTextField().getPreferredSize().getHeight()));
 
       combo.addItemListener(new ItemListener() {
         public void itemStateChanged(ItemEvent e) {

@@ -92,19 +92,27 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
   /** combo container */
   private JPanel p = new JPanel();
 
+  /** define if description in combo items must be translated */
+  private boolean translateItemDescriptions;
+
 
   /**
    * Constructor.
    * @param domain domain linked to the combo-box
+   * @param translateItemDescriptions define if description in combo items must be translated
    * @param required flag sed to set mandatory property of the cell
    */
-  public DomainCellEditor(Domain domain,boolean required,ArrayList itemListeners) {
+  public DomainCellEditor(Domain domain,boolean translateItemDescriptions,boolean required,ArrayList itemListeners) {
     this.domain = domain;
+    this.translateItemDescriptions = translateItemDescriptions;
     this.required = required;
     pairs = domain.getDomainPairList();
     DefaultComboBoxModel model = new DefaultComboBoxModel();
     for(int i=0;i<pairs.length;i++)
-      model.addElement(ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()));
+      if (translateItemDescriptions)
+        model.addElement(ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()));
+      else
+        model.addElement(pairs[i].getDescription());
     field.setModel(model);
     for(int i=0;i<itemListeners.size();i++)
       field.addItemListener((ItemListener)itemListeners.get(i));
@@ -146,8 +154,12 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
    */
   private final Component _prepareEditor(Object value) {
     DomainPair pair = domain.getDomainPair(value);
-    if (pair!=null)
-      field.setSelectedItem(ClientSettings.getInstance().getResources().getResource(pair.getDescription()));
+    if (pair!=null) {
+      if (translateItemDescriptions)
+        field.setSelectedItem(ClientSettings.getInstance().getResources().getResource(pair.getDescription()));
+      else
+        field.setSelectedItem(pair.getDescription());
+    }
     else
       field.setSelectedIndex(-1);
     SwingUtilities.invokeLater(new Runnable() {

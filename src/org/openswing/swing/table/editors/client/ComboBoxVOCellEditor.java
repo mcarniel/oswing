@@ -163,7 +163,8 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
       Hashtable getters,
       boolean required,
       ArrayList itemListeners,
-      String foreignKeyAttributeName
+      String foreignKeyAttributeName,
+      int leftMargin,int rightMargin,int topMargin,int bottomMargin
   ) {
     this.itemsMapper = itemsMapper;
     this.itemsDataLocator = itemsDataLocator;
@@ -192,7 +193,7 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
 
 
     ItemRenderer rend = new ItemRenderer();
-    rend.init(getters,colProperties);
+    rend.init(getters,colProperties,leftMargin,rightMargin,topMargin,bottomMargin);
     field.setRenderer(rend);
 
     field.addItemListener(new ItemListener() {

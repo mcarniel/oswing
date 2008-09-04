@@ -157,6 +157,9 @@ public class ClientSettings {
   /** height of grid headers */
   public static int HEADER_HEIGHT = 24;
 
+  /** header text vertical alignment; possible values: SwingConstants.CENTER, SwingConstants.TOP, SwingConstants.BOTTOM; default value: SwingConstants.CENTER */
+  public static int HEADER_TEXT_VERTICAL_ALIGNMENT = SwingConstants.CENTER;
+
   /** progress bar color (inside the status panel of the MDI frame) */
   public static Color PROGRESS_BAR_COLOR = new Color(185,219,243);
 
@@ -174,6 +177,18 @@ public class ClientSettings {
 
   /** flag used to show the title of the frame that contains the grid component currently exported; title is showed on top of the exported grid, in order to show filtering conditions; default value: <code>false</code> */
   public static boolean SHOW_FRAME_TITLE_IN_EXPORT = false;
+
+  /** default document formats when exporting the grid content */
+  public static String[] EXPORTING_FORMATS = new String[]{
+    ExportOptions.XLS_FORMAT,
+    ExportOptions.CSV_FORMAT1,
+    ExportOptions.CSV_FORMAT2,
+    ExportOptions.XML_FORMAT,
+    ExportOptions.XML_FORMAT_FAT,
+    ExportOptions.HTML_FORMAT,
+    ExportOptions.PDF_FORMAT,
+    ExportOptions.RTF_FORMAT
+  };
 
   /** define if must be show the mandatory symbol "*" in mandatory input controls */
   public static boolean VIEW_MANDATORY_SYMBOL = false;

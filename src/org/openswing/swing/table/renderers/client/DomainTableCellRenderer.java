@@ -70,6 +70,9 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
   /** component bottom margin, with respect to component container */
   private int bottomMargin = 0;
 
+  /** define if description in combo items must be translated */
+  private boolean translateItemDescriptions;
+
 
   /**
    * Constructor.
@@ -77,9 +80,10 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
    * @param gridController grid controller
    * @param attributeName attribute name associated to this column
    */
-  public DomainTableCellRenderer(Domain domain,GridController gridController,int alignement,
+  public DomainTableCellRenderer(Domain domain,boolean translateItemDescriptions,GridController gridController,int alignement,
                                  int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
     this.domain = domain;
+    this.translateItemDescriptions = translateItemDescriptions;
     this.gridController = gridController;
     this.leftMargin = leftMargin;
     this.rightMargin = rightMargin;
@@ -98,8 +102,11 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
     DomainPair pair = (DomainPair)domain.getDomainPair(value);
     if (pair==null)
       rend.setText(null);
-    else
+    else if (translateItemDescriptions)
       rend.setText(ClientSettings.getInstance().getResources().getResource(pair.getDescription()));
+    else
+      rend.setText(pair.getDescription());
+
     if (hasFocus && table instanceof Grid) {
 //      rend.setBackground(((Grid)table).getActiveCellBackgroundColor());
 //      Color selColor = ((Grid)table).getActiveCellBackgroundColor();

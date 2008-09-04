@@ -55,8 +55,10 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _headerColumnName = new PropertyDescriptor("headerColumnName", beanClass, "getHeaderColumnName", "setHeaderColumnName");
       PropertyDescriptor _headerFont = new PropertyDescriptor("headerFont", beanClass, "getHeaderFont", "setHeaderFont");
       PropertyDescriptor _headerForegroundColor = new PropertyDescriptor("headerForegroundColor", beanClass, "getHeaderForegroundColor", "setHeaderForegroundColor");
-      PropertyDescriptor _headerTextAlignment = new PropertyDescriptor("headerTextAlignment", beanClass, "getHeaderTextAlignment", "setHeaderTextAlignment");
-      _headerTextAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextAlignmentEditor.class);
+      PropertyDescriptor _headerTextHorizontalAlignment = new PropertyDescriptor("headerTextHorizontalAlignment", beanClass, "getHeaderTextHorizontalAlignment", "setHeaderTextHorizontalAlignment");
+      _headerTextHorizontalAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextHorizontalAlignmentEditor.class);
+      PropertyDescriptor _headerTextVerticalAlignment = new PropertyDescriptor("headerTextVerticalAlignment", beanClass, "getHeaderTextVerticalAlignment", "setHeaderTextVerticalAlignment");
+      _headerTextVerticalAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextVerticalAlignmentEditor.class);
       PropertyDescriptor _maxWidth = new PropertyDescriptor("maxWidth", beanClass, "getMaxWidth", "setMaxWidth");
       PropertyDescriptor _minWidth = new PropertyDescriptor("minWidth", beanClass, "getMinWidth", "setMinWidth");
       PropertyDescriptor _preferredWidth = new PropertyDescriptor("preferredWidth", beanClass, "getPreferredWidth", "setPreferredWidth");
@@ -64,7 +66,7 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _sortVersus = new PropertyDescriptor("sortVersus", beanClass, "getSortVersus", "setSortVersus");
       _sortVersus.setPropertyEditorClass(org.openswing.swing.table.columns.client.SortVersusEditor.class);
       PropertyDescriptor _textAlignment = new PropertyDescriptor("textAlignment", beanClass, "getTextAlignment", "setTextAlignment");
-      _textAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextAlignmentEditor.class);
+      _textAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextHorizontalAlignmentEditor.class);
 
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
               _additionalHeaderColumnName,
@@ -80,7 +82,8 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
               _headerColumnName,
               _headerFont,
               _headerForegroundColor,
-              _headerTextAlignment,
+              _headerTextHorizontalAlignment,
+              _headerTextVerticalAlignment,
 	      _maxWidth,
 	      _minWidth,
 	      _preferredWidth,

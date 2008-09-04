@@ -444,11 +444,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             if (colProps[i].getAdditionalHeaderColumnSpan()>0) {
               span = colProps[i].getAdditionalHeaderColumnSpan();
               hp = new JPanel();
-              if (colProps[i].getHeaderTextAlignment()==SwingConstants.CENTER)
+              if (colProps[i].getHeaderTextHorizontalAlignment()==SwingConstants.CENTER)
                 hp.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-              else if (colProps[i].getHeaderTextAlignment()==SwingConstants.LEFT)
+              else if (colProps[i].getHeaderTextHorizontalAlignment()==SwingConstants.LEFT)
                 hp.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
-              else if (colProps[i].getHeaderTextAlignment()==SwingConstants.RIGHT)
+              else if (colProps[i].getHeaderTextHorizontalAlignment()==SwingConstants.RIGHT)
                 hp.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
               hp.setBorder(BorderFactory.createRaisedBevelBorder());
               hp.setBackground(backcolor);
@@ -605,6 +605,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
         // reload data...
         currentNumberOfNewRows = 0;
+        repaint();
         selectedRowBeforeReloading = getSelectedRow();
         errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
         if (model.getRowCount()>0) {
@@ -613,11 +614,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           else if (selectedRowBeforeReloading>model.getRowCount()-1)
             selectedRowBeforeReloading = model.getRowCount()-1;
 
-          grid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
-          if (lockedGrid!=null)
-            lockedGrid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
           SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+              grid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
+              if (lockedGrid!=null)
+                lockedGrid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
               if (selectedRowBeforeReloading==-1)
                 return;
               grid.ensureRowIsVisible(selectedRowBeforeReloading);
@@ -1623,10 +1624,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    */
   public boolean executeReload() {
     try {
-      model.setMode(Consts.READONLY);
       grid.editingCanceled(null);
       if (lockedGrid!=null)
         lockedGrid.editingCanceled(null);
+      model.setMode(Consts.READONLY);
       reloadData();
       super.repaint();
       if (getSaveButton()!=null)
@@ -2306,7 +2307,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         for(int i=0;i<model.getColumnCount();i++) {
           attributeName = model.getColumnName(i);
           if (modelAdapter.isFieldDuplicable(i)) {
-            attributeValue = vo.getClass().getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]).invoke(vo,new Object[0]);
+            attributeValue = modelAdapter.getField(vo,i);
+//            attributeValue = vo.getClass().getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]).invoke(vo,new Object[0]);
             modelAdapter.setField(model.getObjectForRow(0),i,attributeValue);
           }
 
@@ -2627,6 +2629,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           // reset toolbar buttons state...
           if (getEditButton()!=null)
             getEditButton().setEnabled(true);
+          if (getCopyButton()!=null)
+            getCopyButton().setEnabled(true);
           setGenericButtonsEnabled(true);
           if (getDeleteButton()!=null)
             getDeleteButton().setEnabled(true);
@@ -2636,8 +2640,6 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             getExportButton().setEnabled(getExportButton().getOldValue());
           if (getImportButton()!=null)
             getImportButton().setEnabled(getImportButton().getOldValue());
-          if (getCopyButton()!=null)
-            getCopyButton().setEnabled(getCopyButton().getOldValue());
 
           // fire saving completed event...
           switch (previousMode) {

@@ -58,6 +58,7 @@ public class ClientApplication implements MDIController,LoginController {
 
       Properties props = new Properties();
       props.setProperty("firstName","First Name");
+      props.setProperty("working place","Working place");
       props.setProperty("lastName","Last Name");
       props.setProperty("deptDescription","Dept. Description");
       props.setProperty("dept.deptCode","Dept. Code");
@@ -306,14 +307,25 @@ public class ClientApplication implements MDIController,LoginController {
         }
         stmt.close();
 
-        for(int i=0;i<10;i++) {
-          stmt = conn.prepareStatement("insert into DEPTS values('D"+i+"','Description"+i+"','Fifth Av. "+i+"','New York','NY','USA','E')");
+        stmt = conn.prepareStatement("insert into ADDRESSES values(1,'34, Fifth Av.','New York','NY','USA')");
+        stmt.execute();
+        stmt = conn.prepareStatement("insert into ADDRESSES values(2,'34, Brown St.','Los Angeles','CA','USA')");
+        stmt.execute();
+
+        for(int i=0;i<5;i++) {
+          stmt = conn.prepareStatement("insert into DEPTS values('D"+i+"','Description"+i+"',1,'E')");
+          stmt.execute();
+        }
+        stmt.close();
+
+        for(int i=5;i<10;i++) {
+          stmt = conn.prepareStatement("insert into DEPTS values('D"+i+"','Description"+i+"',2,'E')");
           stmt.execute();
         }
         stmt.close();
 
         for(int i=0;i<10;i++) {
-          stmt = conn.prepareStatement("insert into EMPS(EMP_CODE,FIRST_NAME,LAST_NAME,DEPT_CODE,SEX,SALARY,HIRE_DATE,NOTE,TASK_CODE) values('"+i+"','Name"+i+"','Surname"+i+"','D0','M',1233"+i+",null,null,'CODE0')");
+          stmt = conn.prepareStatement("insert into EMPS(EMP_CODE,FIRST_NAME,LAST_NAME,DEPT_CODE,SEX,SALARY,HIRE_DATE,NOTE,TASK_CODE,WORKING_PLACE) values('"+i+"','Name"+i+"','Surname"+i+"','D0','M',1233"+i+",null,null,'CODE0','New York')");
           stmt.execute();
         }
         stmt.close();

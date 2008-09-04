@@ -18,6 +18,9 @@ import org.hibernate.ScrollableResults;
 import org.openswing.swing.util.client.ClientSettings;
 import org.hibernate.metadata.ClassMetadata;
 import org.openswing.swing.util.server.HibernateUtils;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 
 
 /**
@@ -59,7 +62,7 @@ public class DeptGridFrameController extends GridController implements GridDataL
       Class valueObjectType,
       Map otherGridParams) {
     try {
-      String baseSQL = "from demo17.DeptVO as DeptVO where status='E'";
+//      String baseSQL = "from demo17.DeptVO as DeptVO where status='E'";
       Session sess = sessions.openSession(); // obtain a JDBC connection and instantiate a new Session
 
 //      READ WHOLE RESULT-SET...
@@ -81,6 +84,20 @@ public class DeptGridFrameController extends GridController implements GridDataL
 
 
 //    READ A BLOCK OF DATA FROM RESULT-SET...
+
+      Response res = HibernateUtils.getBlockFromClass(
+        valueObjectType,
+        filteredColumns,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        action,
+        startIndex,
+        50, // block size...
+        FetchMode.JOIN,
+        sess
+      );
+
+/*
       Response res = HibernateUtils.getBlockFromQuery(
         action,
         startIndex,
@@ -96,8 +113,11 @@ public class DeptGridFrameController extends GridController implements GridDataL
         sessions,
         sess
       );
+*/
+
       sess.close();
       return res;
+
 //    END READ A BLOCK OF DATA FROM RESULT-SET...
     }
     catch (Exception ex) {

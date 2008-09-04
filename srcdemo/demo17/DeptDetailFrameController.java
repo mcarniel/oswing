@@ -201,6 +201,9 @@ public class DeptDetailFrameController extends FormController {
   public DeptGridFrame getGridFrame() {
     return gridFrame;
   }
+  public SessionFactory getSessions() {
+    return sessions;
+  }
 
 
 

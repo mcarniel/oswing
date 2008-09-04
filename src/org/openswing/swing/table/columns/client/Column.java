@@ -96,8 +96,8 @@ public class Column extends JPanel {
   /** column header description */
   private String headerColumnName = null;
 
-  /** column header horizontal alignment */
-  private int headerTextAlignment = SwingConstants.CENTER;
+  /** column header horizontal alignment; default value: <code>SwingConstants.CENTER</code> */
+  private int headerTextHorizontalAlignment = SwingConstants.CENTER;
 
   /** define if the cell column value is duplicated when user has clicked on COPY button */
   private boolean columnDuplicable = false;
@@ -119,6 +119,9 @@ public class Column extends JPanel {
 
   /** additional column header description; default value: 0 (i.e. it is not visible) */
   private int additionalHeaderColumnSpan = 0;
+
+  /** column header vertical alignment; default value: ClientSettings.HEADER_TEXT_VERTICAL_ALIGNMENT */
+  private int headerTextVerticalAlignment = ClientSettings.HEADER_TEXT_VERTICAL_ALIGNMENT;
 
 
   public static final int TYPE_TEXT = 0;
@@ -447,8 +450,8 @@ public class Column extends JPanel {
   /**
    * @return column header horizontal alignment
    */
-  public int getHeaderTextAlignment() {
-    return this.headerTextAlignment;
+  public final int getHeaderTextHorizontalAlignment() {
+    return this.headerTextHorizontalAlignment;
   }
 
 
@@ -456,8 +459,8 @@ public class Column extends JPanel {
    * Set column header horizontal alignement.
    * @param alignment column header horizontal alignement; possible values: "SwingConstants.LEFT", "SwingConstants.RIGHT", "SwingConstants.CENTER".
    */
-  public void setHeaderTextAlignment(int alignment) {
-    this.headerTextAlignment = alignment;
+  public final void setHeaderTextHorizontalAlignment(int alignment) {
+    this.headerTextHorizontalAlignment = alignment;
 
     try {
       if (!Beans.isDesignTime())
@@ -479,6 +482,23 @@ public class Column extends JPanel {
     }
     catch (Exception ex) {
     }
+  }
+
+
+  /**
+   * @return column header horizontal alignment
+   */
+  public final int getHeaderTextVerticalAlignment() {
+    return this.headerTextVerticalAlignment;
+  }
+
+
+  /**
+   * Set column header vertical alignement.
+   * @param alignment column header vertical alignement; possible values: "SwingConstants.TOP", "SwingConstants.CENTER", "SwingConstants.BOTTOM".
+   */
+  public final void setHeaderTextVerticalAlignment(int alignment) {
+    this.headerTextVerticalAlignment = alignment;
   }
 
 

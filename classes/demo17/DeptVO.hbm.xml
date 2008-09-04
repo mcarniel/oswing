@@ -10,10 +10,7 @@
                 	<generator class="assigned" />
                 </id>
                 <property name="description" column="DESCRIPTION" type="java.lang.String"/>
-                <property name="address" column="ADDRESS" type="java.lang.String"/>
-                <property name="city" column="CITY" type="java.lang.String"/>
-                <property name="state" column="STATE" type="java.lang.String"/>
-                <property name="country" column="COUNTRY" type="java.lang.String"/>
+                <many-to-one name="address" class="demo17.AddressVO" fetch="join" column="ADDRESS_ID" not-null="true" lazy="false" update="false" />
                 <property name="status" column="STATUS" type="java.lang.String"/>
         </class>
 

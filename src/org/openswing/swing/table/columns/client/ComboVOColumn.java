@@ -526,7 +526,11 @@ public class ComboVOColumn extends Column {
         getGetters(),
         isColumnRequired(),
         getItemListeners(),
-        getForeignKeyAttributeName()
+        getForeignKeyAttributeName(),
+        leftMargin,
+        rightMargin,
+        topMargin,
+        bottomMargin
     );
   }
 

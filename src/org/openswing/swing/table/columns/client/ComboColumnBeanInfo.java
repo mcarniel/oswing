@@ -50,6 +50,7 @@ public class ComboColumnBeanInfo extends SimpleBeanInfo {
       _columnName.setPropertyEditorClass(org.openswing.swing.client.AttributeNameEditor.class);
       PropertyDescriptor _domainId = new PropertyDescriptor("domainId", beanClass, "getDomainId", "setDomainId");
       PropertyDescriptor _nullAsDefaultValue = new PropertyDescriptor("nullAsDefaultValue", beanClass, "isNullAsDefaultValue", "setNullAsDefaultValue");
+      PropertyDescriptor _translateItemDescriptions = new PropertyDescriptor("translateItemDescriptions", beanClass, "isTranslateItemDescriptions", "setTranslateItemDescriptions");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
           _bottomMargin,
           _columnName,
@@ -57,7 +58,8 @@ public class ComboColumnBeanInfo extends SimpleBeanInfo {
           _leftMargin,
           _nullAsDefaultValue,
           _rightMargin,
-          _topMargin
+          _topMargin,
+          _translateItemDescriptions
       };
       return pds;
     }
