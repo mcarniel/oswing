@@ -15,6 +15,17 @@ public class DemoClientFacade implements ClientFacade {
   }
 
 
+  public void getF0() {
+    InternalFrame f = new InternalFrame();
+    f.setResizable(false);
+    f.setIconifiable(false);
+    f.setMaximizable(false);
+    f.setSize(300,200);
+    f.setTitle("Function0");
+    MDIFrame.add(f,true);
+  }
+
+
   public void getF1() {
     InternalFrame f = new InternalFrame();
     f.setResizable(false);

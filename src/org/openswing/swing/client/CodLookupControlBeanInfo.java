@@ -37,6 +37,7 @@ public class CodLookupControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _enabledOnEdit = new PropertyDescriptor("enabledOnEdit", beanClass, "isEnabledOnEdit", "setEnabledOnEdit");
       PropertyDescriptor _enabledOnInsert = new PropertyDescriptor("enabledOnInsert", beanClass, "isEnabledOnInsert", "setEnabledOnInsert");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
+      PropertyDescriptor _lookupButtonVisible = new PropertyDescriptor("lookupButtonVisible", beanClass, "isLookupButtonVisible", "setLookupButtonVisible");
       PropertyDescriptor _lookupController = new PropertyDescriptor("lookupController", beanClass, "getLookupController", "setLookupController");
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
       PropertyDescriptor _required = new PropertyDescriptor("required", beanClass, "isRequired", "setRequired");
@@ -58,6 +59,7 @@ public class CodLookupControlBeanInfo extends SimpleBeanInfo {
         _enabledOnInsert,
         _font,
         _linkLabel,
+        _lookupButtonVisible,
         _lookupController,
         _maxCharacters,
         _required,

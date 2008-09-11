@@ -208,7 +208,8 @@ public class ClientApplication implements MDIController,LoginController {
    * @return application functions (ApplicationFunction objects), organized as a tree
    */
   public DefaultTreeModel getApplicationFunctions() {
-    DefaultMutableTreeNode root = new OpenSwingTreeNode();
+    ApplicationFunction root = new ApplicationFunction("Function0","F0",null,"getF0");
+//    DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Folder1",null);
     ApplicationFunction n2 = new ApplicationFunction("Folder2",null);

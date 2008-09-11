@@ -914,12 +914,19 @@ public class Grid extends JTable
   /**
    * Add vertical listener to capture grid vertical scrolling events.
    */
-  private void createVerticalScrollBarListener(JScrollPane scrollPane) {
+  private void createVerticalScrollBarListener(final JScrollPane scrollPane) {
     vScrollbar = new PaginationVerticalScrollbar();
 //    JScrollBar vScrollbar = vScrollbar=scrollPane.getVerticalScrollBar();
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
     vScrollbar.setUnitIncrement(getRowHeight());
-    vScrollbar.setBlockIncrement(getRowHeight());
+    if (ClientSettings.GRID_SCROLL_BLOCK_INCREMENT==Consts.GRID_SCROLL_BLOCK_INCREMENT_ROW)
+      vScrollbar.setBlockIncrement(getRowHeight());
+    else SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        vScrollbar.setBlockIncrement(vScrollbar.getVisibleRect().height-scrollPane.getHorizontalScrollBar().getHeight());
+      }
+    });
+
     VerticalScrollBarMouseListener vsListener = new VerticalScrollBarMouseListener();
 //    vScrollbar.addMouseListener(vsListener);
 

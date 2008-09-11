@@ -465,7 +465,7 @@ public class ClientUtils extends JApplet {
   }
 
 
-  public static final synchronized void fireBusyEvent(boolean busy) {
+  public static final void fireBusyEvent(boolean busy) {
     try {
       for(int i=0;i<busyListeners.size();i++)
         ((BusyListener)busyListeners.get(i)).setBusy(busy);

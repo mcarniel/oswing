@@ -319,7 +319,23 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       ex.printStackTrace();
     }
     if (!Beans.isDesignTime() && firstTime) {
+
       firstTime = false;
+
+      if (navBar!=null) {
+        navBar.initNavigator(grid.getTable());
+        navBar.addAfterActionListener(this);
+
+        // used to correctly set the row in grid related to the current v.o. in the Form...
+        navBar.addBeforeActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            int rowInGrid = getRowIndexInGrid();
+            if (rowInGrid!=-1)
+              Form.this.grid.setRowSelectionInterval(rowInGrid,rowInGrid);
+          }
+        });
+      }
+
       linkInputControlsAndButtons(Form.this.getComponents(),true);
 
       notFocusedBorder = this.getBorder();
@@ -1371,6 +1387,19 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           comp = (InputControl)list.get(i);
           if (comp instanceof ProgressBarControl)
             continue;
+          else if (comp instanceof BaseInputControl) {
+            if ( ((BaseInputControl)comp).getBindingComponent().hasFocus() ) {
+              ((BaseInputControl)comp).getBindingComponent().transferFocus();
+              try {
+                // case DateControl
+                comp.getClass().getMethod("focusLost",new Class[]{FocusEvent.class}).invoke(
+                  comp,
+                  new Object[]{null}
+                );
+              } catch (Exception ex) {
+              }
+            }
+          }
           try {
             model.setValue(comp.getAttributeName(), comp.getValue());
           }
@@ -2057,19 +2086,6 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
       }
 
-      if (navBar!=null) {
-        navBar.initNavigator(grid.getTable());
-        navBar.addAfterActionListener(this);
-
-        // used to correctly set the row in grid related to the current v.o. in the Form...
-        navBar.addBeforeActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            int rowInGrid = getRowIndexInGrid();
-            if (rowInGrid!=-1)
-              Form.this.grid.setRowSelectionInterval(rowInGrid,rowInGrid);
-          }
-        });
-      }
     }
   }
 

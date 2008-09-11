@@ -477,7 +477,7 @@ public class Controller extends HttpServlet {
     ArrayList aux = new ArrayList();
     for(int i=0;i<mm.length;i++)
       if (mm[i].getName().equals(command.getMethodName()) && mm[i].getParameterTypes().length==args.length)
-        aux.add(mm);
+        aux.add(mm[i]);
     Method m = null;
     boolean methodFound = false;
     for(int i=0;i<aux.size();i++) {

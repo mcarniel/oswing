@@ -1041,8 +1041,40 @@ public class HibernateUtils {
     // apply filtering conditions...
     Criteria criteria = sess.createCriteria(valueObjectClass).setFetchMode("permissions", fetchMode);
 
+    return getBlockFromCriteria(
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      action,
+      startIndex,
+      blockSize,
+      criteria,
+      sess
+    );
+  }
 
 
+  /**
+   * Read a block of records from the result set, starting from the specified Criteria.
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param criteria Criteria object to execute
+   * @param sess Session
+   */
+  public static Response getBlockFromCriteria(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    int action,
+    int startIndex,
+    int blockSize,
+    Criteria criteria,
+    Session sess
+  ) throws Exception {
     Iterator keys = filteredColumns.keySet().iterator();
     String attributeName = null;
     FilterWhereClause[] filterClauses = null;
@@ -1197,8 +1229,32 @@ public class HibernateUtils {
     // apply filtering conditions...
     Criteria criteria = sess.createCriteria(valueObjectClass).setFetchMode("permissions", fetchMode);
 
+    return getAllFromCriteria(
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      criteria,
+      sess
+    );
+  }
 
 
+  /**
+   * Read all records from the result set, starting from the specified Criteria.
+   * @param valueObjectClass value object type
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param fetchMode FetchMode object, used to specificy how to retrieve inner objects; e.g. FetchMode.INNER
+   * @param sess Session
+   */
+  public static Response getAllFromCriteria(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Criteria criteria,
+    Session sess
+  ) throws Exception {
     Iterator keys = filteredColumns.keySet().iterator();
     String attributeName = null;
     FilterWhereClause[] filterClauses = null;

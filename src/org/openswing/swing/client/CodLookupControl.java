@@ -101,7 +101,6 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
   private AutoCompletitionListener autoCompletitionListener = null;
 
 
-
   /**
    * Costructor.
    */
@@ -658,6 +657,26 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
     this.autoCompletitionWaitTime = autoCompletitionWaitTime;
   }
 
+
+  /**
+   * @return lookup button visibility
+   */
+  public final boolean isLookupButtonVisible() {
+    if (lookupButton!=null)
+      return lookupButton.isVisible();
+    else
+      return true;
+  }
+
+
+  /**
+   * Set lookup button visibility.
+   * @param lookup button visibility
+   */
+  public final void setLookupButtonVisible(boolean lookupButtonVisible) {
+    if (lookupButton!=null)
+      this.lookupButton.setVisible(lookupButtonVisible);
+  }
 
 
 }

@@ -142,6 +142,9 @@ public class ClientSettings {
   /** border color of the grid that currently doesn't has the focus */
   public static Color GRID_NO_FOCUS_BORDER = Color.lightGray;
 
+  /** increment to use for grid scrolling; default value: Consts.GRID_SCROLL_BLOCK_INCREMENT_PAGE; possible values: Consts.GRID_SCROLL_BLOCK_INCREMENT_ROW,Consts.GRID_SCROLL_BLOCK_INCREMENT_PAGE */
+  public static int GRID_SCROLL_BLOCK_INCREMENT = Consts.GRID_SCROLL_BLOCK_INCREMENT_PAGE;
+
   /** border color of the form currently has the focus */
   public static Color FORM_FOCUS_BORDER = Color.gray;
 

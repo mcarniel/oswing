@@ -1,5 +1,20 @@
 
 
+Release Notes 1.7.4
+-------------------
+
+Final release 1.7.4 available
+Improved CodLookupControl by adding "lookupButtonVisible" property, in order to optionally hide lookup button.
+Added to ClientSettings the global property GRID_SCROLL_BLOCK_INCREMENT used to define the block increment when scrolling grid control (one row/page per time).
+Improved HibernateUtils class by adding getBlockFromCriteria and getAllFromCriteria, in order to inherit the correct optimization to query through 
+Criteria argument (e.g. inner join, secondary select, etc.) and apply other external filtering conditions.
+Fixed bug in Controller class when registering GenericAction classes.
+Fixed bug in Form panel when linking it to a GridControl and using the navigator bar on Form.
+Excluded Tutorial.swf Flash file from OpenSwing standard distribution and added it to new "OS_Tutorial.zip" distribution.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.7.3
 -------------------
 

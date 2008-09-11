@@ -109,4 +109,10 @@ public class Consts {
   /** used in ClientSettings.BUTTON_BEHAVIOR global property to show image and text on default buttons (insert, edit, ...) ) */
   public static final int BUTTON_IMAGE_AND_TEXT = 2;
 
+  /** used in ClientSettings.GRID_SCROLL_BLOCK_INCREMENT global property to set the block increment in grid to one row per time */
+  public static final int GRID_SCROLL_BLOCK_INCREMENT_ROW = 1;
+
+  /** used in ClientSettings.GRID_SCROLL_BLOCK_INCREMENT global property to set the block increment in grid to one page per time */
+  public static final int GRID_SCROLL_BLOCK_INCREMENT_PAGE = 2;
+
 }
