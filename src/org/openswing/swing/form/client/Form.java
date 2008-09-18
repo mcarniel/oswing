@@ -322,19 +322,23 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
       firstTime = false;
 
-      if (navBar!=null) {
-        navBar.initNavigator(grid.getTable());
-        navBar.addAfterActionListener(this);
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          if (navBar!=null) {
+            navBar.initNavigator(grid.getTable());
+            navBar.addAfterActionListener(Form.this);
 
-        // used to correctly set the row in grid related to the current v.o. in the Form...
-        navBar.addBeforeActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            int rowInGrid = getRowIndexInGrid();
-            if (rowInGrid!=-1)
-              Form.this.grid.setRowSelectionInterval(rowInGrid,rowInGrid);
+            // used to correctly set the row in grid related to the current v.o. in the Form...
+            navBar.addBeforeActionListener(new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                int rowInGrid = getRowIndexInGrid();
+                if (rowInGrid!=-1)
+                  Form.this.grid.setRowSelectionInterval(rowInGrid,rowInGrid);
+              }
+            });
           }
-        });
-      }
+        }
+      });
 
       linkInputControlsAndButtons(Form.this.getComponents(),true);
 
@@ -572,7 +576,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         boolean errorOnLoad = true;
-        // it will be used another thread to do not block the rest of the application (the mani graphical thread)...
+        // it will be used another thread to do not block the rest of the application (the main graphical thread)...
         if (reloadButton!=null)
           reloadButton.setEnabled(false);
         if (insertButton!=null)
@@ -591,12 +595,36 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
         // reload data...
         errorOnLoad = ! loadData();
-        if (reloadButton!=null)
-          reloadButton.setEnabled(reloadButton.getOldValue());
-        if (saveButton!=null)
-          saveButton.setEnabled(saveButton.getOldValue());
+        if (errorOnLoad) {
+          if (reloadButton!=null)
+            reloadButton.setEnabled(true);
+          if (saveButton!=null)
+            saveButton.setEnabled(true);
+        }
+        else {
+          if (reloadButton!=null)
+            reloadButton.setEnabled(reloadButton.getOldValue());
+          if (saveButton!=null)
+            saveButton.setEnabled(saveButton.getOldValue());
 
-        resetButtonsState();
+//          // set toolbar buttons state in the state previous to the insert/edit.
+//          if (editButton!=null)
+//            editButton.setEnabled(editButton.getOldValue());
+//          if (deleteButton!=null)
+//            deleteButton.setEnabled(deleteButton.getOldValue());
+//          if (insertButton!=null)
+//            insertButton.setEnabled(insertButton.getOldValue());
+//          if (copyButton!=null)
+//            copyButton.setEnabled(copyButton.getOldValue());
+
+          for(int i=0;i<genericButtons.size();i++)
+            ((GenericButton)genericButtons.get(i)).setEnabled(((GenericButton)genericButtons.get(i)).getOldValue());
+
+          // fire event...
+          formController.afterReloadData();
+
+          resetButtonsState();
+        }
 
       }
     });
@@ -1059,39 +1087,16 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   /**
    * This method is called by reload method to reload data.
    * Developer can explicity call this method to force data model reloading.
-   * @return <code>true</code> if data loading is succesfully completed, <code>false</code> if an error occours
    */
-  public final boolean executeReload() {
+  public final void executeReload() {
     try {
       setMode(Consts.READONLY);
       reloadData();
-      super.repaint();
-      if (saveButton!=null)
-        saveButton.setEnabled(false);
-
-      // set toolbar buttons state in the state previous to the insert/edit.
-      if (editButton!=null)
-        editButton.setEnabled(editButton.getOldValue());
-      if (deleteButton!=null)
-        deleteButton.setEnabled(deleteButton.getOldValue());
-      if (insertButton!=null)
-        insertButton.setEnabled(insertButton.getOldValue());
-      if (copyButton!=null)
-        copyButton.setEnabled(copyButton.getOldValue());
-
-      for(int i=0;i<genericButtons.size();i++)
-        ((GenericButton)genericButtons.get(i)).setEnabled(((GenericButton)genericButtons.get(i)).getOldValue());
-
-      // fire event...
-      formController.afterReloadData();
-
-      resetButtonsState();
-      return true;
     }
     catch (Exception ex) {
       ex.printStackTrace();
     }
-    return false;
+    return;
   }
 
 

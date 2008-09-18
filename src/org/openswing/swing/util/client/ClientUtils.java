@@ -237,13 +237,15 @@ public class ClientUtils extends JApplet {
    * @param param parametro da passare al metodo
    * @return risposta ritornata dal server
    */
-  public static synchronized Response getData(String serverMethodName,Object param) {
+  public static final Response getData(String serverMethodName,Object param) {
     try {
-      try {
-        for(int i=0;i<busyListeners.size();i++)
-          ((BusyListener)busyListeners.get(i)).setBusy(true);
-      }
-      catch (Exception ex1) {
+      synchronized(busyListeners) {
+        try {
+          for(int i=0;i<busyListeners.size();i++)
+            ((BusyListener)busyListeners.get(i)).setBusy(true);
+        }
+        catch (Exception ex1) {
+        }
       }
       String servletURL = getServerURL();
       URLConnection urlC = new URL(servletURL).openConnection();
@@ -268,21 +270,25 @@ public class ClientUtils extends JApplet {
 //        );
 //      }
 
-      try {
-        for(int i=0;i<busyListeners.size();i++)
-          ((BusyListener)busyListeners.get(i)).setBusy(false);
-      }
-      catch (Exception ex1) {
+      synchronized(busyListeners) {
+        try {
+          for(int i=0;i<busyListeners.size();i++)
+            ((BusyListener)busyListeners.get(i)).setBusy(false);
+        }
+        catch (Exception ex1) {
+        }
       }
 
       return response;
     }
     catch (Throwable ex) {
-      try {
-        for(int i=0;i<busyListeners.size();i++)
-          ((BusyListener)busyListeners.get(i)).setBusy(false);
-      }
-      catch (Exception ex1) {
+      synchronized(busyListeners) {
+        try {
+          for(int i=0;i<busyListeners.size();i++)
+            ((BusyListener)busyListeners.get(i)).setBusy(false);
+        }
+        catch (Exception ex1) {
+        }
       }
 
       ex.printStackTrace();
@@ -452,7 +458,9 @@ public class ClientUtils extends JApplet {
    * @param busyListener listener of busy state events
    */
   public static final void addBusyListener(BusyListener busyListener) {
-    busyListeners.add(busyListener);
+    synchronized(busyListeners) {
+      busyListeners.add(busyListener);
+    }
   }
 
 
@@ -461,16 +469,20 @@ public class ClientUtils extends JApplet {
    * @param busyListener listener of busy state events
    */
   public static final void removeBusyListener(BusyListener busyListener) {
-    busyListeners.remove(busyListener);
+    synchronized(busyListeners) {
+      busyListeners.remove(busyListener);
+    }
   }
 
 
   public static final void fireBusyEvent(boolean busy) {
-    try {
-      for(int i=0;i<busyListeners.size();i++)
-        ((BusyListener)busyListeners.get(i)).setBusy(busy);
-    }
-    catch (Exception ex1) {
+    synchronized(busyListeners) {
+      try {
+        for(int i=0;i<busyListeners.size();i++)
+          ((BusyListener)busyListeners.get(i)).setBusy(busy);
+      }
+      catch (Exception ex1) {
+      }
     }
   }
 

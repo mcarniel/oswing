@@ -1311,7 +1311,7 @@ public class Grid extends JTable
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       int xOverflow = x+(int)tablexy.getX()+grids.getPopup().getWidth()-(int)screenSize.getWidth();
       int popupX = xOverflow>0?x-xOverflow-20:x;
-      modelColIndex = this.getColumnModel().getColumnIndexAtX(popupX);
+      modelColIndex = this.getColumnModel().getColumnIndexAtX(popupX+this.scrollPane.getHorizontalScrollBar().getValue());
     }
 
     if (modelColIndex!=-1 &&

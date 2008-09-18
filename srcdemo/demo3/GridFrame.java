@@ -243,6 +243,9 @@ public class GridFrame extends JFrame {
     textColumn1.setColumnRequired(false);
     textColumn1.setPreferredWidth(150);
     colCheck.setColumnDuplicable(true);
+    colCheck.setPositiveValue("Y");
+    colCheck.setNegativeValue("N");
+    colCheck.setColumnFilterable(true);
     colCheck.setColumnName("checkValue");
     colCheck.setColumnRequired(false);
     colCheck.setEditableOnEdit(true);

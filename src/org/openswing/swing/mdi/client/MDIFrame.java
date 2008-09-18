@@ -62,7 +62,7 @@ public class MDIFrame extends JFrame implements BusyListener {
   private BasicSplitPaneUI splitPaneUI = new BasicSplitPaneUI();
 
   /** setBusy calls number */
-  private static int busyCount = 0;
+  private static Integer busyCount = new Integer(0);
 
   /** interface used to manage some MDI Frame settings */
   private static MDIController client = null;
@@ -586,31 +586,34 @@ public class MDIFrame extends JFrame implements BusyListener {
    * Start the progress bar.
    * @param busy <code>true</code> to start progress bar, <code>false</code> to stop it
    */
-  public synchronized void setBusy(boolean busy) {
+  public final void setBusy(boolean busy) {
     if (client==null)
       return;
-    if (busyCount==0 && busy) {
-      statusBar.setBusy(true);
-      // wait cursor...
-      try {
-        desktopPane.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        desktopPane.getToolkit().sync();
-        treeMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        treeMenu.getToolkit().sync();
-      } catch (Exception ex) {}
-    } if (busy)
-      busyCount = busyCount+1;
-    else if (busyCount>0)
-      busyCount = busyCount-1;
-    if (busyCount==0) {
-      statusBar.setBusy(false);
-      // default cursor...
-      try {
-        desktopPane.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        desktopPane.getToolkit().sync();
-        treeMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        treeMenu.getToolkit().sync();
-      } catch (Exception ex) {}
+
+    synchronized(busyCount) {
+      if (busyCount.intValue()==0 && busy) {
+        statusBar.setBusy(true);
+        // wait cursor...
+        try {
+          desktopPane.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+          desktopPane.getToolkit().sync();
+          treeMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+          treeMenu.getToolkit().sync();
+        } catch (Exception ex) {}
+      } if (busy)
+        busyCount = new Integer(busyCount.intValue()+1);
+      else if (busyCount.intValue()>0)
+        busyCount = new Integer(busyCount.intValue()-1);
+      if (busyCount.intValue()==0) {
+        statusBar.setBusy(false);
+        // default cursor...
+        try {
+          desktopPane.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+          desktopPane.getToolkit().sync();
+          treeMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+          treeMenu.getToolkit().sync();
+        } catch (Exception ex) {}
+      }
     }
   }
 
@@ -619,7 +622,9 @@ public class MDIFrame extends JFrame implements BusyListener {
    * Callback invoked by WindowMenu when closing an internal frame.
    */
   public final void windowClosed() {
-    busyCount = 1;
+    synchronized(busyCount) {
+      busyCount = new Integer(1);
+    }
     setBusy(false);
   }
 

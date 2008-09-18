@@ -341,7 +341,7 @@ public class FilterPanel extends JPanel {
     Object colValue = null;
     for(int i=0;i<colProperties.length;i++)
       if (colProperties[i].isColumnFilterable() &&
-          colProperties[i].getColumnType()!=Column.TYPE_CHECK &&
+//          colProperties[i].getColumnType()!=Column.TYPE_CHECK &&
           colProperties[i].getColumnType()!=Column.TYPE_IMAGE) {
 
         // find out a filter applied to the current analyzed column...
@@ -364,14 +364,16 @@ public class FilterPanel extends JPanel {
             colProperties[i].getColumnType()==Column.TYPE_MULTI_LINE_TEXT ||
             colProperties[i].getColumnType()==Column.TYPE_TEXT)
           colOpsComboModel.addElement(ClientSettings.LIKE);
-        colOpsComboModel.addElement(Consts.IS_NOT_NULL);
-        colOpsComboModel.addElement(Consts.IS_NULL);
-        colOpsComboModel.addElement(Consts.GE);
-        colOpsComboModel.addElement(Consts.GT);
-        colOpsComboModel.addElement(Consts.LE);
-        colOpsComboModel.addElement(Consts.LT);
-        if (ClientSettings.INCLUDE_IN_OPERATOR)
-          colOpsComboModel.addElement(Consts.IN);
+        if (colProperties[i].getColumnType()!=Column.TYPE_CHECK) {
+          colOpsComboModel.addElement(Consts.IS_NOT_NULL);
+          colOpsComboModel.addElement(Consts.IS_NULL);
+          colOpsComboModel.addElement(Consts.GE);
+          colOpsComboModel.addElement(Consts.GT);
+          colOpsComboModel.addElement(Consts.LE);
+          colOpsComboModel.addElement(Consts.LT);
+          if (ClientSettings.INCLUDE_IN_OPERATOR)
+            colOpsComboModel.addElement(Consts.IN);
+        }
 
         final JComboBox colOpsComboBox = new JComboBox(colOpsComboModel);
         if (colOpValue!=null)
@@ -578,6 +580,13 @@ public class FilterPanel extends JPanel {
       listPanel.add(list,null);
       return listPanel;
     }
+    else if (colProperties.getColumnType()==Column.TYPE_CHECK) {
+      final JCheckBox check = new JCheckBox();
+      JPanel listPanel = new JPanel();
+      listPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
+      listPanel.add(check,null);
+      return listPanel;
+    }
 
     switch (colProperties.getColumnType()) {
       case Column.TYPE_DATE :
@@ -725,6 +734,15 @@ public class FilterPanel extends JPanel {
       return;
     }
 
+    if (colProperties.getColumnType()==Column.TYPE_CHECK) {
+      JCheckBox check = (JCheckBox)((JPanel)result).getComponent(0);
+      if (initValue!=null)
+        check.setSelected(
+          initValue.equals(((CheckBoxColumn)colProperties).getPositiveValue())
+        );
+      return;
+    }
+
     switch (colProperties.getColumnType()) {
       case Column.TYPE_DATE :
       case Column.TYPE_DATE_TIME :
@@ -784,6 +802,13 @@ public class FilterPanel extends JPanel {
         if (ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()).equals(((JComboBox)result).getSelectedItem()))
           return pairs[i].getCode();
       return null;
+    }
+    else if (colProperties.getColumnType()==Column.TYPE_CHECK) {
+      result = (JCheckBox)((JPanel)result).getComponent(0);
+      if (result!=null && ((JCheckBox)result).isSelected())
+        return ((CheckBoxColumn)colProperties).getPositiveValue();
+      else
+        return ((CheckBoxColumn)colProperties).getNegativeValue();
     }
 
     switch (colProperties.getColumnType()) {

@@ -471,7 +471,10 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return date.isEditable();
+    if (date!=null)
+      return date.isEditable();
+    else
+      return false;
   }
 
 

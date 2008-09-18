@@ -10,6 +10,8 @@ import java.awt.Font;
 import org.openswing.swing.client.GridControl;
 import java.math.BigDecimal;
 import org.openswing.swing.util.java.Consts;
+import org.openswing.swing.server.QueryUtil;
+import org.openswing.swing.message.send.java.GridParams;
 
 
 /**
@@ -53,6 +55,9 @@ public class GridFrameController extends GridController implements GridDataLocat
     PreparedStatement stmt = null;
     try {
       String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK_BOX,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE,DEMO3.FORMATTED_TEXT,DEMO3.INT_VALUE,DEMO3.ML_TEXT from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
+      ArrayList vals = new ArrayList();
+
+/*
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
         FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("dateValue");
@@ -133,16 +138,53 @@ public class GridFrameController extends GridController implements GridDataLocat
         list.add(vo);
       }
       return new VOListResponse(list,false,list.size());
+
+*/
+
+      HashMap map = new HashMap();
+      map.put("stringValue","DEMO3.TEXT");
+      map.put("numericValue","DEMO3.DECNUM");
+      map.put("currencyValue","DEMO3.CURRNUM");
+      map.put("dateValue","DEMO3.THEDATE");
+      map.put("comboValue","DEMO3.COMBO");
+      map.put("checkValue","DEMO3.CHECK_BOX");
+      map.put("radioButtonValue","DEMO3.RADIO");
+      map.put("lookupValue","DEMO3.CODE");
+      map.put("descrLookupValue","DEMO3_LOOKUP.DESCRCODE");
+      map.put("formattedTextValue","DEMO3.FORMATTED_TEXT");
+      map.put("intValue","DEMO3.INT_VALUE");
+      map.put("multiLineTextValue","DEMO3.ML_TEXT");
+
+      return QueryUtil.getQuery(
+        conn,
+        sql,
+        vals,
+        map,
+        TestVO.class,
+        "Y",
+        "N",
+        new GridParams(
+          action,
+          startIndex,
+          filteredColumns,
+          currentSortedColumns,
+          currentSortedVersusColumns,
+          new HashMap()
+        ),
+        true
+      );
+
     }
-    catch (SQLException ex) {
+    catch (Exception ex) {
       ex.printStackTrace();
       return new ErrorResponse(ex.getMessage());
     }
     finally {
       try {
-        stmt.close();
+        if(stmt!=null)
+          stmt.close();
       }
-      catch (SQLException ex1) {
+      catch (Exception ex1) {
       }
     }
 

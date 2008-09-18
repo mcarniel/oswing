@@ -637,7 +637,12 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         ;break;
         case Column.TYPE_CHECK:
         {
-          result = (Boolean) ((CheckBoxControl)value).getValue();
+          result = ((CheckBoxControl)value).getValue();
+          if (result==null || result instanceof Boolean && !((Boolean)result).booleanValue())
+            result = ((CheckBoxColumn)colProperties).getNegativeValue();
+          else
+            result = ((CheckBoxColumn)colProperties).getPositiveValue();
+
         }
         ;break;
         case Column.TYPE_INT:
