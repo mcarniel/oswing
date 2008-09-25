@@ -57,6 +57,14 @@ public class ClientApplication implements MDIController,LoginController {
       );
 
       Properties props = new Properties();
+
+
+      props.setProperty("address.address","Address");
+      props.setProperty("address.state","State");
+      props.setProperty("address.country","Country");
+      props.setProperty("address.id","");
+      props.setProperty("status","");
+      props.setProperty("address.city","City");
       props.setProperty("firstName","First Name");
       props.setProperty("working place","Working place");
       props.setProperty("lastName","Last Name");

@@ -51,10 +51,150 @@ public class ExportToExcel {
    * @return Excel document, as byte array
    */
   public byte[] getDocument(ExportOptions opt) throws Throwable {
+    Object obj = null;
+    int rownum = 0;
+
     // create a new workbook
     HSSFWorkbook wb = new HSSFWorkbook();
     // create a new sheet
     HSSFSheet s = wb.createSheet();
+
+    for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
+      obj = opt.getComponentsExportOptions().get(i);
+      if (obj!=null) {
+        if (obj instanceof GridExportOptions)
+          rownum = prepareGrid(rownum,wb,s,opt,(GridExportOptions)obj)+1;
+        else if (obj instanceof ComponentExportOptions)
+          rownum = prepareGenericComponent(rownum,wb,s,opt,(ComponentExportOptions)obj)+1;
+        else
+          continue;
+
+      }
+    }
+
+
+    // write the workbook to the output stream
+    // close our file (don't blow out our file handles
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    wb.write(out);
+    byte[] doc = out.toByteArray();
+    out.close();
+
+    return doc;
+  }
+
+
+  private int prepareGenericComponent(int rownum,HSSFWorkbook wb,HSSFSheet s,ExportOptions exportOptions,ComponentExportOptions opt) throws Throwable {
+    Object[] row = null;
+    Object obj = null;
+    HSSFRow r = null;
+    HSSFCell c = null;
+
+    HSSFCellStyle csText = wb.createCellStyle();
+    csText.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
+    csText.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+    csText.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+    csText.setBorderRight(HSSFCellStyle.BORDER_THIN);
+    csText.setBorderTop(HSSFCellStyle.BORDER_THIN);
+
+    HSSFCellStyle csTitle = wb.createCellStyle();
+    csTitle.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
+    csTitle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+    csTitle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+    csTitle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+    csTitle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+    HSSFFont f = wb.createFont();
+    f.setBoldweight(f.BOLDWEIGHT_NORMAL);
+    csTitle.setFont(f);
+
+    HSSFCellStyle csBool = wb.createCellStyle();
+    csBool.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+    csBool.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+    csBool.setBorderRight(HSSFCellStyle.BORDER_THIN);
+    csBool.setBorderTop(HSSFCellStyle.BORDER_THIN);
+
+    HSSFCellStyle csDecNum = wb.createCellStyle();
+    csDecNum.setDataFormat(wb.createDataFormat().getFormat("#,##0.#####"));
+    csDecNum.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+    csDecNum.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+    csDecNum.setBorderRight(HSSFCellStyle.BORDER_THIN);
+    csDecNum.setBorderTop(HSSFCellStyle.BORDER_THIN);
+
+    HSSFCellStyle csIntNum = wb.createCellStyle();
+    csIntNum.setDataFormat(wb.createDataFormat().getFormat("#,##0"));
+    csIntNum.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+    csIntNum.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+    csIntNum.setBorderRight(HSSFCellStyle.BORDER_THIN);
+    csIntNum.setBorderTop(HSSFCellStyle.BORDER_THIN);
+
+    HSSFCellStyle csDateTime = wb.createCellStyle();
+    csDateTime.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"/*opt.getDateTimeFormat()*/));
+    csDateTime.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+    csDateTime.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+    csDateTime.setBorderRight(HSSFCellStyle.BORDER_THIN);
+    csDateTime.setBorderTop(HSSFCellStyle.BORDER_THIN);
+
+    if (opt.getCellsContent()!=null)
+      for(int i=0;i<opt.getCellsContent().length;i++) {
+        row = opt.getCellsContent()[i];
+        r = s.createRow(rownum);
+
+        for(short j=0;j<row.length;j++) {
+          c = r.createCell(j);
+          obj = row[j];
+          if (obj!=null) {
+
+            if (obj instanceof String) {
+              c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+              c.setCellValue(obj.toString());
+              c.setCellStyle(csText);
+            }
+            else if (obj instanceof BigDecimal ||
+                     obj instanceof Double ||
+                     obj instanceof Float ||
+                     obj.getClass()==Double.TYPE ||
+                     obj.getClass()==Float.TYPE) {
+              c.setCellValue(Double.parseDouble(obj.toString()));
+              c.setCellStyle(csDecNum);
+            }
+            else if (obj instanceof Integer ||
+                     obj instanceof Short ||
+                     obj instanceof Long ||
+                     obj.getClass()==Integer.TYPE ||
+                     obj.getClass()==Short.TYPE ||
+                     obj.getClass()==Long.TYPE) {
+              c.setCellValue(Double.parseDouble(obj.toString()));
+              c.setCellStyle(csIntNum);
+            }
+            else if (obj instanceof Boolean) {
+              c.setCellValue(((Boolean)obj).booleanValue());
+              c.setCellStyle(csBool);
+            }
+            else if (obj.getClass().equals(boolean.class)) {
+              c.setCellValue(((Boolean)obj).booleanValue());
+              c.setCellStyle(csBool);
+            }
+            else if (obj instanceof Date ||
+                     obj instanceof java.util.Date ||
+                     obj instanceof java.sql.Timestamp) {
+              c.setCellValue((java.util.Date)obj);
+              c.setCellStyle(csDateTime);
+            }
+          }
+          else {
+            c.setCellValue("");
+            c.setCellStyle(csText);
+          }
+
+        }
+        rownum++;
+      }
+    return rownum;
+  }
+
+
+  private int prepareGrid(int rownum,HSSFWorkbook wb,HSSFSheet s,ExportOptions exportOptions,GridExportOptions opt) throws Throwable {
+
     // declare a row object reference
     HSSFRow r = null;
     // declare a cell object reference
@@ -105,7 +245,7 @@ public class ExportToExcel {
     csDate.setBorderTop(HSSFCellStyle.BORDER_THIN);
 
     HSSFCellStyle csTime = wb.createCellStyle();
-    csTime.setDataFormat(HSSFDataFormat.getBuiltinFormat(opt.getTimeFormat().equals("HH:mm")?"h:mm":"h:mm AM/PM"));
+    csTime.setDataFormat(HSSFDataFormat.getBuiltinFormat(exportOptions.getTimeFormat().equals("HH:mm")?"h:mm":"h:mm AM/PM"));
     csTime.setBorderBottom(HSSFCellStyle.BORDER_THIN);
     csTime.setBorderLeft(HSSFCellStyle.BORDER_THIN);
     csTime.setBorderRight(HSSFCellStyle.BORDER_THIN);
@@ -134,7 +274,6 @@ public class ExportToExcel {
 
     Response response = null;
     int start = 0;
-    int rownum = 0;
     Object value = null;
     Object vo = null;
     int type;
@@ -259,15 +398,7 @@ public class ExportToExcel {
       rownum++;
     }
 
-
-    // write the workbook to the output stream
-    // close our file (don't blow out our file handles
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    wb.write(out);
-    byte[] doc = out.toByteArray();
-    out.close();
-
-    return doc;
+    return rownum;
   }
 
 
@@ -278,7 +409,7 @@ public class ExportToExcel {
   private void appendRow(
     HSSFSheet s,
     Object vo,
-    ExportOptions opt,
+    GridExportOptions opt,
     Hashtable gettersMethods,
     HSSFCellStyle csText,
     HSSFCellStyle csBool,

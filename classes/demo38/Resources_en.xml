@@ -89,27 +89,6 @@
   <object key="Export" value="Export" />
   <object key="Filter" value="Filter" />
 
-<!-- binding messages -->
-  <object key="value must be of type " value="Value must be of type " />
-  <object key="decimal number" value="decimal number" />
-  <object key="value is " value="Value is " />
-  <object key="optional" value="optional" />
-  <object key="minimum value is " value="Minimum value is " />
-  <object key="required" value="required" />
-  <object key="contains a value not valid" value="contains a value not valid" />
-  <object key="text" value="text" />
-  <object key="Date" value="date" />
-  <object key="Value is required" value="Value is required" />
-  <object key="maximum value is " value="Maximum value is " />
-  <object key="yes/no" value="yes/no" />
-  <object key="long number" value="long number" />
-  <object key="integer number" value="integer number" />
-  <object key="Cannot assign component value" value="Cannot assign component value" />
-
-<!-- ClientUtils -->
-  <object key="Server Comunication Error" value="Server Comunication Error" />
-  <object key="Server Error" value="Server Error" />
-
 <!-- MDI Frame -->
   <object key="file" value="File" />
   <object key="exit" value="Exit" />
@@ -127,8 +106,6 @@
   <object key="about" value="About" />
   <object key="forcegcmnemonic" value="F" />
   <object key="Force GC" value="Force GC" />
-  <object key="Info" value="Info" />
-  <object key="About" value="About" />
   <object key="Java Heap" value="Java Heap" />
   <object key="used" value="used" />
   <object key="allocated" value="allocated" />
@@ -184,7 +161,6 @@
 
   <object key="Client request not supported" value="Client request not supported" />
   <object key="User disconnected" value="User disconnected" />
-  <object key="" value="" />
 
 <!-- wizard -->
 

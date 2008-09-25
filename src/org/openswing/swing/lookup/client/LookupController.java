@@ -1225,6 +1225,65 @@ public class LookupController {
   }
 
 
+  /**
+   * Recursive method invoked by initLookupVO() method to analyze value object and retrieve all getter methods.
+   * @param vosAlreadyProcessed collection of inner v.o. already processed
+   * @param getterMethods list of getter methods already retrieved
+   * @param clazz class to analize in order to fetch its getter methods
+   */
+  private void analyzeVO(String prefix,Hashtable vosAlreadyProcessed,ArrayList attributes,ArrayList getterMethods,Class clazz) throws Throwable{
+    Integer num = (Integer)vosAlreadyProcessed.get(clazz);
+    if (num==null)
+      num = new Integer(0);
+    num = new Integer(num.intValue()+1);
+    if (num.intValue()>10)
+      return;
+    vosAlreadyProcessed.put(clazz,num);
+    String attributeName = null;
+
+    Method[] methods = clazz.getMethods();
+    for(int i=0;i<methods.length;i++) {
+      if ((methods[i].getName().startsWith("get") ||
+           methods[i].getName().startsWith("is"))&&
+          methods[i].getParameterTypes().length==0 &&
+          ( methods[i].getReturnType().equals(String.class) ||
+            methods[i].getReturnType().equals(java.math.BigDecimal.class) ||
+            methods[i].getReturnType().equals(java.util.Date.class) ||
+            methods[i].getReturnType().equals(java.sql.Date.class) ||
+            methods[i].getReturnType().equals(java.sql.Timestamp.class) ||
+            methods[i].getReturnType().equals(Integer.class) ||
+            methods[i].getReturnType().equals(Long.class) ||
+            methods[i].getReturnType().equals(Double.class) ||
+            methods[i].getReturnType().equals(Float.class) ||
+            methods[i].getReturnType().equals(Short.class) ||
+            methods[i].getReturnType().equals(Integer.TYPE) ||
+            methods[i].getReturnType().equals(Long.TYPE) ||
+            methods[i].getReturnType().equals(Double.TYPE) ||
+            methods[i].getReturnType().equals(Float.TYPE) ||
+            methods[i].getReturnType().equals(Short.TYPE) ||
+            methods[i].getReturnType().equals(Boolean.class))
+        )
+      {
+        if (methods[i].getName().startsWith("get"))
+          attributeName = methods[i].getName().substring(3);
+        else
+          attributeName = methods[i].getName().substring(2);
+        if (attributeName.length()>1)
+          attributeName = attributeName.substring(0,1).toLowerCase()+attributeName.substring(1);
+        attributes.add(prefix+attributeName);
+        getterMethods.add(methods[i]);
+      }
+      else if (methods[i].getName().startsWith("get") &&
+               methods[i].getParameterTypes().length==0 &&
+               ValueObject.class.isAssignableFrom(methods[i].getReturnType())) {
+        attributeName = methods[i].getName().substring(3);
+        if (attributeName.length()>1)
+          attributeName = attributeName.substring(0,1).toLowerCase()+attributeName.substring(1);
+        analyzeVO(prefix+attributeName+".",vosAlreadyProcessed,attributes,getterMethods,methods[i].getReturnType());
+      }
+    }
+  }
+
 
   /**
    * Method called by setLookupValueObjectClassName: it initializes lookup grid column properties.
@@ -1232,98 +1291,51 @@ public class LookupController {
    */
   private void initLookupVO(String lookupValueObjectClassName) {
     try {
-      Method[] methods = Class.forName(lookupValueObjectClassName).getMethods();
-      int count = 0;
-      for(int i=0;i<methods.length;i++) {
-        if (methods[i].getName().startsWith("get") &&
-            methods[i].getParameterTypes().length==0 &&
-            ( methods[i].getReturnType().equals(String.class) ||
-              methods[i].getReturnType().equals(java.math.BigDecimal.class) ||
-              methods[i].getReturnType().equals(java.util.Date.class) ||
-              methods[i].getReturnType().equals(java.sql.Date.class) ||
-              methods[i].getReturnType().equals(java.sql.Timestamp.class) ||
-              methods[i].getReturnType().equals(Integer.class) ||
-              methods[i].getReturnType().equals(Long.class) ||
-              methods[i].getReturnType().equals(Double.class) ||
-              methods[i].getReturnType().equals(Float.class) ||
-              methods[i].getReturnType().equals(Short.class) ||
-              methods[i].getReturnType().equals(Integer.TYPE) ||
-              methods[i].getReturnType().equals(Long.TYPE) ||
-              methods[i].getReturnType().equals(Double.TYPE) ||
-              methods[i].getReturnType().equals(Float.TYPE) ||
-              methods[i].getReturnType().equals(Short.TYPE) ||
-              methods[i].getReturnType().equals(Boolean.class))
-        )
-          count++;
-      }
-      String[] attributeNames = new String[count];
-      this.colProperties = new Column[count];
-      count = 0;
+      ArrayList attributes = new ArrayList();
+      ArrayList getterMethods = new ArrayList();
+      analyzeVO("",new Hashtable(),attributes,getterMethods,Class.forName(lookupValueObjectClassName));
+      String attributeName = null;
+      this.colProperties = new Column[getterMethods.size()];
       Class colType = null;
-      for(int i=0;i<methods.length;i++) {
-        if (methods[i].getName().startsWith("get") &&
-            methods[i].getParameterTypes().length==0 &&
-            ( methods[i].getReturnType().equals(String.class) ||
-              methods[i].getReturnType().equals(java.math.BigDecimal.class) ||
-              methods[i].getReturnType().equals(java.util.Date.class) ||
-              methods[i].getReturnType().equals(java.sql.Date.class) ||
-              methods[i].getReturnType().equals(java.sql.Timestamp.class) ||
-              methods[i].getReturnType().equals(Integer.class) ||
-              methods[i].getReturnType().equals(Long.class) ||
-              methods[i].getReturnType().equals(Double.class) ||
-              methods[i].getReturnType().equals(Float.class) ||
-              methods[i].getReturnType().equals(Short.class) ||
-              methods[i].getReturnType().equals(Integer.TYPE) ||
-              methods[i].getReturnType().equals(Long.TYPE) ||
-              methods[i].getReturnType().equals(Double.TYPE) ||
-              methods[i].getReturnType().equals(Float.TYPE) ||
-              methods[i].getReturnType().equals(Short.TYPE) ||
-              methods[i].getReturnType().equals(Boolean.class))
-        ) {
-          attributeNames[count] = methods[i].getName().substring(3);
-          if (attributeNames[count].length()>1)
-            attributeNames[count] = attributeNames[count].substring(0,1).toLowerCase()+attributeNames[count].substring(1);
-          colType = methods[i].getReturnType();
-          if (colType.equals(String.class))
-            colProperties[count] = new TextColumn();
-          else if (colType.equals(Integer.class) ||
-                   colType.equals(Long.class) ||
-                   colType.equals(Short.class) ||
-                   colType.equals(Short.TYPE) ||
-                   colType.equals(Integer.TYPE) ||
-                   colType.equals(Long.TYPE))
-            colProperties[count] = new IntegerColumn();
-          else if (colType.equals(BigDecimal.class) ||
-                   colType.equals(Double.class) ||
-                   colType.equals(Float.class) ||
-                   colType.equals(Double.TYPE) ||
-                   colType.equals(Float.TYPE))
-            colProperties[count] = new DecimalColumn();
-          else if (colType.equals(Boolean.class))
-            colProperties[count] = new CheckBoxColumn();
-          else if (colType.equals(Date.class))
-            colProperties[count] = new DateColumn();
-          else if (colType.equals(java.sql.Date.class))
-            colProperties[count] = new DateColumn();
-          else if (colType.equals(Timestamp.class))
-            colProperties[count] = new DateColumn();
+      Method getter = null;
+      for(int i=0;i<getterMethods.size();i++) {
+        getter = (Method)getterMethods.get(i);
+        attributeName = attributes.get(i).toString();
+        colType = getter.getReturnType();
+        if (colType.equals(String.class))
+          colProperties[i] = new TextColumn();
+        else if (colType.equals(Integer.class) ||
+                 colType.equals(Long.class) ||
+                 colType.equals(Short.class) ||
+                 colType.equals(Short.TYPE) ||
+                 colType.equals(Integer.TYPE) ||
+                 colType.equals(Long.TYPE))
+          colProperties[i] = new IntegerColumn();
+        else if (colType.equals(BigDecimal.class) ||
+                 colType.equals(Double.class) ||
+                 colType.equals(Float.class) ||
+                 colType.equals(Double.TYPE) ||
+                 colType.equals(Float.TYPE))
+          colProperties[i] = new DecimalColumn();
+        else if (colType.equals(Boolean.class))
+          colProperties[i] = new CheckBoxColumn();
+        else if (colType.equals(Date.class))
+          colProperties[i] = new DateColumn();
+        else if (colType.equals(java.sql.Date.class))
+          colProperties[i] = new DateColumn();
+        else if (colType.equals(Timestamp.class))
+          colProperties[i] = new DateColumn();
 
-          colProperties[count].setColumnName(attributeNames[count]);
-          if (colProperties[count].getHeaderColumnName().equals("columnname"))
-            colProperties[count].setHeaderColumnName(String.valueOf(attributeNames[count].charAt(0)).toUpperCase()+attributeNames[count].substring(1));
-          colProperties[count].setColumnVisible(this.allColumnVisible);
-          colProperties[count].setPreferredWidth(this.allColumnPreferredWidth);
-          count++;
-        }
+        colProperties[i].setColumnName(attributeName);
+        if (colProperties[i].getHeaderColumnName().equals("columnname"))
+          colProperties[i].setHeaderColumnName(String.valueOf(attributeName.charAt(0)).toUpperCase()+attributeName.substring(1));
+        colProperties[i].setColumnVisible(this.allColumnVisible);
+        colProperties[i].setPreferredWidth(this.allColumnPreferredWidth);
       }
 
     }
-    catch (Exception ex) {
+    catch (Throwable ex) {
       ex.printStackTrace();
-      this.lookupVO = null;
-    }
-    catch (Error er) {
-      er.printStackTrace();
       this.lookupVO = null;
     }
   }

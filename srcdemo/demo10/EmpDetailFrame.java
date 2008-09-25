@@ -80,6 +80,7 @@ public class EmpDetailFrame extends InternalFrame {
   TimeColumn colStartAfternoonHour = new TimeColumn();
   TimeColumn colEndAfternoonHour = new TimeColumn();
   NavigatorBar navigatorBar = new NavigatorBar();
+  ExportButton exportButton1 = new ExportButton();
 
 
   public EmpDetailFrame(Connection conn,EmpDetailFrameController dataController) {
@@ -89,7 +90,7 @@ public class EmpDetailFrame extends InternalFrame {
 
       mainPanel.setFormController(dataController);
 
-      WorkingDaysController gridController = new WorkingDaysController(conn);
+      WorkingDaysInFormController gridController = new WorkingDaysInFormController(this,conn);
       grid.setGridDataLocator(gridController);
       grid.setController(gridController);
 
@@ -191,6 +192,7 @@ public class EmpDetailFrame extends InternalFrame {
     saveButton1.setText("saveButton1");
     reloadButton1.setText("reloadButton1");
     grid.setEditButton(editButton1);
+    grid.setExportButton(exportButton1);
     grid.setReloadButton(reloadButton1);
     grid.setSaveButton(saveButton1);
     grid.setValueObjectClassName("demo10.WorkingDayVO");
@@ -219,6 +221,7 @@ public class EmpDetailFrame extends InternalFrame {
     buttonsPanel.add(editButton, null);
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(saveButton, null);
+    buttonsPanel.add(exportButton1, null);
     buttonsPanel.add(deleteButton, null);
     buttonsPanel.add(navigatorBar, null);
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);

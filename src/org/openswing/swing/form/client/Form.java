@@ -322,6 +322,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
       firstTime = false;
 
+      // +MC 18/09/2008: moved from setVOClassName() method...
+      maybeCreateVOModel();
+
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
           if (navBar!=null) {
@@ -636,6 +639,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   private boolean loadData() {
     try {
+      maybeCreateVOModel();
+
       // data loading...
       ClientUtils.fireBusyEvent(true);
       try {
@@ -714,6 +719,20 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
 
   /**
+   * Create VOModel object.
+   */
+  private void maybeCreateVOModel() {
+    try {
+      if (model==null && voClassName!=null && !voClassName.equals(""))
+        this.model = new VOModel(Class.forName(voClassName),createInnerVO,this);
+    }
+    catch (Throwable ex) {
+      Logger.error(this.getClass().getName(), "maybeCreateVOModel", "Error on setting Form data model:\n"+ex.toString(),null);
+    }
+  }
+
+
+  /**
    * Set current form mode and consequently the input controls editing state.
    * @param mode form mode; possible values: READONLY, INSERT, EDIT
    */
@@ -723,6 +742,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (mode!=Consts.READONLY && mode!=Consts.EDIT && mode!=Consts.INSERT)
       throw new UnsupportedOperationException("Mode not supported");
     this.mode = mode;
+    maybeCreateVOModel();
     if (mode==Consts.INSERT) {
       try {
         if (!this.formController.beforeInsertData(this))
@@ -921,7 +941,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             if (canEdit &&
                 c[i] instanceof ComboBoxControl &&
                 !((ComboBoxControl)c[i]).isNullAsDefaultValue() &&
-                ((ComboBoxControl)c[i]).getComboBox().getSelectedIndex()==-1)
+                ((ComboBoxControl)c[i]).getComboBox().getSelectedIndex()==-1 &&
+                ((ComboBoxControl)c[i]).getComboBox().getItemCount()>0)
               ((ComboBoxControl)c[i]).getComboBox().setSelectedIndex(0);
           }
           else if (((InputControl)c[i]).isEnabledOnEdit() && getMode()==Consts.EDIT)
@@ -946,6 +967,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       return enabled;
     if (control.getAttributeName()==null)
       return enabled;
+
+    maybeCreateVOModel();
     ArrayList list = (ArrayList)inputControlsToDisable.get(control.getAttributeName());
     AttributeCouple ac = null;
     Object stateValue = null;
@@ -1137,6 +1160,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * Method called by copy button.
    */
   public final void copy() {
+    maybeCreateVOModel();
+
     if (getMode()==Consts.READONLY) {
       try {
         // duplicate the current v.o...
@@ -1188,6 +1213,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @param c components added to the container
    */
   private void copyInputControlValues(ValueObject vo,Form form,Component[] c,boolean evalLinkedForm) throws Throwable {
+    maybeCreateVOModel();
     String attributeName = null;
     Object attributeValue = null;
     for(int i=0;i<c.length;i++)
@@ -1268,6 +1294,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
                                     ClientSettings.getInstance().getResources().getResource("Attention"),
                                     JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION) {
         try {
+          maybeCreateVOModel();
           Response response = this.formController.deleteRecord((ValueObject)model.getValueObject());
           if (!response.isError()) {
 
@@ -1362,6 +1389,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @return boolean indicating whether or not the input control values were successfully pushed to the data model
    */
   public final boolean push() {
+    maybeCreateVOModel();
     ArrayList inputControlsNotValid = getInputControlsNotValid();
     if (inputControlsNotValid.size()>0) {
       String list = "";
@@ -1445,6 +1473,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @return boolean indicating whether or not the input control has been correctly setted, according to the specified attribute name
    */
   public final boolean pull(String attributeName) {
+    maybeCreateVOModel();
     boolean result = true;
     ArrayList list = null;
     String attrName = null;
@@ -1528,6 +1557,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       }
       try {
         //execute insert/edit operation...
+        maybeCreateVOModel();
         previousMode = getMode();
         Response response = null;
         if (getMode()==Consts.INSERT)
@@ -1724,12 +1754,13 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     catch (Throwable ex) {
     }
 
-    try {
-      this.model = new VOModel(Class.forName(voClassName),createInnerVO,this);
-    }
-    catch (Throwable ex) {
-      Logger.error(this.getClass().getName(), "setVOClassName", "Error on setting Form data model:\n"+ex.toString(),null);
-    }
+    // -MC 18/09/2008: moved to addNotify method, in order to store "createInnerVo" property to pass to new VOModel(...)
+//    try {
+//      this.model = new VOModel(Class.forName(voClassName),createInnerVO,this);
+//    }
+//    catch (Throwable ex) {
+//      Logger.error(this.getClass().getName(), "setVOClassName", "Error on setting Form data model:\n"+ex.toString(),null);
+//    }
   }
 
 
@@ -1756,6 +1787,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @return model associated to this Form panel
    */
   public final VOModel getVOModel() {
+    maybeCreateVOModel();
     return model;
   }
 
@@ -1767,6 +1799,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @param c components added to the container
    */
   private void linkInputControlsAndButtons(Component[] c,boolean evalLinkedForm) {
+    maybeCreateVOModel();
     for(int i=0;i<c.length;i++)
       if (c[i] instanceof InputControl)
         try {
@@ -1925,6 +1958,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   public final void valueChanged(ValueChangeEvent e) {
     if (Beans.isDesignTime())
       return;
+    maybeCreateVOModel();
     model.setValue(e.getAttributeName(),e.getNewValue());
 
     ArrayList list = (ArrayList)bindings.get(e.getAttributeName());
@@ -2099,6 +2133,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    * @return row index in grid related to the linked grid's v.o. having the same pk of the current Form v.o.; -1 if that row does not exist in grid or when the grid has not been linked to this Form (see linkGrid method))
    */
   public final int getRowIndexInGrid() {
+    maybeCreateVOModel();
     if (grid!=null && pkAttributes!=null) {
       ValueObject gridVO = null;
       Iterator it = null;
@@ -2165,6 +2200,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   public final void setCreateInnerVO(boolean createInnerVO) {
     this.createInnerVO = createInnerVO;
+    maybeCreateVOModel();
     if (model!=null)
       model.setCreateInnerVO(createInnerVO);
   }

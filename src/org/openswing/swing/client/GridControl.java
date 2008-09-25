@@ -20,6 +20,7 @@ import org.openswing.swing.table.model.client.*;
 import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import org.openswing.swing.export.java.GridExportOptions;
 
 
 /**
@@ -2799,6 +2800,36 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * @return GridExportOptions object created, starting from current visible columns
+   */
+  public final GridExportOptions getDefaultGridExportOptions() {
+    if (table!=null)
+      return table.getDefaultGridExportOptions();
+    else
+      return null;
+  }
+
+
+  /**
+   * @param attributesToExport attributes to export
+   * @return GridExportOptions object created, starting from specified attributes to export
+   */
+  public final GridExportOptions getDefaultGridExportOptions(HashSet attributesToExport) {
+    if (table!=null)
+      return table.getDefaultGridExportOptions(attributesToExport);
+    else
+      return null;
+  }
+
+
+
+
+
+
+
+
+
 
 
   /**
@@ -2832,6 +2863,7 @@ public class GridControl extends JPanel {
       }
 
   }
+
 
 }
 

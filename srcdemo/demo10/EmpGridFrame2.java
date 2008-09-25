@@ -9,6 +9,7 @@ import java.sql.*;
 import java.awt.event.*;
 import org.openswing.swing.table.java.*;
 import org.openswing.swing.mdi.client.InternalFrame;
+import javax.swing.border.TitledBorder;
 
 
 /**
@@ -40,14 +41,39 @@ public class EmpGridFrame2 extends InternalFrame {
   CodLookupColumn colCodTask = new CodLookupColumn();
   TextColumn colTaskDescr = new TextColumn();
 
+  JPanel whPanel = new JPanel();
+  TitledBorder titledBorder3;
+  BorderLayout borderLayout1 = new BorderLayout();
+  JPanel buttons2Panel = new JPanel();
+  FlowLayout flowLayout2 = new FlowLayout();
+  EditButton editButton2 = new EditButton();
+  SaveButton saveButton2 = new SaveButton();
+  ReloadButton reloadButton2 = new ReloadButton();
+  GridControl grid2 = new GridControl();
+  ComboColumn colDay = new ComboColumn();
+  TimeColumn colStartMorningHour = new TimeColumn();
+  TimeColumn colEndMorningHour = new TimeColumn();
+  TimeColumn colStartAfternoonHour = new TimeColumn();
+  TimeColumn colEndAfternoonHour = new TimeColumn();
+  NavigatorBar navigatorBar2 = new NavigatorBar();
+  JSplitPane splitPane = new JSplitPane();
+  JPanel mainPanel = new JPanel();
+  BorderLayout borderLayout = new BorderLayout();
+
+
   public EmpGridFrame2(Connection conn,EmpGridFrameController2 controller) {
     this.conn = conn;
     try {
       jbInit();
-      setSize(770,300);
+      setSize(770,550);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
       setTitle("Employees in editable grid");
+
+      WorkingDaysController gridController = new WorkingDaysController(conn);
+      grid2.setGridDataLocator(gridController);
+      grid2.setController(gridController);
+
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -61,6 +87,10 @@ public class EmpGridFrame2 extends InternalFrame {
 
 
   private void jbInit() throws Exception {
+    splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+    splitPane.setDividerLocation(270);
+
+    titledBorder3 = new TitledBorder("");
     grid.setAnchorLastColumn(true);
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
@@ -106,8 +136,13 @@ public class EmpGridFrame2 extends InternalFrame {
     colCodTask.setColumnName("taskCode");
     colTaskDescr.setColumnName("taskDescription");
     colTaskDescr.setPreferredWidth(150);
-    this.getContentPane().add(grid, BorderLayout.CENTER);
-    this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
+
+    splitPane.add(mainPanel,JSplitPane.TOP);
+    splitPane.add(whPanel,JSplitPane.BOTTOM);
+    this.getContentPane().add(splitPane, BorderLayout.CENTER);
+    mainPanel.setLayout(borderLayout);
+    mainPanel.add(grid, BorderLayout.CENTER);
+    mainPanel.add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(editButton1, null);
     buttonsPanel.add(saveButton1, null);
@@ -132,12 +167,76 @@ public class EmpGridFrame2 extends InternalFrame {
     colCodTask.setLookupController(lookupController2);
     colCodTask.setAutoCompletitionWaitTime(1000);
 
+
+
+
+
+    whPanel.setBorder(titledBorder3);
+    whPanel.setLayout(borderLayout1);
+    titledBorder3.setTitleColor(Color.blue);
+    titledBorder3.setTitle("Working hours");
+    buttons2Panel.setLayout(flowLayout2);
+    flowLayout2.setAlignment(FlowLayout.LEFT);
+    grid2.setEditButton(editButton2);
+    grid2.setReloadButton(reloadButton2);
+    grid2.setSaveButton(saveButton2);
+    grid2.setValueObjectClassName("demo10.WorkingDayVO");
+    grid2.setAutoLoadData(false);
+    grid2.setVisibleStatusPanel(false);
+    colDay.setDomainId("DAYS");
+    colDay.setColumnName("day");
+    colDay.setColumnSortable(false);
+    colDay.setSortVersus(org.openswing.swing.util.java.Consts.ASC_SORTED);
+    colDay.setSortingOrder(1);
+    colStartMorningHour.setColumnName("startMorningHour");
+    colStartMorningHour.setColumnRequired(false);
+    colStartMorningHour.setEditableOnEdit(true);
+    colEndMorningHour.setColumnName("endMorningHour");
+    colEndMorningHour.setColumnRequired(false);
+    colEndMorningHour.setEditableOnEdit(true);
+    colStartAfternoonHour.setColumnName("startAfternoonHour");
+    colStartAfternoonHour.setColumnRequired(false);
+    colStartAfternoonHour.setEditableOnEdit(true);
+    colEndAfternoonHour.setColumnName("endAfternoonHour");
+    colEndAfternoonHour.setColumnRequired(false);
+    colEndAfternoonHour.setEditableOnEdit(true);
+
+    whPanel.add(buttons2Panel, BorderLayout.NORTH);
+    buttons2Panel.add(editButton2, null);
+    buttons2Panel.add(reloadButton2, null);
+    buttons2Panel.add(saveButton2, null);
+    whPanel.add(grid2,  BorderLayout.CENTER);
+    grid2.getColumnContainer().add(colDay, null);
+    grid2.getColumnContainer().add(colStartMorningHour, null);
+    grid2.getColumnContainer().add(colEndMorningHour, null);
+    grid2.getColumnContainer().add(colStartAfternoonHour, null);
+    grid2.getColumnContainer().add(colEndAfternoonHour, null);
+
   }
 
 
   public GridControl getGrid() {
     return grid;
   }
+
+
+  public GridControl getWDGrid() {
+    return grid2;
+  }
+
+
+  public void setEnableGridButtons(boolean enabled) {
+    if (enabled) {
+      editButton2.setEnabled(enabled);
+      reloadButton2.setEnabled(enabled);
+    }
+    else {
+      editButton2.setEnabled(enabled);
+      saveButton2.setEnabled(enabled);
+      reloadButton2.setEnabled(enabled);
+    }
+  }
+
 
 
 }

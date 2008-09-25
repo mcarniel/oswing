@@ -1,5 +1,29 @@
 
 
+Release Notes 1.7.6
+-------------------
+
+Final release 1.7.6 available
+Translations:
+- updated Resources_xx.xml files included in demos and XXXOnlyResourceFactory classes in order to remove unused translations
+- added PolishOnlyResourceFactory class, that contains polish translations for OpenSwing components
+Improvements in GridControl:
+- in case of GridControl+Form binding, when pressing up/down keys in vertical scrollbar the Form is reloaded
+- changed ExportOptions class, used to define export document content: now it is possible to add more than one grid per document 
+  and it is possible to add external data in matrix format too
+- changed "demo10" sample application in order to show how to export detail+grid in a single document 
+  and how to export grid+grid content in a single document 
+Improvements/fixes in Form panel:
+- fixed problem when closing internal frame with ASK_BEFORE_CLOSE=true and changed input control having currently the focus on it
+- moved the time of VOModel contruction, in order to correctly listen "createInnerVO" property
+- fixed problem on VOModel contruction, when using nested value objects having the same v.o. type
+- fixed problem on VOModel contruction, when value object contains collections type attributes (not supported by VOModel)
+Improvements/fixes in lookup:
+- now it is possible to map attributes of inner value objects to columns of lookup grid frame
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.7.5
 -------------------
 

@@ -88,27 +88,6 @@
   <object key="Export" value="Exporta" />
   <object key="Filter" value="Filtra" />
   
-<!-- binding messages -->
-  <object key="value must be of type " value="Il valore deve essere di tipo " />
-  <object key="decimal number" value="numerico decimale " />
-  <object key="value is " value="Il valore &#232; " />
-  <object key="optional" value="opzionale" />
-  <object key="minimum value is " value="Il minimo valore &#232; " />
-  <object key="required" value="obbligatorio" />
-  <object key="contains a value not valid" value="contiene un valore non valido" />
-  <object key="text" value="testo" />
-  <object key="Date" value="data" />
-  <object key="Value is required" value="IL valore &#232; obbligatorio" />
-  <object key="maximum value is " value="Il massimo valore &#232; " />
-  <object key="yes/no" value="si/no" />
-  <object key="long number" value="numerico lungo" />
-  <object key="integer number" value="numerico intero" />
-  <object key="Cannot assign component value" value="Impossibile assegnare il valore" />
-
-<!-- ClientUtils -->
-  <object key="Server Comunication Error" value="Errore di comunicazione con il server" />
-  <object key="Server Error" value="Errore sul server" />
-
 <!-- MDI Frame -->
   <object key="file" value="File" />
   <object key="exit" value="Esci" />
@@ -126,8 +105,6 @@
   <object key="about" value="Informazioni" />
   <object key="forcegcmnemonic" value="F" />
   <object key="Force GC" value="Forza GC" />
-  <object key="Info" value="Info" />
-  <object key="About" value="Informazioni" />
   <object key="Java Heap" value="Java Heap" />
   <object key="used" value="usata" />
   <object key="allocated" value="allocata" />

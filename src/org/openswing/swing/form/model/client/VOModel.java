@@ -78,7 +78,7 @@ public class VOModel {
     // retrieve attribute properties...
     if (Beans.isDesignTime())
       return;
-    analyzeClassFields("",new Method[0],valueObjectClass);
+    analyzeClassFields(new Hashtable(),"",new Method[0],valueObjectClass);
     setValueObject( (ValueObject) valueObjectClass.newInstance());
   }
 
@@ -98,12 +98,41 @@ public class VOModel {
    * @param parentMethods getter methods of parent v.o.
    * @param classType class to analyze
    */
-  private void analyzeClassFields(String prefix,Method[] parentMethods,Class classType) {
+  private void analyzeClassFields(Hashtable vosAlreadyProcessed,String prefix,Method[] parentMethods,Class classType) {
     try {
+      Integer num = (Integer)vosAlreadyProcessed.get(classType);
+      if (num==null)
+        num = new Integer(0);
+      num = new Integer(num.intValue()+1);
+      if (num.intValue()>10)
+        return;
+      vosAlreadyProcessed.put(classType,num);
+
       info = Introspector.getBeanInfo(classType);
       // retrieve attribute properties...
       PropertyDescriptor[] props = info.getPropertyDescriptors();
       for (int i = 0; i < props.length; i++) {
+
+        if (props[i].getReadMethod()!=null &&
+            props[i].getReadMethod().getParameterTypes().length==0) {
+          // check if attribute must be ignored because it's not compatible...
+          if (!(ValueObject.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Boolean.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Number.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                byte[].class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                String.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                java.util.Date.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Boolean.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Short.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Integer.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Long.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Float.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Double.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Character.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType())
+          ))
+            continue;
+        }
+
 
         if (props[i].getName().substring(0,1).equals(props[i].getName().substring(0,1).toUpperCase())) {
           // fix of PropertyDescriptor bug: an attribute name "xXxxx" becomes "XXxxx" and this is not correct!
@@ -149,7 +178,7 @@ public class VOModel {
           Method[] newparentMethods = new Method[parentMethods.length+1];
           System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
           newparentMethods[parentMethods.length] = props[i].getReadMethod();
-          analyzeClassFields(prefix+props[i].getName()+".",newparentMethods,props[i].getReadMethod().getReturnType());
+          analyzeClassFields(vosAlreadyProcessed,prefix+props[i].getName()+".",newparentMethods,props[i].getReadMethod().getReturnType());
         }
         Method[] newparentMethods = new Method[parentMethods.length+1];
         System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);

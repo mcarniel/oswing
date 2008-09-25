@@ -140,25 +140,7 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       dictionary.setProperty("Reload", "Recarregar");
       dictionary.setProperty("Export", "Exportar");
       dictionary.setProperty("Filter", "Filtrar");
-      // binding messages...
-      dictionary.setProperty("value must be of type ", "O conteúdo deve ser do tipo ");
-      dictionary.setProperty("decimal number", "numérico decimal");
-      dictionary.setProperty("value is ", "O valor é ");
-      dictionary.setProperty("optional", "opcional");
-      dictionary.setProperty("minimum value is ", "O valor mínimo é ");
-      dictionary.setProperty("required", "obrigatório");
-      dictionary.setProperty("contains a value not valid", "contém um valor não valido");
-      dictionary.setProperty("text", "testo");
-      dictionary.setProperty("Date", "data");
-      dictionary.setProperty("Value is required", "Il valore è obbligatorio");
-      dictionary.setProperty("maximum value is ", "Il massimo valore è ");
-      dictionary.setProperty("yes/no", "si/no");
-      dictionary.setProperty("long number", "numerico intero lungo");
-      dictionary.setProperty("integer number", "numerico intero");
-      dictionary.setProperty("Cannot assign component value", "Impossibile assegnare il valore al componente");
-      // ClientUtils...
-      dictionary.setProperty("Server Comunication Error", "Errore di comunicazione con il server");
-      dictionary.setProperty("Server Error", "Errore lato server");
+
       // MDI Frame...
       dictionary.setProperty("file", "Arquivo");
       dictionary.setProperty("filemnemonic", "A");
@@ -175,8 +157,6 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       dictionary.setProperty("quit application", "Termina  a aplicação");
       dictionary.setProperty("forcegcmnemonic", "F");
       dictionary.setProperty("Force GC", "Força GC");
-      dictionary.setProperty("Info", "Info");
-      dictionary.setProperty("About", "Sobre");
       dictionary.setProperty("Java Heap", "Java Heap");
       dictionary.setProperty("used", "usado");
       dictionary.setProperty("allocated", "alocado");
@@ -254,7 +234,6 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       dictionary.setProperty("not found", "Não localizado");
       // drag...
       dictionary.setProperty("drag", "Drag");
-      dictionary.setProperty("drag stopped", "Drag terminado");
       resources = new Resources(dictionary, "R$", '.', ',', Resources.DMY, true, '/', "HH:mm", "PT_BR", showResourceNotFoundWarning);
    }
 

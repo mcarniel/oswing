@@ -51,9 +51,66 @@ public class ExportToCSV {
 
   /**
    * @param opt export options
-   * @return Excel document, as byte array
+   * @return CSV document, as byte array
    */
   public byte[] getDocument(ExportOptions opt) throws Throwable {
+    StringBuffer sb = new StringBuffer("");
+    Object obj = null;
+    for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
+      obj = opt.getComponentsExportOptions().get(i);
+      if (obj!=null) {
+        if (obj instanceof GridExportOptions)
+          prepareGrid(sb,opt,(GridExportOptions)obj);
+        else if (obj instanceof ComponentExportOptions)
+          prepareGenericComponent(sb,opt,(ComponentExportOptions)obj);
+        else
+          continue;
+        sb.append("\n");
+      }
+    }
+    byte[] doc = sb.toString().getBytes();
+    return doc;
+  }
+
+
+  private void prepareGenericComponent(StringBuffer sb,ExportOptions exportOptions,ComponentExportOptions opt) throws Throwable {
+    Object[] row = null;
+    Object obj = null;
+    SimpleDateFormat sdatf = new SimpleDateFormat(exportOptions.getDateTimeFormat());
+    String sep = exportOptions.getExportType().endsWith(ExportOptions.CSV_FORMAT1) ? "," : ";";
+
+    if (opt.getCellsContent()!=null)
+      for(int i=0;i<opt.getCellsContent().length;i++) {
+        row = opt.getCellsContent()[i];
+        for(int j=0;j<row.length;j++) {
+          obj = row[j];
+          if (obj!=null) {
+            if (obj instanceof Boolean) {
+              sb.append ((Boolean)obj);
+            }
+            else if (obj.getClass().equals(boolean.class)) {
+              sb.append ((Boolean)obj);
+            }
+            else if (obj instanceof Date ||
+                     obj instanceof java.util.Date ||
+                     obj instanceof java.sql.Timestamp) {
+             sb.append( sdatf.format((java.util.Date)obj) );
+            }
+            else {
+              sb.append( encodeText(obj.toString(),sep) );
+            }
+          }
+
+          if (j<row.length-1)
+            sb.append(sep);
+        }
+        sb.append("\n");
+      }
+
+  }
+
+
+  private void prepareGrid(StringBuffer sb,ExportOptions exportOptions,GridExportOptions opt) throws Throwable {
     // prepare vo getters methods...
     String methodName = null;
     String attributeName = null;
@@ -75,8 +132,7 @@ public class ExportToCSV {
     Object vo = null;
     int type;
 
-    String sep = opt.getExportType().endsWith(opt.CSV_FORMAT1) ? "," : ";";
-    StringBuffer sb = new StringBuffer("");
+    String sep = exportOptions.getExportType().endsWith(ExportOptions.CSV_FORMAT1) ? "," : ";";
 
     if (opt.getTitle()!=null && !opt.getTitle().equals(""))
       sb.append(opt.getTitle()).append("\n\n");
@@ -88,9 +144,9 @@ public class ExportToCSV {
     sb.append("\n");
     }
 
-    SimpleDateFormat sdf = new SimpleDateFormat(opt.getDateFormat());
-    SimpleDateFormat sdatf = new SimpleDateFormat(opt.getDateTimeFormat());
-    SimpleDateFormat stf = new SimpleDateFormat(opt.getTimeFormat());
+    SimpleDateFormat sdf = new SimpleDateFormat(exportOptions.getDateFormat());
+    SimpleDateFormat sdatf = new SimpleDateFormat(exportOptions.getDateTimeFormat());
+    SimpleDateFormat stf = new SimpleDateFormat(exportOptions.getTimeFormat());
 
     for(int j=0;j<opt.getTopRows().size();j++) {
       // create a row for each top rows...
@@ -160,10 +216,6 @@ public class ExportToCSV {
         sep
       );
     }
-
-
-    byte[] doc = sb.toString().getBytes();
-    return doc;
   }
 
 
@@ -174,7 +226,7 @@ public class ExportToCSV {
   private void appendRow(
     StringBuffer sb,
     Object vo,
-    ExportOptions opt,
+    GridExportOptions opt,
     Hashtable gettersMethods,
     SimpleDateFormat sdf,
     SimpleDateFormat sdatf,
@@ -249,7 +301,7 @@ public class ExportToCSV {
             sb.append( stf.format((java.util.Date)obj) );
         }
         else {
-          sb.append( endodeText(obj.toString(),sep) );
+          sb.append( encodeText(obj.toString(),sep) );
         }
       }
 
@@ -268,7 +320,7 @@ public class ExportToCSV {
    * @param text text to encode with rules defined above.
    * @return encoded text
    */
-  private String endodeText(String text,String sep) {
+  private String encodeText(String text,String sep) {
     if (text.indexOf("\"")!=-1) {
       StringBuffer sb = new StringBuffer("");
       for(int i=0;i<text.length();i++) {

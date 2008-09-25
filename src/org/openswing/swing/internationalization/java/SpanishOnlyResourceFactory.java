@@ -157,27 +157,6 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Export","Exportar");
     dictionary.setProperty("Filter","Filtrar");
 
-    // binding messages...
-    dictionary.setProperty("value must be of type ","El valor debe ser de tipo ");
-    dictionary.setProperty("decimal number","numero decimal");
-    dictionary.setProperty("value is ","El valor es ");
-    dictionary.setProperty("optional","opcional");
-    dictionary.setProperty("minimum value is ","El valor mínimo es ");
-    dictionary.setProperty("required","requerido");
-    dictionary.setProperty("contains a value not valid","contiene un valor no válido");
-    dictionary.setProperty("text","texto");
-    dictionary.setProperty("Date","fecha");
-    dictionary.setProperty("Value is required","El valor es requerido");
-    dictionary.setProperty("maximum value is ","El valor máximo es ");
-    dictionary.setProperty("yes/no","sí/no");
-    dictionary.setProperty("long number","numero long");
-    dictionary.setProperty("integer number","número entero");
-    dictionary.setProperty("Cannot assign component value","No es posible asignar el valor del componente");
-
-    // ClientUtils...
-    dictionary.setProperty("Server Comunication Error","Error de Comunicación con el Servidor");
-    dictionary.setProperty("Server Error","Error del Servidor");
-
     // MDI Frame...
     dictionary.setProperty("file","Fichero");
     dictionary.setProperty("exit","Salir");
@@ -194,8 +173,6 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("quit application","Salir de la Aplicación");
     dictionary.setProperty("forcegcmnemonic","F");
     dictionary.setProperty("Force GC","Forzar GC");
-    dictionary.setProperty("Info","Información");
-    dictionary.setProperty("About","Acerca de");
     dictionary.setProperty("Java Heap","Java Heap");
     dictionary.setProperty("used","usado");
     dictionary.setProperty("allocated","asignado");
@@ -284,7 +261,6 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
 
     // drag...
     dictionary.setProperty("drag","Arrastrar");
-    dictionary.setProperty("drag stopped","Arrastre parado");
 
     resources = new Resources(
       dictionary,

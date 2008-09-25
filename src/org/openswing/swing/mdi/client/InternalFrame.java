@@ -16,6 +16,7 @@ import java.awt.Container;
 import org.openswing.swing.tree.client.TreePanel;
 import java.awt.event.FocusEvent;
 import java.awt.DefaultKeyboardFocusManager;
+import java.awt.event.FocusListener;
 
 
 /**
@@ -95,6 +96,7 @@ public class InternalFrame extends JInternalFrame {
    * @return <code>true</code> if there exists a GridControl or a Form panel within this that is in insert/edit mode, <code>false</code> otherwise
    */
   private boolean checkComponents(Component[] c) {
+
     for(int i=0;i<c.length;i++) {
       if (c[i] instanceof GridControl) {
         c[i].transferFocus();
@@ -109,7 +111,12 @@ public class InternalFrame extends JInternalFrame {
       else if (c[i] instanceof Form) {
         try {
           Component obj = DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-          if (obj!=null)
+          if (obj!=null) {
+            FocusListener[] f = obj.getFocusListeners();
+            if (f!=null)
+              for(int j=0;j<f.length;j++)
+                f[j].focusLost(new FocusEvent(this,FocusEvent.FOCUS_LOST));
+          }
             obj.transferFocus();
         }
         catch (Exception ex) {

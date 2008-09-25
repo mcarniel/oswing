@@ -57,43 +57,17 @@ public class ExportAction implements Action {
   /**
    * Business logic to execute.
    */
-  public final Response executeCommand(Object inputPar,final UserSessionParameters userSessionPars,final HttpServletRequest request,final HttpServletResponse response,final HttpSession userSession,final ServletContext context) {
+  public final Response executeCommand(Object inputPar,UserSessionParameters userSessionPars,HttpServletRequest request,HttpServletResponse response,final HttpSession userSession,final ServletContext context) {
     final ExportOptions opt = (ExportOptions)inputPar;
 
-    // retrive the grid action class...
-    final ActionsCollection actions = (ActionsCollection)context.getAttribute(Controller.ACTION_CLASSES);
-    final Action action = (Action)actions.get(opt.getServerMethodName());
-
-    // redefine the grid data locator...
-    GridDataLocator newDataLocator = new GridDataLocator() {
-
-      public Response loadData(
-          int gridAction,
-          int startIndex,
-          Map filteredColumns,
-          ArrayList currentSortedColumns,
-          ArrayList currentSortedVersusColumns,
-          Class valueObjectType,
-          Map otherGridParams) {
-        return action.executeCommand(
-            new GridParams(
-              gridAction,
-              startIndex,
-              filteredColumns,
-              currentSortedColumns,
-              currentSortedVersusColumns,
-              otherGridParams
-            ),
-            userSessionPars,
-            request,
-            response,
-            userSession,
-            context
-        );
+    Object obj = null;
+    for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
+      obj = opt.getComponentsExportOptions().get(i);
+      if (obj instanceof GridExportOptions) {
+        exportGrid((GridExportOptions)obj,userSessionPars,request,response,userSession,context);
       }
+    }
 
-    };
-    opt.setGridDataLocator(newDataLocator);
 
     byte[] doc = null;
     String docId = null;
@@ -157,8 +131,45 @@ public class ExportAction implements Action {
 
 
     return new TextResponse(docId);
+  }
 
 
+  private void exportGrid(GridExportOptions opt,final UserSessionParameters userSessionPars,final HttpServletRequest request,final HttpServletResponse response,final HttpSession userSession,final ServletContext context) {
+
+    // retrieve the grid action class...
+    final ActionsCollection actions = (ActionsCollection)context.getAttribute(Controller.ACTION_CLASSES);
+    final Action action = (Action)actions.get(opt.getServerMethodName());
+
+    // redefine the grid data locator...
+    GridDataLocator newDataLocator = new GridDataLocator() {
+
+      public Response loadData(
+          int gridAction,
+          int startIndex,
+          Map filteredColumns,
+          ArrayList currentSortedColumns,
+          ArrayList currentSortedVersusColumns,
+          Class valueObjectType,
+          Map otherGridParams) {
+        return action.executeCommand(
+            new GridParams(
+              gridAction,
+              startIndex,
+              filteredColumns,
+              currentSortedColumns,
+              currentSortedVersusColumns,
+              otherGridParams
+            ),
+            userSessionPars,
+            request,
+            response,
+            userSession,
+            context
+        );
+      }
+
+    };
+    opt.setGridDataLocator(newDataLocator);
   }
 
 

@@ -170,27 +170,6 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Export","Export");
     dictionary.setProperty("Filter","Filter");
 
-    // binding messages...
-    dictionary.setProperty("value must be of type ","Value must be of type ");
-    dictionary.setProperty("decimal number","decimal number");
-    dictionary.setProperty("value is ","Value is ");
-    dictionary.setProperty("optional","optional");
-    dictionary.setProperty("minimum value is ","Minimum value is ");
-    dictionary.setProperty("required","required");
-    dictionary.setProperty("contains a value not valid","contains a value not valid");
-    dictionary.setProperty("text","text");
-    dictionary.setProperty("Date","date");
-    dictionary.setProperty("Value is required","Value is required");
-    dictionary.setProperty("maximum value is ","Maximum value is ");
-    dictionary.setProperty("yes/no","yes/no");
-    dictionary.setProperty("long number","long number");
-    dictionary.setProperty("integer number","integer number");
-    dictionary.setProperty("Cannot assign component value","Cannot assign component value");
-
-    // ClientUtils...
-    dictionary.setProperty("Server Comunication Error","Server Comunication Error");
-    dictionary.setProperty("Server Error","Server Error");
-
     // MDI Frame...
     dictionary.setProperty("file","File");
     dictionary.setProperty("exit","Exit");
@@ -207,8 +186,6 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("quit application","Quit Application");
     dictionary.setProperty("forcegcmnemonic","F");
     dictionary.setProperty("Force GC","Force GC");
-    dictionary.setProperty("Info","Info");
-    dictionary.setProperty("About","About");
     dictionary.setProperty("Java Heap","Java Heap");
     dictionary.setProperty("used","used");
     dictionary.setProperty("allocated","allocated");
@@ -297,7 +274,6 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
 
     // drag...
     dictionary.setProperty("drag","Drag");
-    dictionary.setProperty("drag stopped","Drag stopped");
 
     resources = new Resources(
       dictionary,

@@ -1924,8 +1924,72 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
+   * @return GridExportOptions object created, starting from current visible columns
+   */
+  public final GridExportOptions getDefaultGridExportOptions() {
+    HashSet colsVisible = new HashSet();
+    for(int i=0;i<colProps.length;i++)
+      if (colProps[i].isVisible())
+        colsVisible.add(colProps[i].getColumnName());
+    return getDefaultGridExportOptions(colsVisible);
+  }
+
+
+  /**
+   * @param attributesToExport attributes to export
+   * @return GridExportOptions object created, starting from specified attributes to export
+   */
+  public final GridExportOptions getDefaultGridExportOptions(HashSet attributesToExport) {
+    // create export options...
+    Hashtable columnsWidth  = new Hashtable(colProps.length);
+    Hashtable columnsType  = new Hashtable(colProps.length);
+    for(int i=0;i<colProps.length;i++) {
+      columnsWidth.put(colProps[i].getColumnName(),new Integer(colProps[i].getPreferredWidth()));
+      columnsType.put(colProps[i].getColumnName(),new Integer(colProps[i].getColumnType()));
+    }
+
+    ArrayList topRows = new ArrayList();
+    if (gridControl!=null && gridControl.getTopTable()!=null)
+      topRows.addAll( gridControl.getTopTable().getVOListTableModel().getDataVector() );
+
+    ArrayList bottomRows = new ArrayList();
+    if (gridControl!=null && gridControl.getBottomTable()!=null)
+      bottomRows.addAll( gridControl.getBottomTable().getVOListTableModel().getDataVector() );
+
+    Hashtable attributeDescriptions = new Hashtable();
+    for(int i=0;i<colProps.length;i++)
+        attributeDescriptions.put(colProps[i].getColumnName(),ClientSettings.getInstance().getResources().getResource(colProps[i].getHeaderColumnName()));
+
+    ArrayList exportColumns = new ArrayList();
+    ArrayList exportAttrColumns = new ArrayList();
+    for(int i=0;i<model.getColumnCount();i++)
+      if (attributesToExport.contains(model.getColumnName(i))) {
+        exportColumns.add( getHeaderColumnName(model.getColumnName(i)) );
+        exportAttrColumns.add ( model.getColumnName(i) );
+      }
+
+    return new GridExportOptions(
+        exportColumns,
+        exportAttrColumns,
+        quickFilterValues,
+        currentSortedColumns,
+        currentSortedVersusColumns,
+        otherGridParams,
+        ClientSettings.MAX_EXPORTABLE_ROWS,
+        modelAdapter.getValueObjectType(),
+        gridDataLocator,
+        columnsWidth,
+        columnsType,
+        attributeDescriptions,
+        topRows,
+        bottomRows
+    );
+  }
+
+
+  /**
    * Method called by ExportDialog to export data.
-   * @param exportColumns columns to export
+   * @param exportColumns column identifiers related to columns to export
    * @param exportAttrColumns attribute names related to the columns to export
    */
   public final void export(ArrayList exportColumns,ArrayList exportAttrColumns,String exportType) {
@@ -1969,17 +2033,18 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         topRows,
         bottomRows
     );
-    opt.setShowFilteringConditions(ClientSettings.SHOW_FILTERING_CONDITIONS_IN_EXPORT);
+    GridExportOptions gridExportOptions = (GridExportOptions)opt.getComponentsExportOptions().get(0);
+    gridExportOptions.setShowFilteringConditions(ClientSettings.SHOW_FILTERING_CONDITIONS_IN_EXPORT);
     if (ClientSettings.SHOW_FRAME_TITLE_IN_EXPORT) {
       JInternalFrame intFrame = ClientUtils.getParentInternalFrame(this);
       if (intFrame!=null) {
        if (!intFrame.getTitle().equals(""))
-        opt.setTitle(intFrame.getTitle());
+        gridExportOptions.setTitle(intFrame.getTitle());
       }
       else {
         JFrame frame = ClientUtils.getParentFrame(this);
         if (frame!=null && !frame.getTitle().equals(""))
-          opt.setTitle(frame.getTitle());
+          gridExportOptions.setTitle(frame.getTitle());
       }
     }
     gridController.exportGrid(opt);
@@ -1992,7 +2057,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           return;
         }
 
-        opt.setServerMethodName( ( (ServerGridDataLocator) gridDataLocator).
+        gridExportOptions.setServerMethodName( ( (ServerGridDataLocator) gridDataLocator).
                                 getServerMethodName());
         Response response = ClientUtils.getData(
             "exportDataGrid",

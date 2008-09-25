@@ -56,6 +56,79 @@ public class ExportToRTF {
    * @return Excel document, as byte array
    */
   public byte[] getDocument(ExportOptions opt) throws Throwable {
+
+//    Document document = new Document(new Rectangle(total+30,PageSize.A4.height()));
+    Document document = new Document(new Rectangle(PageSize.A4.width(),PageSize.A4.height()));
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    document.open();
+
+    Object obj = null;
+    for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
+      obj = opt.getComponentsExportOptions().get(i);
+      if (obj!=null) {
+        if (obj instanceof GridExportOptions)
+          prepareGrid(document,opt,(GridExportOptions)obj);
+        else if (obj instanceof ComponentExportOptions)
+          prepareGenericComponent(document,opt,(ComponentExportOptions)obj);
+        else
+          continue;
+        document.add(new Paragraph("\n"));
+      }
+    }
+
+
+    document.close();
+    return baos.toByteArray();
+  }
+
+
+  private void prepareGenericComponent(Document document,ExportOptions exportOptions,ComponentExportOptions opt) throws Throwable {
+    if (opt.getCellsContent()==null ||
+        opt.getCellsContent().length==0)
+      return;
+
+    int cols = opt.getCellsContent()[0].length;
+    Object[] row = null;
+    Object obj = null;
+    SimpleDateFormat sdatf = new SimpleDateFormat(exportOptions.getDateTimeFormat());
+    int[] headerwidths = new int[cols];
+    for(int i=0;i<headerwidths.length;i++)
+      headerwidths[i] = (int)PageSize.A4.width()/cols;
+
+    Table table = new Table(cols);
+    table.setWidths(headerwidths);
+    table.setBorderWidth(2);
+    table.setBorderColor(Color.black);
+    table.setGrayFill(0.75f);
+    table.setPadding(3);
+
+    for(int i=0;i<opt.getCellsContent().length;i++) {
+      row = opt.getCellsContent()[i];
+      for(int j=0;j<row.length;j++) {
+        obj = row[j];
+
+        if (obj!=null) {
+          if (obj instanceof Date ||
+                   obj instanceof java.util.Date ||
+                   obj instanceof java.sql.Timestamp) {
+            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),new Font(Font.HELVETICA)));
+          }
+          else {
+            table.addCell(new Phrase(obj.toString(),new Font(Font.HELVETICA)));
+          }
+        }
+        else {
+          table.addCell(new Phrase("",new Font(Font.HELVETICA)));
+        }
+
+      }
+    }
+
+    document.add(table);
+  }
+
+
+  private void prepareGrid(Document document,ExportOptions exportOptions,GridExportOptions opt) throws Throwable {
     // prepare vo getters methods...
     String methodName = null;
     String attributeName = null;
@@ -77,9 +150,9 @@ public class ExportToRTF {
     Object vo = null;
     int type;
 
-    SimpleDateFormat sdf = new SimpleDateFormat(opt.getDateFormat());
-    SimpleDateFormat sdatf = new SimpleDateFormat(opt.getDateTimeFormat());
-    SimpleDateFormat stf = new SimpleDateFormat(opt.getTimeFormat());
+    SimpleDateFormat sdf = new SimpleDateFormat(exportOptions.getDateFormat());
+    SimpleDateFormat sdatf = new SimpleDateFormat(exportOptions.getDateTimeFormat());
+    SimpleDateFormat stf = new SimpleDateFormat(exportOptions.getTimeFormat());
 
     int headerwidths[] = new int[opt.getExportColumns().size()];
     int total = 0;
@@ -91,7 +164,6 @@ public class ExportToRTF {
       total += headerwidths[i];
     }
 
-    Document document = new Document(new Rectangle(total+30,PageSize.A4.height()));
 //    Document document = new Document();
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     RtfWriter2 w = RtfWriter2.getInstance(document,baos);
@@ -211,9 +283,6 @@ public class ExportToRTF {
     document.add(table);
 
 //    document.add(table);
-
-    document.close();
-    return baos.toByteArray();
   }
 
 
@@ -224,7 +293,7 @@ public class ExportToRTF {
   private void appendRow(
     Table table,
     Object vo,
-    ExportOptions opt,
+    GridExportOptions opt,
     Hashtable gettersMethods,
     SimpleDateFormat sdf,
     SimpleDateFormat sdatf,

@@ -34,47 +34,19 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class ExportController implements Controller {
 
 
-  public ModelAndView handleRequest(final HttpServletRequest request, final HttpServletResponse response) {
+  public ModelAndView handleRequest(HttpServletRequest request,HttpServletResponse response) {
     ModelAndView mav = new ModelAndView();
-    final Command command = (Command)request.getAttribute(OpenSwingHandlerMapping.COMMAND_ATTRIBUTE_NAME);
-    final ExportOptions opt = (ExportOptions)command.getInputParam();
-    ApplicationContext context = ((ApplicationContext)request.getAttribute("org.springframework.web.servlet.DispatcherServlet.CONTEXT"));
-    final Controller controller = (Controller)context.getBean(opt.getServerMethodName());
+    Command command = (Command)request.getAttribute(OpenSwingHandlerMapping.COMMAND_ATTRIBUTE_NAME);
+    ExportOptions opt = (ExportOptions)command.getInputParam();
 
-    // redefine the grid data locator...
-    GridDataLocator newDataLocator = new GridDataLocator() {
-
-      public Response loadData(
-          int gridAction,
-          int startIndex,
-          Map filteredColumns,
-          ArrayList currentSortedColumns,
-          ArrayList currentSortedVersusColumns,
-          Class valueObjectType,
-          Map otherGridParams) {
-        request.setAttribute(
-          OpenSwingHandlerMapping.COMMAND_ATTRIBUTE_NAME,new Command(
-            command.getSessionId(),
-            opt.getServerMethodName(),
-            new GridParams(
-               gridAction,
-               startIndex,
-               filteredColumns,
-               currentSortedColumns,
-               currentSortedVersusColumns,
-               otherGridParams
-            )
-        ));
-        try {
-          return (Response) controller.handleRequest(request, response).getModel().get(OpenSwingViewResolver.RESPONSE_PROPERTY_NAME);
-        }
-        catch (Exception ex) {
-          return new ErrorResponse(ex.toString());
-        }
+    Object obj = null;
+    for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
+      obj = opt.getComponentsExportOptions().get(i);
+      if (obj instanceof GridExportOptions) {
+        exportGrid((GridExportOptions)obj,command,request,response);
       }
+    }
 
-    };
-    opt.setGridDataLocator(newDataLocator);
 
     byte[] doc = null;
     String docId = null;
@@ -134,6 +106,46 @@ public class ExportController implements Controller {
       new TextResponse(docId)
     );
     return mav;
+  }
+
+  private void exportGrid(final GridExportOptions opt,final Command command,final HttpServletRequest request, final HttpServletResponse response) {
+    ApplicationContext context = ((ApplicationContext)request.getAttribute("org.springframework.web.servlet.DispatcherServlet.CONTEXT"));
+    final Controller controller = (Controller)context.getBean(opt.getServerMethodName());
+
+    // redefine the grid data locator...
+    GridDataLocator newDataLocator = new GridDataLocator() {
+
+      public Response loadData(
+          int gridAction,
+          int startIndex,
+          Map filteredColumns,
+          ArrayList currentSortedColumns,
+          ArrayList currentSortedVersusColumns,
+          Class valueObjectType,
+          Map otherGridParams) {
+        request.setAttribute(
+          OpenSwingHandlerMapping.COMMAND_ATTRIBUTE_NAME,new Command(
+            command.getSessionId(),
+            opt.getServerMethodName(),
+            new GridParams(
+               gridAction,
+               startIndex,
+               filteredColumns,
+               currentSortedColumns,
+               currentSortedVersusColumns,
+               otherGridParams
+            )
+        ));
+        try {
+          return (Response) controller.handleRequest(request, response).getModel().get(OpenSwingViewResolver.RESPONSE_PROPERTY_NAME);
+        }
+        catch (Exception ex) {
+          return new ErrorResponse(ex.toString());
+        }
+      }
+
+    };
+    opt.setGridDataLocator(newDataLocator);
 
   }
 

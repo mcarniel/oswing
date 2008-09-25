@@ -10,6 +10,10 @@ import org.openswing.swing.mdi.client.MDIFrame;
 import java.awt.Color;
 import org.openswing.swing.server.QueryUtil;
 import org.openswing.swing.message.send.java.GridParams;
+import org.openswing.swing.client.GridControl;
+import org.openswing.swing.util.java.Consts;
+import org.openswing.swing.export.java.ExportOptions;
+import org.openswing.swing.export.java.GridExportOptions;
 
 
 /**
@@ -22,13 +26,14 @@ import org.openswing.swing.message.send.java.GridParams;
  */
 public class EmpGridFrameController2 extends GridController implements GridDataLocator {
 
-  private EmpGridFrame2 grid = null;
+  private EmpGridFrame2 frame = null;
   private Connection conn = null;
+
 
   public EmpGridFrameController2(Connection conn) {
     this.conn = conn;
-    grid = new EmpGridFrame2(conn,this);
-    MDIFrame.add(grid);
+    frame = new EmpGridFrame2(conn,this);
+    MDIFrame.add(frame);
   }
 
 
@@ -308,6 +313,74 @@ public class EmpGridFrameController2 extends GridController implements GridDataL
 
   }
 
+
+  /**
+   * Callback method invoked when the user has selected another row.
+   * @param rowNumber selected row index
+   */
+  public void rowChanged(int rowNumber) {
+    if (rowNumber==-1)
+      return;
+    EmpVO vo = (EmpVO)frame.getGrid().getVOListTableModel().getObjectForRow(rowNumber);
+    frame.getWDGrid().getOtherGridParams().put("empCode",vo.getEmpCode());
+    frame.getWDGrid().reloadData();
+  }
+
+
+  /**
+   * Callback method invoked after saving data when the grid was in INSERT mode (on pressing save button).
+   * The method is called ONLY if the operation is successfully completed.
+   */
+  public void afterInsertGrid(GridControl grid) {
+    if (frame.getGrid().getSelectedRow()==-1)
+      return;
+    EmpVO vo = (EmpVO)frame.getGrid().getVOListTableModel().getObjectForRow(frame.getGrid().getSelectedRow());
+    frame.getWDGrid().getOtherGridParams().put("empCode",vo.getEmpCode());
+  }
+
+
+  /**
+   * Callback method invoked after deleting data when the grid was in READONLY mode (on pressing delete button).
+   * The method is called ONLY if the operation is successfully completed.
+   */
+  public void afterDeleteGrid() {
+     frame.getWDGrid().clearData();
+  }
+
+
+  /**
+   * Callback method invoked each time the grid mode is changed.
+   * @param currentMode current grid mode
+   */
+  public void modeChanged(int currentMode) {
+    if (currentMode==Consts.INSERT) {
+      frame.getWDGrid().clearData();
+      frame.setEnableGridButtons(false);
+    }
+    else {
+      frame.setEnableGridButtons(true);
+    }
+
+  }
+
+
+  /**
+   * Callback method invoked by grid before showing exporting dialog;
+   * this method can be overrided to redefine document formats allowed for the grid
+   * @return list of available formats; possible values: ExportOptions.XLS_FORMAT, ExportOptions.CSV_FORMAT1, ExportOptions.CSV_FORMAT2, ExportOptions.XML_FORMAT, ExportOptions.XML_FORMAT_FAT, ExportOptions.HTML_FORMAT, ExportOptions.PDF_FORMAT, ExportOptions.RTF_FORMAT; default value: ClientSettings.EXPORTING_FORMATS
+   */
+  public String[] getExportingFormats() {
+    return new String[]{ ExportOptions.PDF_FORMAT };
+  }
+
+
+  /**
+   * Callback method invoked by grid when exporting data from grid.
+   * @param exportOptions options used to export data; these options can be programmatically changed, in order to customize exporting result
+   */
+  public void exportGrid(ExportOptions exportOptions) {
+    exportOptions.getComponentsExportOptions().add(frame.getWDGrid().getDefaultGridExportOptions());
+  }
 
 
 }

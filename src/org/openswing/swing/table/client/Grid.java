@@ -931,8 +931,23 @@ public class Grid extends JTable
 //    vScrollbar.addMouseListener(vsListener);
 
     vScrollbar.getDecrButton().addMouseListener(vsListener);
-
     vScrollbar.getIncrButton().addMouseListener(vsListener);
+
+    vScrollbar.getIncrButton().addMouseListener(new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        if (Grid.this.grids.getNavBar()!=null) {
+          Grid.this.grids.getNavBar().fireButtonPressedEvent(NavigatorBar.LEFT_MOUSE_BUTTON);
+        }
+      }
+    });
+    vScrollbar.getDecrButton().addMouseListener(new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        if (Grid.this.grids.getNavBar()!=null) {
+          Grid.this.grids.getNavBar().fireButtonPressedEvent(NavigatorBar.LEFT_MOUSE_BUTTON);
+        }
+      }
+    });
+
 
     if (vScrollbar.getPrevPgButton()!=null)
       vScrollbar.getPrevPgButton().addMouseListener(new MouseAdapter()  {
@@ -992,8 +1007,9 @@ public class Grid extends JTable
         else if (e.getSource().equals(vScrollbar.getIncrButton()) && row3+1<getRowCount())
           row3 = row3+1;
         setRowSelectionInterval(row3,row3);
-        if (row3<row1 || row3>row1+row2)
+        if (row3<row1 || row3>row1+row2) {
           ensureRowIsVisible(row3);
+        }
       }
     }
 

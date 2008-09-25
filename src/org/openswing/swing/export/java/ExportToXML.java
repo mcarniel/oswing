@@ -49,6 +49,72 @@ public class ExportToXML {
    * @return Excel document, as byte array
    */
   public byte[] getDocument(ExportOptions opt) throws Throwable {
+    StringBuffer sb = new StringBuffer("");
+    String newline = System.getProperty("line.separator");
+    sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(newline);
+    sb.append("<content>").append(newline);
+
+    Object obj = null;
+    for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
+      obj = opt.getComponentsExportOptions().get(i);
+      if (obj!=null) {
+        if (obj instanceof GridExportOptions)
+          prepareGrid(sb,opt,(GridExportOptions)obj);
+        else if (obj instanceof ComponentExportOptions)
+          prepareGenericComponent(sb,opt,(ComponentExportOptions)obj);
+        else
+          continue;
+        sb.append(newline);
+      }
+    }
+    sb.append("</content>").append(newline);
+
+    byte[] doc = sb.toString().getBytes();
+    return doc;
+  }
+
+
+  private void prepareGenericComponent(StringBuffer sb,ExportOptions exportOptions,ComponentExportOptions opt) throws Throwable {
+    Object[] row = null;
+    Object obj = null;
+    SimpleDateFormat sdatf = new SimpleDateFormat(exportOptions.getDateTimeFormat());
+    String newline = System.getProperty("line.separator");
+
+    if (opt.getCellsContent()!=null)
+      for(int i=0;i<opt.getCellsContent().length;i++) {
+        row = opt.getCellsContent()[i];
+        sb.append("<row>").append(newline);
+
+        for(int j=0;j<row.length;j++) {
+          obj = row[j];
+          sb.append("\t<cell>").append(newline);
+
+          if (obj!=null) {
+            if (obj instanceof Boolean) {
+              sb.append ((Boolean)obj);
+            }
+            else if (obj.getClass().equals(boolean.class)) {
+              sb.append ((Boolean)obj);
+            }
+            else if (obj instanceof Date ||
+                     obj instanceof java.util.Date ||
+                     obj instanceof java.sql.Timestamp) {
+             sb.append( sdatf.format((java.util.Date)obj) );
+            }
+            else {
+              sb.append( encodeText(obj.toString()) );
+            }
+          }
+
+          sb.append("\t<cell>").append(newline);
+        }
+        sb.append("</row>").append(newline);
+      }
+
+  }
+
+
+  private void prepareGrid(StringBuffer sb,ExportOptions exportOptions,GridExportOptions opt) throws Throwable {
     // prepare vo getters methods...
     String methodName = null;
     String attributeName = null;
@@ -70,17 +136,11 @@ public class ExportToXML {
     Object vo = null;
     int type;
 
-    StringBuffer sb = new StringBuffer("");
-
-    SimpleDateFormat sdf = new SimpleDateFormat(opt.getDateFormat());
-    SimpleDateFormat sdatf = new SimpleDateFormat(opt.getDateTimeFormat());
-    SimpleDateFormat stf = new SimpleDateFormat(opt.getTimeFormat());
+    SimpleDateFormat sdf = new SimpleDateFormat(exportOptions.getDateFormat());
+    SimpleDateFormat sdatf = new SimpleDateFormat(exportOptions.getDateTimeFormat());
+    SimpleDateFormat stf = new SimpleDateFormat(exportOptions.getTimeFormat());
 
     String newline = System.getProperty("line.separator");
-
-
-    sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(newline);
-    sb.append("<content>").append(newline);
 
     if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
       sb.append("<title>").append(opt.getTitle()).append("</title>").append(newline);;
@@ -221,11 +281,6 @@ public class ExportToXML {
     }
 
 
-    sb.append("</content>").append(newline);
-
-
-    byte[] doc = sb.toString().getBytes();
-    return doc;
   }
 
 
@@ -236,7 +291,7 @@ public class ExportToXML {
   private void appendRow(
     StringBuffer sb,
     Object vo,
-    ExportOptions opt,
+    GridExportOptions opt,
     Hashtable gettersMethods,
     SimpleDateFormat sdf,
     SimpleDateFormat sdatf,

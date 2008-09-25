@@ -173,9 +173,10 @@ public class DeptLookupController extends LookupController {
     this.addLookup2ParentLink("deptCode", "dept.deptCode");
     this.addLookup2ParentLink("description", "dept.description");
     this.addLookup2ParentLink("address.city", "workingPlace");
-    this.setAllColumnVisible(true);
-    this.setVisibleColumn("address",false);
-    this.setVisibleColumn("status",false);
+    this.setAllColumnVisible(false);
+    this.setVisibleColumn("deptCode",true);
+    this.setVisibleColumn("description",true);
+    this.setVisibleColumn("address.city", true);
     this.setPreferredWidthColumn("description", 200);
     this.setFramePreferedSize(new Dimension(350,400));
   }
