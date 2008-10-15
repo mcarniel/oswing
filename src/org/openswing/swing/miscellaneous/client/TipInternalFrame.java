@@ -5,6 +5,7 @@ import java.awt.*;
 import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.miscellaneous.util.client.*;
 import org.openswing.swing.util.client.*;
+import java.beans.*;
 
 
 /**
@@ -107,7 +108,11 @@ public class TipInternalFrame extends InternalFrame implements TipPanelContainer
    * Method called by TipPanel to close TipPanel container.
    */
   public final void closeTipPanel() {
-    closeFrame();
+    try {
+      closeFrame();
+    }
+    catch (PropertyVetoException ex) {
+    }
   }
 
 

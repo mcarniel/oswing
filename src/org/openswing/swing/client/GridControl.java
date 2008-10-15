@@ -281,6 +281,15 @@ public class GridControl extends JPanel {
   /** flag used to force the editing of one row only: the current selected row; default value: <code>false</code>, i.e. all rows are editable */
   private boolean editOnSingleRow = false;
 
+  /** list of objects {int[],int[]} used to merge cells in top table */
+  private ArrayList topTableMergedCells = new ArrayList();
+
+  /** list of objects {int[],int[]} used to merge cells in bottom table */
+  private ArrayList bottomTableMergedCells = new ArrayList();
+
+  /** combo-box filters to apply to column headers */
+  private HashMap listFilters = new HashMap();
+
 
   /**
    * Costructor.
@@ -345,6 +354,8 @@ public class GridControl extends JPanel {
       columnProperties = new Column[c.length];
       for (int i = 0; i < c.length; i++) {
         columnProperties[i] = (Column) c[i];
+        if (columnProperties[i].getListFilter()!=null)
+          listFilters.put(columnProperties[i].getColumnName(),columnProperties[i].getListFilter());
       }
       table = new Grids(
           this,
@@ -362,6 +373,7 @@ public class GridControl extends JPanel {
           singleExpandableRow,
           overwriteRowWhenExpanding,
           expandableRowController,
+          listFilters,
           headerHeight,
           Grid.MAIN_GRID
       );
@@ -664,6 +676,7 @@ public class GridControl extends JPanel {
             false,
             false,
             null,
+            listFilters,
             headerHeight,
             Grid.TOP_GRID
         );
@@ -750,6 +763,7 @@ public class GridControl extends JPanel {
             false,
             false,
             null,
+            new HashMap(),
             headerHeight,
             Grid.BOTTOM_GRID
         );
@@ -1011,6 +1025,28 @@ public class GridControl extends JPanel {
             );
         }
       });
+
+      if (topTable!=null)
+        topTable.addLoadDataCompletedListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            for(int i=0;i<topTableMergedCells.size();i++)
+              topTable.mergeCells(
+                (int[])((Object[])topTableMergedCells.get(i))[0],
+                (int[])((Object[])topTableMergedCells.get(i))[1]
+              );
+          }
+        });
+
+      if (bottomTable!=null)
+        bottomTable.addLoadDataCompletedListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            for(int i=0;i<bottomTableMergedCells.size();i++)
+              bottomTable.mergeCells(
+                (int[])((Object[])bottomTableMergedCells.get(i))[0],
+                (int[])((Object[])bottomTableMergedCells.get(i))[1]
+              );
+          }
+        });
 
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
@@ -1460,12 +1496,39 @@ public class GridControl extends JPanel {
 
 
   /**
-   * This method can be called ONLY when the grid is already visibile.
+   * Sets READONLY mode and reloads current block of data.
+   * Data Loading is executed in a separated thread.
+   * After data loading, the old selected row is selected again.
+   * Note: This method can be called ONLY when the grid is already visibile.
    */
-  public void reloadData() {
+  public final void reloadCurrentBlockOfData() {
     if (this.table!=null)
       this.table.reload();
   }
+
+
+  /**
+   * Sets READONLY mode and reloads the first block of data.
+   * Data Loading is executed in a separated thread.
+   * After data loading, the first row is automatically selected.
+   * Note: This method can be called ONLY when the grid is already visibile.
+   */
+  public final void reloadData() {
+    if (this.table!=null)
+      this.table.reloadDataFromStart();
+  }
+
+
+  /**
+   * Save data and sets grid in READONLY mode (if saving task was successfully completed).
+   */
+  public final boolean save() {
+    if (this.table!=null)
+      return this.table.save();
+    else
+      return false;
+  }
+
 
 
   /**
@@ -2151,6 +2214,38 @@ public class GridControl extends JPanel {
 
 
   /**
+   * Set the cell span for the specified range of cells in the locked rows on the top of the table.
+   * @param rows row indexes that identify the cells to merge
+   * @param columns column indexes that identify the cells to merge
+   * @return <code>true</code> if merge operation is allowed, <code>false</code> if the cells range is invalid
+   */
+  public final boolean mergeCellsOnTop(int[] rows,int[] columns) {
+    if (topTable!=null)
+      return topTable.mergeCells(rows,columns);
+    else {
+      topTableMergedCells.add(new Object[]{rows,columns});
+      return true;
+    }
+  }
+
+
+  /**
+   * Set the cell span for the specified range of cells in the locked rows at the bottom of the table.
+   * @param rows row indexes that identify the cells to merge
+   * @param columns column indexes that identify the cells to merge
+   * @return <code>true</code> if merge operation is allowed, <code>false</code> if the cells range is invalid
+   */
+  public final boolean mergeCellsOnBottom(int[] rows,int[] columns) {
+    if (bottomTable!=null)
+      return bottomTable.mergeCells(rows,columns);
+    else {
+      bottomTableMergedCells.add(new Object[]{rows,columns});
+      return true;
+    }
+  }
+
+
+  /**
    * @return define if background and foreground colors must be setted according to GridController definition only in READONLY mode
    */
   public final boolean isColorsInReadOnlyMode() {
@@ -2682,6 +2777,8 @@ public class GridControl extends JPanel {
     bottomGridDataLocator = null;
     tmpPanel = null;
     mergedCells = null;
+    topTableMergedCells = null;
+    bottomTableMergedCells = null;
     loadDataCompletedListeners = null;
     popupCommands = null;
     profile = null;
@@ -2821,6 +2918,25 @@ public class GridControl extends JPanel {
     else
       return null;
   }
+
+
+  /**
+   * Add a list-filter for the specified column, showed in the quick filter panel.
+   * @param attributeName attribute name that identifies the column having a list-filter to remove
+   */
+  public final void addListFilter(String attributeName,ListFilterController filter) {
+    listFilters.put(attributeName,filter);
+  }
+
+
+  /**
+   * Remove a list-filter for the specified column.
+   * @param attributeName attribute name that identifies the column having a filter to remove
+   */
+  public final void removeComboFilter(String attributeName) {
+    listFilters.remove(attributeName);
+  }
+
 
 
 

@@ -1096,7 +1096,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           JOptionPane.YES_NO_OPTION
         )==JOptionPane.YES_OPTION;
       if (canReload) {
-        if (getMode()==Consts.INSERT)
+        if (!ClientSettings.RELOAD_LAST_VO_ON_FORM && getMode()==Consts.INSERT)
           setMode(Consts.INSERT);
         else
          executeReload();

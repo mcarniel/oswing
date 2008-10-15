@@ -97,8 +97,12 @@ public class WinIconsPanel extends JPanel {
     menu.add(closeMenu);
     closeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        frameToClose.closeFrame();
-        frameToClose = null;
+        try {
+          frameToClose.closeFrame();
+          frameToClose = null;
+        }
+        catch (PropertyVetoException ex) {
+        }
       }
     });
     menu.add(iconMenu);

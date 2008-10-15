@@ -58,18 +58,31 @@ public class ExportToCSV {
     Object obj = null;
     for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
       obj = opt.getComponentsExportOptions().get(i);
-      if (obj!=null) {
-        if (obj instanceof GridExportOptions)
-          prepareGrid(sb,opt,(GridExportOptions)obj);
-        else if (obj instanceof ComponentExportOptions)
-          prepareGenericComponent(sb,opt,(ComponentExportOptions)obj);
-        else
-          continue;
-        sb.append("\n");
-      }
+      processComponent(sb,opt,obj);
     }
     byte[] doc = sb.toString().getBytes();
     return doc;
+  }
+
+
+  private void processComponent(StringBuffer sb,ExportOptions exportOptions,Object obj) throws Throwable {
+    if (obj!=null) {
+      GridExportCallbacks callbacks = null;
+      if (obj instanceof GridExportOptions) {
+        callbacks = (GridExportCallbacks)((GridExportOptions)obj).getCallbacks();
+        if (callbacks!=null)
+          processComponent(sb,exportOptions,callbacks.getHeaderComponent());
+        prepareGrid(sb,exportOptions,(GridExportOptions)obj);
+        if (callbacks!=null)
+          processComponent(sb,exportOptions,callbacks.getFooterComponent());
+      }
+      else if (obj instanceof ComponentExportOptions)
+        prepareGenericComponent(sb,exportOptions,(ComponentExportOptions)obj);
+      else
+        return;
+
+      sb.append("\n");
+    }
   }
 
 
@@ -152,6 +165,7 @@ public class ExportToCSV {
       // create a row for each top rows...
       vo = opt.getTopRows().get(j);
       appendRow(
+        exportOptions,
         sb,
         vo,
         opt,
@@ -159,7 +173,9 @@ public class ExportToCSV {
         sdf,
         sdatf,
         stf,
-        sep
+        sep,
+        j,
+        0
       );
     }
 
@@ -181,6 +197,7 @@ public class ExportToCSV {
         vo = ((VOListResponse)response).getRows().get(j);
 
         appendRow(
+          exportOptions,
           sb,
           vo,
           opt,
@@ -188,7 +205,9 @@ public class ExportToCSV {
           sdf,
           sdatf,
           stf,
-          sep
+          sep,
+          rownum,
+          1
         );
 
         rownum++;
@@ -206,6 +225,7 @@ public class ExportToCSV {
       // create a row for each bottom rows...
       vo = opt.getBottomRows().get(j);
       appendRow(
+        exportOptions,
         sb,
         vo,
         opt,
@@ -213,7 +233,9 @@ public class ExportToCSV {
         sdf,
         sdatf,
         stf,
-        sep
+        sep,
+        j,
+        2
       );
     }
   }
@@ -224,6 +246,7 @@ public class ExportToCSV {
    * @return current row to append
    */
   private void appendRow(
+    ExportOptions exportOptions,
     StringBuffer sb,
     Object vo,
     GridExportOptions opt,
@@ -231,7 +254,9 @@ public class ExportToCSV {
     SimpleDateFormat sdf,
     SimpleDateFormat sdatf,
     SimpleDateFormat stf,
-    String sep
+    String sep,
+    int rownum,
+    int tableType
   ) throws Throwable {
     int type;
     String aName = null;
@@ -309,6 +334,42 @@ public class ExportToCSV {
         sb.append(sep);
     }
     sb.append("\n");
+
+    if (opt.getCallbacks()!=null) {
+      if (tableType==0) {
+        processComponent(
+          sb,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInHeader(
+            (ValueObject)vo,
+            rownum
+          )
+        );
+      }
+      else if (tableType==1) {
+        ComponentExportOptions compOpts = opt.getCallbacks().getComponentPerRow(
+          (ValueObject)vo,
+          rownum
+        );
+        if (compOpts!=null) {
+          processComponent(
+            sb,
+            exportOptions,
+            compOpts
+          );
+        }
+      }
+      else if (tableType==2) {
+        processComponent(
+          sb,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInFooter(
+            (ValueObject)vo,
+            rownum
+          )
+        );
+      }
+    }
   }
 
 

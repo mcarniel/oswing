@@ -49,7 +49,8 @@ public class LookupControllerBeanInfo extends SimpleBeanInfo {
         _lookupGridController,
         _lookupValueObjectClassName,
         _maxSortedColumns,
-        _onInvalidCode};
+        _onInvalidCode
+      };
       return pds;
     }
     catch(IntrospectionException ex) {

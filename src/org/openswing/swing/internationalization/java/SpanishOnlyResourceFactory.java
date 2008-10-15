@@ -196,8 +196,10 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Operation in progress...","Operación en progreso...");
     dictionary.setProperty("close window","Cerrar Ventana");
     dictionary.setProperty("reduce to icon","Reducir a icono");
-    dictionary.setProperty("are you sure to close this window?","¿Estás seguro de que quieres cerrar esta ventana?\nLos cambios que no se hayan guardado se perderán.");
+    dictionary.setProperty("save changes?", "Guardar cambios?");
     dictionary.setProperty("confirm window closing","Confirmación para cerrar la ventana");
+    dictionary.setProperty("change background","Change background");
+    dictionary.setProperty("reset background","Reset background");
 
     dictionary.setProperty("switch","Cambiar");
     dictionary.setProperty("switchmnemonic","S");

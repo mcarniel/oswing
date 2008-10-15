@@ -299,7 +299,8 @@ public class ImageControl extends BaseInputControl implements InputControl {
     selButton.addActionListener(new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
-        JFileChooser f = new JFileChooser(ClientSettings.getInstance().getResources().getResource("image selection"));
+        JFileChooser f = new JFileChooser();
+        f.setDialogTitle(ClientSettings.getInstance().getResources().getResource("image selection"));
         Container c = ImageControl.this.getParent();
         while(c!=null && !(c instanceof JFrame || c instanceof JInternalFrame))
           c = c.getParent();

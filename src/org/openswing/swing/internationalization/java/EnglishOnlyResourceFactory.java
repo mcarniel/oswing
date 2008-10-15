@@ -209,8 +209,10 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Operation in progress...","Operation in progress...");
     dictionary.setProperty("close window","Close Window");
     dictionary.setProperty("reduce to icon","Reduce to icon");
-    dictionary.setProperty("are you sure to close this window?","Are you sure to close this window?\nChanges not yet saved will be lost.");
+    dictionary.setProperty("save changes?", "Save changes?");
     dictionary.setProperty("confirm window closing","Confirm window closing");
+    dictionary.setProperty("change background","Change background");
+    dictionary.setProperty("reset background","Reset background");
 
     dictionary.setProperty("switch","Switch");
     dictionary.setProperty("switchmnemonic","S");

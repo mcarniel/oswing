@@ -39,6 +39,8 @@ import org.openswing.swing.message.send.java.*;
  */
 public class ExportToXMLFat {
 
+  String newline = System.getProperty("line.separator");
+
 
   public ExportToXMLFat() {
   }
@@ -50,27 +52,39 @@ public class ExportToXMLFat {
    */
   public byte[] getDocument(ExportOptions opt) throws Throwable {
     StringBuffer sb = new StringBuffer("");
-    String newline = System.getProperty("line.separator");
     sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(newline);
     sb.append("<content>").append(newline);
 
     Object obj = null;
     for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
       obj = opt.getComponentsExportOptions().get(i);
-      if (obj!=null) {
-        if (obj instanceof GridExportOptions)
-          prepareGrid(sb,opt,(GridExportOptions)obj);
-        else if (obj instanceof ComponentExportOptions)
-          prepareGenericComponent(sb,opt,(ComponentExportOptions)obj);
-        else
-          continue;
-        sb.append(newline);
-      }
+      processComponent(sb,opt,obj);
     }
     sb.append("</content>").append(newline);
 
     byte[] doc = sb.toString().getBytes();
     return doc;
+  }
+
+
+  private void processComponent(StringBuffer sb,ExportOptions exportOptions,Object obj) throws Throwable {
+    if (obj!=null) {
+      GridExportCallbacks callbacks = null;
+      if (obj instanceof GridExportOptions) {
+        callbacks = (GridExportCallbacks)((GridExportOptions)obj).getCallbacks();
+        if (callbacks!=null)
+          processComponent(sb,exportOptions,callbacks.getHeaderComponent());
+        prepareGrid(sb,exportOptions,(GridExportOptions)obj);
+        if (callbacks!=null)
+          processComponent(sb,exportOptions,callbacks.getFooterComponent());
+      }
+      else if (obj instanceof ComponentExportOptions)
+        prepareGenericComponent(sb,exportOptions,(ComponentExportOptions)obj);
+      else
+        return;
+
+      sb.append(newline);
+    }
   }
 
 
@@ -160,6 +174,7 @@ public class ExportToXMLFat {
       // create a row for each top rows...
       vo = opt.getTopRows().get(j);
       appendRow(
+        exportOptions,
         sb,
         vo,
         opt,
@@ -167,7 +182,9 @@ public class ExportToXMLFat {
         sdf,
         sdatf,
         stf,
-        newline
+        newline,
+        j,
+        0
       );
     }
 
@@ -192,6 +209,7 @@ public class ExportToXMLFat {
         vo = ((VOListResponse)response).getRows().get(j);
 
         appendRow(
+          exportOptions,
           sb,
           vo,
           opt,
@@ -199,7 +217,9 @@ public class ExportToXMLFat {
           sdf,
           sdatf,
           stf,
-          newline
+          newline,
+          rownum,
+          1
         );
 
         rownum++;
@@ -216,6 +236,7 @@ public class ExportToXMLFat {
       // create a row for each bottom rows...
       vo = opt.getBottomRows().get(j);
       appendRow(
+        exportOptions,
         sb,
         vo,
         opt,
@@ -223,10 +244,11 @@ public class ExportToXMLFat {
         sdf,
         sdatf,
         stf,
-        newline
+        newline,
+        j,
+        2
       );
     }
-
   }
 
 
@@ -235,6 +257,7 @@ public class ExportToXMLFat {
    * @return current row to append
    */
   private void appendRow(
+    ExportOptions exportOptions,
     StringBuffer sb,
     Object vo,
     GridExportOptions opt,
@@ -242,7 +265,9 @@ public class ExportToXMLFat {
     SimpleDateFormat sdf,
     SimpleDateFormat sdatf,
     SimpleDateFormat stf,
-    String newline
+    String newline,
+    int rownum,
+    int tableType
   ) throws Throwable {
     int type;
     String aName = null;
@@ -323,6 +348,42 @@ public class ExportToXMLFat {
       }
     }
     sb.append("\t</row>").append(newline);
+
+    if (opt.getCallbacks()!=null) {
+      if (tableType==0) {
+        processComponent(
+          sb,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInHeader(
+            (ValueObject)vo,
+            rownum
+          )
+        );
+      }
+      else if (tableType==1) {
+        ComponentExportOptions compOpts = opt.getCallbacks().getComponentPerRow(
+          (ValueObject)vo,
+          rownum
+        );
+        if (compOpts!=null) {
+          processComponent(
+            sb,
+            exportOptions,
+            compOpts
+          );
+        }
+      }
+      else if (tableType==2) {
+        processComponent(
+          sb,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInFooter(
+            (ValueObject)vo,
+            rownum
+          )
+        );
+      }
+    }
   }
 
 

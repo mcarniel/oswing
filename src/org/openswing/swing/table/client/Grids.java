@@ -242,6 +242,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       boolean singleExpandableRow,
       boolean overwriteRowWhenExpanding,
       ExpandableRowController expandableRowController,
+      HashMap comboFilters,
       int headerHeight,
       int gridType
   ) {
@@ -284,6 +285,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         singleExpandableRow,
         overwriteRowWhenExpanding,
         expandableRowController,
+        comboFilters,
         headerHeight,
         gridType
     );
@@ -307,6 +309,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           singleExpandableRow,
           overwriteRowWhenExpanding,
           expandableRowController,
+          comboFilters,
           headerHeight,
           gridType
       );
@@ -572,184 +575,34 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
+   * Method called from reload method: reload current data block.
+   * Data Loading is executed in a separated thread.
+   * After data loading, the old selected row is selected again.
    * Method called from reload method:
    * reload current data block. Data Loading is executed in a separated thread.
+   */
+  public final void reloadDataFromStart() {
+    if (model.getRowCount()>0) {
+      setRowSelectionInterval(0,0);
+      startIndex = 0;
+    }
+    else
+      startIndex = -1;
+
+    reload();
+  }
+
+
+  /**
+   * Method called from reload method: reload current data block.
+   * Data Loading is executed in a separated thread.
+   * After data loading, the old selected row is selected again.
    */
   private final void reloadData() {
     if (!listenEvent)
       return;
     listenEvent = false;
-    new Thread() {
-      public void run() {
-        boolean errorOnLoad = true;
-        if (navBar!=null)
-          navBar.setEnabled(false);
-        if (reloadButton!=null)
-          reloadButton.setEnabled(false);
-        if (insertButton!=null)
-          insertButton.setEnabled(false);
-        if (exportButton!=null)
-          exportButton.setEnabled(false);
-        if (importButton!=null)
-          importButton.setEnabled(false);
-        if (copyButton!=null)
-          copyButton.setEnabled(false);
-        if (editButton!=null)
-          editButton.setEnabled(false);
-        setGenericButtonsEnabled(false);
-        if (deleteButton!=null)
-          deleteButton.setEnabled(false);
-        if (saveButton!=null)
-          saveButton.setEnabled(false);
-//        startIndex = Math.max(0,lastIndex-model.getRowCount()+1);
-
-        // reload data...
-        currentNumberOfNewRows = 0;
-        repaint();
-        selectedRowBeforeReloading = getSelectedRow();
-        errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
-        if (model.getRowCount()>0) {
-          if (selectedRowBeforeReloading==-1)
-            selectedRowBeforeReloading = 0;
-          else if (selectedRowBeforeReloading>model.getRowCount()-1)
-            selectedRowBeforeReloading = model.getRowCount()-1;
-
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              grid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
-              if (lockedGrid!=null)
-                lockedGrid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
-              if (selectedRowBeforeReloading==-1)
-                return;
-              grid.ensureRowIsVisible(selectedRowBeforeReloading);
-              if (lockedGrid!=null)
-                lockedGrid.ensureRowIsVisible(selectedRowBeforeReloading);
-            }
-          });
-        } else {
-          statusPanel.setText("");
-          selectedRowBeforeReloading = 0;
-        }
-//        grid.ensureRowIsVisible(grid.getSelectedRow());
-//        if (lockedGrid!=null)
-//          lockedGrid.ensureRowIsVisible(grid.getSelectedRow());
-        if (navBar!=null) {
-          if (grid.getSelectedRow() != -1 && !moreRows &&
-              grid.getSelectedRow() == model.getRowCount() - 1 ||
-              model.getRowCount() == 0)
-            navBar.setLastRow(true);
-          else
-            navBar.setLastRow(false);
-          if (grid.getSelectedRow() > 0 || lastIndex > model.getRowCount() - 1)
-            navBar.setFirstRow(false);
-          else
-            navBar.setFirstRow(true);
-        }
-        if (reloadButton!=null)
-          reloadButton.setEnabled(reloadButton.getOldValue());
-        if (saveButton!=null)
-          saveButton.setEnabled(saveButton.getOldValue());
-
-        grid.revalidate();
-        grid.repaint();
-        if (grid.getTableHeader()!=null) {
-          grid.getTableHeader().revalidate();
-          grid.getTableHeader().repaint();
-        }
-        if (lockedGrid!=null) {
-          lockedGrid.revalidate();
-          lockedGrid.repaint();
-          if (lockedGrid.getTableHeader()!=null) {
-            lockedGrid.getTableHeader().revalidate();
-            lockedGrid.getTableHeader().repaint();
-          }
-        }
-
-
-        listenEvent = true;
-
-
-        if (gridType==Grid.MAIN_GRID) {
-          // load top grid if it exists...
-          if (getGridControl()!=null && getGridControl().getTopTable()!=null){
-
-            if (getGridControl().getTopGridDataLocator()==null) {
-              Logger.error(this.getClass().getName(), "reloadData", "'topGridDataLocator' property was not defined for grid control", null);
-              getGridControl().setTopGridDataLocator(new GridDataLocator() {
-
-                public Response loadData(
-                    int action,
-                    int startIndex,
-                    Map filteredColumns,
-                    ArrayList currentSortedColumns,
-                    ArrayList currentSortedVersusColumns,
-                    Class valueObjectType,
-                    Map otherGridParams) {
-                  ArrayList rows = new ArrayList();
-                  for(int i=0;i<getGridControl().getLockedRowsOnTop();i++)
-                    try {
-                      rows.add( Class.forName(getGridControl().getValueObjectClassName()).newInstance() );
-                    }
-                    catch (Throwable t) {
-                      Logger.error(this.getClass().getName(), "reloadData", "Error while attempting to fill in the top grid", t);
-                    }
-                  return new VOListResponse(rows,false,rows.size());
-                }
-
-              });
-            }
-
-            getGridControl().getTopTable().reload();
-            getGridControl().getTopTable().revalidate();
-            getGridControl().getTopTable().repaint();
-          }
-
-          // load bottom grid if it exists...
-          if (getGridControl()!=null && getGridControl().getBottomTable()!=null){
-
-            if (getGridControl().getBottomGridDataLocator()==null) {
-              Logger.error(this.getClass().getName(), "reloadData", "'bottomGridDataLocator' property was not defined for grid control", null);
-              getGridControl().setBottomGridDataLocator(new GridDataLocator() {
-
-                public Response loadData(
-                    int action,
-                    int startIndex,
-                    Map filteredColumns,
-                    ArrayList currentSortedColumns,
-                    ArrayList currentSortedVersusColumns,
-                    Class valueObjectType,
-                    Map otherGridParams) {
-                  ArrayList rows = new ArrayList();
-                  for(int i=0;i<getGridControl().getLockedRowsOnBottom();i++)
-                    try {
-                      rows.add( Class.forName(getGridControl().getValueObjectClassName()).newInstance() );
-                    }
-                    catch (Throwable t) {
-                      Logger.error(this.getClass().getName(), "reloadData", "Error while attempting to fill in the bottom grid", t);
-                    }
-                  return new VOListResponse(rows,false,rows.size());
-                }
-
-              });
-            }
-
-            getGridControl().getBottomTable().reload();
-            getGridControl().getBottomTable().revalidate();
-            getGridControl().getBottomTable().repaint();
-          }
-        }
-
-
-        // fire loading data completed event...
-        if (gridController!=null)
-          gridController.loadDataCompleted(errorOnLoad);
-
-        for(int i=0;i<loadDataCompletedListeners.size();i++)
-          ((ActionListener)loadDataCompletedListeners.get(i)).actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"Load Data Completed"));
-
-        resetButtonsState();
-      }
-    }.start();
+    new LoadDataThread().start();
   }
 
 
@@ -2014,24 +1867,28 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         attributeDescriptions.put(colProps[i].getColumnName(),ClientSettings.getInstance().getResources().getResource(colProps[i].getHeaderColumnName()));
 
     ExportOptions opt = new ExportOptions(
-        exportColumns,
-        exportAttrColumns,
-        quickFilterValues,
-        currentSortedColumns,
-        currentSortedVersusColumns,
-        otherGridParams,
-        ClientSettings.MAX_EXPORTABLE_ROWS,
-        modelAdapter.getValueObjectType(),
-        gridDataLocator,
-        columnsWidth,
-        columnsType,
-        attributeDescriptions,
+        new GridExportOptions(
+          exportColumns,
+          exportAttrColumns,
+          quickFilterValues,
+          currentSortedColumns,
+          currentSortedVersusColumns,
+          otherGridParams,
+          ClientSettings.MAX_EXPORTABLE_ROWS,
+          modelAdapter.getValueObjectType(),
+          gridDataLocator,
+          columnsWidth,
+          columnsType,
+          attributeDescriptions,
+          topRows,
+          bottomRows
+        ),
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE),
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_TIME),
         ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE_TIME),
         exportType,
-        topRows,
-        bottomRows
+        ClientSettings.EXPORT_TO_PDF_ADAPTER,
+        ClientSettings.EXPORT_TO_RTF_ADAPTER
     );
     GridExportOptions gridExportOptions = (GridExportOptions)opt.getComponentsExportOptions().get(0);
     gridExportOptions.setShowFilteringConditions(ClientSettings.SHOW_FILTERING_CONDITIONS_IN_EXPORT);
@@ -3433,6 +3290,203 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   }
+
+
+
+
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used to load data in asynchronous way.</p>
+   * <p>Copyright: Copyright (C) 2008 Mauro Carniel</p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class LoadDataThread extends Thread {
+
+    private boolean errorOnLoad = true;
+
+    public void run() {
+      if (navBar!=null)
+        navBar.setEnabled(false);
+      if (reloadButton!=null)
+        reloadButton.setEnabled(false);
+      if (insertButton!=null)
+        insertButton.setEnabled(false);
+      if (exportButton!=null)
+        exportButton.setEnabled(false);
+      if (importButton!=null)
+        importButton.setEnabled(false);
+      if (copyButton!=null)
+        copyButton.setEnabled(false);
+      if (editButton!=null)
+        editButton.setEnabled(false);
+      setGenericButtonsEnabled(false);
+      if (deleteButton!=null)
+        deleteButton.setEnabled(false);
+      if (saveButton!=null)
+        saveButton.setEnabled(false);
+//        startIndex = Math.max(0,lastIndex-model.getRowCount()+1);
+
+      // reload data...
+      currentNumberOfNewRows = 0;
+      repaint();
+      selectedRowBeforeReloading = getSelectedRow();
+      errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
+      if (model.getRowCount()>0) {
+        if (selectedRowBeforeReloading==-1)
+          selectedRowBeforeReloading = 0;
+        else if (selectedRowBeforeReloading>model.getRowCount()-1)
+          selectedRowBeforeReloading = model.getRowCount()-1;
+
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            grid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
+            if (lockedGrid!=null)
+              lockedGrid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
+            if (selectedRowBeforeReloading==-1)
+              return;
+            grid.ensureRowIsVisible(selectedRowBeforeReloading);
+            if (lockedGrid!=null)
+              lockedGrid.ensureRowIsVisible(selectedRowBeforeReloading);
+
+
+            // fire loading data completed event...
+            if (gridController!=null)
+              gridController.loadDataCompleted(errorOnLoad);
+
+            if (!errorOnLoad)
+              for(int i=0;i<loadDataCompletedListeners.size();i++)
+                ((ActionListener)loadDataCompletedListeners.get(i)).actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"Load Data Completed"));
+
+          }
+        });
+      } else {
+        statusPanel.setText("");
+        selectedRowBeforeReloading = 0;
+      }
+//        grid.ensureRowIsVisible(grid.getSelectedRow());
+//        if (lockedGrid!=null)
+//          lockedGrid.ensureRowIsVisible(grid.getSelectedRow());
+      if (navBar!=null) {
+        if (grid.getSelectedRow() != -1 && !moreRows &&
+            grid.getSelectedRow() == model.getRowCount() - 1 ||
+            model.getRowCount() == 0)
+          navBar.setLastRow(true);
+        else
+          navBar.setLastRow(false);
+        if (grid.getSelectedRow() > 0 || lastIndex > model.getRowCount() - 1)
+          navBar.setFirstRow(false);
+        else
+          navBar.setFirstRow(true);
+      }
+      if (reloadButton!=null)
+        reloadButton.setEnabled(reloadButton.getOldValue());
+      if (saveButton!=null)
+        saveButton.setEnabled(saveButton.getOldValue());
+
+      grid.revalidate();
+      grid.repaint();
+      if (grid.getTableHeader()!=null) {
+        grid.getTableHeader().revalidate();
+        grid.getTableHeader().repaint();
+      }
+      if (lockedGrid!=null) {
+        lockedGrid.revalidate();
+        lockedGrid.repaint();
+        if (lockedGrid.getTableHeader()!=null) {
+          lockedGrid.getTableHeader().revalidate();
+          lockedGrid.getTableHeader().repaint();
+        }
+      }
+
+
+      listenEvent = true;
+
+
+      if (gridType==Grid.MAIN_GRID) {
+        // load top grid if it exists...
+        if (getGridControl()!=null && getGridControl().getTopTable()!=null){
+
+          if (getGridControl().getTopGridDataLocator()==null) {
+            Logger.error(this.getClass().getName(), "reloadData", "'topGridDataLocator' property was not defined for grid control", null);
+            getGridControl().setTopGridDataLocator(new GridDataLocator() {
+
+              public Response loadData(
+                  int action,
+                  int startIndex,
+                  Map filteredColumns,
+                  ArrayList currentSortedColumns,
+                  ArrayList currentSortedVersusColumns,
+                  Class valueObjectType,
+                  Map otherGridParams) {
+                ArrayList rows = new ArrayList();
+                for(int i=0;i<getGridControl().getLockedRowsOnTop();i++)
+                  try {
+                    rows.add( Class.forName(getGridControl().getValueObjectClassName()).newInstance() );
+                  }
+                  catch (Throwable t) {
+                    Logger.error(this.getClass().getName(), "reloadData", "Error while attempting to fill in the top grid", t);
+                  }
+                return new VOListResponse(rows,false,rows.size());
+              }
+
+            });
+          }
+
+          getGridControl().getTopTable().reload();
+          getGridControl().getTopTable().revalidate();
+          getGridControl().getTopTable().repaint();
+        }
+
+        // load bottom grid if it exists...
+        if (getGridControl()!=null && getGridControl().getBottomTable()!=null){
+
+          if (getGridControl().getBottomGridDataLocator()==null) {
+            Logger.error(this.getClass().getName(), "reloadData", "'bottomGridDataLocator' property was not defined for grid control", null);
+            getGridControl().setBottomGridDataLocator(new GridDataLocator() {
+
+              public Response loadData(
+                  int action,
+                  int startIndex,
+                  Map filteredColumns,
+                  ArrayList currentSortedColumns,
+                  ArrayList currentSortedVersusColumns,
+                  Class valueObjectType,
+                  Map otherGridParams) {
+                ArrayList rows = new ArrayList();
+                for(int i=0;i<getGridControl().getLockedRowsOnBottom();i++)
+                  try {
+                    rows.add( Class.forName(getGridControl().getValueObjectClassName()).newInstance() );
+                  }
+                  catch (Throwable t) {
+                    Logger.error(this.getClass().getName(), "reloadData", "Error while attempting to fill in the bottom grid", t);
+                  }
+                return new VOListResponse(rows,false,rows.size());
+              }
+
+            });
+          }
+
+          getGridControl().getBottomTable().reload();
+          getGridControl().getBottomTable().revalidate();
+          getGridControl().getBottomTable().repaint();
+        }
+      }
+
+      resetButtonsState();
+    }
+  }
+
+
+
+
+
+
+
+
+
 
 
 }

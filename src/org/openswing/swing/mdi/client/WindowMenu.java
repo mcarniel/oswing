@@ -8,6 +8,7 @@ import javax.swing.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.util.client.*;
 import java.awt.*;
+import java.beans.*;
 
 
 /**
@@ -259,7 +260,11 @@ public class WindowMenu extends JMenu {
     Enumeration en = internalFrames.keys();
     while(en.hasMoreElements()) {
       frame = (InternalFrame)en.nextElement();
-      frame.closeFrame();
+      try {
+        frame.closeFrame();
+      }
+      catch (PropertyVetoException ex) {
+      }
     }
     this.menuWindowCloseAll.setEnabled(false);
     this.menuWindowSwitch.setEnabled(false);

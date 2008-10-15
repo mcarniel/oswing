@@ -217,6 +217,27 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
 
 
   /**
+   * Method used to reload items in combo-box.
+   */
+  public final void reloadItems() {
+    if (itemsDataLocator!=null && itemsVO!=null) {
+      Response res = itemsDataLocator.loadData(itemsVO.getClass());
+      if (!res.isError()) {
+        ArrayList items = ((VOListResponse)res).getRows();
+        model = new DefaultComboBoxModel();
+        for(int i=0;i<items.size();i++) {
+          model.addElement(items.get(i));
+        }
+        field.setModel(model);
+        field.revalidate();
+        field.repaint();
+        field.setSelectedIndex(-1);
+      }
+    }
+  }
+
+
+  /**
    * Stop cell editing. This method stops cell editing (effectively committing the edit) only if the data entered is validated successfully.
    * @return <code>true</code> if cell editing may stop, and <code>false</code> otherwise.
    */

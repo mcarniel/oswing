@@ -61,15 +61,7 @@ public class ExportToExcel {
 
     for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
       obj = opt.getComponentsExportOptions().get(i);
-      if (obj!=null) {
-        if (obj instanceof GridExportOptions)
-          rownum = prepareGrid(rownum,wb,s,opt,(GridExportOptions)obj)+1;
-        else if (obj instanceof ComponentExportOptions)
-          rownum = prepareGenericComponent(rownum,wb,s,opt,(ComponentExportOptions)obj)+1;
-        else
-          continue;
-
-      }
+      rownum = processComponent(wb,s,opt,obj,rownum);
     }
 
 
@@ -81,6 +73,26 @@ public class ExportToExcel {
     out.close();
 
     return doc;
+  }
+
+
+  private int processComponent(HSSFWorkbook wb,HSSFSheet s,ExportOptions exportOptions,Object obj,int rownum) throws Throwable {
+    if (obj!=null) {
+      GridExportCallbacks callbacks = null;
+      if (obj instanceof GridExportOptions) {
+        callbacks = (GridExportCallbacks)((GridExportOptions)obj).getCallbacks();
+        if (callbacks!=null)
+          rownum = processComponent(wb,s,exportOptions,callbacks.getHeaderComponent(),rownum)+1;
+        rownum = prepareGrid(rownum,wb,s,exportOptions,(GridExportOptions)obj)+1;
+        if (callbacks!=null)
+          rownum = processComponent(wb,s,exportOptions,callbacks.getFooterComponent(),rownum)+1;
+      }
+      else if (obj instanceof ComponentExportOptions)
+        return prepareGenericComponent(rownum,wb,s,exportOptions,(ComponentExportOptions)obj)+1;
+      else
+        return rownum;
+    }
+    return rownum;
   }
 
 
@@ -330,9 +342,11 @@ public class ExportToExcel {
           for(int k=0;k<opt.getTopRows().size();k++) {
             // create a row for each top rows...
             vo = opt.getTopRows().get(k);
-            appendRow(
+            rownum = appendRow(
+              wb,
               s,
               vo,
+              exportOptions,
               opt,
               gettersMethods,
               csText,
@@ -342,9 +356,9 @@ public class ExportToExcel {
               csDate,
               csTime,
               csDateTime,
-              rownum
+              rownum,
+              0
             );
-            rownum++;
           }
 
         }
@@ -352,9 +366,11 @@ public class ExportToExcel {
         // create a row
         vo = ((VOListResponse)response).getRows().get(j);
 
-        appendRow(
+        rownum = appendRow(
+          wb,
           s,
           vo,
+          exportOptions,
           opt,
           gettersMethods,
           csText,
@@ -364,10 +380,9 @@ public class ExportToExcel {
           csDate,
           csTime,
           csDateTime,
-          rownum
+          rownum,
+          1
         );
-
-        rownum++;
       }
 
       start = start+((VOListResponse)response).getRows().size();
@@ -381,9 +396,11 @@ public class ExportToExcel {
     for(int j=0;j<opt.getBottomRows().size();j++) {
       // create a row for each bottom rows...
       vo = opt.getBottomRows().get(j);
-      appendRow(
+      rownum = appendRow(
+        wb,
         s,
         vo,
+        exportOptions,
         opt,
         gettersMethods,
         csText,
@@ -393,9 +410,9 @@ public class ExportToExcel {
         csDate,
         csTime,
         csDateTime,
-        rownum
+        rownum,
+        2
       );
-      rownum++;
     }
 
     return rownum;
@@ -406,9 +423,11 @@ public class ExportToExcel {
    * Append current row to result StringBuffer.
    * @return current row to append
    */
-  private void appendRow(
+  private int appendRow(
+    HSSFWorkbook wb,
     HSSFSheet s,
     Object vo,
+    ExportOptions exportOptions,
     GridExportOptions opt,
     Hashtable gettersMethods,
     HSSFCellStyle csText,
@@ -418,7 +437,8 @@ public class ExportToExcel {
     HSSFCellStyle csDate,
     HSSFCellStyle csTime,
     HSSFCellStyle csDateTime,
-    int rownum
+    int rownum,
+    int tableType
   ) throws Throwable {
     int type;
     HSSFRow r = null;
@@ -512,8 +532,14 @@ public class ExportToExcel {
             c.setCellStyle(csDate);
           else if (type==opt.TYPE_DATE_TIME)
             c.setCellStyle(csDateTime);
-          else if (type==opt.TYPE_TIME)
+          else if (type==opt.TYPE_TIME) {
             c.setCellStyle(csTime);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime((java.util.Date)obj);
+            if (cal.get(Calendar.YEAR)<1900)
+              cal.set(Calendar.YEAR,2000);
+            c.setCellValue(cal.getTime());
+          }
         }
       }
       else {
@@ -525,6 +551,45 @@ public class ExportToExcel {
       s.setColumnWidth( i, (short)(256/8*((Integer)opt.getColumnsWidth().get(opt.getExportAttrColumns().get(i))).shortValue()) );
     }
 
+    rownum++;
+
+    if (opt.getCallbacks()!=null) {
+      if (tableType==0)
+        rownum = processComponent(
+          wb,
+          s,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInHeader(
+            (ValueObject)vo,
+            rownum
+          ),
+          rownum
+        );
+      else if (tableType==1)
+        rownum = processComponent(
+          wb,
+          s,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRow(
+            (ValueObject)vo,
+            rownum
+          ),
+          rownum
+        );
+      else if (tableType==2)
+        rownum = processComponent(
+          wb,
+          s,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInFooter(
+            (ValueObject)vo,
+            rownum
+          ),
+          rownum
+        );
+    }
+
+    return rownum;
   }
 
 

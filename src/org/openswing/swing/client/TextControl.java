@@ -70,9 +70,9 @@ public class TextControl extends BaseInputControl implements InputControl {
     this.setLayout(new GridBagLayout());
     this.add(textBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
-    String s = ""; for(int i=0;i<textBox.getColumns();i++) s+= "0";
+    StringBuffer s = new StringBuffer(textBox.getColumns()); for(int i=0;i<textBox.getColumns();i++) s.append("0");
     setMinimumSize(new Dimension(
-      textBox.getFontMetrics(textBox.getFont()).stringWidth(s),
+      textBox.getFontMetrics(textBox.getFont()).stringWidth(s.toString()),
       textBox.getPreferredSize().height
     ));
 
@@ -329,9 +329,9 @@ public class TextControl extends BaseInputControl implements InputControl {
   public final void setColumns(int columns) {
     textBox.setColumns(columns);
 
-    String s = ""; for(int i=0;i<textBox.getColumns();i++) s+= "0";
+    StringBuffer s = new StringBuffer(textBox.getColumns()); for(int i=0;i<textBox.getColumns();i++) s.append("0");
     setMinimumSize(new Dimension(
-      textBox.getFontMetrics(textBox.getFont()).stringWidth(s),
+      textBox.getFontMetrics(textBox.getFont()).stringWidth(s.toString()),
       textBox.getPreferredSize().height
     ));
 

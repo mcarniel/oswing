@@ -123,6 +123,8 @@ public class Column extends JPanel {
   /** column header vertical alignment; default value: ClientSettings.HEADER_TEXT_VERTICAL_ALIGNMENT */
   private int headerTextVerticalAlignment = ClientSettings.HEADER_TEXT_VERTICAL_ALIGNMENT;
 
+  /** list-filter to add to this column (optional) */
+  private ListFilterController filter = null;
 
   public static final int TYPE_TEXT = 0;
   public static final int TYPE_DATE = Consts.TYPE_DATE;
@@ -638,6 +640,24 @@ public class Column extends JPanel {
   public TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
     return new DefaultTableCellEditor();
   }
+
+
+  /**
+   * Add a list-filter for the specified column, showed in the quick filter panel.
+   * @param attributeName attribute name that identifies the column having a list-filter to remove
+   */
+  public final void setListFilter(ListFilterController filter) {
+    this.filter = filter;
+  }
+
+
+  /**
+   * @return list-filter for the specified column, showed in the quick filter panel
+   */
+  public final ListFilterController getListFilter() {
+    return this.filter;
+  }
+
 
 
   /**

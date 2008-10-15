@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: This class is used when exporting data in PDF format:
+ * <p>Description: This class is used when exporting data in RTF format:
  * it can be extended to override some methods.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
@@ -33,7 +33,7 @@ import java.io.Serializable;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ExportToPDFAdapter implements Serializable {
+public class ExportToRTFAdapter implements Serializable {
 
 
   /**

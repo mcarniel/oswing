@@ -154,6 +154,15 @@ public class ClientSettings {
   /** image name of descending order versus icon */
   public static String SORT_DOWN = "sortdown.gif";
 
+  /** image name of filter button in column header */
+  public static String LIST_FILTER_BUTTON = "filterbutton.gif";
+
+  /** image name of filter symbol in column header */
+  public static String FILTER_SYMBOL = "filter.gif";
+
+  /** define whether showing filtering symbol in column header which is currently filtered */
+  public static boolean SHOW_FILTER_SYMBOL = false;
+
   /** height of grid rows */
   public static int CELL_HEIGHT = 20;
 
@@ -174,6 +183,9 @@ public class ClientSettings {
 
   /** adapter used when exporting grid data in PDF format: it provides some overridable methods */
   public static ExportToPDFAdapter EXPORT_TO_PDF_ADAPTER = new ExportToPDFAdapter();
+
+  /** adapter used when exporting grid data in RTF format: it provides some overridable methods */
+  public static ExportToRTFAdapter EXPORT_TO_RTF_ADAPTER = new ExportToRTFAdapter();
 
   /** flag used to add a filter panel on top of the exported grid, in order to show filtering conditions; this pane is visibile only whether there is at least one filtering condition applied; default value: <code>false</code> */
   public static boolean SHOW_FILTERING_CONDITIONS_IN_EXPORT = false;
@@ -258,6 +270,9 @@ public class ClientSettings {
 
   /** <code>true</code> to show a border around a Form panel when it has focus; <code>false</code> to do not show it; default value: <code>true</code> */
   public static boolean SHOW_FOCUS_BORDER_ON_FORM = true;
+
+  /** <code>true</code> to reload last object show already loaded in the past, when pressing reload button in INSERT mode; <code>false</code> to clear all input controls when pressing reload button in INSERT mode; default value: <code>false</code> */
+  public static boolean RELOAD_LAST_VO_ON_FORM = false;
 
   /** define what a lookup has to do when an invalid code has been setted; possible values: LookupController.ON_INVALID_CODE_xxx; default value: LookupController.ON_INVALID_CODE_CLEAR_CODE */
   public static int ON_INVALID_CODE = LookupController.ON_INVALID_CODE_CLEAR_CODE;

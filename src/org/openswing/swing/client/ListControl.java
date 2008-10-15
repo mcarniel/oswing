@@ -70,6 +70,9 @@ public class ListControl extends BaseInputControl implements InputControl,Search
   /** define if a check-box must be showed for each node; default value: <code>false</code> */
   private boolean showCheckBoxes = false;
 
+  /** define if description in list items must be translated; default value: <code>true</code> */
+  private boolean translateItemDescriptions = true;
+
 
   /**
    * Contructor.
@@ -134,7 +137,10 @@ public class ListControl extends BaseInputControl implements InputControl,Search
     if (domain!=null) {
       DomainPair[] pairs = domain.getDomainPairList();
       for(int i=0;i<pairs.length;i++)
-        model.addElement(ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()));
+        if (translateItemDescriptions)
+          model.addElement(ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()));
+        else
+          model.addElement(pairs[i].getDescription());
       list.setModel(model);
       list.revalidate();
       list.setSelectedIndex(-1);
@@ -162,8 +168,12 @@ public class ListControl extends BaseInputControl implements InputControl,Search
       if (domain==null)
         return;
       DomainPair pair = domain.getDomainPair(code);
-      if (pair!=null)
-        list.setSelectedValue( ClientSettings.getInstance().getResources().getResource(pair.getDescription()),true );
+      if (pair!=null) {
+        if (translateItemDescriptions)
+          list.setSelectedValue( ClientSettings.getInstance().getResources().getResource(pair.getDescription()),true );
+        else
+          list.setSelectedValue( pair.getDescription(),true );
+      }
     }
     else {
       if (code==null || code instanceof java.util.List && ((java.util.List)code).size()==0) {
@@ -915,6 +925,23 @@ public class ListControl extends BaseInputControl implements InputControl,Search
    */
   public final boolean disableListener() {
     return false;
+  }
+
+
+  /**
+   * @return define if description in list items must be translated
+   */
+  public final boolean isTranslateItemDescriptions() {
+    return translateItemDescriptions;
+  }
+
+
+  /**
+   * Define if description in list items must be translated; default value: <code>true</code>.
+   * @param translateItemDescriptions flag used to define if description in list items must be translated
+   */
+  public final void setTranslateItemDescriptions(boolean translateItemDescriptions) {
+    this.translateItemDescriptions = translateItemDescriptions;
   }
 
 

@@ -14,7 +14,6 @@ import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.*;
-import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -67,24 +66,42 @@ public class ExportToPDF {
     Object obj = null;
     for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
       obj = opt.getComponentsExportOptions().get(i);
-      if (obj!=null) {
-        if (obj instanceof GridExportOptions)
-          prepareGrid(document,opt,(GridExportOptions)obj);
-        else if (obj instanceof ComponentExportOptions)
-          prepareGenericComponent(document,opt,(ComponentExportOptions)obj);
-        else
-          continue;
-        document.add(new Paragraph("\n"));
-      }
+      processComponent(null,0,document,opt,obj);
     }
-
 
     document.close();
     return baos.toByteArray();
   }
 
 
-  private void prepareGenericComponent(Document document,ExportOptions exportOptions,ComponentExportOptions opt) throws Throwable {
+  private void processComponent(PdfPTable table,int parentTableCols,Document document,ExportOptions opt,Object obj) throws Throwable {
+    if (obj!=null) {
+      GridExportCallbacks callbacks = null;
+      if (obj instanceof GridExportOptions) {
+        callbacks = (GridExportCallbacks)((GridExportOptions)obj).getCallbacks();
+        if (callbacks!=null)
+          processComponent(table,parentTableCols,document,opt,callbacks.getHeaderComponent());
+        prepareGrid(table,parentTableCols,document,opt,(GridExportOptions)obj);
+        if (callbacks!=null)
+          processComponent(table,parentTableCols,document,opt,callbacks.getFooterComponent());
+      }
+      else if (obj instanceof ComponentExportOptions)
+        prepareGenericComponent(table,parentTableCols,document,opt,(ComponentExportOptions)obj);
+      else
+        return;
+
+      if (table!=null) {
+        PdfPCell cell = new PdfPCell(new Paragraph("\n"));
+        cell.setColspan(parentTableCols);
+        table.addCell(cell);
+      }
+      else
+        document.add(new Paragraph("\n"));
+    }
+  }
+
+
+  private void prepareGenericComponent(PdfPTable parentTable,int parentTableCols,Document document,ExportOptions exportOptions,ComponentExportOptions opt) throws Throwable {
     if (opt.getCellsContent()==null ||
         opt.getCellsContent().length==0)
       return;
@@ -102,7 +119,7 @@ public class ExportToPDF {
     table.setWidthPercentage(90);
     table.getDefaultCell().setBorderWidth(2);
     table.getDefaultCell().setBorderColor(Color.black);
-    table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getHeaderGrayFill());
+    table.getDefaultCell().setGrayFill(exportOptions.getExportToPDFAdapter().getHeaderGrayFill());
     table.getDefaultCell().setPadding(3);
     table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
     table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -121,26 +138,32 @@ public class ExportToPDF {
                    obj instanceof java.util.Date ||
                    obj instanceof java.sql.Timestamp) {
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),exportOptions.getExportToPDFAdapter().getGenericComponentFont(i,j,obj)));
           }
           else {
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.addCell(new Phrase(obj.toString(),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(obj.toString(),exportOptions.getExportToPDFAdapter().getGenericComponentFont(i,j,obj)));
           }
         }
         else {
           table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-          table.addCell(new Phrase("",new Font(Font.HELVETICA)));
+          table.addCell(new Phrase("",exportOptions.getExportToPDFAdapter().getGenericComponentFont(i,j,null)));
         }
 
       }
     }
 
-    document.add(table);
+    if (parentTable!=null) {
+      PdfPCell cell = new PdfPCell(table);
+      cell.setColspan(parentTableCols);
+      parentTable.addCell(cell);
+    }
+    else
+      document.add(table);
   }
 
 
-  private void prepareGrid(Document document,ExportOptions exportOptions,GridExportOptions opt) throws Throwable {
+  private void prepareGrid(PdfPTable parentTable,int parentTableCols,Document document,ExportOptions exportOptions,GridExportOptions opt) throws Throwable {
     // prepare vo getters methods...
     String methodName = null;
     String attributeName = null;
@@ -179,7 +202,7 @@ public class ExportToPDF {
 
     Paragraph line = null;
     if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
-      line = new Paragraph(opt.getTitle());line.setAlignment(Element.ALIGN_CENTER);
+      line = new Paragraph(opt.getTitle(),exportOptions.getExportToPDFAdapter().getFontTitle());line.setAlignment(Element.ALIGN_CENTER);
       document.add(line);
       document.add(new Paragraph("\n"));
     }
@@ -199,7 +222,7 @@ public class ExportToPDF {
     table.setWidthPercentage(90);
     table.getDefaultCell().setBorderWidth(2);
     table.getDefaultCell().setBorderColor(Color.black);
-    table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getHeaderGrayFill());
+    table.getDefaultCell().setGrayFill(exportOptions.getExportToPDFAdapter().getHeaderGrayFill());
     table.getDefaultCell().setPadding(3);
     table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
     table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -208,7 +231,7 @@ public class ExportToPDF {
       table.addCell(
         new Phrase(
           opt.getExportColumns().get(i).toString(),
-          ClientSettings.EXPORT_TO_PDF_ADAPTER.getHeaderFont(
+          exportOptions.getExportToPDFAdapter().getHeaderFont(
             opt.getExportAttrColumns().get(i).toString()
           )
         )
@@ -221,16 +244,20 @@ public class ExportToPDF {
 
     for(int j=0;j<opt.getTopRows().size();j++) {
       // create a row for each top rows...
-      table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getTopRowsGrayFill(j));
+      table.getDefaultCell().setGrayFill(exportOptions.getExportToPDFAdapter().getTopRowsGrayFill(j));
       vo = opt.getTopRows().get(j);
       appendRow(
+        document,
+        exportOptions,
         table,
         vo,
         opt,
         gettersMethods,
         sdf,
         sdatf,
-        stf
+        stf,
+        j,
+        0
       );
     }
 
@@ -252,23 +279,27 @@ public class ExportToPDF {
 
       for(int j=0;j<((VOListResponse)response).getRows().size();j++) {
         if (even) {
-          table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getEvenRowsGrayFill());
+          table.getDefaultCell().setGrayFill(exportOptions.getExportToPDFAdapter().getEvenRowsGrayFill());
           even = false;
         } else {
-          table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getOddRowsGrayFill());
+          table.getDefaultCell().setGrayFill(exportOptions.getExportToPDFAdapter().getOddRowsGrayFill());
           even = true;
         }
 
         vo = ((VOListResponse)response).getRows().get(j);
 
         appendRow(
+          document,
+          exportOptions,
           table,
           vo,
           opt,
           gettersMethods,
           sdf,
           sdatf,
-          stf
+          stf,
+          rownum,
+          1
         );
 
         rownum++;
@@ -284,21 +315,30 @@ public class ExportToPDF {
 
     for(int j=0;j<opt.getBottomRows().size();j++) {
       // create a row for each bottom rows...
-      table.getDefaultCell().setGrayFill(ClientSettings.EXPORT_TO_PDF_ADAPTER.getBottomRowsGrayFill(j));
+      table.getDefaultCell().setGrayFill(exportOptions.getExportToPDFAdapter().getBottomRowsGrayFill(j));
       vo = opt.getBottomRows().get(j);
       appendRow(
+        document,
+        exportOptions,
         table,
         vo,
         opt,
         gettersMethods,
         sdf,
         sdatf,
-        stf
+        stf,
+        j,
+        2
       );
     }
 
-
-    document.add(table);
+    if (parentTable!=null) {
+      PdfPCell cell = new PdfPCell(table);
+      cell.setColspan(parentTableCols);
+      parentTable.addCell(cell);
+    }
+    else
+      document.add(table);
 
   }
 
@@ -308,13 +348,17 @@ public class ExportToPDF {
    * @return current row to append
    */
   private void appendRow(
+    Document document,
+    ExportOptions exportOptions,
     PdfPTable table,
     Object vo,
     GridExportOptions opt,
     Hashtable gettersMethods,
     SimpleDateFormat sdf,
     SimpleDateFormat sdatf,
-    SimpleDateFormat stf
+    SimpleDateFormat stf,
+    int row,
+    int tableType // 0 = header, 1 = body, 2 = footer
   ) throws Throwable {
     int type;
     String aName = null;
@@ -373,26 +417,63 @@ public class ExportToPDF {
           type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
           if (type==opt.TYPE_DATE) {
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(sdf.format((java.util.Date)obj),ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
+            table.addCell(new Phrase(sdf.format((java.util.Date)obj),exportOptions.getExportToPDFAdapter().getRowFont(aName)));
           }
           else if (type==opt.TYPE_DATE_TIME) {
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
+            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),exportOptions.getExportToPDFAdapter().getRowFont(aName)));
           }
           else if (type==opt.TYPE_TIME) {
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(stf.format((java.util.Date)obj),ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
+            table.addCell(new Phrase(stf.format((java.util.Date)obj),exportOptions.getExportToPDFAdapter().getRowFont(aName)));
           }
         }
         else {
           table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-          table.addCell(new Phrase(obj.toString(),ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
+          table.addCell(new Phrase(obj.toString(),exportOptions.getExportToPDFAdapter().getRowFont(aName)));
         }
       }
       else {
         table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-        table.addCell(new Phrase("",ClientSettings.EXPORT_TO_PDF_ADAPTER.getRowFont(aName)));
+        table.addCell(new Phrase("",exportOptions.getExportToPDFAdapter().getRowFont(aName)));
       }
+
+    }
+
+    if (opt.getCallbacks()!=null) {
+      if (tableType==0)
+        processComponent(
+          table,
+          opt.getExportColumns().size(),
+          document,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInHeader(
+            (ValueObject)vo,
+            row
+          )
+        );
+      else if (tableType==1)
+        processComponent(
+          table,
+          opt.getExportColumns().size(),
+          document,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRow(
+            (ValueObject)vo,
+            row
+          )
+        );
+      else if (tableType==2)
+        processComponent(
+          table,
+          opt.getExportColumns().size(),
+          document,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInFooter(
+            (ValueObject)vo,
+            row
+          )
+        );
     }
 
   }

@@ -16,7 +16,8 @@ import org.openswing.swing.util.client.*;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.event.TreeExpansionListener;
-
+import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeModelEvent;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -180,6 +181,9 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
   /** define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>; default value: <code>true</code> */
   private boolean expandRoot = true;
+
+  /** flag used to mark the state "tree content changed" */
+  private boolean treeChanged = false;
 
 
   /**
@@ -490,6 +494,27 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
       }
     };
     tree.addMouseListener(ml);
+
+    treeChanged = false;
+    treeModel.addTreeModelListener(new TreeModelListener() {
+
+      public void treeNodesChanged(TreeModelEvent e) {
+        treeChanged = true;
+      }
+
+      public void treeNodesInserted(TreeModelEvent e) {
+        treeChanged = true;
+      }
+
+      public void treeNodesRemoved(TreeModelEvent e) {
+        treeChanged = true;
+      }
+
+      public void treeStructureChanged(TreeModelEvent e) {
+        treeChanged = true;
+      }
+
+    });
   }
 
   /**
@@ -1314,7 +1339,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    */
   public final void revalidateTree() {
     TreePath[] paths = tree.getSelectionPaths();
-    treeModel = new DefaultTreeModel((DefaultMutableTreeNode)tree.getModel().getRoot());
+    boolean asksAllowsChildren = treeModel.asksAllowsChildren();
+    treeModel = new DefaultTreeModel((DefaultMutableTreeNode)tree.getModel().getRoot(),asksAllowsChildren);
     tree.setModel(treeModel);
     if (paths!=null)
       tree.setSelectionPaths(paths);
@@ -1479,6 +1505,17 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   public final void setExpandRoot(boolean expandRoot) {
     this.expandRoot = expandRoot;
   }
+
+
+  /**
+   * @return mark the state "tree content changed"
+   */
+  public final boolean isChanged() {
+    return treeChanged;
+  }
+
+
+
 
 }
 

@@ -91,6 +91,12 @@ public class ComboVOColumn extends Column {
   /** attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container; as default value this attribute is null; null means that "attributeName" property will be used to identify the v.o. in the combo-box, i.e. the attribute names in the combo-box v.o. and in the container v.o. must have the same name */
   private String foreignKeyAttributeName;
 
+  /** cell renderer */
+  private ComboVOTableCellRenderer comboVOTableCellRenderer = null;
+
+  /** cell editor */
+  private ComboBoxVOCellEditor comboBoxVOCellEditor = null;
+
 
   public ComboVOColumn() { }
 
@@ -490,10 +496,22 @@ public class ComboVOColumn extends Column {
 
 
   /**
+   * Method used to reload items in combo-box.
+   */
+  public final void reloadItems() {
+    if (comboVOTableCellRenderer!=null)
+      comboVOTableCellRenderer.reloadItems();
+    if (comboBoxVOCellEditor!=null)
+      comboBoxVOCellEditor.reloadItems();
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
-    return new ComboVOTableCellRenderer(
+    if (comboVOTableCellRenderer==null)
+      comboVOTableCellRenderer = new ComboVOTableCellRenderer(
         getComboDataLocator(),
         getColumnName(),
         getItemsVO(),
@@ -507,7 +525,8 @@ public class ComboVOColumn extends Column {
         topMargin,
         bottomMargin,
         getForeignKeyAttributeName()
-    );
+      );
+    return comboVOTableCellRenderer;
   }
 
 
@@ -515,7 +534,8 @@ public class ComboVOColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new ComboBoxVOCellEditor(
+    if (comboBoxVOCellEditor==null)
+      comboBoxVOCellEditor = new ComboBoxVOCellEditor(
         getItemsMapper(),
         getComboDataLocator(),
         getColumnName(),
@@ -531,7 +551,8 @@ public class ComboVOColumn extends Column {
         rightMargin,
         topMargin,
         bottomMargin
-    );
+      );
+    return comboBoxVOCellEditor;
   }
 
 

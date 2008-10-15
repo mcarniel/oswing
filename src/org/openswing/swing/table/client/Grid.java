@@ -97,6 +97,9 @@ public class Grid extends JTable
   /** desceding order versus icon */
   private Icon descSort = new ImageIcon(ClientUtils.getImage(ClientSettings.SORT_UP));
 
+  /** filter symbol icon */
+  private Icon filterSymbol = new ImageIcon(ClientUtils.getImage(ClientSettings.FILTER_SYMBOL));
+
   /** flag used inside addNotify to set column headers and the toolbar state */
   private boolean firstTime = true;
 
@@ -139,8 +142,8 @@ public class Grid extends JTable
   /** bottom grid (optional), that contains the bottom locked rows */
   public static final int BOTTOM_GRID = 2;
 
-  /** mouse listener applied to tabler headers to sort columns */
-  private MouseListener sortingMouseListener = null;
+  /** mouse listener applied to table headers to sort columns or to show combo-box filter */
+  private MouseListener colHeaderMouseListener = null;
 
   /** vertical scrollbar */
   private PaginationVerticalScrollbar vScrollbar;
@@ -204,6 +207,9 @@ public class Grid extends JTable
   /** used to listen for key events */
   private KeyListener gridListener = new GridListener();
 
+  /** combo-box filters to apply to column headers; collection of pairs <attribute name, ComboBoxFilterController> */
+  private HashMap comboFilterControllers = new HashMap();
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -235,6 +241,7 @@ public class Grid extends JTable
       boolean singleExpandableRow,
       boolean overwriteRowWhenExpanding,
       ExpandableRowController expandableRowController,
+      HashMap comboFilters,
       int headerHeight,
       int gridType) {
     super();
@@ -251,6 +258,7 @@ public class Grid extends JTable
     this.singleExpandableRow = singleExpandableRow;
     this.overwriteRowWhenExpanding = overwriteRowWhenExpanding;
     this.expandableRowController = expandableRowController;
+    this.comboFilterControllers = comboFilters;
     this.setShowGrid(true);
     if (!anchorLastColumn)
       this.setAutoResizeMode(this.AUTO_RESIZE_OFF);
@@ -612,7 +620,7 @@ public class Grid extends JTable
       if (colProps[i].getAdditionalHeaderColumnSpan()>0 && rest>0) {
         disableAdditionalHeaders = true;
         hasColSpan = false;
-        Logger.error(this.getClass().getName(), "jbInit", "The specified attribute '"+colProps[i].getColumnName()+"' has an additional column header with col span >0 and incompatibile with previous col spans.",null);
+        Logger.error(this.getClass().getName(), "checkColumnSpans", "The specified attribute '"+colProps[i].getColumnName()+"' has an additional column header with col span >0 and incompatibile with previous col spans.",null);
         break;
       }
       else if (colProps[i].getAdditionalHeaderColumnSpan()>0 && rest==0) {
@@ -1071,7 +1079,7 @@ public class Grid extends JTable
     th.setPreferredSize(new Dimension(th.getPreferredSize().width,headerHeight));
     th.setReorderingAllowed(reorderingAllowed);
     th.setResizingAllowed(resizingAllowed);
-    sortingMouseListener = new MouseAdapter() {
+    colHeaderMouseListener = new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
 
         // mouse click event is ignored if grid is not in read only mode or is not enabled...
@@ -1107,7 +1115,7 @@ public class Grid extends JTable
       }
     };
 
-    th.addMouseListener(sortingMouseListener);
+    th.addMouseListener(colHeaderMouseListener);
     setOrderList();
   }
 
@@ -1353,10 +1361,12 @@ public class Grid extends JTable
          initialValue = gridController.getInitialQuickFilterValue(colProps[modelColIndex].getColumnName(),initialValue);
 
        QuickFilterPanel quickFilterPanel = new QuickFilterPanel(
+          (ListFilterController)comboFilterControllers.get(colProps[modelColIndex].getColumnName()),
           grids.getDefaultQuickFilterCriteria(),
           this,
           filterType,
           colProps[modelColIndex],
+          (FilterWhereClause[])grids.getQuickFilterValues().get(colProps[modelColIndex].getColumnName()),
           initialValue
        );
        quickFilterPanel.setBackground(grids.getRemovefilterItem().getBackground());
@@ -1378,7 +1388,7 @@ public class Grid extends JTable
    */
   class TableColumnHeaderRenderer extends JPanel implements TableCellRenderer {
 
-    private JLabel l_text,l_icon;
+    private JLabel l_text,l_iconSorting,l_iconFiltering;
     private MultiLineHeader l_text2;
     private Font headerFont;
     private SimpleAttributeSet simpleattributeset = new SimpleAttributeSet();
@@ -1461,10 +1471,13 @@ public class Grid extends JTable
       this.headerFont = headerFont;
       setOpaque(false);
       setBorder(columnHeaderBorder);
-      setLayout(new BorderLayout(0, 0));
+      setLayout(new GridBagLayout());
       l_text = new JLabel();
       if (headerHeight<l_text.getFontMetrics(headerFont!=null?headerFont:l_text.getFont()).getHeight()*2) {
-        add(l_text, BorderLayout.CENTER);
+        add(l_text, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+                                            , GridBagConstraints.WEST,
+                                            GridBagConstraints.BOTH,
+                                            new Insets(0, 0, 0, 0), 0, 0));
         if (headerFont!=null)
           l_text.setFont(headerFont);
         if (headerColor!=null)
@@ -1474,7 +1487,10 @@ public class Grid extends JTable
         l_text.setOpaque(false);
       } else {
         l_text2 = new MultiLineHeader(headerTextHorizontalAlignment,headerTextVerticalAlignment);
-        add(l_text2, BorderLayout.CENTER);
+        add(l_text2, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+                                            , GridBagConstraints.WEST,
+                                            GridBagConstraints.BOTH,
+                                            new Insets(0, 0, 0, 0), 0, 0));
         if (headerFont!=null)
           l_text2.setFont(headerFont);
         if (headerColor!=null)
@@ -1483,25 +1499,37 @@ public class Grid extends JTable
         l_text2.setOpaque(false);
       }
 
-      l_icon = new JLabel("");
+      l_iconSorting = new JLabel("");
+      l_iconFiltering = new JLabel("");
       if (headerFont!=null)
-        l_icon.setFont(headerFont);
+        l_iconSorting.setFont(headerFont);
       if (headerColor!=null)
-        l_icon.setForeground(headerColor);
-      l_icon.setOpaque(false);
-      add(l_icon, BorderLayout.EAST);
+        l_iconSorting.setForeground(headerColor);
+      l_iconSorting.setOpaque(false);
+      add(l_iconSorting, new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0
+                                          , GridBagConstraints.EAST,
+                                          GridBagConstraints.NONE,
+                                          new Insets(0, 0, 0, 0), 0, 0));
       setToolTipText(ClientSettings.getInstance().getResources().getResource(
          gridController.getHeaderTooltip(attributeName)
       ));
+
+      if (ClientSettings.SHOW_FILTER_SYMBOL) {
+        l_iconFiltering.setOpaque(false);
+        add(l_iconFiltering, new GridBagConstraints(2, 0, 1, 1, 0.0, 1.0
+                                            , GridBagConstraints.EAST,
+                                            GridBagConstraints.NONE,
+                                            new Insets(0, 0, 0, 0), 0, 0));
+      }
     }
 
 
     public void setIcon(Icon icon,int sortingOrder) {
       if (sortingOrder>0 && ClientSettings.SHOW_SORTING_ORDER)
-        l_icon.setText(String.valueOf(sortingOrder));
+        l_iconSorting.setText(String.valueOf(sortingOrder));
       else
-        l_icon.setText("");
-      l_icon.setIcon(icon);
+        l_iconSorting.setText("");
+      l_iconSorting.setIcon(icon);
     }
 
 
@@ -1522,13 +1550,22 @@ public class Grid extends JTable
            setIcon(descSort,i+1);
        }
 
-      if (headerHeight<l_text.getFontMetrics(headerFont!=null?headerFont:l_text.getFont()).getHeight()*2)
-        l_text.setText(value.toString());
-      else
-        l_text2.setText(value.toString());
 
-      return this;
-    }
+     if (ClientSettings.SHOW_FILTER_SYMBOL) {
+       if (grids.getQuickFilterValues().containsKey(getVOListTableModel().
+           getColumnName(columnModelIndex)))
+         l_iconFiltering.setIcon(filterSymbol);
+       else
+         l_iconFiltering.setIcon(null);
+     }
+
+     if (headerHeight<l_text.getFontMetrics(headerFont!=null?headerFont:l_text.getFont()).getHeight()*2)
+       l_text.setText(value.toString());
+     else
+       l_text2.setText(value.toString());
+
+     return this;
+   }
 
 
 
@@ -2289,8 +2326,12 @@ public class Grid extends JTable
       try {
         gridIndex = this.convertColumnIndexToView(i);
         if (gridIndex!=-1) {
-          if (colProps.getColumnName().equals(getVOListTableModel().getColumnName(i)) && this.getTableHeader()!=null)
-            ((TableColumnHeaderRenderer)this.getTableHeader().getColumnModel().getColumn(gridIndex).getHeaderRenderer()).setBorder(BorderFactory.createLoweredBevelBorder());
+          if (colProps.getColumnName().equals(getVOListTableModel().getColumnName(i)) && this.getTableHeader()!=null) {
+            if (!ClientSettings.SHOW_FILTER_SYMBOL)
+              ((TableColumnHeaderRenderer)this.getTableHeader().getColumnModel().getColumn(gridIndex).getHeaderRenderer()).setBorder(BorderFactory.createLoweredBevelBorder());
+            else
+              repaint();
+          }
         }
       }
       catch (Exception ex) {
@@ -2320,7 +2361,9 @@ public class Grid extends JTable
     for(int i=0;i<getModel().getColumnCount();i++) {
       try {
         gridIndex = this.convertColumnIndexToView(i);
-        if (gridIndex!=-1 && this.getTableHeader()!=null) {
+        if (gridIndex!=-1 &&
+            !ClientSettings.SHOW_FILTER_SYMBOL &&
+            this.getTableHeader()!=null) {
 
           where = (FilterWhereClause[])grids.getQuickFilterValues().get( getVOListTableModel().getColumnName(i) );
           if (where!=null)
@@ -2353,6 +2396,7 @@ public class Grid extends JTable
         gridIndex = this.convertColumnIndexToView(i);
         if (gridIndex!=-1) {
           if (attributeName.equals(getVOListTableModel().getColumnName(i)) &&
+              !ClientSettings.SHOW_FILTER_SYMBOL &&
               this.getTableHeader()!=null)
             ((TableColumnHeaderRenderer)this.getTableHeader().getColumnModel().getColumn(gridIndex).getHeaderRenderer()).setBorder(BorderFactory.createRaisedBevelBorder());
         }
@@ -2379,10 +2423,22 @@ public class Grid extends JTable
       dropTarget2 = new DropTarget(this, this);
 
       // set descriptions into the column headers...
+      if (grids==null ||
+          grids.getGridControl()==null ||
+          grids.getGridControl().getLockedRowsOnTop()==0)
+        for(int i=0;i<tableColumnModel.length;i++) {
+          tableColumnModel[i].setHeaderValue(ClientSettings.getInstance().getResources().getResource(colProps[i].getHeaderColumnName()));
+        }
+
+    }
+    else if (grids!=null &&
+             grids.getGridControl()!=null &&
+             gridType==TOP_GRID &&
+             grids.getGridControl().getLockedRowsOnTop()>0) {
+      // set descriptions into the column headers...
       for(int i=0;i<tableColumnModel.length;i++) {
         tableColumnModel[i].setHeaderValue(ClientSettings.getInstance().getResources().getResource(colProps[i].getHeaderColumnName()));
       }
-
     }
   }
 
@@ -2469,7 +2525,7 @@ public class Grid extends JTable
    * @return mouse listener applied to tabler headers to sort columns
    */
   public final MouseListener getSortingMouseListener() {
-    return sortingMouseListener;
+    return colHeaderMouseListener;
   }
 
 

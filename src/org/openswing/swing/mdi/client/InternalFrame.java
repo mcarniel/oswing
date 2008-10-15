@@ -17,6 +17,9 @@ import org.openswing.swing.tree.client.TreePanel;
 import java.awt.event.FocusEvent;
 import java.awt.DefaultKeyboardFocusManager;
 import java.awt.event.FocusListener;
+import java.beans.Beans;
+import org.openswing.swing.logger.client.Logger;
+import java.beans.*;
 
 
 /**
@@ -76,9 +79,15 @@ public class InternalFrame extends JInternalFrame {
     setFrameIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_FILENAME)));
     this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     this.addInternalFrameListener(new InternalFrameAdapter() {
+
       public void internalFrameClosing(InternalFrameEvent e) {
-        closeFrame();
+        try {
+          closeFrame();
+        }
+        catch (PropertyVetoException ex) {
+        }
       }
+
     });
   }
 
@@ -92,21 +101,30 @@ public class InternalFrame extends JInternalFrame {
   }
 
 
-  /**
-   * @return <code>true</code> if there exists a GridControl or a Form panel within this that is in insert/edit mode, <code>false</code> otherwise
-   */
-  private boolean checkComponents(Component[] c) {
 
+  /**
+   * @return list of TreePanel/GridControl/Form objects within this that is in insert/edit mode and that contain changes, an empty list otherwise
+   */
+  public final ArrayList checkComponents() {
+    return checkComponents(this.getComponents());
+  }
+
+
+  /**
+   * @param c components to analize
+   * @return list of TreePanel/GridControl/Form objects within c components, that are in insert/edit mode and that contain changes, otherwise an empty list
+   */
+  private ArrayList checkComponents(Component[] c) {
+    ArrayList aux = new ArrayList();
     for(int i=0;i<c.length;i++) {
       if (c[i] instanceof GridControl) {
         c[i].transferFocus();
         if (((GridControl)c[i]).getMode()==Consts.INSERT)
-          return true;
+          aux.add(c[i]);
         if (((GridControl)c[i]).getMode()==Consts.EDIT &&
           ((GridControl)c[i]).getVOListTableModel().getChangedRowNumbers().length>0) {
-          return true;
+          aux.add(c[i]);
         }
-
       }
       else if (c[i] instanceof Form) {
         try {
@@ -124,45 +142,113 @@ public class InternalFrame extends JInternalFrame {
         }
         boolean changed = ((Form)c[i]).isChanged();
         if (((Form)c[i]).getMode()==Consts.INSERT && changed)
-          return true;
+          aux.add(c[i]);
         if (((Form)c[i]).getMode()==Consts.EDIT && changed)
-          return true;
+          aux.add(c[i]);
       }
       else if (c[i] instanceof TreePanel) {
-        if (((TreePanel)c[i]).isEnabled())
-          return true;
+        if (((TreePanel)c[i]).isChanged())
+          aux.add(c[i]);
       }
       else if (c[i] instanceof JScrollPane) {
-        if (checkComponents( ((JScrollPane)c[i]).getViewport().getComponents() ))
-          return true;
+        aux.addAll(checkComponents( ((JScrollPane)c[i]).getViewport().getComponents() ));
       }
       else if (c[i] instanceof Container) {
-        if (checkComponents( ((Container)c[i]).getComponents() ))
-          return true;
+        aux.addAll(checkComponents( ((Container)c[i]).getComponents() ));
       }
     }
-    return false;
+    return aux;
   }
+
+
+  /**
+   * Callback method invoked by "closeFrame" when internal frame contains changes and the user selects "yes" option on dialog about saving changes:
+   * If this method is not ovverrided, then "closeFrame" will attempt to automatically save each changed objects (Form, Grid, TreePanel)
+   * and this automation could be incorrect, in case of multiple objects to save in a specific order,
+   * if this is the case, then "saveChanges" method should be overrided, in order to specify a custom saving strategy.
+   * @return <code>true</code> if changes has been correctly saved, <code>false</code> otherwise, i.e. some error occours on saving data, so frame must NOT be closed; as default dehavior it throws an exception: UnsupportedOperationException, i.e. closeFrame method automatically attempts to save changes
+   */
+  public boolean saveChanges() {
+    throw new UnsupportedOperationException("No check performed");
+  }
+
+
+  /**
+   * Supports reporting constrained property changes.
+   * This method can be called when a constrained property has changed
+   * and it will send the appropriate <code>PropertyChangeEvent</code>
+   * to any registered <code>VetoableChangeListeners</code>.
+   *
+   * @param propertyName  the name of the property that was listened on
+   * @param oldValue  the old value of the property
+   * @param newValue  the new value of the property
+   * @exception PropertyVetoException when the attempt to set the
+   *		property is vetoed by the component
+   */
+  protected final void fireVetoableChange(String propertyName, Object oldValue, Object newValue)
+      throws java.beans.PropertyVetoException
+  {
+    if (IS_CLOSED_PROPERTY.equals(propertyName) && Boolean.FALSE.equals(oldValue) && Boolean.TRUE.equals(newValue)) {
+      throw new PropertyVetoException("",new PropertyChangeEvent(this,IS_CLOSED_PROPERTY,Boolean.TRUE,Boolean.FALSE));
+    }
+    else
+      super.fireVetoableChange(propertyName, oldValue, newValue);
+  }
+
 
 
   /**
    * This method is called when this window will be closed.
    * The first method calle is beforeCloseFrame; if this will return <code>false</code> then the closing window operation will be interrupted.
    */
-  public final void closeFrame() {
-    if (!beforeCloseFrame())
+  public final void closeFrame() throws PropertyVetoException {
+    if (!beforeCloseFrame()) {
       return;
+    }
     if (askBeforeClose) {
-      // check if this contains a GridControl or a Form panel in insert/edit mode...
-      if (checkComponents(this.getComponents())) {
+      // check if this contains a GridControl or a Form panel in insert/edit mode and they contain changes...
+      ArrayList changedObjects = checkComponents();
+      if (changedObjects.size()>0) {
         int res = OptionPane.showConfirmDialog(
           this,
-          "are you sure to close this window?",
+          "save changes?",
           "confirm window closing",
-          JOptionPane.YES_NO_OPTION
+          JOptionPane.YES_NO_CANCEL_OPTION
         );
-        if (res==JOptionPane.NO_OPTION)
+
+        if (res==JOptionPane.YES_OPTION) {
+          try {
+            boolean ok = saveChanges();
+            if (!ok) {
+              // save task contains errors: frame closing will be aborted...
+              return;
+            }
+          }
+          catch (UnsupportedOperationException ex1) {
+            // "saveChanged" method was not overrided:
+            // each changed object will be saved automatically
+            // NOTE: this automation could be incorrect, in case of multiple objects to save in a specific order,
+            //       if this is the case, then "saveChanges" method should be overrided, in order to specify a custom saving strategy
+            for(int i=0;i<changedObjects.size();i++) {
+              if (changedObjects.get(i) instanceof GridControl) {
+                if (!((GridControl)changedObjects.get(i)).save())
+                  return;
+              }
+              else if (changedObjects.get(i) instanceof Form) {
+                if (!((Form)changedObjects.get(i)).save()) {
+                  return;
+                }
+              }
+              else if (changedObjects.get(i) instanceof TreePanel) {
+                Logger.error(this.getClass().getName(), "closeFrame", "Error while saving TreePanel: you have to override 'saveChanges' method.",null);
+                return;
+              }
+            }
+          }
+        }
+        if (res==JOptionPane.CANCEL_OPTION) {
           return;
+        }
       }
     }
     try{
@@ -240,9 +326,19 @@ public class InternalFrame extends JInternalFrame {
    * Define if title bar must be hidden or showed
    * @param hideTitleBar flag used to hide/show title bar; <code>true</code> to hide title bar; <code>false</code> to show it
    */
+  public final boolean isHideTitleBar() {
+    return hideTitleBar;
+  }
+
+
+
+  /**
+   * Define if title bar must be hidden or showed
+   * @param hideTitleBar flag used to hide/show title bar; <code>true</code> to hide title bar; <code>false</code> to show it
+   */
   public final void setHideTitleBar(boolean hideTitleBar) {
     this.hideTitleBar = hideTitleBar;
-    if (hideTitleBar) {
+    if (hideTitleBar && !Beans.isDesignTime()) {
       super.setIconifiable(false);
       super.setMaximizable(false);
       lastNorthPane = ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).getNorthPane();

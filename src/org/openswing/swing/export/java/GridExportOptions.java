@@ -101,6 +101,9 @@ public class GridExportOptions extends ComponentExportOptions implements Seriali
   /** collection of pairs <attribute name, translation> */
   private Hashtable attributeDescriptions = null;
 
+  /** callbacks to invoke when exporting grid */
+  private GridExportCallbacks callbacks = null;
+
 
   /**
    * Method called by Grid.
@@ -313,39 +316,40 @@ public class GridExportOptions extends ComponentExportOptions implements Seriali
       Iterator it = filteredColumns.keySet().iterator();
       FilterWhereClause[] filter = null;
       String attr = null;
-      Object value = null;
+      Object val = null;
+      String aux = null;
       while(it.hasNext()) {
         attr = it.next().toString();
         filter = (FilterWhereClause[])filteredColumns.get(attr);
 
-        value = filter[0].getValue();
-        if(value==null)
-          value = "";
-        else if (value instanceof ArrayList) {
-          ArrayList list = (ArrayList)value;
-          value += "(";
+        val = filter[0].getValue();
+        if(val==null)
+          aux = "";
+        else if (val instanceof ArrayList) {
+          ArrayList list = (ArrayList)val;
+          aux = "(";
           for(int i=0;i<list.size();i++)
-            value += (list.get(i)==null?"":list.get(i))+",";
+            aux += (list.get(i)==null?"":list.get(i).toString())+",";
           if (list.size()>0)
-            value = value.toString().substring(0,value.toString().length()-1);
-          value += ")";
+            aux = aux.substring(0,aux.length()-1);
+          aux += ")";
         }
-        filters.add(attributeDescriptions.get(filter[0].getAttributeName())+" "+filter[0].getOperator()+value);
+        filters.add(attributeDescriptions.get(filter[0].getAttributeName())+" "+filter[0].getOperator()+" "+aux);
 
         if (filter[1]!=null) {
-          value = filter[1].getValue();
-          if(value==null)
-            value = "";
-          else if (value instanceof ArrayList) {
-            ArrayList list = (ArrayList)value;
-            value += "(";
+          val = filter[1].getValue();
+          if(val==null)
+            aux = "";
+          else if (val instanceof ArrayList) {
+            ArrayList list = (ArrayList)val;
+            aux = "(";
             for(int i=0;i<list.size();i++)
-              value += (list.get(i)==null?"":list.get(i))+",";
+              aux += (list.get(i)==null?"":list.get(i).toString())+",";
             if (list.size()>0)
-              value = value.toString().substring(0,value.toString().length()-1);
-            value += ")";
+              aux = aux.substring(0,aux.length()-1);
+            aux += ")";
           }
-          filters.add(attributeDescriptions.get(filter[1].getAttributeName())+" "+filter[1].getOperator()+value);
+          filters.add(attributeDescriptions.get(filter[1].getAttributeName())+" "+filter[1].getOperator()+" "+aux);
         }
       }
       return (String[])filters.toArray(new String[filters.size()]);
@@ -354,6 +358,22 @@ public class GridExportOptions extends ComponentExportOptions implements Seriali
       return null;
   }
 
+
+  /**
+   * @param callbacks callbacks to invoke when exporting grid
+   */
+  public final GridExportCallbacks getCallbacks() {
+    return callbacks;
+  }
+
+
+  /**
+   * Set callbacks callbacks to invoke when exporting grid.
+   * @param callbacks callbacks to invoke when exporting grid
+   */
+  public final void setCallbacks(GridExportCallbacks callbacks) {
+    this.callbacks = callbacks;
+  }
 
 
 }

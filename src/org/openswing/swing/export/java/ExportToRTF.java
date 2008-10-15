@@ -58,22 +58,17 @@ public class ExportToRTF {
   public byte[] getDocument(ExportOptions opt) throws Throwable {
 
 //    Document document = new Document(new Rectangle(total+30,PageSize.A4.height()));
-    Document document = new Document(new Rectangle(PageSize.A4.width(),PageSize.A4.height()));
+//    Document document = new Document(new Rectangle(PageSize.A4.width(),PageSize.A4.height()));
+    Document document = new Document();
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    RtfWriter2 w = RtfWriter2.getInstance(document,baos);
     document.open();
+
 
     Object obj = null;
     for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
       obj = opt.getComponentsExportOptions().get(i);
-      if (obj!=null) {
-        if (obj instanceof GridExportOptions)
-          prepareGrid(document,opt,(GridExportOptions)obj);
-        else if (obj instanceof ComponentExportOptions)
-          prepareGenericComponent(document,opt,(ComponentExportOptions)obj);
-        else
-          continue;
-        document.add(new Paragraph("\n"));
-      }
+      processComponent(null,0,document,opt,obj);
     }
 
 
@@ -82,7 +77,34 @@ public class ExportToRTF {
   }
 
 
-  private void prepareGenericComponent(Document document,ExportOptions exportOptions,ComponentExportOptions opt) throws Throwable {
+  private void processComponent(Table table,int parentTableCols,Document document,ExportOptions opt,Object obj) throws Throwable {
+    if (obj!=null) {
+      GridExportCallbacks callbacks = null;
+      if (obj instanceof GridExportOptions) {
+        callbacks = (GridExportCallbacks)((GridExportOptions)obj).getCallbacks();
+        if (callbacks!=null)
+          processComponent(table,parentTableCols,document,opt,callbacks.getHeaderComponent());
+        prepareGrid(table,parentTableCols,document,opt,(GridExportOptions)obj);
+        if (callbacks!=null)
+          processComponent(table,parentTableCols,document,opt,callbacks.getFooterComponent());
+      }
+      else if (obj instanceof ComponentExportOptions)
+        prepareGenericComponent(table,parentTableCols,document,opt,(ComponentExportOptions)obj);
+      else
+        return;
+
+      if (table!=null) {
+        Cell cell = new Cell(new Paragraph("\n"));
+//        cell.setColspan(parentTableCols);
+        table.addCell(cell);
+      }
+      else
+        document.add(new Paragraph("\n"));
+    }
+  }
+
+
+  private void prepareGenericComponent(Table parentTable,int parentTableCols,Document document,ExportOptions exportOptions,ComponentExportOptions opt) throws Throwable {
     if (opt.getCellsContent()==null ||
         opt.getCellsContent().length==0)
       return;
@@ -99,7 +121,7 @@ public class ExportToRTF {
     table.setWidths(headerwidths);
     table.setBorderWidth(2);
     table.setBorderColor(Color.black);
-    table.setGrayFill(0.75f);
+    table.setGrayFill(exportOptions.getExportToRTFAdapter().getHeaderGrayFill());
     table.setPadding(3);
 
     for(int i=0;i<opt.getCellsContent().length;i++) {
@@ -111,24 +133,31 @@ public class ExportToRTF {
           if (obj instanceof Date ||
                    obj instanceof java.util.Date ||
                    obj instanceof java.sql.Timestamp) {
-            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),exportOptions.getExportToRTFAdapter().getGenericComponentFont(i,j,obj)));
           }
           else {
-            table.addCell(new Phrase(obj.toString(),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(obj.toString(),exportOptions.getExportToRTFAdapter().getGenericComponentFont(i,j,obj)));
           }
         }
         else {
-          table.addCell(new Phrase("",new Font(Font.HELVETICA)));
+          table.addCell(new Phrase("",exportOptions.getExportToRTFAdapter().getGenericComponentFont(i,j,null)));
         }
 
       }
     }
 
-    document.add(table);
+    if (parentTable!=null) {
+      Cell c = new Cell(table);
+//      c.setColspan(parentTableCols);
+      parentTable.addCell(c);
+    }
+    else
+      document.add(table);
+
   }
 
 
-  private void prepareGrid(Document document,ExportOptions exportOptions,GridExportOptions opt) throws Throwable {
+  private void prepareGrid(Table parentTable,int parentTableCols,Document document,ExportOptions exportOptions,GridExportOptions opt) throws Throwable {
     // prepare vo getters methods...
     String methodName = null;
     String attributeName = null;
@@ -165,13 +194,13 @@ public class ExportToRTF {
     }
 
 //    Document document = new Document();
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    RtfWriter2 w = RtfWriter2.getInstance(document,baos);
-    document.open();
+//    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//    RtfWriter2 w = RtfWriter2.getInstance(document,baos);
+//    document.open();
 
     Paragraph line = null;
     if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
-      line = new Paragraph(opt.getTitle());
+      line = new Paragraph(opt.getTitle(),exportOptions.getExportToRTFAdapter().getFontTitle());
       line.setAlignment(Element.ALIGN_CENTER);
       document.add(line);
       document.add(new Paragraph(""));
@@ -190,12 +219,15 @@ public class ExportToRTF {
     table.setWidths(headerwidths);
     table.setBorderWidth(2);
     table.setBorderColor(Color.black);
-    table.setGrayFill(0.75f);
+    table.setGrayFill(exportOptions.getExportToRTFAdapter().getHeaderGrayFill());
     table.setPadding(3);
 
     Phrase cell = null;
     for(int i=0;i<opt.getExportColumns().size();i++) {
-      cell = new Phrase(opt.getExportColumns().get(i).toString(),new Font(Font.HELVETICA,Font.DEFAULTSIZE,Font.BOLD));
+      cell = new Phrase(
+        opt.getExportColumns().get(i).toString(),
+        exportOptions.getExportToRTFAdapter().getHeaderFont(opt.getExportAttrColumns().get(i).toString())
+      );
       table.addCell(cell);
     }
 //    table.setHeaderRows(1);
@@ -208,13 +240,17 @@ public class ExportToRTF {
       // create a row for each top rows...
       vo = opt.getTopRows().get(j);
       appendRow(
+        document,
+        exportOptions,
         table,
         vo,
         opt,
         gettersMethods,
         sdf,
         sdatf,
-        stf
+        stf,
+        j,
+        0
       );
     }
 
@@ -244,13 +280,17 @@ public class ExportToRTF {
         vo = ((VOListResponse)response).getRows().get(j);
 
         appendRow(
+          document,
+          exportOptions,
           table,
           vo,
           opt,
           gettersMethods,
           sdf,
           sdatf,
-          stf
+          stf,
+          rownum,
+          1
         );
 
         rownum++;
@@ -266,21 +306,35 @@ public class ExportToRTF {
 
     for(int j=0;j<opt.getBottomRows().size();j++) {
       // create a row for each bottom rows...
+      table.setGrayFill(exportOptions.getExportToRTFAdapter().getBottomRowsGrayFill(j));
       vo = opt.getBottomRows().get(j);
       appendRow(
+        document,
+        exportOptions,
         table,
         vo,
         opt,
         gettersMethods,
         sdf,
         sdatf,
-        stf
+        stf,
+        j,
+        2
       );
     }
 
 
 //    rtfTable.importTable(table,total);
-    document.add(table);
+    if (parentTable!=null) {
+      Cell c = new Cell(table);
+//      c.setColspan(parentTableCols);
+      parentTable.addCell(c);
+//      table.setCellsFitPage(true);
+//      parentTable.insertTable(table,new Point(parentTable.getNextRow()+1,0));
+
+    }
+    else
+      document.add(table);
 
 //    document.add(table);
   }
@@ -291,13 +345,17 @@ public class ExportToRTF {
    * @return current row to append
    */
   private void appendRow(
+    Document document,
+    ExportOptions exportOptions,
     Table table,
     Object vo,
     GridExportOptions opt,
     Hashtable gettersMethods,
     SimpleDateFormat sdf,
     SimpleDateFormat sdatf,
-    SimpleDateFormat stf
+    SimpleDateFormat stf,
+    int row,
+    int tableType // 0 = header, 1 = body, 2 = footer
   ) throws Throwable {
     int type;
     String aName = null;
@@ -356,25 +414,61 @@ public class ExportToRTF {
           type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
           if (type==opt.TYPE_DATE) {
 //                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(sdf.format((java.util.Date)obj),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(sdf.format((java.util.Date)obj),exportOptions.getExportToRTFAdapter().getRowFont(aName)));
           }
           else if (type==opt.TYPE_DATE_TIME) {
 //                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),exportOptions.getExportToRTFAdapter().getRowFont(aName)));
           }
           else if (type==opt.TYPE_TIME) {
 //                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(stf.format((java.util.Date)obj),new Font(Font.HELVETICA)));
+            table.addCell(new Phrase(stf.format((java.util.Date)obj),exportOptions.getExportToRTFAdapter().getRowFont(aName)));
           }
         }
         else {
 //              table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-          table.addCell(new Phrase(obj.toString(),new Font(Font.HELVETICA)));
+          table.addCell(new Phrase(obj.toString(),exportOptions.getExportToRTFAdapter().getRowFont(aName)));
         }
       }
       else {
-        table.addCell(new Phrase("",new Font(Font.HELVETICA)));
+        table.addCell(new Phrase("",exportOptions.getExportToRTFAdapter().getRowFont(aName)));
       }
+    }
+
+    if (opt.getCallbacks()!=null) {
+      if (tableType==0)
+        processComponent(
+          table,
+          opt.getExportColumns().size(),
+          document,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInHeader(
+            (ValueObject)vo,
+            row
+          )
+        );
+      else if (tableType==1)
+        processComponent(
+          table,
+          opt.getExportColumns().size(),
+          document,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRow(
+            (ValueObject)vo,
+            row
+          )
+        );
+      else if (tableType==2)
+        processComponent(
+          table,
+          opt.getExportColumns().size(),
+          document,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInFooter(
+            (ValueObject)vo,
+            row
+          )
+        );
     }
   }
 

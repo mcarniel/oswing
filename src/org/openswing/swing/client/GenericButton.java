@@ -140,7 +140,7 @@ public class GenericButton extends JButton {
   /**
    * Fire event for all data controller listeners.
    */
-  private void execute() {
+  public final void execute() {
     try {
       for (int i = 0; i < dataControllerList.size(); i++) {
         executeOperation( (DataController) dataControllerList.get(i));

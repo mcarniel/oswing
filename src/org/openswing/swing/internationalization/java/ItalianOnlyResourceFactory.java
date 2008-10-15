@@ -196,8 +196,10 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Operation in progress...","Elaborazione in corso...");
     dictionary.setProperty("close window","Chiudi finestra");
     dictionary.setProperty("reduce to icon","Riduci ad icona");
-    dictionary.setProperty("are you sure to close this window?","Conferma chiusura finestra?\nLe modifiche apportate saranno perse.");
+    dictionary.setProperty("save changes?", "Salvare i cambiamenti?");
     dictionary.setProperty("confirm window closing","Conferma chiusura finestra");
+    dictionary.setProperty("change background","Cambio immagine di sfondo");
+    dictionary.setProperty("reset background","Riprina sfondo predefinito");
 
     dictionary.setProperty("switch","Passa a");
     dictionary.setProperty("switchmnemonic","P");

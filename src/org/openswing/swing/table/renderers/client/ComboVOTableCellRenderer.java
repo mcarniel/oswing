@@ -140,6 +140,20 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
   }
 
 
+  /**
+   * Method used to reload items in combo-box.
+   */
+  public final void reloadItems() {
+    if (itemsDataLocator!=null && itemsVO!=null) {
+      Response res = itemsDataLocator.loadData(itemsVO.getClass());
+      if (!res.isError()) {
+        items = ((VOListResponse)res).getRows();
+        repaint();
+      }
+    }
+  }
+
+
   public Component getTableCellRendererComponent(JTable table, Object value,
                           boolean isSelected, boolean hasFocus, int row, int column) {
     if (defaultFont==null)

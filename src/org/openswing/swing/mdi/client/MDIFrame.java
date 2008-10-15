@@ -116,7 +116,7 @@ public class MDIFrame extends JFrame implements BusyListener {
       menuWindow.init();
       menuWindow.menuWindowCloseAll_actionPerformed(null);
       enableEvents(AWTEvent.WINDOW_EVENT_MASK);
-      desktopPane.init();
+      desktopPane.init(client);
       winIconsPanel.init();
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       setSize(screenSize);

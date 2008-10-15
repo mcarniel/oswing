@@ -171,6 +171,9 @@ public class LookupController {
   /** define if an export button has to be added on top of the lookup grid; default value: <code>false</code> */
   private boolean gridExportButton = false;
 
+  /** combo-box filters to apply to column headers */
+  private HashMap comboFilters = new HashMap();
+
 
   /**
    * Execute the code validation.
@@ -542,6 +545,7 @@ public class LookupController {
           false,
           false,
           null,
+          comboFilters,
           ClientSettings.HEADER_HEIGHT,
           Grid.MAIN_GRID
       );
@@ -682,6 +686,7 @@ public class LookupController {
           false,
           false,
           null,
+          comboFilters,
           ClientSettings.HEADER_HEIGHT,
           Grid.MAIN_GRID
       );
@@ -1559,6 +1564,29 @@ public class LookupController {
   public final void setGridCopyButton(boolean gridCopyButton) {
     this.gridCopyButton = gridCopyButton;
   }
+
+
+  /**
+   * Remove a combo-box filter for the specified column.
+   * @param attributeName attribute name that identifies the column having a filter to remove
+   */
+  public final void addComboFilter(String attributeName,ListFilterController filter) {
+    comboFilters.put(attributeName,filter);
+  }
+
+
+  /**
+   * Remove a combo-box filter for the specified column.
+   * @param attributeName attribute name that identifies the column having a filter to remove
+   */
+  public final void removeComboFilter(String attributeName) {
+    comboFilters.remove(attributeName);
+  }
+
+
+
+
+
 
 
   /**

@@ -62,70 +62,39 @@ public class ExportOptions implements Serializable {
   /** list of ComponentExportOptions objects, related to descriptors for exporting data */
   private ArrayList componentsExportOptions = new ArrayList();
 
+  /** export to PDF adapter */
+  private ExportToPDFAdapter exportToPDFAdapter = new ExportToPDFAdapter();
+
+  /** export to RTF adapter */
+  private ExportToRTFAdapter exportToRTFAdapter = new ExportToRTFAdapter();
+
 
   /**
    * Method called by Grid.
-   * @param exportColumns columns to export
-   * @param exportAttrColumns attribute names related to the columns to export
-   * @param filteredColumns  filtered columns; collection of pairs: attributeName, FilterWhereClause[2]
-   * @param currentSortedColumns sorted columns
-   * @param currentSortedVersusColumns ordering versus of sorted columns
-   * @param otherGridParams other grid parameters
-   * @param maxRows maximum number of rows to export
-   * @param valueObjectType v.o. type
-   * @param gridDataLocator grid data locator
-   * @param columnsWidth columns width
-   * @param columnsType columns type
-   * @param attributeDescriptions collection of pairs <attribute name, translation>
+   * @param gridOpts grid export options
    * @param dateFormat date format
    * @param timeFormat time format
    * @param dateTimeFormat date+time format
    * @param exportType export format
-   * @param topRows list of locked rows at the top of the grid
-   * @param bottomRows list of locked rows at the bottom of the grid
+   * @param export to PDF adapter
+   * @param export to RTF adapter
    */
   public ExportOptions(
-      ArrayList exportColumns,
-      ArrayList exportAttrColumns,
-      Map filteredColumns,
-      ArrayList currentSortedColumns,
-      ArrayList currentSortedVersusColumns,
-      Map otherGridParams,
-      int maxRows,
-      Class valueObjectType,
-      GridDataLocator gridDataLocator,
-      Hashtable columnsWidth,
-      Hashtable columnsType,
-      Hashtable attributeDescriptions,
+      GridExportOptions gridOpts,
       String dateFormat,
       String timeFormat,
       String dateTimeFormat,
       String exportType,
-      ArrayList topRows,
-      ArrayList bottomRows
+      ExportToPDFAdapter exportToPDFAdapter,
+      ExportToRTFAdapter exportToRTFAdapter
    ) {
-    this.componentsExportOptions.add(
-      new GridExportOptions(
-        exportColumns,
-        exportAttrColumns,
-        filteredColumns,
-        currentSortedColumns,
-        currentSortedVersusColumns,
-        otherGridParams,
-        maxRows,
-        valueObjectType,
-        gridDataLocator,
-        columnsWidth,
-        columnsType,
-        attributeDescriptions,
-        topRows,
-        bottomRows
-      )
-    );
+    this.componentsExportOptions.add(gridOpts);
     this.dateFormat = dateFormat;
     this.timeFormat = timeFormat;
     this.dateTimeFormat = dateTimeFormat;
     this.exportType = exportType;
+    this.exportToPDFAdapter = exportToPDFAdapter;
+    this.exportToRTFAdapter = exportToRTFAdapter;
   }
 
 
@@ -173,6 +142,22 @@ public class ExportOptions implements Serializable {
    */
   public final void addComponentExportOptions(ComponentExportOptions options) {
     this.componentsExportOptions.add(options);
+  }
+
+
+  /**
+   * @return adapter for exporting to PDF format
+   */
+  public final ExportToPDFAdapter getExportToPDFAdapter() {
+    return exportToPDFAdapter;
+  }
+
+
+  /**
+   * @return adapter for exporting to RTF format
+   */
+  public final ExportToRTFAdapter getExportToRTFAdapter() {
+    return exportToRTFAdapter;
   }
 
 

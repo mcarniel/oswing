@@ -44,6 +44,7 @@ public class CheckBoxListControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _selectionBackground = new PropertyDescriptor("selectionBackground", beanClass, "getSelectionBackground", "setSelectionBackground");
       PropertyDescriptor _selectionForeground = new PropertyDescriptor("selectionForeground", beanClass, "getSelectionForeground", "setSelectionForeground");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
+      PropertyDescriptor _translateItemDescriptions = new PropertyDescriptor("translateItemDescriptions", beanClass, "isTranslateItemDescriptions", "setTranslateItemDescriptions");
       PropertyDescriptor _valueIsAdjusting = new PropertyDescriptor("valueIsAdjusting", beanClass, "getValueIsAdjusting", "setValueIsAdjusting");
       PropertyDescriptor _visibleRowCount = new PropertyDescriptor("visibleRowCount", beanClass, "getVisibleRowCount", "setVisibleRowCount");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
@@ -64,6 +65,7 @@ public class CheckBoxListControlBeanInfo extends SimpleBeanInfo {
         _selectionBackground,
         _selectionForeground,
         _selectionMode,
+        _translateItemDescriptions,
         _valueIsAdjusting,
         _visibleRowCount,
         _toolTipText};

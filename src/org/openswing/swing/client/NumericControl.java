@@ -90,9 +90,9 @@ public class NumericControl extends BaseInputControl implements InputControl {
 //    this.add(numBox, java.awt.BorderLayout.CENTER);
 
 
-    String s = ""; for(int i=0;i<numBox.getColumns();i++) s+= "0";
+    StringBuffer s = new StringBuffer(numBox.getColumns()); for(int i=0;i<numBox.getColumns();i++) s.append("0");
     setMinimumSize(new Dimension(
-      numBox.getFontMetrics(numBox.getFont()).stringWidth(s),
+      numBox.getFontMetrics(numBox.getFont()).stringWidth(s.toString()),
       numBox.getPreferredSize().height
     ));
 
@@ -452,9 +452,9 @@ public class NumericControl extends BaseInputControl implements InputControl {
   public final void setColumns(int columns) {
     numBox.setColumns(columns);
 
-    String s = ""; for(int i=0;i<numBox.getColumns();i++) s+= "0";
+    StringBuffer s = new StringBuffer(numBox.getColumns()); for(int i=0;i<numBox.getColumns();i++) s.append("0");
     setMinimumSize(new Dimension(
-      numBox.getFontMetrics(numBox.getFont()).stringWidth(s),
+      numBox.getFontMetrics(numBox.getFont()).stringWidth(s.toString()),
       numBox.getPreferredSize().height
     ));
   }

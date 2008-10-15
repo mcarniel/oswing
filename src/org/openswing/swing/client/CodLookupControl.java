@@ -108,9 +108,9 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
     codBox.setContainer(this);
     codBox.setColumns(10);
 
-    String s = ""; for(int i=0;i<getMaxCharacters();i++) s+= "0";
+    StringBuffer s = new StringBuffer(getMaxCharacters()); for(int i=0;i<getMaxCharacters();i++) s.append("0");
     setMinimumSize(new Dimension(
-      getFontMetrics(getFont()).stringWidth(s)+lookupButton.getPreferredSize().width,
+      getFontMetrics(getFont()).stringWidth(s.toString())+lookupButton.getPreferredSize().width,
       getPreferredSize().height
     ));
 
@@ -211,9 +211,9 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
   public final void setMaxCharacters(int maxCharacters) {
     this.codBox.setMaxCharacters(maxCharacters);
 
-    String s = ""; for(int i=0;i<getMaxCharacters();i++) s+= "0";
+    StringBuffer s = new StringBuffer(getMaxCharacters()); for(int i=0;i<getMaxCharacters();i++) s.append("0");
     setMinimumSize(new Dimension(
-      getFontMetrics(getFont()).stringWidth(s)+lookupButton.getPreferredSize().width,
+      getFontMetrics(getFont()).stringWidth(s.toString())+lookupButton.getPreferredSize().width,
       getPreferredSize().height
     ));
 

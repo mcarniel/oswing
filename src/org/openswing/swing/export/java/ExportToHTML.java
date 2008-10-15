@@ -39,6 +39,8 @@ import org.openswing.swing.message.send.java.*;
  */
 public class ExportToHTML {
 
+  private static final String newline = System.getProperty("line.separator");
+
 
   public ExportToHTML() {
   }
@@ -49,7 +51,6 @@ public class ExportToHTML {
    * @return Excel document, as byte array
    */
   public byte[] getDocument(ExportOptions opt) throws Throwable {
-    String newline = System.getProperty("line.separator");
 
     StringBuffer sb = new StringBuffer("");
     sb.append("<HTML><HEAD><TITLE></TITLE></HEAD>").append(newline);
@@ -59,17 +60,7 @@ public class ExportToHTML {
     Object obj = null;
     for(int i=0;i<opt.getComponentsExportOptions().size();i++) {
       obj = opt.getComponentsExportOptions().get(i);
-      if (obj!=null) {
-        if (obj instanceof GridExportOptions)
-          prepareGrid(sb,opt,(GridExportOptions)obj);
-        else if (obj instanceof ComponentExportOptions)
-          prepareGenericComponent(sb,opt,(ComponentExportOptions)obj);
-        else
-          continue;
-
-        sb.append("<br/>"+newline);
-        sb.append(newline);
-      }
+      processComponent(sb,opt,obj);
     }
 
     sb.append("</BODY>").append(newline).append("</HTML>").append(newline);
@@ -78,11 +69,32 @@ public class ExportToHTML {
   }
 
 
+  private void processComponent(StringBuffer sb,ExportOptions exportOptions,Object obj) throws Throwable {
+    if (obj!=null) {
+      GridExportCallbacks callbacks = null;
+      if (obj instanceof GridExportOptions) {
+        callbacks = (GridExportCallbacks)((GridExportOptions)obj).getCallbacks();
+        if (callbacks!=null)
+          processComponent(sb,exportOptions,callbacks.getHeaderComponent());
+        prepareGrid(sb,exportOptions,(GridExportOptions)obj);
+        if (callbacks!=null)
+          processComponent(sb,exportOptions,callbacks.getFooterComponent());
+      }
+      else if (obj instanceof ComponentExportOptions)
+        prepareGenericComponent(sb,exportOptions,(ComponentExportOptions)obj);
+      else
+        return;
+
+      sb.append("<br/>"+newline);
+      sb.append(newline);
+    }
+  }
+
+
   private void prepareGenericComponent(StringBuffer sb,ExportOptions exportOptions,ComponentExportOptions opt) throws Throwable {
     Object[] row = null;
     Object obj = null;
     SimpleDateFormat sdatf = new SimpleDateFormat(exportOptions.getDateTimeFormat());
-    String newline = System.getProperty("line.separator");
     sb.append("<TABLE BORDER=0>").append(newline);
 
     if (opt.getCellsContent()!=null)
@@ -181,6 +193,7 @@ public class ExportToHTML {
       // create a row for each top rows...
       vo = opt.getTopRows().get(j);
       appendRow(
+        exportOptions,
         sb,
         vo,
         opt,
@@ -188,7 +201,9 @@ public class ExportToHTML {
         sdf,
         sdatf,
         stf,
-        newline
+        newline,
+        j,
+        0
       );
     }
 
@@ -212,6 +227,7 @@ public class ExportToHTML {
         vo = ((VOListResponse)response).getRows().get(j);
 
         appendRow(
+          exportOptions,
           sb,
           vo,
           opt,
@@ -219,7 +235,9 @@ public class ExportToHTML {
           sdf,
           sdatf,
           stf,
-          newline
+          newline,
+          rownum,
+          1
         );
 
         rownum++;
@@ -236,6 +254,7 @@ public class ExportToHTML {
       // create a row for each bottom rows...
       vo = opt.getBottomRows().get(j);
       appendRow(
+        exportOptions,
         sb,
         vo,
         opt,
@@ -243,7 +262,9 @@ public class ExportToHTML {
         sdf,
         sdatf,
         stf,
-        newline
+        newline,
+        j,
+        2
       );
     }
 
@@ -257,6 +278,7 @@ public class ExportToHTML {
    * @return current row to append
    */
   private void appendRow(
+    ExportOptions exportOptions,
     StringBuffer sb,
     Object vo,
     GridExportOptions opt,
@@ -264,7 +286,9 @@ public class ExportToHTML {
     SimpleDateFormat sdf,
     SimpleDateFormat sdatf,
     SimpleDateFormat stf,
-    String newline
+    String newline,
+    int rownum,
+    int tableType
   ) throws Throwable {
     int type;
     String aName = null;
@@ -337,6 +361,44 @@ public class ExportToHTML {
         sb.append("\t<TD bgcolor=E8E8E8>&nbsp;</TD>").append(newline);
     }
     sb.append("</TR>").append(newline);
+
+    if (opt.getCallbacks()!=null) {
+      if (tableType==0) {
+        processComponent(
+          sb,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInHeader(
+            (ValueObject)vo,
+            rownum
+          )
+        );
+      }
+      else if (tableType==1) {
+        ComponentExportOptions compOpts = opt.getCallbacks().getComponentPerRow(
+          (ValueObject)vo,
+          rownum
+        );
+        if (compOpts!=null) {
+          sb.append("<TR><TD COLSPAN='").append(opt.getExportColumns().size()).append("'>").append(newline);
+          processComponent(
+            sb,
+            exportOptions,
+            compOpts
+          );
+          sb.append("</TD></TR>").append(newline);
+        }
+      }
+      else if (tableType==2) {
+        processComponent(
+          sb,
+          exportOptions,
+          opt.getCallbacks().getComponentPerRowInFooter(
+            (ValueObject)vo,
+            rownum
+          )
+        );
+      }
+    }
   }
 
 

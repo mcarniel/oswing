@@ -12,6 +12,10 @@ import org.openswing.swing.domains.java.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.table.client.ListFilterController;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.message.send.java.FilterWhereClause;
+
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -81,6 +85,27 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
     /** default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
     private int defaultQuickFilterCriteria;
 
+    /** combo-box filter to apply to column headers (optional) */
+    private ListFilterController comboFilterController = null;
+
+    /** filtering button icon */
+    private Icon listIcon = new ImageIcon(ClientUtils.getImage(ClientSettings.LIST_FILTER_BUTTON));
+
+    /** list button */
+    private JButton listButton = null;
+
+    /** domain to bind to checkbox list control to show when pressing combo button (optional)  */
+    private Domain listControlDomain = null;
+
+    /** used to show/hide checkbox list control (optional) */
+    private boolean showListControl = false;
+
+    /** checkbox list control (optional) */
+    private CheckBoxListControl checkBoxListControl = new CheckBoxListControl();
+
+    /** current applied filter */
+    private FilterWhereClause[] filter = null;
+
 
     /**
      * Costructor called by Grid object.
@@ -91,12 +116,18 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
      * @param initValue initial value to set into the filter
      */
     public QuickFilterPanel(
+        ListFilterController comboFilterController,
         int defaultQuickFilterCriteria,
         QuickFilterListener filterListener,
-        int filterType,Column colProperties,Object initValue) {
+        int filterType,
+        Column colProperties,
+        FilterWhereClause[] filter,
+        Object initValue) {
+      this.comboFilterController = comboFilterController;
       this.filterListener=filterListener;
       this.filterType=filterType;
       this.defaultQuickFilterCriteria = defaultQuickFilterCriteria;
+      this.filter = filter;
 
       ApplicationEventQueue.getInstance().addKeyListener(this);
 
@@ -169,8 +200,96 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         }
       });
 
+
+      listButton=new JButton(listIcon) {
+
+        /**
+         * Method available in java 1.5
+         */
+        protected void processMouseEvent(MouseEvent e) {
+          if (e.getID()==e.MOUSE_CLICKED)
+            showComboBoxFilter();
+        }
+
+      };
+
+      listButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          showComboBoxFilter();
+        }
+      });
+
       setFilterConfig(filterType,colProperties,initValue);
 
+      if (comboFilterController!=null &&
+          filter!=null &&
+          filter[1]==null &&
+          filter[0].getValue()!=null &&
+          filter[0].getValue() instanceof java.util.List) {
+        java.util.List values = (java.util.List)filter[0].getValue();
+        showComboBoxFilter();
+        checkBoxListControl.setValue(values);
+      }
+    }
+
+
+    /**
+     * Show list filter for the specified column.
+     */
+    private void showComboBoxFilter() {
+
+      if (listControlDomain==null) {
+        if (colProperties.getColumnType()==Column.TYPE_COMBO) {
+          listControlDomain = ((ComboColumn)colProperties).getDomain();
+        }
+        else {
+          // load data to fill in list domain...
+          Response res = comboFilterController.getListControlValues(attributeName);
+          if (res.isError()) {
+            OptionPane.showMessageDialog(
+                ClientUtils.getParentFrame(this),
+                ClientSettings.getInstance().getResources().getResource("Error while loading data")+":\n"+res.getErrorMessage(),
+                ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
+                JOptionPane.ERROR_MESSAGE
+            );
+            return;
+          }
+          else {
+            ArrayList rows = ((VOListResponse)res).getRows();
+            listControlDomain = new Domain("DOMAIN_LIST_FILTER_"+attributeName);
+            for(int i=0;i<rows.size();i++)
+              listControlDomain.addDomainPair(rows.get(i),rows.get(i).toString());
+          }
+          checkBoxListControl.setTranslateItemDescriptions(false);
+        }
+        checkBoxListControl.setDomain(listControlDomain);
+      }
+
+      if (!showListControl) {
+        showListControl = true;
+        this.add(checkBoxListControl,             new GridBagConstraints(0, 0, 4, 1, 1.0, 1.0
+          ,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(2, 0, 0, 0), 0, 0));
+        this.remove(label1);
+        this.remove(label2);
+        this.remove(rangeButton);
+        this.remove(value1);
+        this.remove(value2);
+        this.remove(opTypeScrollPane);
+        if (parentPopup!=null) {
+          parentPopup.setVisible(false);
+          parentPopup.setVisible(true);
+        }
+      }
+      else {
+        showListControl = false;
+        layoutComponents();
+        if (parentPopup!=null) {
+          parentPopup.setVisible(false);
+          parentPopup.setVisible(true);
+        }
+        if (!value1.hasFocus())
+          value1.requestFocus();
+      }
     }
 
 
@@ -462,28 +581,34 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
      */
     private void layoutComponents() {
       this.removeAll();
-      this.add(label1,       new GridBagConstraints(0, 0, 1, 1, 10.0, 0.0
+      this.add(label1,       new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0
               ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 2, 0, 0), 0, 0));
-      this.add(label2,      new GridBagConstraints(0, 1, 1, 1, 10.0, 0.0
+      this.add(label2,      new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0
               ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 2, 0, 0), 0, 0));
       opType.setVisibleRowCount(1);
+      opTypeScrollPane.getViewport().removeAll();
       opTypeScrollPane.getViewport().add(opType);
 
       if (colProperties.getColumnType()==Column.TYPE_LOOKUP ||
           colProperties.getColumnType()==Column.TYPE_TEXT)
         this.add(opTypeScrollPane,        new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
               ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 0, 0), 0, 0));
-      this.add(value1,        new GridBagConstraints(2, 0, 1, 1, 70.0, 0.0
+      this.add(value1,        new GridBagConstraints(2, 0, 1, 1, 1.0, 0.0
               ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 0, 0), 0, 0));
-      this.add(value2,      new GridBagConstraints(2, 1, 1, 1, 70.0, 0.0
+      this.add(value2,      new GridBagConstraints(2, 1, 1, 1, 1.0, 0.0
               ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 0, 0), 0, 0));
       this.add(rangeButton,             new GridBagConstraints(3, 0, 1, 1, 10.0, 0.0
               ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
-      this.add(filterButton,       new GridBagConstraints(4, 0, 1, 1, 10.0, 0.0
-              ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
+
+      if (comboFilterController!=null) {
+        this.add(listButton,       new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0
+                ,GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
+      }
+
+      this.add(filterButton,       new GridBagConstraints(5, 0, 1, 1, 1.0, 0.0
+              ,GridBagConstraints.NORTH, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
 
       opTypeScrollPane.getVerticalScrollBar().addAdjustmentListener(new ListAdjustmentListener(opType));
-
     }
 
 
@@ -511,6 +636,13 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
       filterButton.setMaximumSize(new Dimension(20, 20));
       filterButton.setBorderPainted(false);
       filterButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+      listButton.setContentAreaFilled(false);
+      listButton.setPreferredSize(new Dimension(20, 20));
+      listButton.setMinimumSize(new Dimension(20, 20));
+      listButton.setMaximumSize(new Dimension(20, 20));
+      listButton.setBorderPainted(false);
+      listButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       layoutComponents();
       updateComponents();
@@ -614,6 +746,11 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
      * @return value of the input field
      */
     private Object getValue(JComponent value) {
+      if (showListControl) {
+        return checkBoxListControl.getValue();
+      }
+
+
       Object result=null;
       if (domain!=null) {
         int idx= ((JList)((JScrollPane)value).getViewport().getComponent(0)).getSelectedIndex();
@@ -690,6 +827,10 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
 
 
     public Object getValue2() {
+      if (showListControl) {
+        return null;
+      }
+
       Object result=getValue(value2);
       if (result instanceof Date) {
         Calendar c=GregorianCalendar.getInstance();

@@ -180,7 +180,7 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       dictionary.setProperty("Operation in progress...", "Processamento em curso...");
       dictionary.setProperty("close window", "Fecha janela");
       dictionary.setProperty("reduce to icon", "Iconiza");
-      dictionary.setProperty("are you sure to close this window?", "Tem certeza de fechar a janela?");
+      dictionary.setProperty("save changes?", "Confirma alterações?");
       dictionary.setProperty("confirm window closing", "Confirma fechamento da janela");
       dictionary.setProperty("switch", "Trocar");
       dictionary.setProperty("switchmnemonic", "T");
@@ -196,6 +196,8 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       dictionary.setProperty("minimizemnemonic", "R");
       dictionary.setProperty("minimize all", "Minimizar tudo");
       dictionary.setProperty("minimizeallmnemonic", "T");
+      dictionary.setProperty("change background","Change background");
+      dictionary.setProperty("reset background","Reset background");
       // server...
       dictionary.setProperty("Client request not supported", "Requisição não suportada");
       dictionary.setProperty("User disconnected", "Usuário desconectado");
