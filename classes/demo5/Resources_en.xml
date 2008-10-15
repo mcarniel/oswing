@@ -125,6 +125,8 @@
   <object key="Operation in progress..." value= "Work in progress..." />
   <object key="close window" value="Close Window" />
   <object key="reduce to icon" value="Reduce to icon" />
+  <object key="save changes?" value="Save changes?" />
+  <object key="confirm window closing" value="Window closing confirmation" />
 
   <object key="switch" value="Switch" />
   <object key="switchmnemonic" value="S" />
@@ -140,7 +142,8 @@
   <object key="minimizemnemonic" value="M" />
   <object key="minimize all" value="Minimize all" />
   <object key="minimizeallmnemonic" value="A" />
-
+  <object key="change background" value="Change background" />
+  <object key="change background" value="Restore default background" />
 
 <!-- select/deselect all -->
   <object key="select all" value="Select all" />

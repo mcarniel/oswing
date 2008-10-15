@@ -124,7 +124,9 @@
   <object key="Operation in progress..." value= "Elaborazione in corso..." />
   <object key="close window" value="Chiudi Finestra" />
   <object key="reduce to icon" value="Reduci ad icona" />
-
+  <object key="save changes?" value="Salvare i cambiamenti?" />
+  <object key="confirm window closing" value="Conferma chiusura finestra" />
+  
   <object key="switch" value="Passa a" />
   <object key="switchmnemonic" value="P" />
   <object key="window name" value="Nome finestra" />
@@ -139,7 +141,8 @@
   <object key="minimizemnemonic" value="I" />
   <object key="minimize all" value="Riduci tutte le finestre ad icona" />
   <object key="minimizeallmnemonic" value="T" />
-
+  <object key="change background" value="Cambio immagine di sfondo" />
+  <object key="change background" value="Ripristina sfondo predefinito" />
 
 <!-- select/deselect all -->
   <object key="select all" value="Seleziona tutto" />
