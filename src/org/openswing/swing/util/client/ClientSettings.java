@@ -142,6 +142,9 @@ public class ClientSettings {
   /** border color of the grid that currently doesn't has the focus */
   public static Color GRID_NO_FOCUS_BORDER = Color.lightGray;
 
+  /** flag used to show current page number in grid; default value: <code>true</code> */
+  public static boolean SHOW_PAGE_NUMBER_IN_GRID = true;
+
   /** increment to use for grid scrolling; default value: Consts.GRID_SCROLL_BLOCK_INCREMENT_PAGE; possible values: Consts.GRID_SCROLL_BLOCK_INCREMENT_ROW,Consts.GRID_SCROLL_BLOCK_INCREMENT_PAGE */
   public static int GRID_SCROLL_BLOCK_INCREMENT = Consts.GRID_SCROLL_BLOCK_INCREMENT_PAGE;
 

@@ -84,8 +84,11 @@ public class MDIFrame extends JFrame implements BusyListener {
   /** flag used to check if toolbar has been added to main panel */
   private boolean toolbarAdded = false;
 
-  /** collection of pairs <functionId,related JMenu> */
+  /** collection of pairs <functionId,related JMenuItem> */
   private Hashtable functionsHooks = new Hashtable();
+
+  /** collection of pairs <functionId,related JMenu> */
+  private Hashtable functionsMenuHooks = new Hashtable();
 
   /** collection of pairs <component name,JComponent added to the status bar> */
   private static Hashtable componentsHooks = new Hashtable();
@@ -346,8 +349,10 @@ public class MDIFrame extends JFrame implements BusyListener {
           }
         });
 
-        if (function.getFunctionId()!=null&& !function.getFunctionId().trim().equals(""))
+        if (function.getFunctionId()!=null&& !function.getFunctionId().trim().equals("")) {
           functionsHooks.put(function.getFunctionId(),menu);
+          functionsMenuHooks.put(function.getFunctionId(),parentMenu);
+        }
       } else {
         menu = new JMenu(function.toString());
       }
@@ -744,6 +749,27 @@ public class MDIFrame extends JFrame implements BusyListener {
   public final JMenuItem getMenuItem(String functionId) {
     return (JMenuItem)functionsHooks.get(functionId);
   }
+
+
+  /**
+   * Add a separator between the top menu item identifier and bottom menu item identifier, ONLY IF they are both visible.
+   * @param topFunctionId menu item identifier that is before the separator to add
+   * @param bottomFunctionId menu item identifier that is after the separator to add
+   */
+  public final void addSeparatorToMenuBar(String topFunctionId,String bottomFunctionId) {
+    JMenuItem topMenuItem = getMenuItem(topFunctionId);
+    JMenu topMenu = (JMenu)functionsMenuHooks.get(topFunctionId);
+    JMenu bottomMenu = (JMenu)functionsMenuHooks.get(bottomFunctionId);
+
+    if (topMenu!=null && bottomMenu!=null) {
+      for(int i=0;i<topMenu.getMenuComponentCount();i++)
+        if (topMenu.getMenuComponent(i).equals(topMenuItem)) {
+          topMenu.insertSeparator(i + 1);
+          break;
+        }
+    }
+  }
+
 
 
   /**

@@ -11,7 +11,12 @@ import org.openswing.swing.util.client.*;
 /**
  * <p>Title: OpenSwing Framework</p>
  * <p>Description: Grid Status Panel, viewed at the bottom of the grid (the panel is optional).
- * It shows current selected rows and (optionally) the current applied grid profile.</p>
+ * It shows:
+ * - current selected rows
+ * - current page number (only in case loading one page per time)
+ * - total number of pages (optionally)
+ * - current applied grid profile (optionally)
+ * </p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -42,6 +47,9 @@ public class GridStatusPanel extends JPanel {
   /** text contained in the status panel */
   private JLabel statusLabel = new JLabel();
 
+  /** text contained in page panel */
+  private JLabel pageLabel = new JLabel();
+
   /** applied grid profile */
   private JLabel profileLabel = new JLabel();
 
@@ -50,6 +58,9 @@ public class GridStatusPanel extends JPanel {
 
   /** applied grid profile panel */
   private JLabel profilePanel = new JLabel();
+
+  /** page panel */
+  private JLabel pagePanel = new JLabel();
 
 
   public GridStatusPanel() {
@@ -68,7 +79,21 @@ public class GridStatusPanel extends JPanel {
     statusPanel.setLayout(new BorderLayout());
     statusPanel.add(statusLabel, BorderLayout.CENTER);
     statusPanel.setBorder(border);
-    this.add(statusPanel, BorderLayout.CENTER);
+    if (!ClientSettings.SHOW_PAGE_NUMBER_IN_GRID)
+      this.add(statusPanel, BorderLayout.CENTER);
+    else {
+      this.add(statusPanel, BorderLayout.WEST);
+      statusPanel.setMinimumSize(new Dimension(170,statusPanel.getHeight()));
+      statusPanel.setPreferredSize(new Dimension(170,statusPanel.getHeight()));
+      Border border2 = BorderFactory.createLoweredBevelBorder();
+      pagePanel.setLayout(new BorderLayout());
+      pagePanel.setMinimumSize(new Dimension(100,statusPanel.getHeight()));
+      pagePanel.setPreferredSize(new Dimension(100,statusPanel.getHeight()));
+      pagePanel.add(pageLabel, BorderLayout.CENTER);
+      pagePanel.setBorder(border2);
+      this.add(pagePanel, BorderLayout.CENTER);
+      pageLabel.setText(" ");
+    }
 
     if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null) {
       Border border2 = BorderFactory.createLoweredBevelBorder();
@@ -90,6 +115,15 @@ public class GridStatusPanel extends JPanel {
    */
   public final void setText(String text) {
     statusLabel.setText(text);
+  }
+
+
+  /**
+   * Set the text on the page panel
+   * @param text text to view in the page panel
+   */
+  public final void setPage(String page) {
+    pageLabel.setText(page);
   }
 
 

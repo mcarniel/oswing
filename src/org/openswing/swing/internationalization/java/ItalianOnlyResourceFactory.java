@@ -51,6 +51,8 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     dictionary.putAll(additionalDictionary);
 
     // grid...
+    dictionary.setProperty("of","di");
+    dictionary.setProperty("page","Pagina");
     dictionary.setProperty("Remove Filter","Rimuovi filtro");
     dictionary.setProperty("This column is not sorteable","Questa colonna non è ordinabile");
     dictionary.setProperty("Sorting not allowed","Ordinamento non consentito");

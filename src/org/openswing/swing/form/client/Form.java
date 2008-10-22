@@ -95,8 +95,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   /** identifier (functionId) associated to the container */
   private String functionId = null;
 
-  /** Form panel that has currently received focus (used to listen acceleration keys events to dispatch to toolbar buttons of the form */
-  private static Form currentFocusedForm = null;
+  /** flag used to define if this Form panel currently has focus (used to listen for acceleration keys events to dispatch to toolbar buttons of the form) */
+  private boolean currentFormHasFocus = false;
 
   /** Form border, when it has not the focus */
   private Border notFocusedBorder = null;
@@ -134,11 +134,28 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   /** collection of GenericButtons linked to this Form, i.e. whose text is setted with the attribute value; pairs of type (attribute name, List of GenericButtons objects) */
   private Hashtable linkedButtons = new Hashtable();
 
+  /** key listener used to listen for shortcut events */
+  private FormShortcutsListener shortcutsListener = new FormShortcutsListener(this);
+
+  /** focus listener used to listen for Form's input controls focus events */
+  private FormFocusListener formFocusListener = new FormFocusListener();
+
 
   public Form() {}
 
 
+  /**
+   * @return define if this Form panel currently has focus (used to listen for acceleration keys events to dispatch to toolbar buttons of the form)
+   */
+  public final boolean isCurrentFormHasFocus() {
+    return currentFormHasFocus;
+  }
+
+
   public final void finalize() {
+    // remove listeners used to set focus on Form...
+    dropFocusFromForm();
+
     ClientUtils.disposeComponents(Form.this.getComponents());
 
     try {
@@ -156,6 +173,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           for(int i=0;i<list.size();i++) {
             ic = (InputControl)list.get(i);
             list.remove(ic);
+            ic.removeFocusListener(formFocusListener);
             ic.removeValueChangedListener(Form.this);
             if (((Component)ic).getParent()!=null)
               ((Component)ic).getParent().remove((Component)ic);
@@ -187,8 +205,6 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     }
 
     formController = null;
-    if (currentFocusedForm==Form.this)
-      currentFocusedForm = null;
     insertButton = null;
     copyButton = null;
     editButton = null;
@@ -209,109 +225,70 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   }
 
 
-  /**
-   * Static initializer, used to listen accelerator key events to dispatch to the toolbar buttons.
-   */
-  static {
-    if (!Beans.isDesignTime())
-      ApplicationEventQueue.getInstance().addKeyListener(new KeyAdapter() {
-
-        public void keyPressed(KeyEvent e) {
-          if (currentFocusedForm!=null) {
-            if (e.getKeyCode()==ClientSettings.RELOAD_BUTTON_KEY.getKeyCode() &&
-                e.getModifiers()+e.getModifiersEx()==ClientSettings.RELOAD_BUTTON_KEY.getModifiers() &&
-                currentFocusedForm.getReloadButton() != null &&
-                currentFocusedForm.getReloadButton().isEnabled()) {
-              currentFocusedForm.getReloadButton().requestFocus();
-              currentFocusedForm.reload();
-            }
-            else if (e.getKeyCode()==ClientSettings.SAVE_BUTTON_KEY.getKeyCode() &&
-                     e.getModifiers()+e.getModifiersEx()==ClientSettings.SAVE_BUTTON_KEY.getModifiers() &&
-                     currentFocusedForm.getSaveButton() != null &&
-                     currentFocusedForm.getSaveButton().isEnabled()) {
-              currentFocusedForm.getSaveButton().requestFocus();
-              currentFocusedForm.save();
-            }
-            else if (e.getKeyCode()==ClientSettings.INSERT_BUTTON_KEY.getKeyCode() &&
-                     e.getModifiers()+e.getModifiersEx()==ClientSettings.INSERT_BUTTON_KEY.getModifiers() &&
-                     currentFocusedForm.getInsertButton() != null &&
-                     currentFocusedForm.getInsertButton().isEnabled()) {
-              currentFocusedForm.getInsertButton().requestFocus();
-              currentFocusedForm.insert();
-            }
-            else if (e.getKeyCode()==ClientSettings.COPY_BUTTON_KEY.getKeyCode() &&
-                     e.getModifiers()+e.getModifiersEx()==ClientSettings.COPY_BUTTON_KEY.getModifiers() &&
-                     currentFocusedForm.getCopyButton() != null &&
-                     currentFocusedForm.getCopyButton().isEnabled()) {
-              currentFocusedForm.getCopyButton().requestFocus();
-              currentFocusedForm.copy();
-            }
-            else if (e.getKeyCode()==ClientSettings.EDIT_BUTTON_KEY.getKeyCode() &&
-                     e.getModifiers()+e.getModifiersEx()==ClientSettings.EDIT_BUTTON_KEY.getModifiers() &&
-                     currentFocusedForm.getEditButton() != null &&
-                     currentFocusedForm.getEditButton().isEnabled()) {
-              currentFocusedForm.getEditButton().requestFocus();
-              currentFocusedForm.edit();
-            }
-            else if (e.getKeyCode()==ClientSettings.DELETE_BUTTON_KEY.getKeyCode() &&
-                     e.getModifiers()+e.getModifiersEx()==ClientSettings.DELETE_BUTTON_KEY.getModifiers() &&
-                     currentFocusedForm.getDeleteButton() != null &&
-                     currentFocusedForm.getDeleteButton().isEnabled())
-              currentFocusedForm.delete();
-          }
-        }
-
-      });
-  }
-
-
   public final void requestFocus() {
     super.requestFocus();
-    setCurrentFocusedForm(this);
+    setFocusOnForm();
   }
 
 
   /**
-   * Set the current focused form that will receive key events..
-   * @param form currently focused form; may be null (if no form is currently focused)
+   * Set focus on current form.
    */
-  public static void setCurrentFocusedForm(Form form) {
+  public final void setFocusOnForm() {
     if (Beans.isDesignTime())
       return;
-    if (form!=null && !form.isShowing())
+    if (!isShowing())
       return;
-    if (currentFocusedForm!=null && !currentFocusedForm.equals(form))
-      currentFocusedForm.disableFocusedForm();
-    currentFocusedForm = form;
-    if (currentFocusedForm!=null && ClientSettings.SHOW_FOCUS_BORDER_ON_FORM)
-      currentFocusedForm.setBorder(BorderFactory.createCompoundBorder(
-        currentFocusedForm.getNotFocusedBorder(),
-        BorderFactory.createLineBorder(ClientSettings.FORM_FOCUS_BORDER,1)
+
+
+    try {
+      // remove global key listeners related to Form panels...
+      KeyListener[] ll = ApplicationEventQueue.getInstance().getKeyListeners();
+      for(int i=0;i<ll.length;i++)
+        if (ll[i] instanceof FormShortcutsListener)
+          ((FormShortcutsListener)ll[i]).getForm().dropFocusFromForm();
+    }
+    catch (Exception ex1) {
+    }
+
+    // add global key listener for this focused Form panel...
+    ApplicationEventQueue.getInstance().addKeyListener(shortcutsListener);
+    currentFormHasFocus = true;
+
+    if (ClientSettings.SHOW_FOCUS_BORDER_ON_FORM)
+      // set "focus" border...
+      setBorder(
+        BorderFactory.createCompoundBorder(
+          getNotFocusedBorder(),
+          BorderFactory.createLineBorder(ClientSettings.FORM_FOCUS_BORDER,1)
+        )
+      );
+  }
+
+
+  /**
+   * Remove focus from current form.
+   */
+  public final void dropFocusFromForm() {
+    if (Beans.isDesignTime())
+      return;
+
+    ApplicationEventQueue.getInstance().removeKeyListener(shortcutsListener);
+    currentFormHasFocus = false;
+
+    if (ClientSettings.SHOW_FOCUS_BORDER_ON_FORM)
+      // remove "focus" border
+      this.setBorder(BorderFactory.createCompoundBorder(
+        getNotFocusedBorder(),
+        BorderFactory.createLineBorder(this.getBackground(),1)
       ));
-  }
-
-
-  /**
-   * Set the current focused form that will receive key events.
-   * @param form currently focused form; may be null (if no form is currently focused)
-   */
-  public void disableFocusedForm() {
-    if (Beans.isDesignTime())
-      return;
-    if (!ClientSettings.SHOW_FOCUS_BORDER_ON_FORM)
-      return;
-
-    this.setBorder(BorderFactory.createCompoundBorder(
-      currentFocusedForm.getNotFocusedBorder(),
-      BorderFactory.createLineBorder(this.getBackground(),1)
-    ));
   }
 
 
   /**
    * Method overridden to initialize input controls.
    */
-  public void addNotify() {
+  public final void addNotify() {
     try {
       super.addNotify();
     }
@@ -348,7 +325,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       notFocusedBorder = this.getBorder();
       addMouseListener(new MouseAdapter(){
         public void mouseClicked(MouseEvent e) {
-          setCurrentFocusedForm(Form.this);
+          setFocusOnForm();
         }
       });
 
@@ -356,14 +333,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       if (parentInternalFrame!=null)
           parentInternalFrame.addInternalFrameListener(new InternalFrameAdapter() {
 
-            public void internalFrameActivated(InternalFrameEvent e) {
-              if (currentFocusedForm==null)
-                setCurrentFocusedForm(Form.this);
-            }
-
             public void internalFrameDeactivated(InternalFrameEvent e) {
-              if (Form.this.equals(currentFocusedForm))
-                setCurrentFocusedForm(null);
+                dropFocusFromForm();
             }
 
           });
@@ -372,14 +343,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         if (parentFrame!=null)
             parentFrame.addWindowListener(new WindowAdapter() {
 
-              public void windowActivated(WindowEvent e) {
-                if (currentFocusedForm==null)
-                  setCurrentFocusedForm(Form.this);
-              }
-
               public void windowDeactivated(WindowEvent e) {
-                if (Form.this.equals(currentFocusedForm))
-                  setCurrentFocusedForm(null);
+                dropFocusFromForm();
               }
 
             });
@@ -1925,11 +1890,12 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       list = new ArrayList();
       bindings.put(comp.getAttributeName(),list);
     }
-    if (!list.contains(comp))
+    if (!list.contains(comp)) {
       // input control NOT yet linked...
       list.add(comp);
-
-    comp.addValueChangedListener(this);
+      comp.addValueChangedListener(this);
+      comp.addFocusListener(formFocusListener);
+    }
   }
 
 
@@ -1948,6 +1914,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
     list.remove(comp);
     comp.removeValueChangedListener(this);
+    comp.removeFocusListener(formFocusListener);
   }
 
 
@@ -2204,6 +2171,33 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (model!=null)
       model.setCreateInnerVO(createInnerVO);
   }
+
+
+
+
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used to listen for Form's input controls focus events.</p>
+   * @version 1.0
+   */
+  class FormFocusListener extends FocusAdapter {
+
+    public void focusGained(FocusEvent e) {
+      if (!currentFormHasFocus) {
+        setFocusOnForm();
+      }
+    }
+
+    public void focusLost(FocusEvent e) {
+      if (currentFormHasFocus) {
+        dropFocusFromForm();
+      }
+    }
+
+
+  } // end inner class
 
 
 }

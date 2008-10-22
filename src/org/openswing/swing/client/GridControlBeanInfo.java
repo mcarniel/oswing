@@ -58,6 +58,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _saveButton = new PropertyDescriptor("saveButton", beanClass, "getSaveButton", "setSaveButton");
       PropertyDescriptor _selectionMode = new PropertyDescriptor("selectionMode", beanClass, "getSelectionMode", "setSelectionMode");
       PropertyDescriptor _showFilterPanelOnGrid = new PropertyDescriptor("showFilterPanelOnGrid", beanClass, "isShowFilterPanelOnGrid", "setShowFilterPanelOnGrid");
+      PropertyDescriptor _showPageNumber = new PropertyDescriptor("showPageNumber", beanClass, "isShowPageNumber", "setShowPageNumber");
       PropertyDescriptor _showWarnMessageBeforeReloading = new PropertyDescriptor("showWarnMessageBeforeReloading", beanClass, "isShowWarnMessageBeforeReloading", "setShowWarnMessageBeforeReloading");
       PropertyDescriptor _singleExpandableRow = new PropertyDescriptor("singleExpandableRow", beanClass, "isSingleExpandableRow", "setSingleExpandableRow");
       PropertyDescriptor _valueObjectClassName = new PropertyDescriptor("valueObjectClassName", beanClass, "getValueObjectClassName", "setValueObjectClassName");
@@ -103,6 +104,7 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
         _saveButton,
         _selectionMode,
         _showFilterPanelOnGrid,
+        _showPageNumber,
         _showWarnMessageBeforeReloading,
         _singleExpandableRow,
         _valueObjectClassName,

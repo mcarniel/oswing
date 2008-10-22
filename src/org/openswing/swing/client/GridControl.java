@@ -290,6 +290,9 @@ public class GridControl extends JPanel {
   /** combo-box filters to apply to column headers */
   private HashMap listFilters = new HashMap();
 
+  /** flag used to show current page number in grid; default value: ClientSettings.SHOW_PAGE_NUMBER_IN_GRID */
+  public boolean showPageNumber = ClientSettings.SHOW_PAGE_NUMBER_IN_GRID;
+
 
   /**
    * Costructor.
@@ -704,7 +707,7 @@ public class GridControl extends JPanel {
             }
 
             tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
-            Form.setCurrentFocusedForm(null);
+            dropFocusFromAllForms();
           }
 
           public void focusLost(FocusEvent e) {
@@ -727,7 +730,7 @@ public class GridControl extends JPanel {
               }
 
               tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
-              Form.setCurrentFocusedForm(null);
+              dropFocusFromAllForms();
             }
 
             public void focusLost(FocusEvent e) {
@@ -791,7 +794,7 @@ public class GridControl extends JPanel {
             }
 
             tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
-            Form.setCurrentFocusedForm(null);
+            dropFocusFromAllForms();
           }
 
           public void focusLost(FocusEvent e) {
@@ -814,7 +817,7 @@ public class GridControl extends JPanel {
               }
 
               tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
-              Form.setCurrentFocusedForm(null);
+              dropFocusFromAllForms();
             }
 
             public void focusLost(FocusEvent e) {
@@ -874,13 +877,13 @@ public class GridControl extends JPanel {
             while(cont!=null && !(cont instanceof Form) && !cont.equals(table.getGrid()))
               cont = cont.getParent();
             if (cont!=null && cont instanceof Form) {
-              Form.setCurrentFocusedForm( (Form) cont);
+              ((Form)cont).setFocusOnForm();
               return;
             }
           }
 
           tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
-          Form.setCurrentFocusedForm(null);
+          dropFocusFromAllForms();
         }
 
         public void focusLost(FocusEvent e) {
@@ -916,7 +919,7 @@ public class GridControl extends JPanel {
             }
 
             tmpPanel.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_FOCUS_BORDER,1));
-            Form.setCurrentFocusedForm(null);
+            dropFocusFromAllForms();
           }
 
           public void focusLost(FocusEvent e) {
@@ -2938,9 +2941,36 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * Remove global key listeners related to Form panels.
+   */
+  private void dropFocusFromAllForms() {
+    try {
+      KeyListener[] ll = ApplicationEventQueue.getInstance().getKeyListeners();
+      for(int i=0;i<ll.length;i++)
+        if (ll[i] instanceof FormShortcutsListener)
+          ((FormShortcutsListener)ll[i]).getForm().dropFocusFromForm();
+    }
+    catch (Exception ex1) {
+    }
+  }
 
 
+  /**
+   * @return show current page number in grid
+   */
+  public final boolean isShowPageNumber() {
+    return showPageNumber;
+  }
 
+
+  /**
+   * Show/hide current page number in grid.
+   * @param showPageNumber flag used to show current page number in grid
+   */
+  public final void setShowPageNumber(boolean showPageNumber) {
+    this.showPageNumber = showPageNumber;
+  }
 
 
 

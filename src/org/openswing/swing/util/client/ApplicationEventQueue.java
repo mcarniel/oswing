@@ -51,7 +51,7 @@ public class ApplicationEventQueue {
 
   /**
    * Add a key listener.
-   * @param listener KeyListener
+   * @param listener KeyListener to add
    */
   public final void addKeyListener(KeyListener listener) {
     keyListeners.add(listener);
@@ -59,8 +59,8 @@ public class ApplicationEventQueue {
 
 
   /**
-   * Add a key listener.
-   * @param listener KeyListener
+   * Remove a key listener.
+   * @param listener KeyListener to remove
    */
   public final void removeKeyListener(KeyListener listener) {
     keyListeners.remove(listener);
@@ -68,8 +68,16 @@ public class ApplicationEventQueue {
 
 
   /**
+   * @return KeyListener objects currently registered
+   */
+  public final KeyListener[] getKeyListeners() {
+    return (KeyListener[])keyListeners.toArray(new KeyListener[keyListeners.size()]);
+  }
+
+
+  /**
    * Add a mouse listener.
-   * @param listener MouseListener
+   * @param listener MouseListener to add
    */
   public final void addMouseListener(MouseListener listener) {
     mouseListeners.add(listener);
@@ -77,8 +85,8 @@ public class ApplicationEventQueue {
 
 
   /**
-   * Add a mouse listener.
-   * @param listener MouseListener
+   * Remove a mouse listener.
+   * @param listener MouseListener to remove
    */
   public final void removeMouseListener(MouseListener listener) {
     mouseListeners.remove(listener);

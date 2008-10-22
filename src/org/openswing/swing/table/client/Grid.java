@@ -1941,14 +1941,25 @@ public class Grid extends JTable
       // update status bar content...
       if (this.getSelectedRows().length==0)
         statusPanel.setText("");
-      else if (this.getSelectedRows().length==1)
-        statusPanel.setText(ClientSettings.getInstance().getResources().getResource("Selected Row")+": "+(grids.getCurrentNumberOfNewRows()+grids.getLastIndex()-model.getRowCount()+this.getSelectedRow()+2));
+      else if (this.getSelectedRows().length==1) {
+        String msg = ClientSettings.getInstance().getResources().getResource("Selected Row")+": "+(grids.getCurrentNumberOfNewRows()+grids.getLastIndex()-model.getRowCount()+this.getSelectedRow()+2);
+        if (grids.getTotalResultSetLength()>0) {
+          msg += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+grids.getTotalResultSetLength();
+        }
+        statusPanel.setText(msg);
+      }
       else if (this.getSelectedRows().length>1 && getMode()==Consts.READONLY) {
         String rows = "";
         for(int i=0;i<this.getSelectedRows().length;i++)
           rows += (this.getSelectedRows()[i]+2+grids.getCurrentNumberOfNewRows()+grids.getLastIndex()-model.getRowCount())+", ";
         rows = rows.substring(0,rows.length()-2);
-        statusPanel.setText(ClientSettings.getInstance().getResources().getResource("Selected Rows")+": "+rows);
+
+        String msg = ClientSettings.getInstance().getResources().getResource("Selected Rows")+": "+rows;
+        if (grids.getTotalResultSetLength()>0) {
+          msg += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+grids.getTotalResultSetLength();
+        }
+
+        statusPanel.setText(msg);
       }
       else statusPanel.setText("");
     }
@@ -2340,7 +2351,7 @@ public class Grid extends JTable
     }
 
 
-    grids.reload();
+    grids.reloadDataFromStart();
 
     grids.getRemovefilterItem().setVisible(true);
     grids.getPopup().setVisible(false);

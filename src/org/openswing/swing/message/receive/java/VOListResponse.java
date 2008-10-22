@@ -43,6 +43,9 @@ public class VOListResponse extends Response {
   /** result set length */
   private int resultSetLength;
 
+  /** total amount of rows; usually not filled */
+  private int totalAmountOfRows = -1;
+
 
   /**
    * @param rows list of value objects
@@ -93,6 +96,23 @@ public class VOListResponse extends Response {
    */
   public final int getResultSetLength() {
     return resultSetLength;
+  }
+
+
+  /**
+   * @return total amount of rows in ResultSet; -1 if not determined
+   */
+  public final int getTotalAmountOfRows() {
+    return totalAmountOfRows;
+  }
+
+
+  /**
+   * Set the total amount of rows in ResultSet
+   * @param totalAmountOfRows total amount of rows in ResultSet
+   */
+  public final void setTotalAmountOfRows(int totalAmountOfRows) {
+    this.totalAmountOfRows = totalAmountOfRows;
   }
 
 

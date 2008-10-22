@@ -214,6 +214,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** selected row selected before reloading data on grid; used to reset selected row */
   private int selectedRowBeforeReloading = -1;
 
+  /** last record number in result set; -1 as default value */
+  private int totalResultSetLength = -1;
+
+  /** block size; -1 if loading is not based on one page per time */
+  private int blockSize = -1;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -255,7 +261,6 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     this.otherGridParams = otherGridParams;
     this.popupCommands = popupCommands;
     this.gridType = gridType;
-
 
     try {
       // construction of data model adapter linked to the grid...
@@ -1512,6 +1517,21 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   }
 
 
+  /**
+   * Method invoked by NavigatorBar to change page to load.
+   * @param pageNr pabe number to load
+   */
+  public final void loadPage(int pageNr) {
+    if (blockSize!=-1 &&
+        (moreRows || startIndex>0)) {
+      startIndex = blockSize*(pageNr-1);
+      if (!listenEvent)
+        return;
+      listenEvent = false;
+      new LoadDataThread().start();
+    }
+  }
+
 
   /**
    * This method fetch data and set them into the grid.
@@ -1528,8 +1548,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 //        action = GridParams.NEXT_BLOCK_ACTION;
 //      }
       grid.getSelectionModel().setSelectionMode(grid.getSelectionModel().SINGLE_SELECTION);
-      if (gridType==Grid.MAIN_GRID)
+      if (gridType==Grid.MAIN_GRID) {
         statusPanel.setText(ClientSettings.getInstance().getResources().getResource("Loading data..."));
+        statusPanel.setPage("");
+      }
 
       // data fetching is dispached to the grid controller...
       ClientUtils.fireBusyEvent(true);
@@ -1613,6 +1635,41 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
         expandedRows.clear();
         cache.clear();
+
+        // update status bar content...
+        if (model.getRowCount()==0) {
+          statusPanel.setPage("");
+          totalResultSetLength = -1;
+          if (getNavBar()!=null)
+            getNavBar().updatePageNumber(0);
+        }
+        else {
+          if (!((VOListResponse)answer).isMoreRows() && startIndex==0) {
+            // the whole resultset has been loaded...
+//            String page = ClientSettings.getInstance().getResources().getResource("page")+" 1 "+ClientSettings.getInstance().getResources().getResource("of")+" 1";
+//            statusPanel.setPage(page);
+            statusPanel.setPage("");
+            if (getNavBar()!=null)
+              getNavBar().updatePageNumber(0);
+            totalResultSetLength = model.getRowCount();
+          }
+          else {
+            // only a block of data has been loaded...
+            String page = ClientSettings.getInstance().getResources().getResource("page")+" "+(getLastIndex()/model.getRowCount()+1);
+            if (blockSize==-1)
+              blockSize = model.getRowCount();
+            if ( ((VOListResponse)answer).getTotalAmountOfRows()>0) {
+              page += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+(((VOListResponse)answer).getTotalAmountOfRows()/model.getRowCount());
+              totalResultSetLength = ((VOListResponse)answer).getTotalAmountOfRows();
+            }
+            else {
+              totalResultSetLength = -1;
+            }
+            statusPanel.setPage(page);
+            if (getNavBar()!=null)
+              getNavBar().updatePageNumber(getLastIndex()/model.getRowCount()+1);
+          }
+        }
 
         grid.revalidate();
         grid.repaint();
@@ -3269,6 +3326,22 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    */
   public final int getCurrentEditingRow() {
     return currentEditingRow;
+  }
+
+
+  /**
+   * @return last record number in result set; -1 as default value
+   */
+  public final int getTotalResultSetLength() {
+    return totalResultSetLength;
+  }
+
+
+  /**
+   * @return block size; -1 if loading is not based on one page per time
+   */
+  public final int getBlockSize() {
+    return blockSize;
   }
 
 

@@ -46,6 +46,8 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       Properties dictionary = new Properties();
       dictionary.putAll(additionalDictionary);
       // grid...
+      dictionary.setProperty("of","de");
+      dictionary.setProperty("page","Page");
       dictionary.setProperty("Remove Filter", "Remover filtro");
       dictionary.setProperty("This column is not sorteable", "Esta coluna não é classificável");
       dictionary.setProperty("Sorting not allowed", "Classificação não permitida");

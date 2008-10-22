@@ -64,6 +64,8 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.putAll(additionalDictionary);
 
     // grid...
+    dictionary.setProperty("of","of");
+    dictionary.setProperty("page","Page");
     dictionary.setProperty("Remove Filter","Remove Filter");
     dictionary.setProperty("This column is not sorteable","This column is not sorteable");
     dictionary.setProperty("Sorting not allowed","Sorting not allowed");

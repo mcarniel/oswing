@@ -1,6 +1,7 @@
 package org.openswing.swing.client;
 
 import org.openswing.swing.form.model.client.*;
+import java.awt.event.FocusListener;
 
 
 /**
@@ -164,6 +165,20 @@ public interface InputControl {
    * @return ValueChangeListener listeners added to this input control
    */
   public ValueChangeListener[] getValueChangeListeners();
+
+
+  /**
+   * Add a FocusListener to this input control.
+   * @param listener FocusListener to add
+   */
+  public void addFocusListener(FocusListener listener);
+
+
+  /**
+   * Remove a FocusListener listener from this input control.
+   * @param listener FocusListener to remove
+   */
+  public void removeFocusListener(FocusListener listener) ;
 
 
 }

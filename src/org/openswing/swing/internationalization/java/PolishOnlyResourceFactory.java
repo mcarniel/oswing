@@ -53,6 +53,8 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.putAll(additionalDictionary);
 
         // grid...
+        dictionary.setProperty("of","de");
+        dictionary.setProperty("page","Page");
         dictionary.setProperty("Remove Filter", "Usuń warunki wybierania");
         dictionary.setProperty("This column is not sorteable", "Ta kolumna nie podlega sortowaniu");
         dictionary.setProperty("Sorting not allowed", "Sortowanie jest niemożliwe");
@@ -129,7 +131,7 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         // form...
         dictionary.setProperty("Confirm deliting data?", "Czy potwierdzasz usunięcie danych?");
         dictionary.setProperty("Error while saving: incorrect data.", "Wystąpił błąd podczas zapisywania danych: nieprawidłowe dane.");
-        dictionary.setProperty("Error on deleting:", "Błąd podczas usuwania:");  
+        dictionary.setProperty("Error on deleting:", "Błąd podczas usuwania:");
         dictionary.setProperty("Error on Loading", "Błąd podczas ładowania");
         dictionary.setProperty("Error while loading data:", "Wystąpił błąd podczas ładowania danych:");
         dictionary.setProperty("Error on setting value to the input control having the attribute name", "Błąd nadania wartości elementowi edycji dla atrybutu");

@@ -78,10 +78,51 @@ public class NavigatorBar extends JPanel {
   public static final String DOWN_KEY = "DOWN_KEY";
   public static final String LEFT_MOUSE_BUTTON = "LEFT_MOUSE_BUTTON";
 
+  /** optional input field used to specify the page number to load; only in case of loading one page per time */
+  private NumericControl controlPageNr = new NumericControl();
+
+  /** current page number */
+  private int currentPageNr = -1;
+
+  /** panel that contains page number field */
+  private JPanel pageNrPanel = new JPanel();
+
 
   public NavigatorBar() {
     try {
       jbInit();
+      controlPageNr.setColumns(3);
+      controlPageNr.setValue(new Integer(1));
+      controlPageNr.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (controlPageNr.getDouble()==null)
+            controlPageNr.setValue(new Integer(1));
+          if (!checkValidPage())
+            return;
+          currentPageNr = controlPageNr.getDouble().intValue();
+          gotoPage();
+        }
+      });
+      controlPageNr.addFocusListener(new FocusAdapter() {
+
+        public void focusGained(FocusEvent e) {
+          if (controlPageNr.getDouble()==null)
+            controlPageNr.setValue(new Integer(1));
+          currentPageNr = controlPageNr.getDouble().intValue();
+        }
+
+        public void focusLost(FocusEvent e) {
+          if (controlPageNr.getDouble()==null)
+            controlPageNr.setValue(new Integer(1));
+          if (!checkValidPage())
+            return;
+          int lastValue = currentPageNr;
+          currentPageNr = controlPageNr.getDouble().intValue();
+          if (lastValue!=currentPageNr)
+            gotoPage();
+        }
+
+      });
       firstButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the first block of records"));
       firstButton.setPreferredSize(new Dimension(32,32));
       prevPgButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the previous block of records"));
@@ -101,7 +142,41 @@ public class NavigatorBar extends JPanel {
   }
 
 
+  private boolean checkValidPage() {
+    if (resultSetController.getTotalResultSetLength()!=1 &&
+        resultSetController.getBlockSize()!=-1 &&
+        controlPageNr.getDouble().intValue()>resultSetController.getTotalResultSetLength()/resultSetController.getBlockSize()) {
+      controlPageNr.setValue(new Integer(currentPageNr));
+      return false;
+    }
+    return true;
+  }
+
+
+  /**
+   * Reload grid, starting from the specified page.
+   */
+  private void gotoPage() {
+    if (currentPageNr>0)
+      resultSetController.loadPage(currentPageNr);
+  }
+
+
+  /**
+   * Show/update/hide page number field, according to loading policy and current data length.
+   */
+  public final void updatePageNumber(int pageNr) {
+    controlPageNr.setValue(new Integer(pageNr));
+    pageNrPanel.removeAll();
+    if (pageNr>0)
+      pageNrPanel.add(controlPageNr);
+    pageNrPanel.revalidate();
+    this.repaint();
+  }
+
+
   private void jbInit() throws Exception {
+    pageNrPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
     firstButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
         firstButton_actionPerformed(e);
@@ -140,6 +215,7 @@ public class NavigatorBar extends JPanel {
     if (ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR)
       this.add(prevPgButton,null);
     this.add(prevButton,null);
+    this.add(pageNrPanel,null);
     this.add(nextButton,null);
     if (ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR)
       this.add(nextPgButton,null);
@@ -234,6 +310,7 @@ public class NavigatorBar extends JPanel {
     firstButton.setEnabled(!isFirstRecord);
     prevPgButton.setEnabled(!isFirstRecord);
     prevButton.setEnabled(!isFirstRecord);
+    controlPageNr.setEnabled(true);
   }
 
 
@@ -244,10 +321,12 @@ public class NavigatorBar extends JPanel {
     lastButton.setEnabled(!isLastRecord);
     nextButton.setEnabled(!isLastRecord);
     nextPgButton.setEnabled(!isLastRecord);
+    controlPageNr.setEnabled(true);
   }
 
 
   public void setEnabled(boolean enabled) {
+    controlPageNr.setEnabled(enabled);
     firstButton.setEnabled(enabled);
     prevPgButton.setEnabled(enabled);
     prevButton.setEnabled(enabled);

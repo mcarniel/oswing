@@ -51,6 +51,8 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     dictionary.putAll(additionalDictionary);
 
     // grid...
+    dictionary.setProperty("of","de");
+    dictionary.setProperty("page","Page");
     dictionary.setProperty("Remove Filter","Quitar Filtro");
     dictionary.setProperty("This column is not sorteable","Esta columna no es ordenable");
     dictionary.setProperty("Sorting not allowed","Ordenado no permitido");
