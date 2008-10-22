@@ -164,7 +164,7 @@ public class ClientApplication implements MDIController,LoginController {
    */
   public void afterMDIcreation(MDIFrame frame) {
     MDIFrame.addStatusComponent(new Clock());
-
+    frame.addSeparatorToMenuBar("getEmployees2","getDepts");
   }
 
 
@@ -265,7 +265,7 @@ public class ClientApplication implements MDIController,LoginController {
    * @return application title
    */
   public String getMDIFrameTitle() {
-    return "Demo";
+    return "Demo10";
   }
 
 
@@ -434,7 +434,7 @@ public class ClientApplication implements MDIController,LoginController {
         cal.set(cal.HOUR_OF_DAY,17);
         java.sql.Timestamp t4 = new java.sql.Timestamp(cal.getTime().getTime());
 
-        for(int i=0;i<200;i++) {
+        for(int i=0;i<50;i++) {
           stmt.close();
           stmt = conn.prepareStatement("insert into EMP values('E"+(i<10?"00":"")+(i>=10 && i<100?"0":"")+(i)+"','Name"+(i+1)+"','Surname"+(i+1)+"',"+(1000+i*100)+",?,'M','SF','DEP',null)");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));

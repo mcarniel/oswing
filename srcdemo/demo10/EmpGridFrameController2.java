@@ -14,6 +14,8 @@ import org.openswing.swing.client.GridControl;
 import org.openswing.swing.util.java.Consts;
 import org.openswing.swing.export.java.ExportOptions;
 import org.openswing.swing.export.java.GridExportOptions;
+import org.openswing.swing.export.java.GridExportCallbacks;
+import org.openswing.swing.export.java.ComponentExportOptions;
 
 
 /**
@@ -370,7 +372,7 @@ public class EmpGridFrameController2 extends GridController implements GridDataL
    * @return list of available formats; possible values: ExportOptions.XLS_FORMAT, ExportOptions.CSV_FORMAT1, ExportOptions.CSV_FORMAT2, ExportOptions.XML_FORMAT, ExportOptions.XML_FORMAT_FAT, ExportOptions.HTML_FORMAT, ExportOptions.PDF_FORMAT, ExportOptions.RTF_FORMAT; default value: ClientSettings.EXPORTING_FORMATS
    */
   public String[] getExportingFormats() {
-    return new String[]{ ExportOptions.PDF_FORMAT };
+    return new String[]{ ExportOptions.PDF_FORMAT,ExportOptions.XLS_FORMAT,ExportOptions.HTML_FORMAT,ExportOptions.CSV_FORMAT1,ExportOptions.XML_FORMAT };
   }
 
 
@@ -379,7 +381,25 @@ public class EmpGridFrameController2 extends GridController implements GridDataL
    * @param exportOptions options used to export data; these options can be programmatically changed, in order to customize exporting result
    */
   public void exportGrid(ExportOptions exportOptions) {
-    exportOptions.getComponentsExportOptions().add(frame.getWDGrid().getDefaultGridExportOptions());
+  //    exportOptions.getComponentsExportOptions().add(frame.getWDGrid().getDefaultGridExportOptions());
+
+    GridExportOptions empsOpts = (GridExportOptions)exportOptions.getComponentsExportOptions().get(0);
+    final GridExportOptions wdOpts = frame.getWDGrid().getDefaultGridExportOptions();
+    GridExportCallbacks callbacks = new GridExportCallbacks() {
+
+      /**
+       * @param vo value object related to current exported row
+       * @param row row index just exported
+       * @return method invoked after adding a row to export document; if not null, then specified ComponentExportOptions will be added after current row
+       */
+      public ComponentExportOptions getComponentPerRow(ValueObject vo,int row) {
+        EmpVO empVO = (EmpVO)vo;
+        wdOpts.getOtherGridParams().put("empCode",empVO.getEmpCode());
+        return wdOpts;
+      }
+
+    };
+    empsOpts.setCallbacks(callbacks);
   }
 
 
