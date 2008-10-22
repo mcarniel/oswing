@@ -1,5 +1,81 @@
 
 
+Release Notes 1.8
+-----------------
+
+Final release 1.8 available
+Improved Form focus management.
+Improvements in GridControl:
+- added "showPageNumber" property to GridControl, in order to show page number in GridControl status bar
+- added SHOW_PAGE_NUMBER_IN_GRID global property to ClientSettings, in order to define default value for "showPageNumber" grid property
+- added "Page" and "of" translations to XXXOnlyResourceFactory classes
+- added an input field in navigator bar, in order to specify the page number to load (visible only in case of data loading one page per time)
+- change "demo4" sample application to show how to determine the total number of pages and records in grid
+- added "totalAmountOfRows" property to VOListResponse to store the total number of records in result set, 
+  in order to show total number of pages in grid (if "showPageNumber" is true) and to show total number of records
+- fixed bug on filtering data on grid, when current block of data showed in grid is not the first one
+Improved MDIFrame:
+- added "addSeparatorToMenuBar" method in order to add separators in menu bar
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.7.9
+-------------------
+
+Final release 1.7.9 available
+Improvements in exporting data from grid:
+- added "getFontTitle" callback method to ExportToPDFAdapter adapter class, in order to customize font title of exporting document
+- added "getGenericComponentFont" callback method to ExportToPDFAdapter adapter class, in order to customize font for generic data added to exporting document
+- added ExportToRTFAdapter adapter class to ClientSettings, in order to customize RTF exporting documents, as for ExportToPDFAdapter
+Improvements in internal frame management when closing it:
+- changed confirm window when closing an internal frame: now "save changes dialog" contains three options: yes, now and cancel
+- added "saveChanges" callback to InternalFrame class, in order to customize "save changes task", when saving changes on internal frame closing
+- changed XXXOnlyResourceFactory classes, by adding new translation "save changes?" and in Resource_xx.xml files included with sample applications
+- added "checkComponents" method to InternalFrame, in order to explicitelly check for changes inside the internal frame
+Improvements in GridControl:
+- added "save" method to GridControl, in order to programmatically save data (according to current grid mode)
+- fixed problem in "reloadData" method: now loadDataCompleted callback is invoked as the last event (after automatic row selection)
+- fixed problem when locking rows on top: now column headers are correctly translated
+Improvements in Form panel:
+- added global property to RELOAD_LAST_VO_ON_FORM ClientSettings in order to define what to do when pressing reload button in INSERT mode:
+  (i) clear all input controls or (ii) reload last value object already loaded in the past
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.7.8
+-------------------
+
+Final release 1.7.8 available
+Improvements in GridControl:
+- added optional check-box list control within quick filter panel, in order to filter data in column starting from selected items;
+  items for list are retrieved as the collection of distinct values stored in database table column
+- added method "addListFilter" to GridControl and "listFilter" property to columns, in order to show combo-box filter in column header
+- changed "demo6" in order to show how to use check-box list filter feature
+- added "mergeCellsOnTop" and "mergeCellsOnBottom" methods to GridControl, in order to merge cells on top/bottom of grid component
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.7.7
+-------------------
+
+Final release 1.7.7 available
+Improvements in exporting data: added GridExportCallbacks class, in order to include additional data before and after grid content and
+after each grid's row just exported; in this way it is possible to combine data for master grid with data of a detail grid.
+Changed "demo10" sample application in order to show how to export master/detail grids in a single document with nested data.
+Changed behavior of "reloadData" method in GridControl: now it reloads grid content starting from the first record in result set;
+after that, the first record is selected.
+Added "reloadCurrentBlockOfData" method to GridControl, in order to reload current block of in grid; after that, old selected row is selected again.
+Improved MDI frame: add popup menu to desktop pane, in order to select custom image to use as background.
+Improved ComboVOColumn: added "reloadItems" method, in order to reload combo content.
+Fixed problem in attribute editor inside the UI designer, when the value object contains more than one inner v.o. of the same type.
+Added "isChanged" method to TreePanel, in order to decide whether tree content has been changed; invoked by InternalFrame.closeFrame();
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.7.6
 -------------------
 
