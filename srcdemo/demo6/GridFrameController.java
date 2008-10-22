@@ -6,6 +6,9 @@ import org.openswing.swing.message.receive.java.*;
 import java.sql.*;
 import org.openswing.swing.message.send.java.FilterWhereClause;
 import org.openswing.swing.table.java.GridDataLocator;
+import org.openswing.swing.message.send.java.GridParams;
+import org.openswing.swing.server.QueryUtil;
+import org.openswing.swing.server.UserSessionParameters;
 
 
 /**
@@ -57,57 +60,39 @@ public class GridFrameController extends GridController implements GridDataLocat
       ArrayList currentSortedVersusColumns,
       Class valueObjectType,
       Map otherGridParams) {
-    PreparedStatement stmt = null;
     try {
-      String sql = "select DEMO6.TEXT,DEMO6.DECNUM,DEMO6.CURRNUM,DEMO6.THEDATE,DEMO6.COMBO,DEMO6.CHECK_BOX,DEMO6.RADIO,DEMO6.CODE,DEMO6_LOOKUP.DESCRCODE from DEMO6,DEMO6_LOOKUP where DEMO6.CODE=DEMO6_LOOKUP.CODE";
-      Vector vals = new Vector();
-      if (filteredColumns.size()>0) {
-        FilterWhereClause[] filter = (FilterWhereClause[])filteredColumns.get("stringValue");
-        sql += " and DEMO6.TEXT "+ filter[0].getOperator()+"?";
-        vals.add(filter[0].getValue());
-        if (filter[1]!=null) {
-          sql += " and DEMO6.TEXT "+ filter[1].getOperator()+"?";
-          vals.add(filter[1].getValue());
-        }
-      }
-      if (currentSortedColumns.size()>0) {
-        sql += " ORDER BY DEMO6.TEXT "+currentSortedVersusColumns.get(0);
-      }
 
-      stmt = conn.prepareStatement(sql);
-      for(int i=0;i<vals.size();i++)
-        stmt.setObject(i+1,vals.get(i));
+      ArrayList vals = new ArrayList();
+      Map attribute2dbField = new HashMap();
+      attribute2dbField.put("stringValue","DEMO6.TEXT");
+      attribute2dbField.put("numericValue","DEMO6.DECNUM");
+      attribute2dbField.put("currencyValue","DEMO6.CURRNUM");
+      attribute2dbField.put("dateValue","DEMO6.THEDATE");
+      attribute2dbField.put("comboValue","DEMO6.COMBO");
+      attribute2dbField.put("checkValue","DEMO6.CHECK_BOX");
+      attribute2dbField.put("radioButtonValue","DEMO6.RADIO");
+      attribute2dbField.put("lookupValue","DEMO6.CODE");
+      attribute2dbField.put("descrLookupValue","DEMO6_LOOKUP.DESCRCODE");
+      GridParams gridParams = new GridParams(action,startIndex,filteredColumns,currentSortedColumns,currentSortedVersusColumns,otherGridParams);
 
-      ResultSet rset = stmt.executeQuery();
-
-
-      ArrayList list = new ArrayList();
-      TestVO vo = null;
-      while (rset.next()) {
-        vo = new TestVO();
-        vo.setCheckValue(rset.getObject(6)==null || !rset.getObject(6).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
-        vo.setComboValue(rset.getString(5));
-        vo.setCurrencyValue(rset.getBigDecimal(3));
-        vo.setDateValue(rset.getDate(4));
-        vo.setNumericValue(rset.getBigDecimal(2));
-        vo.setRadioButtonValue(rset.getObject(7)==null || !rset.getObject(7).equals("Y") ? Boolean.FALSE:Boolean.TRUE);
-        vo.setStringValue(rset.getString(1));
-        vo.setLookupValue(rset.getString(8));
-        vo.setDescrLookupValue(rset.getString(9));
-        list.add(vo);
-      }
-      return new VOListResponse(list,false,list.size());
+      return QueryUtil.getQuery(
+        conn,
+        new UserSessionParameters(),
+        "select DEMO6.TEXT,DEMO6.DECNUM,DEMO6.CURRNUM,DEMO6.THEDATE,DEMO6.COMBO,DEMO6.CHECK_BOX,DEMO6.RADIO,DEMO6.CODE,DEMO6_LOOKUP.DESCRCODE from DEMO6,DEMO6_LOOKUP where DEMO6.CODE=DEMO6_LOOKUP.CODE",
+        vals,
+        attribute2dbField,
+        TestVO.class,
+        "Y",
+        "N",
+        null,
+        gridParams,
+        50,
+        true
+      );
     }
-    catch (SQLException ex) {
+    catch (Exception ex) {
       ex.printStackTrace();
       return new ErrorResponse(ex.getMessage());
-    }
-    finally {
-      try {
-        stmt.close();
-      }
-      catch (SQLException ex1) {
-      }
     }
 
   }

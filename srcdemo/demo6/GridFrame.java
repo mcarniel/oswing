@@ -8,6 +8,9 @@ import org.openswing.swing.lookup.client.LookupController;
 import java.sql.*;
 import java.awt.event.*;
 import org.openswing.swing.table.java.*;
+import org.openswing.swing.table.client.ListFilterController;
+import org.openswing.swing.message.receive.java.*;
+import java.util.*;
 
 
 /**
@@ -45,6 +48,18 @@ public class GridFrame extends JFrame {
       grid.setGridDataLocator(controller);
 
 
+      // add combo-box filters...
+      // Note that it is possible to create many instances of ListFilterController,
+      // one for each column to filter OR define a unique instance for all attributes and use it to filter the current column,
+      // according to "attributeName" attribute current value
+      ColumnsFilter filter = new ColumnsFilter();
+      grid.addListFilter("stringValue",filter);
+      grid.addListFilter("comboValue",filter);
+      grid.addListFilter("intValue",filter);
+      grid.addListFilter("currencyValue",filter);
+
+      colDate.setListFilter(filter);
+
       setVisible(true);
 
     }
@@ -75,10 +90,14 @@ public class GridFrame extends JFrame {
     colDecimal.setColumnName("numericValue");
     colCurrency.setColumnName("currencyValue");
     colCurrency.setDecimals(3);
+    colCurrency.setColumnFilterable(true);
     colDate.setColumnName("dateValue");
+    colDate.setColumnFilterable(true);
     colCombo.setDomainId("ORDERSTATE");
     colCombo.setColumnName("comboValue");
+    colCombo.setColumnFilterable(true);
     colLookup.setColumnName("lookupValue");
+    colLookup.setColumnFilterable(true);
     textColumn1.setColumnName("descrLookupValue");
     textColumn1.setPreferredWidth(150);
     colCheck.setColumnName("checkValue");
@@ -107,6 +126,78 @@ public class GridFrame extends JFrame {
     new DetailFrameController(this,null,conn);
 
   }
+
+
+
+  /**
+   * <p>Description: Inner class used to collect items to fill in the list-filter.
+   * Note that it is possible to create many instances of ListFilterController,
+   * one for each column to filter OR define a unique instance for all attributes and use it to filter the current column,
+   * according to "attributeName" attribute current value.</p>
+   * <p>Copyright: Copyright (C) 2008 Mauro Carniel</p>
+   * @version 1.0
+   */
+  class ColumnsFilter extends ListFilterController {
+
+
+    /**
+     * @param attributeName attribute name that identifies current column
+   * @return Response VOListResponse that contains the list of items to show in the list-filter
+     */
+    public Response getListControlValues(String attributeName) {
+      Statement stmt = null;
+      ResultSet rset = null;
+      try {
+        ArrayList rows = new ArrayList();
+        stmt = conn.createStatement();
+
+        if (attributeName.equals("stringValue")) {
+          rset = stmt.executeQuery("select distinct DEMO6.TEXT from DEMO6");
+          while (rset.next()) {
+            rows.add(rset.getObject(1));
+          }
+        }
+        else if (attributeName.equals("comboValue")) {
+          rset = stmt.executeQuery("select distinct DEMO6.COMBO from DEMO6");
+          while (rset.next()) {
+            rows.add(rset.getObject(1));
+          }
+        }
+        else if (attributeName.equals("intValue")) {
+          rset = stmt.executeQuery("select distinct DEMO6.INTNUM from DEMO6");
+          while (rset.next()) {
+            rows.add(rset.getObject(1));
+          }
+        }
+        else if (attributeName.equals("currencyValue")) {
+          rset = stmt.executeQuery("select distinct DEMO6.CURRNUM from DEMO6");
+          while (rset.next()) {
+            rows.add(rset.getObject(1));
+          }
+        }
+        else if (attributeName.equals("dateValue")) {
+          rset = stmt.executeQuery("select distinct DEMO6.THEDATE from DEMO6");
+          while (rset.next()) {
+            rows.add(rset.getObject(1));
+          }
+        }
+
+        return new VOListResponse(rows, false, rows.size());
+      }
+      catch (Exception ex) {
+        return new ErrorResponse(ex.getMessage());
+      }
+      finally {
+        try {
+          stmt.close();
+        }
+        catch (Exception ex1) {
+        }
+      }
+    }
+
+  }
+
 
 
 }

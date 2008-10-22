@@ -140,6 +140,7 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.FILTER_PANEL_ON_GRID = true;
     ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
+    ClientSettings.RELOAD_LAST_VO_ON_FORM = true;
 
     ClientSettings.GRID_PROFILE_MANAGER = new DbGridProfileManager(
       this,

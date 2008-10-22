@@ -57,13 +57,13 @@ public class GridFrame extends JFrame {
     this.conn = conn;
     try {
       jbInit();
-      setSize(750,300);
+      setSize(750,600);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
 
       LookupController lookupController = new DemoLookupController(conn);
       colLookup.setLookupController(lookupController);
-/*
+
       // set top grid content, i.e. the first row...
       grid.setTopGridDataLocator(new GridDataLocator() {
 
@@ -84,7 +84,7 @@ public class GridFrame extends JFrame {
         }
 
       });
-*/
+
 
       // set bottom grid content, i.e. the last two rows...
       grid.setBottomGridDataLocator(new GridDataLocator() {
@@ -194,9 +194,9 @@ public class GridFrame extends JFrame {
     grid.setSaveButton(saveButton);
 
 //    grid.setLockedColumns(2);
-/*
+
     grid.setLockedRowsOnTop(1);
-*/
+
     grid.setLockedRowsOnBottom(1);
 
     grid.setValueObjectClassName("demo3.TestVO");
@@ -355,6 +355,7 @@ public class GridFrame extends JFrame {
   public GridControl getGrid() {
     return grid;
   }
+
 
 
 }

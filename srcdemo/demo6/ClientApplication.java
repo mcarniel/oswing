@@ -62,6 +62,7 @@ public class ClientApplication {
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.ALLOW_OR_OPERATOR = false;
     ClientSettings.INCLUDE_IN_OPERATOR = false;
+    ClientSettings.SHOW_FILTER_SYMBOL = true;
 
     Domain orderStateDomain = new Domain("ORDERSTATE");
     orderStateDomain.addDomainPair("O","opened");

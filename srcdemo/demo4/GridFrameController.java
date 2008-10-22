@@ -103,10 +103,12 @@ public class GridFrameController extends GridController implements GridDataLocat
         null,
         gridParams,
         50,
+        true,
         true
       );
 
       if (!res.isError()) {
+
         Domain d = ClientSettings.getInstance().getDomain("ORDERSTATE");
         ArrayList list = ((VOListResponse)res).getRows();
         // this is a simplification: in a real situation combo v.o. will be retrieved from the database...
