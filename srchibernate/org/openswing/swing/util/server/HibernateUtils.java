@@ -88,6 +88,30 @@ public class HibernateUtils {
 
 
   /**
+   * Fill in "attributesMap" according to attributes defined in xxx.hdm.xml.
+   */
+  private static void fillInMetaData(SessionFactory sessions,String tableName,String prefix,ClassMetadata meta,Map attributesMap) {
+    if (meta!=null) {
+      String[] attrNames = meta.getPropertyNames();
+      for(int i=0;i<attrNames.length;i++) {
+        attributesMap.put(prefix+attrNames[i],tableName+"."+attrNames[i]);
+        if (meta.getPropertyType(attrNames[i]) instanceof org.hibernate.type.EntityType) {
+          ClassMetadata submeta = sessions.getClassMetadata(((org.hibernate.type.EntityType)meta.getPropertyType(attrNames[i])).getReturnedClass());
+          fillInMetaData(sessions,tableName+"."+attrNames[i],prefix+prefix+attrNames[i]+".",submeta,attributesMap);
+        }
+      }
+
+      attributesMap.put(prefix+meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
+      if (meta.getPropertyType(meta.getIdentifierPropertyName()) instanceof org.hibernate.type.EntityType) {
+        ClassMetadata submeta = sessions.getClassMetadata(((org.hibernate.type.EntityType)meta.getPropertyType(meta.getIdentifierPropertyName())).getReturnedClass());
+        fillInMetaData(sessions,((org.hibernate.type.EntityType)meta.getPropertyType(meta.getIdentifierPropertyName())).getReturnedClass().getName(),prefix+prefix+meta.getIdentifierPropertyName()+".",submeta,attributesMap);
+      }
+
+    }
+  }
+
+
+  /**
    * Apply filtering and sorting conditions to the specified baseSQL and return
    * a new baseSQL that contains those conditions too.
    * If decodedAttributes is filled, then baseSQL can contains a HSQL query.
@@ -143,13 +167,10 @@ public class HibernateUtils {
 
     // fill in "attributesMap" according to attributes defined in xxx.hdm.xml...
     ClassMetadata meta = sessions.getClassMetadata(valueObjectType);
-    Map attributesMap = new HashMap();
     Map propDescriptors = new HashMap();
+    Map attributesMap = new HashMap();
     if (meta!=null) {
-      String[] attrNames = meta.getPropertyNames();
-      for(int i=0;i<attrNames.length;i++)
-        attributesMap.put(attrNames[i],tableName+"."+attrNames[i]);
-
+      fillInMetaData(sessions,tableName,"",meta,attributesMap);
       attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
     }
     else {
@@ -330,10 +351,7 @@ public class HibernateUtils {
     Map attributesMap = new HashMap();
     Map propDescriptors = new HashMap();
     if (meta!=null) {
-      String[] attrNames = meta.getPropertyNames();
-      for(int i=0;i<attrNames.length;i++)
-        attributesMap.put(attrNames[i],tableName+"."+attrNames[i]);
-
+      fillInMetaData(sessions,tableName,"",meta,attributesMap);
       attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
     }
     else {

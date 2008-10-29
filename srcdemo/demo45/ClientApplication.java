@@ -1,4 +1,4 @@
-package demo28;
+package demo45;
 
 import java.util.*;
 import org.openswing.swing.mdi.client.*;
@@ -25,22 +25,25 @@ import org.openswing.swing.table.profiles.database.server.DefaultDbActiveProfile
 import org.openswing.swing.table.profiles.database.server.DefaultDbDigestDescriptor;
 import org.openswing.swing.table.profiles.database.server.DefaultDbProfileDescriptor;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
+import org.openswing.swing.table.permissions.database.server.*;
 
 
 /**
  * <p>Title: OpenSwing Demo</p>
  * <p>Description: Used to start application from main method: it creates an MDI Frame app.
- * A database profile management is applied for this application.</p>
+ * A database profile management and database grid permissions mangament are applied for this application.
+ * Use "ADMIN/admin" or "GUEST/guest" to log on.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  * <p> </p>
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ClientApplication implements MDIController,LoginController,DbConnectionSource {
+public class ClientApplication implements MDIController,LoginController,org.openswing.swing.table.profiles.database.server.DbConnectionSource,org.openswing.swing.table.permissions.database.server.DbConnectionSource {
 
 
   private DemoClientFacade clientFacade = null;
   private Connection conn = null;
+  private String username = null;
   private Hashtable domains = new Hashtable();
 
 
@@ -49,86 +52,28 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
     clientFacade = new DemoClientFacade(conn);
 
 
-    Hashtable domains = new Hashtable();
-    Domain sexDomain = new Domain("SEX");
-    sexDomain.addDomainPair("M","male");
-    sexDomain.addDomainPair("F","female");
-    domains.put(
-      sexDomain.getDomainId(),
-      sexDomain
-    );
-    Domain day = new Domain("DAYS");
-    day.addDomainPair(new BigDecimal(Calendar.SUNDAY),"sunday");
-    day.addDomainPair(new BigDecimal(Calendar.MONDAY),"monday");
-    day.addDomainPair(new BigDecimal(Calendar.TUESDAY),"tuesday");
-    day.addDomainPair(new BigDecimal(Calendar.WEDNESDAY),"wednesday");
-    day.addDomainPair(new BigDecimal(Calendar.THURSDAY),"thursday");
-    day.addDomainPair(new BigDecimal(Calendar.FRIDAY),"friday");
-    day.addDomainPair(new BigDecimal(Calendar.SATURDAY),"saturday");
-    domains.put(
-      day.getDomainId(),
-      day
-    );
-
-
     Properties props = new Properties();
-    props.setProperty("deptCode","Dept Code");
+    props.setProperty("users","Users");
+    props.setProperty("grid permissions","Grid permissions");
+    props.setProperty("functions","Functions");
+    props.setProperty("visible","Visible");
+    props.setProperty("editableInIns","Can ins.");
+    props.setProperty("editableInEdit","Can edit");
+    props.setProperty("required","Required");
+
+    props.setProperty("group sales","Group Sales");
+    props.setProperty("totalAmount","Total Amount");
+    props.setProperty("salesNumber","Sales Nr.");
+    props.setProperty("area","Area");
+    props.setProperty("saleDate","Date");
+    props.setProperty("note","Note");
+    props.setProperty("roleId","Role");
+    props.setProperty("username","Username");
+    props.setProperty("password","Password");
     props.setProperty("description","Description");
-    props.setProperty("address","Address");
-    props.setProperty("tasks","Tasks");
-    props.setProperty("departments","Departments");
-    props.setProperty("taskCode","Task Code");
-    props.setProperty("firstName","First Name");
-    props.setProperty("lastName","Last Name");
-    props.setProperty("deptDescription","Dept. Description");
-    props.setProperty("tadkDescription","Task Description");
-    props.setProperty("hire date","Hire Date");
-    props.setProperty("sex","Sex");
-    props.setProperty("male","Male");
-    props.setProperty("female","Female");
-    props.setProperty("salary","Salary");
-    props.setProperty("empCode","Employee Code");
-    props.setProperty("task","Task");
-    props.setProperty("department","Department");
 
-    props.setProperty("day","Day Of Week");
-    props.setProperty("startMorningHour","Start Hour Morning");
-    props.setProperty("endMorningHour","End Hour Morning");
-    props.setProperty("startAfternoonHour","Start Hour Aftern.");
-    props.setProperty("endAfternoonHour","End Hour Aftern.");
-
-    props.setProperty("sunday","Sunday");
-    props.setProperty("monday","Monday");
-    props.setProperty("tuesday","Tuesday");
-    props.setProperty("wednesday","Wednesday");
-    props.setProperty("thursday","Thursday");
-    props.setProperty("friday","Friday");
-    props.setProperty("saturday","Saturday");
-
-    // tips...
-    props.setProperty("shortcuts in grid and form controls","Shortcuts in grid and form controls");
-    props.setProperty("quick filter and other features in grid control","Quick filter and other features in grid control");
-    props.setProperty(
-        "press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
-        "press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
-        "press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
-        "press ctrl+d to switch to delete records in a grid or in a form panel.\n",
-        "Press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
-        "Press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
-        "Press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
-        "Press ctrl+d to switch to delete records in a grid or in a form panel.\n"
-    );
-    props.setProperty(
-        "<html><body>you may right click with the mouse button inside a grid to show\n"+
-        "a popup menu that allows to:\n"+
-        "<ul><li>filter data of the current selected column</li>\n"+
-        "<li>show/hide columns</li></ul></body></html>",
-        "<html><body>You may right click with the mouse button inside a grid to show\n"+
-        "a popup menu that allows to:\n"+
-        "<ul><li>filter data of the current selected column</li>\n"+
-        "<li>show/hide columns</li></ul></body></html>"
-    );
-
+    props.setProperty("administrator","Administrator");
+    props.setProperty("restricted user","Restricted user");
 
     ClientSettings clientSettings = new ClientSettings(
         new EnglishOnlyResourceFactory("$",props,true),
@@ -149,6 +94,13 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
       new DefaultDbDigestDescriptor(),
       new DefaultDbProfileDescriptor()
     );
+
+    ClientSettings.GRID_PERMISSION_MANAGER = new DbGridPermissionsManager(
+      this,
+      new org.openswing.swing.table.permissions.database.server.DefaultDbDigestDescriptor(),
+      new DefaultDbPermissionsDescriptor()
+    );
+
 
 // an alternative: a primary key that includes another field and additional fields to insert/update...
 /*
@@ -241,10 +193,7 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
     );
 */
 
-    MDIFrame mdi = new MDIFrame(this);
-
-    // show tip of the day internal frame...
-    showTipFrame();
+    LoginDialog d = new LoginDialog(null,false,this);
   }
 
 
@@ -252,55 +201,15 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
    * Method called after MDI creation.
    */
   public void afterMDIcreation(MDIFrame frame) {
+    GenericStatusPanel userPanel = new GenericStatusPanel();
+    userPanel.setColumns(12);
+    MDIFrame.addStatusComponent(userPanel);
+    userPanel.setText(username);
     MDIFrame.addStatusComponent(new Clock());
-
   }
 
 
-  /**
-   * Show 'tip of the day' internal frame.
-   */
-  private void showTipFrame() {
-    final TipInternalFrame tipFrame1 = new TipInternalFrame(new TipPanelContent() {
-
-      /**
-       * @return list of titles, for each tip
-       */
-      public String[] getTitles() {
-        return new String[] {
-            "shortcuts in grid and form controls",
-
-            "quick filter and other features in grid control"
-        };
-      }
-
-
-      /**
-       * @return list of tips
-       */
-      public String[] getTips() {
-        return new String[] {
-            "press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
-            "press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
-            "press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
-            "press ctrl+d to switch to delete records in a grid or in a form panel.\n",
-
-            "<html><body>you may right click with the mouse button inside a grid to show\n"+
-            "a popup menu that allows to:\n"+
-            "<ul><li>filter data of the current selected column</li>\n"+
-            "<li>show/hide columns</li></ul></body></html>"
-        };
-      }
-
-    });
-
-    tipFrame1.setShowCheck(false);
-    MDIFrame.add(tipFrame1);
-
-  }
-
-
-  /**
+   /**
    * @see JFrame getExtendedState method
    */
   public int getExtendedState() {
@@ -346,7 +255,7 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
    * @return <code>true</code> if the MDI frame must show a login menu in the menubar, <code>false</code> no login menu item will be added
    */
   public boolean viewLoginInMenuBar() {
-    return false;
+    return true;
   }
 
 
@@ -383,7 +292,8 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
    * @return a dialog window to logon the application; the method can return null if viewLoginInMenuBar returns false
    */
   public JDialog viewLoginDialog(JFrame parentFrame) {
-    return null;
+    JDialog d = new LoginDialog(parentFrame,true,this);
+    return d;
   }
 
 
@@ -392,7 +302,7 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
    * @return maximum number of failed login
    */
   public int getMaxAttempts() {
-    return 0;
+    return 3;
   }
 
 
@@ -402,10 +312,35 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
    * @return <code>true</code> if user is correcly authenticated, <code>false</code> otherwise
    */
   public boolean authenticateUser(Map loginInfo) throws Exception {
-    return true;
+    PreparedStatement pstmt = null;
+    ResultSet rset = null;
+    try {
+      pstmt = conn.prepareStatement("select * from USERS where USERNAME=? and PASSWORD=?");
+      pstmt.setString(1,loginInfo.get("username").toString().toUpperCase());
+      pstmt.setString(2,(String)loginInfo.get("password"));
+      rset = pstmt.executeQuery();
+      if (rset.next())
+        return true;
+      else
+        return false;
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+      return false;
+    }
+    finally {
+      try {
+        rset.close();
+      }
+      catch (Exception ex1) {
+      }
+      try {
+        pstmt.close();
+      }
+      catch (Exception ex1) {
+      }
+    }
   }
-
-
 
 
   public static void main(String[] argv) {
@@ -417,15 +352,45 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
    * Method called by LoginDialog to notify the sucessful login.
    * @param loginInfo login information, like username, password, ...
    */
-  public void loginSuccessful(Map loginInfo) { }
+  public void loginSuccessful(Map loginInfo) {
+    username = loginInfo.get("username").toString().toUpperCase();
 
+    ClientSettings.GRID_PROFILE_MANAGER.setUsername(username);
+    ClientSettings.GRID_PERMISSION_MANAGER.setUsername(username);
+
+    domains.clear();
+    Domain rolesDomain = new Domain("ROLES");
+    rolesDomain.addDomainPair("ALL","administrator");
+    rolesDomain.addDomainPair("RESTRICTED","restricted user");
+    domains.put(
+      rolesDomain.getDomainId(),
+      rolesDomain
+    );
+
+    Domain functionsDomain = new Domain("FUNCTIONS");
+    functionsDomain.addDomainPair("getGroupSales","group sales");
+    domains.put(
+      functionsDomain.getDomainId(),
+      functionsDomain
+    );
+
+    MDIFrame mdi = new MDIFrame(this);
+//    try {
+//      UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+//      SwingUtilities.updateComponentTreeUI(mdi);
+//    }
+//    catch (Throwable ex) {
+//      ex.printStackTrace();
+//    }
+
+  }
 
 
   /**
    * @return <code>true</code> if the MDI frame must show a change language menu in the menubar, <code>false</code> no change language menu item will be added
    */
   public boolean viewChangeLanguageInMenuBar() {
-    return true;
+    return false;
   }
 
 
@@ -446,14 +411,18 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
   public DefaultTreeModel getApplicationFunctions() {
     DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
-    ApplicationFunction n1 = new ApplicationFunction("Administration",null);
-    ApplicationFunction n11 = new ApplicationFunction("Employees","getEmployees","men.gif","getEmployees");
-    ApplicationFunction n12 = new ApplicationFunction("Departments","getDepts","appicon.gif","getDepts");
-    ApplicationFunction n13 = new ApplicationFunction("Tasks","getTasks","appicon.gif","getTasks");
-    n1.add(n11);
-    n1.add(n12);
-    n1.add(n13);
-    root.add(n1);
+    if (username.equals("ADMIN")) {
+      ApplicationFunction n1 = new ApplicationFunction("Administration",null);
+      ApplicationFunction n11 = new ApplicationFunction("Users","getUserRoles","men.gif","getUserRoles");
+      n1.add(n11);
+      ApplicationFunction n12 = new ApplicationFunction("Grid permissions","getGridPermissionsPerRole","grid.gif","getGridPermissionsPerRole");
+      n1.add(n12);
+      root.add(n1);
+    }
+    ApplicationFunction n2 = new ApplicationFunction("Functionalities",null);
+    ApplicationFunction n21 = new ApplicationFunction("Group Sales","getGroupSales","calendar.gif","getGroupSales");
+    n2.add(n21);
+    root.add(n2);
 
     return model;
   }
@@ -469,116 +438,25 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table EMP(EMP_CODE VARCHAR,FIRST_NAME VARCHAR,LAST_NAME VARCHAR,SALARY DECIMAL(10,2),HIRE_DATE DATE,SEX CHAR(1),DEPT_CODE VARCHAR,TASK_CODE VARCHAR,NOTE VARCHAR,PRIMARY KEY(EMP_CODE))");
-        stmt.execute();
-        stmt.close();
-
-        stmt = conn.prepareStatement("create table TASKS(TASK_CODE VARCHAR,DESCRIPTION VARCHAR,STATUS CHAR(1),PRIMARY KEY(TASK_CODE))");
-        stmt.execute();
-        stmt.close();
-
-        stmt = conn.prepareStatement("create table DEPT(DEPT_CODE VARCHAR,DESCRIPTION VARCHAR,ADDRESS VARCHAR,STATUS CHAR(1),PRIMARY KEY(DEPT_CODE))");
-        stmt.execute();
-        stmt.close();
-
-        stmt = conn.prepareStatement("create table WORKING_DAYS(DAY NUMERIC,EMP_CODE VARCHAR,START_MORNING_HOUR DATETIME,END_MORNING_HOUR DATETIME,START_AFTERNOON_HOUR DATETIME,END_AFTERNOON_HOUR DATETIME,PRIMARY KEY(DAY,EMP_CODE))");
+        stmt = conn.prepareStatement("create table GROUP_SALES(SALE_DATE DATE,AREA VARCHAR,TOTAL_AMOUNT DECIMAL,SALES_NUMBER NUMERIC,NOTE VARCHAR,PRIMARY KEY(SALE_DATE,AREA))");
         stmt.execute();
 
-        stmt.close();
-        stmt = conn.prepareStatement("insert into TASKS values('DEV','Developer','E')");
-        stmt.execute();
-        stmt = conn.prepareStatement("insert into TASKS values('PM','Project Manager','E')");
-        stmt.execute();
-        stmt = conn.prepareStatement("insert into TASKS values('ANA','Analist','E')");
-        stmt.execute();
-        stmt = conn.prepareStatement("insert into TASKS values('TEST','Tester','E')");
-        stmt.execute();
-        stmt = conn.prepareStatement("insert into TASKS values('DEP','Deployer','E')");
-        stmt.execute();
-
-        stmt.close();
-        stmt = conn.prepareStatement("insert into DEPT values('S','Sales','5th Ev. - NY','E')");
-        stmt.execute();
-        stmt = conn.prepareStatement("insert into DEPT values('P','Purchases','5th Ev. - NY','E')");
-        stmt.execute();
-        stmt = conn.prepareStatement("insert into DEPT values('A','Accounting','14 Rome St.  - London','E')");
-        stmt.execute();
-        stmt = conn.prepareStatement("insert into DEPT values('SF','Software Factory','14 Rome St.  - London','E')");
-        stmt.execute();
-
-        Calendar cal = Calendar.getInstance();
-        cal.set(cal.YEAR,0);
-        cal.set(cal.MONTH,0);
-        cal.set(cal.DAY_OF_MONTH,0);
-        cal.set(cal.HOUR_OF_DAY,8);
-        cal.set(cal.MINUTE,0);
-        cal.set(cal.SECOND,0);
-        java.sql.Timestamp t1 = new java.sql.Timestamp(cal.getTime().getTime());
-        cal.set(cal.HOUR_OF_DAY,12);
-        java.sql.Timestamp t2 = new java.sql.Timestamp(cal.getTime().getTime());
-        cal.set(cal.HOUR_OF_DAY,13);
-        java.sql.Timestamp t3 = new java.sql.Timestamp(cal.getTime().getTime());
-        cal.set(cal.HOUR_OF_DAY,17);
-        java.sql.Timestamp t4 = new java.sql.Timestamp(cal.getTime().getTime());
-
-        for(int i=0;i<200;i++) {
+        for(int i=0;i<1;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into EMP values('E"+(i<10?"00":"")+(i>=10 && i<100?"0":"")+(i)+"','Name"+(i+1)+"','Surname"+(i+1)+"',"+(1000+i*100)+",?,'M','SF','DEP',null)");
-          stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
+          stmt = conn.prepareStatement("insert into GROUP_SALES values(?,'AMERICA',"+(12834545*Math.round(5))+","+Math.round(1000*Math.round(2))+",'')");
+          stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()-86400000*i*2));
           stmt.execute();
           stmt.close();
 
-          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i<10?"00":"")+(i>=10 && i<100?"0":"")+(i)+"',?,?,?,?)");
-          stmt.setInt(1,cal.SUNDAY);
-          stmt.setNull(2,Types.DATE);
-          stmt.setNull(2,Types.DATE);
-          stmt.setNull(3,Types.DATE);
-          stmt.setNull(4,Types.DATE);
+          stmt = conn.prepareStatement("insert into GROUP_SALES values(?,'EUROPE',"+(12834545*Math.round(5))+","+Math.round(1000*Math.round(2))+",'')");
+          stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()-86400000*i*2));
           stmt.execute();
-          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i<10?"00":"")+(i>=10 && i<100?"0":"")+(i)+"',?,?,?,?)");
-          stmt.setInt(1,cal.MONDAY);
-          stmt.setObject(2,t1);
-          stmt.setObject(3,t2);
-          stmt.setObject(4,t3);
-          stmt.setObject(5,t4);
-          stmt.execute();
-          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i<10?"00":"")+(i>=10 && i<100?"0":"")+(i)+"',?,?,?,?)");
-          stmt.setInt(1,cal.TUESDAY);
-          stmt.setObject(2,t1);
-          stmt.setObject(3,t2);
-          stmt.setObject(4,t3);
-          stmt.setObject(5,t4);
-          stmt.execute();
-          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i<10?"00":"")+(i>=10 && i<100?"0":"")+(i)+"',?,?,?,?)");
-          stmt.setInt(1,cal.WEDNESDAY);
-          stmt.setObject(2,t1);
-          stmt.setObject(3,t2);
-          stmt.setObject(4,t3);
-          stmt.setObject(5,t4);
-          stmt.execute();
-          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i<10?"00":"")+(i>=10 && i<100?"0":"")+(i)+"',?,?,?,?)");
-          stmt.setInt(1,cal.THURSDAY);
-          stmt.setObject(2,t1);
-          stmt.setObject(3,t2);
-          stmt.setObject(4,t3);
-          stmt.setObject(5,t4);
-          stmt.execute();
-          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i<10?"00":"")+(i>=10 && i<100?"0":"")+(i)+"',?,?,?,?)");
-          stmt.setInt(1,cal.FRIDAY);
-          stmt.setObject(2,t1);
-          stmt.setObject(3,t2);
-          stmt.setObject(4,t3);
-          stmt.setObject(5,t4);
-          stmt.execute();
-          stmt = conn.prepareStatement("insert into WORKING_DAYS values(?,'E"+(i<10?"00":"")+(i>=10 && i<100?"0":"")+(i)+"',?,?,?,?)");
-          stmt.setInt(1,cal.SATURDAY);
-          stmt.setNull(2,Types.DATE);
-          stmt.setNull(2,Types.DATE);
-          stmt.setNull(3,Types.DATE);
-          stmt.setNull(4,Types.DATE);
+          stmt.close();
+
+          stmt = conn.prepareStatement("insert into GROUP_SALES values(?,'ASIA',"+(12834545*Math.round(5))+","+Math.round(1000*Math.round(2))+",'')");
+          stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()-86400000*i*2));
           stmt.execute();
         }
-
         stmt.close();
 
 
@@ -599,6 +477,44 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
 //        stmt = conn.prepareStatement("CREATE TABLE PROFILES(COMPANY_CODE VARCHAR,ID VARCHAR,FUNCTION_ID VARCHAR,USERNAME VARCHAR,DESCRIPTION VARCHAR,SORTED_COLS VARCHAR,SORTED_VERSUS VARCHAR,FILTERS VARCHAR,COLS_POS VARCHAR,COLS_VIS VARCHAR,COLS_WIDTH VARCHAR,IS_DEFAULT CHAR(1),CREATE_DATE DATETIME,UPDATE_DATE DATETIME,PRIMARY KEY(COMPANY_CODE,ID))");
         stmt.execute();
 
+
+
+
+
+        stmt = conn.prepareStatement("CREATE TABLE PERMISSIONS_DIGESTS(FUNCTION_ID VARCHAR,DIGEST VARCHAR,PRIMARY KEY(FUNCTION_ID))");
+// an alternative: a primary key that includes another field and additional fields to insert/update...
+//        stmt = conn.prepareStatement("CREATE TABLE PERMISSIONS_DIGESTS(COMPANY_CODE VARCHAR,FUNCTION_ID VARCHAR,DIGEST VARCHAR,CREATE_DATE DATETIME,UPDATE_DATE DATETIME,PRIMARY KEY(COMPANY_CODE,FUNCTION_ID))");
+        stmt.execute();
+        stmt.close();
+        stmt = conn.prepareStatement("CREATE TABLE USER_ROLES(USERNAME VARCHAR,ROLE_ID VARCHAR,PRIMARY KEY(USERNAME,ROLE_ID))");
+// an alternative: a primary key that includes another field and additional fields to insert/update...
+//        stmt = conn.prepareStatement("USER_ROLES(COMPANY_CODE VARCHAR,USERNAME VARCHAR,ROLE_ID VARCHAR,PRIMARY KEY(COMPANY_CODE,USERNAME,ROLE_ID))");
+        stmt.execute();
+        stmt.close();
+        stmt = conn.prepareStatement("CREATE TABLE GRID_PERMISSIONS_DEFS(FUNCTION_ID VARCHAR,COLS_POS VARCHAR,EDIT_COLS_IN_INS VARCHAR,EDIT_COLS_IN_EDIT VARCHAR,REQUIRED_COLS VARCHAR,COLS_VIS VARCHAR,PRIMARY KEY(FUNCTION_ID))");
+// an alternative: a primary key that includes another field and additional fields to insert/update...
+//        stmt = conn.prepareStatement("CREATE TABLE GRID_PERMISSIONS_DEFS(COMPANY_CODE VARCHAR,FUNCTION_ID VARCHAR,COLS_POS VARCHAR,EDIT_COLS_IN_INS VARCHAR,EDIT_COLS_IN_EDIT VARCHAR,REQUIRED_COLS VARCHAR,COLS_VIS VARCHAR,PRIMARY KEY(COMPANY_CODE,FUNCTION_ID))");
+        stmt.execute();
+        stmt.close();
+        stmt = conn.prepareStatement("CREATE TABLE GRID_PERMISSIONS(FUNCTION_ID VARCHAR,ROLE_ID VARCHAR,COLS_POS VARCHAR,EDIT_COLS_IN_INS VARCHAR,EDIT_COLS_IN_EDIT VARCHAR,REQUIRED_COLS VARCHAR,COLS_VIS VARCHAR,PRIMARY KEY(FUNCTION_ID,ROLE_ID))");
+// an alternative: a primary key that includes another field and additional fields to insert/update...
+//        stmt = conn.prepareStatement("CREATE TABLE GRID_PERMISSIONS(COMPANY_CODE VARCHAR,FUNCTION_ID VARCHAR,ROLE_ID VARCHAR,COLS_POS VARCHAR,EDIT_COLS_IN_INS VARCHAR,EDIT_COLS_IN_EDIT VARCHAR,REQUIRED_COLS VARCHAR,COLS_VIS VARCHAR,PRIMARY KEY(COMPANY_CODE,FUNCTION_ID,ROLE_ID))");
+        stmt.execute();
+        stmt.close();
+        stmt = conn.prepareStatement("CREATE TABLE USERS(USERNAME VARCHAR,PASSWORD VARCHAR,DESCRIPTION VARCHAR,PRIMARY KEY(USERNAME))");
+        stmt.execute();
+        stmt.close();
+        stmt = conn.prepareStatement("insert into USERS(USERNAME,PASSWORD,DESCRIPTION) values('ADMIN','admin','Administrator')");
+        stmt.execute();
+        stmt.close();
+        stmt = conn.prepareStatement("insert into USERS(USERNAME,PASSWORD,DESCRIPTION) values('GUEST','guest','Guest user')");
+        stmt.execute();
+        stmt.close();
+        stmt = conn.prepareStatement("insert into USER_ROLES(USERNAME,ROLE_ID) values('ADMIN','ALL')");
+        stmt.execute();
+        stmt.close();
+        stmt = conn.prepareStatement("insert into USER_ROLES(USERNAME,ROLE_ID) values('GUEST','RESTRICTED')");
+        stmt.execute();
 
       }
       catch (SQLException ex1) {

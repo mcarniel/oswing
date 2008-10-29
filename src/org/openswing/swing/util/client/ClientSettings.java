@@ -14,6 +14,7 @@ import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.permissions.java.*;
 import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.util.java.*;
+import org.openswing.swing.table.permissions.java.*;
 
 
 /**
@@ -270,6 +271,9 @@ public class ClientSettings {
 
   /** grid profile manager: it manages grid profile storing and fetching */
   public static GridProfileManager GRID_PROFILE_MANAGER = null;
+
+  /** grid permission manager: it manages grid permission storing and fetching */
+  public static GridPermissionsManager GRID_PERMISSION_MANAGER = null;
 
   /** <code>true</code> to show a border around a Form panel when it has focus; <code>false</code> to do not show it; default value: <code>true</code> */
   public static boolean SHOW_FOCUS_BORDER_ON_FORM = true;

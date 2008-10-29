@@ -9,6 +9,7 @@ import javax.swing.tree.*;
 import org.openswing.swing.client.*;
 import org.openswing.swing.mdi.java.*;
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.tree.java.OpenSwingTreeNode;
 
 
 /**
@@ -196,8 +197,21 @@ public class TreeMenu extends JPanel {
    */
   private void createTree(DefaultTreeModel functions) {
     try {
+      DefaultMutableTreeNode oldRoot = (DefaultMutableTreeNode)functions.getRoot();
+      DefaultMutableTreeNode newRoot = null;
+      if (oldRoot instanceof OpenSwingTreeNode)
+        newRoot = new OpenSwingTreeNode();
+      else if (oldRoot instanceof OpenSwingTreeNode)
+        newRoot = new ApplicationFunction();
+      else
+        newRoot = new DefaultMutableTreeNode();
+      newRoot.setUserObject(oldRoot.getUserObject());
+      copyChildNodes(oldRoot,newRoot);
+      DefaultTreeModel treeModel = new DefaultTreeModel(newRoot);
+
       // associo un renderer per le icone dei nodi dell'albero...
-      menuTree.setModel(functions);
+      menuTree.setModel(treeModel);
+//      menuTree.setModel(functions);
       menuTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
       TreeNodeRenderer renderer = new TreeNodeRenderer(menuTree);
       menuTree.setCellRenderer(renderer);
@@ -206,6 +220,37 @@ public class TreeMenu extends JPanel {
         expandAllNodes();
     } catch (Throwable ex) {
       ex.printStackTrace();
+    }
+  }
+
+
+  /**
+   * This method duplicates tree model retrieved from MDIController.getApplicationFunctions() method
+   * and remove nodes that are menu item separators.
+   * @param oldNode current node to duplicate
+   * @param newNnode new node (duplicated)
+   */
+  private void copyChildNodes(DefaultMutableTreeNode oldNode,DefaultMutableTreeNode newNode) {
+    ApplicationFunction oldChildNode = null;
+    ApplicationFunction newChildNode = null;
+    for(int i=0;i<oldNode.getChildCount();i++) {
+      oldChildNode = (ApplicationFunction)oldNode.getChildAt(i);
+      if (oldChildNode.isSeparator())
+        continue;
+      if (oldChildNode.isFolder())
+        newChildNode = new ApplicationFunction(
+          oldChildNode.getDescription(),
+          oldChildNode.getIconName()
+        );
+      else
+        newChildNode = new ApplicationFunction(
+          oldChildNode.getDescription(),
+          oldChildNode.getFunctionId(),
+          oldChildNode.getIconName(),
+          oldChildNode.getMethodName()
+        );
+      newNode.add(newChildNode);
+      copyChildNodes(oldChildNode,newChildNode);
     }
   }
 
@@ -272,6 +317,8 @@ public class TreeMenu extends JPanel {
    */
   private void executeFunction(final ApplicationFunction node) {
     if (node.isFolder())
+      return;
+    if (node.isSeparator())
       return;
     ClientUtils.fireBusyEvent(true);
     new Thread() {

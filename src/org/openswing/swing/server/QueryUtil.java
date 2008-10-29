@@ -1836,6 +1836,10 @@ public class QueryUtil {
           }
         }
       }
+      else if (rowsToRead==0) {
+        // load all rows...
+        action = GridParams.NEXT_BLOCK_ACTION;
+      }
 
       ArrayList list = new ArrayList();
       Object value = null;
@@ -1912,7 +1916,7 @@ public class QueryUtil {
           }
           catch (IllegalArgumentException ex5) {
             try {
-              if (value!=null && !value.getClass().getName().equals(parType.getClass().getName()))
+              if (value!=null && !value.getClass().getName().equals(parType.getName()))
                 Logger.error(
                     userSessionPars.getUsername(),
                     "org.openswing.swing.server.QueryUtil",
@@ -1920,7 +1924,7 @@ public class QueryUtil {
                     "Error while executing the SQL:\n"+
                     baseSQL+"\n"+
                     params+"\n"+
-                    "Incompatible type found between value read ("+value.getClass().getName()+") and value expected ("+parType.getClass().getName()+") in setter '"+setterMethods[i].getName()+"'.",
+                    "Incompatible type found between value read ("+value.getClass().getName()+") and value expected ("+parType.getName()+") in setter '"+setterMethods[i].getName()+"'.",
                     null
                 );
             }
@@ -2038,8 +2042,13 @@ public class QueryUtil {
    ArrayList list = new ArrayList();
    sql = sql.substring(sql.toLowerCase().indexOf("select")+7,sql.toLowerCase().indexOf("from"));
    StringTokenizer st = new StringTokenizer(sql,",");
-   while(st.hasMoreTokens())
-     list.add( st.nextToken().trim() );
+   String token = null;
+   while(st.hasMoreTokens()) {
+     token = st.nextToken().trim();
+     if (token.indexOf(" ")!=-1)
+       token = token.substring(token.lastIndexOf(" ")+1);
+     list.add( token );
+   }
    return list;
  }
 

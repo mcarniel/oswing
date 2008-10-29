@@ -1,5 +1,31 @@
 
 
+Release Notes 1.8.1
+-------------------
+
+Final release 1.8.1 available
+Fixed problems in GridControl:
+- now loadDataCompleted is invoked when loading zero records too
+- improved pagination input field in navigator bar: now it operates correctly also when "totalAmountOfRows" is not setted
+Improved GridControl:
+- added support to permissions at column level; now it is possible to show/hide specific columns, as well as force columns mandatory or column editability
+- added "demo45" sample application, in order to show to permissions at column level operate and how to create a permissions management front-end
+- added support for a generic CustomValueObject, that can be mapped with dynamic sql, in order to create a grid at run time, using mapping
+  between sql select fields and CustomValueObject's attributes
+- added "demo46" sample application, in order to show how to use CustomValueObject to create a grid at run time based on a dynamic SQL
+Fixed problem on filtering data on grid with value objects having Integer type attributes.
+Fixed problems in QueryUtil:
+- when applying filtering conditions with fields having alias
+- when loading all rows and user has pressed last button
+Fixed problem with auto-completition panel in lookup control, when user is scrolling the list of codes.
+Improved HibernateUtil class, in order to support sorting/filtering per attributes of inner value objects (see "demo17" sample application).
+Improved MDIFrame menu bar: now it is possible to add a separator between menu items using ApplicationFunction constructor.
+Changed "demo10" sample application, in order to show how to add a separator between menu items using ApplicationFunction constructor.
+Fixed PolishOnlyResourceFactory
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.8
 -----------------
 

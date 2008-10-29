@@ -51,6 +51,7 @@ public class GridFrame extends JFrame {
   FormattedTextColumn colFormattedText = new FormattedTextColumn();
   IntegerColumn colInt = new IntegerColumn();
   MultiLineTextColumn colMultiLine = new MultiLineTextColumn();
+  FilterButton filterButton = new FilterButton();
 
 
   public GridFrame(Connection conn,GridFrameController controller) {
@@ -190,6 +191,7 @@ public class GridFrame extends JFrame {
     grid.setInsertButton(insertButton);
     grid.setNavBar(navigatorBar1);
     grid.setReloadButton(reloadButton);
+    grid.setFilterButton(filterButton);
     grid.setRowHeight(40);
     grid.setSaveButton(saveButton);
 
@@ -258,7 +260,7 @@ public class GridFrame extends JFrame {
     colButton.setEditableOnEdit(true);
     colButton.setHeaderColumnName("button");
     colButton.setPreferredWidth(50);
-    colFormattedText.setColumnFilterable(false);
+    colFormattedText.setColumnFilterable(true);
     colFormattedText.setColumnName("formattedTextValue");
     colFormattedText.setColumnSortable(false);
     colFormattedText.setEditableOnEdit(true);
@@ -330,6 +332,7 @@ public class GridFrame extends JFrame {
     buttonsPanel.add(saveButton, null);
     buttonsPanel.add(exportButton, null);
     buttonsPanel.add(deleteButton, null);
+    buttonsPanel.add(filterButton,null);
     buttonsPanel.add(navigatorBar1, null);
     grid.getColumnContainer().add(colText, null);
     grid.getColumnContainer().add(colDecimal, null);

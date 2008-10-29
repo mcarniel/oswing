@@ -51,12 +51,25 @@ public class ApplicationFunction extends DefaultMutableTreeNode {
   /** node description */
   private String description;
 
+  /** this node is a separator */
+  private boolean isSeparator;
+
 
   /**
    * Root node.
    */
   public ApplicationFunction() {
     super();
+  }
+
+
+  /**
+   * Root node or separator.
+   * @param isSeparator <code>true</code> to set a separator, <code>false</code> to define a root node
+   */
+  public ApplicationFunction(boolean isSeparator) {
+    super();
+    this.isSeparator = isSeparator;
   }
 
 
@@ -140,6 +153,14 @@ public class ApplicationFunction extends DefaultMutableTreeNode {
 
   public String toString() {
     return description;
+  }
+
+
+  /**
+   * @return this node is a separator
+   */
+  public final boolean isSeparator() {
+    return isSeparator;
   }
 
 

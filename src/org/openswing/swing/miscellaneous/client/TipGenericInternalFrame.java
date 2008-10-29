@@ -124,4 +124,13 @@ public class TipGenericInternalFrame extends JInternalFrame implements TipPanelC
     return tipPanel.isShowToolTip();
   }
 
+
+  /**
+   * Set/unset check-box 'show 'tip of the day' after launching'.
+   * @return <code>true</code> to show check-box 'show 'tip of the day' after launching', <code>false</code> to hide it
+   */
+  public final void setShowToolTip(boolean showToolTip) {
+    tipPanel.setShowToolTip(showToolTip);
+  }
+
 }

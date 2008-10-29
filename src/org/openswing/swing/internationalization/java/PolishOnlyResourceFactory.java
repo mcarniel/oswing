@@ -32,8 +32,8 @@ import org.openswing.swing.internationalization.java.ResourcesFactory;
  *       The author of polish translate may be contacted at:
  *                     ujacek@tlen.pl</p>
  *
- * @author Mauro Carniel/Jacek Uznański
- * @version 1.0, based on version 1.7.7
+ * @author Mauro Carniel/Jacek Uznanski
+ * @version 1.0
  */
 public class PolishOnlyResourceFactory extends ResourcesFactory {
 
@@ -53,33 +53,33 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.putAll(additionalDictionary);
 
         // grid...
-        dictionary.setProperty("of","de");
-        dictionary.setProperty("page","Page");
-        dictionary.setProperty("Remove Filter", "Usuń warunki wybierania");
+        dictionary.setProperty("of","z");
+        dictionary.setProperty("page","Strona");
+        dictionary.setProperty("Remove Filter", "Usu\u0144 warunki wybierania");
         dictionary.setProperty("This column is not sorteable", "Ta kolumna nie podlega sortowaniu");
-        dictionary.setProperty("Sorting not allowed", "Sortowanie jest niemożliwe");
-        dictionary.setProperty("Maximum number of sorted columns", "Wykorzystano maksymalną liczbę sortowanych kolumn");
+        dictionary.setProperty("Sorting not allowed", "Sortowanie jest niemo\u017cliwe");
+        dictionary.setProperty("Maximum number of sorted columns", "Wykorzystano maksymaln\u0105 liczb\u0119 sortowanych kolumn");
         dictionary.setProperty("Sorting not applicable", "Ograniczenie sortowania");
         dictionary.setProperty("Selected Row", "Wybrana pozycja");
         dictionary.setProperty("Selected Rows", "Wybrana pozycje");
-        dictionary.setProperty("Cancel changes and reload data?", "Czy porzucić zmiany i przeładować dane?");
+        dictionary.setProperty("Cancel changes and reload data?", "Czy porzuci\u0107 zmiany i prze\u0142adowa\u0107 dane?");
         dictionary.setProperty("Attention", "Uwaga");
         dictionary.setProperty("Loading data...", "Trwa pobieranie danych...");
-        dictionary.setProperty("Error while loading data", "Wystąpił błąd podczas pobierania danych");
-        dictionary.setProperty("Loading Data Error", "Błąd pobierania danych");
-        dictionary.setProperty("Delete Rows?", "Czy usunąć wskazane pozycje?");
-        dictionary.setProperty("Delete Confirmation", "Potwierdzenie usunięcia");
-        dictionary.setProperty("Error while deleting rows.", "Wystąpił błąd podczas usuwania danych.");
-        dictionary.setProperty("Deleting Error", "Błąd kasowania danych");
-        dictionary.setProperty("Error while saving", "Wystąpił błąd podczas zapisywania danych.");
-        dictionary.setProperty("Saving Error", "Błąd zapisywania danych");
-        dictionary.setProperty("A mandatory column is empty.", "Brak wartości dla wymaganej kolumny.");
-        dictionary.setProperty("Value not valid", "Nieprawidłowa wartość");
+        dictionary.setProperty("Error while loading data", "Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania danych");
+        dictionary.setProperty("Loading Data Error", "B\u0142\u0105d pobierania danych");
+        dictionary.setProperty("Delete Rows?", "Czy usun\u0105\u0107 wskazane pozycje?");
+        dictionary.setProperty("Delete Confirmation", "Potwierdzenie usuni\u0119cia");
+        dictionary.setProperty("Error while deleting rows.", "Wyst\u0105pi\u0142 b\u0142\u0105d podczas usuwania danych.");
+        dictionary.setProperty("Deleting Error", "B\u0142\u0105d kasowania danych");
+        dictionary.setProperty("Error while saving", "Wyst\u0105pi\u0142 b\u0142\u0105d podczas zapisywania danych.");
+        dictionary.setProperty("Saving Error", "B\u0142\u0105d zapisywania danych");
+        dictionary.setProperty("A mandatory column is empty.", "Brak warto\u015bci dla wymaganej kolumny.");
+        dictionary.setProperty("Value not valid", "Nieprawid\u0142owa warto\u015b\u0107");
         dictionary.setProperty("sorting conditions", "Warunki sortowania");
         dictionary.setProperty("filtering conditions", "Warunki wybierania");
         dictionary.setProperty("filtering and sorting settings", "Warunki wybierania i sortowania");
         dictionary.setProperty("Filtering/Sorting data (CTRL+F)", "Warunki wybierania i sortowania (CTRL+F)");
-        dictionary.setProperty("upload file", "Wysłanie pliku");
+        dictionary.setProperty("upload file", "Wys\u0142anie pliku");
         dictionary.setProperty("download file", "Pobranie pliku");
 
         // export...
@@ -88,7 +88,7 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("exportmnemonic", "X");
         dictionary.setProperty("column", "Kolumna");
         dictionary.setProperty("sel.", "Wyb.");
-        dictionary.setProperty("you must select at least one column", "Musisz wybrać co najmniej jedną kolumnę");
+        dictionary.setProperty("you must select at least one column", "Musisz wybra\u0107 co najmniej jedn\u0105 kolumn\u0119");
         dictionary.setProperty("columns to export", "Kolumny do wyeksportowania");
         dictionary.setProperty("export type", "Format eksportu");
 
@@ -99,17 +99,17 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("importmnemonic", "M");
         dictionary.setProperty("columns to import", "Kolumny do zaimportowania");
         dictionary.setProperty("import type", "Format importu");
-        dictionary.setProperty("error while importing data", "Wystąpił błąd podczas importowania danych");
-        dictionary.setProperty("import completed", "Importowanie zakończone");
+        dictionary.setProperty("error while importing data", "Wyst\u0105pi\u0142 b\u0142\u0105d podczas importowania danych");
+        dictionary.setProperty("import completed", "Importowanie zako\u0144czone");
 
         // quick filter...
-        dictionary.setProperty("To value", "Do wartości");
+        dictionary.setProperty("To value", "Do warto\u015bci");
         dictionary.setProperty("Filter by", "Wybierz dla");
-        dictionary.setProperty("From value", "Od wartości");
-        dictionary.setProperty("equals", "równe");
+        dictionary.setProperty("From value", "Od warto\u015bci");
+        dictionary.setProperty("equals", "r\u00f3wne");
         dictionary.setProperty("contains", "zawiera");
-        dictionary.setProperty("starts with", "zaczyna się");
-        dictionary.setProperty("ends with", "kończy się");
+        dictionary.setProperty("starts with", "zaczyna si\u0119");
+        dictionary.setProperty("ends with", "ko\u0144czy si\u0119");
 
         // select/deselect all
         dictionary.setProperty("select all", "Zaznacz wszystko");
@@ -124,41 +124,41 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("pastemnemonic", "P");
 
         // lookup...
-        dictionary.setProperty("Code is not correct.", "Podany symbol jest nieprawidłowy.");
+        dictionary.setProperty("Code is not correct.", "Podany symbol jest nieprawid\u0142owy.");
         dictionary.setProperty("Code Validation", "Sprawdzenie symbolu");
-        dictionary.setProperty("Code Selection", "Wybór symbolu");
+        dictionary.setProperty("Code Selection", "Wyb\u00f3r symbolu");
 
         // form...
-        dictionary.setProperty("Confirm deliting data?", "Czy potwierdzasz usunięcie danych?");
-        dictionary.setProperty("Error while saving: incorrect data.", "Wystąpił błąd podczas zapisywania danych: nieprawidłowe dane.");
-        dictionary.setProperty("Error on deleting:", "Błąd podczas usuwania:");
-        dictionary.setProperty("Error on Loading", "Błąd podczas ładowania");
-        dictionary.setProperty("Error while loading data:", "Wystąpił błąd podczas ładowania danych:");
-        dictionary.setProperty("Error on setting value to the input control having the attribute name", "Błąd nadania wartości elementowi edycji dla atrybutu");
+        dictionary.setProperty("Confirm deliting data?", "Czy potwierdzasz usuni\u0119cie danych?");
+        dictionary.setProperty("Error while saving: incorrect data.", "Wyst\u0105pi\u0142 b\u0142\u0105d podczas zapisywania danych: nieprawid\u0142owe dane.");
+        dictionary.setProperty("Error on deleting:", "B\u0142\u0105d podczas usuwania:");
+        dictionary.setProperty("Error on Loading", "B\u0142\u0105d podczas \u0142adowania");
+        dictionary.setProperty("Error while loading data:", "Wyst\u0105pi\u0142 b\u0142\u0105d podczas \u0142adowania danych:");
+        dictionary.setProperty("Error on setting value to the input control having the attribute name", "B\u0142\u0105d nadania warto\u015bci elementowi edycji dla atrybutu");
 
 
         // toolbar buttons...
-        dictionary.setProperty("Delete record (CTRL+D)", "Usuń (CTRL+D)");
-        dictionary.setProperty("Edit record (CTRL+E)", "Zmień (CTRL+E)");
+        dictionary.setProperty("Delete record (CTRL+D)", "Usu\u0144 (CTRL+D)");
+        dictionary.setProperty("Edit record (CTRL+E)", "Zmie\u0144 (CTRL+E)");
         dictionary.setProperty("New record (CTRL+I)", "Dopisz (CTRL+I)");
-        dictionary.setProperty("Reload record/Cancel current operation (CTRL+Z)", "Odśwież/Zrezygnuj (CTRL+Z)");
+        dictionary.setProperty("Reload record/Cancel current operation (CTRL+Z)", "Od\u015bwie\u017c/Zrezygnuj (CTRL+Z)");
         dictionary.setProperty("Save record (CTRL+S)", "Zapisz (CTRL+S)");
         dictionary.setProperty("Copy record (CTRL+C)", "Kopiuj (CTRL+C)");
         dictionary.setProperty("Export record (CTRL+X)", "Eksportuj (CTRL+X)");
         dictionary.setProperty("Import records (CTRL+M)", "Importuj (CTRL+M)");
-        dictionary.setProperty("Load the first block of records", "Początek danych");
+        dictionary.setProperty("Load the first block of records", "Pocz\u0105tek danych");
         dictionary.setProperty("Select the previous row in grid", "Poprzednia pozycja");
-        dictionary.setProperty("Select the next row in grid", "Następna pozycja");
+        dictionary.setProperty("Select the next row in grid", "Nast\u0119pna pozycja");
         dictionary.setProperty("Load the previous block of records", "Poprzedni blok danych");
-        dictionary.setProperty("Load the next block of records", "Następny blok danych");
+        dictionary.setProperty("Load the next block of records", "Nast\u0119pny blok danych");
         dictionary.setProperty("Load the last block of records", "Koniec danych");
 
         dictionary.setProperty("Insert", "Wstaw");
-        dictionary.setProperty("Edit", "Zmień");
+        dictionary.setProperty("Edit", "Zmie\u0144");
         dictionary.setProperty("Copy", "Kopiuj");
-        dictionary.setProperty("Delete", "Usuń");
+        dictionary.setProperty("Delete", "Usu\u0144");
         dictionary.setProperty("Save", "Zapisz");
-        dictionary.setProperty("Reload", "Odśwież");
+        dictionary.setProperty("Reload", "Od\u015bwie\u017c");
         dictionary.setProperty("Export", "Eksportuj");
         dictionary.setProperty("Filter", "Filtruj");
 
@@ -167,52 +167,52 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("exit", "Koniec");
         dictionary.setProperty("filemnemonic", "F");
         dictionary.setProperty("exitmnemonic", "E");
-        dictionary.setProperty("change user", "Zmień użytkownika");
+        dictionary.setProperty("change user", "Zmie\u0144 u\u017cytkownika");
         dictionary.setProperty("changeusermnemonic", "U");
         dictionary.setProperty("changelanguagemnemonic", "L");
         dictionary.setProperty("help", "Pomoc");
         dictionary.setProperty("about", "O programie");
         dictionary.setProperty("helpmnemonic", "H");
         dictionary.setProperty("aboutmnemonic", "A");
-        dictionary.setProperty("are you sure to quit application?", "Czy zakończyć działanie aplikacji?");
-        dictionary.setProperty("quit application", "Zamknij aplikację");
+        dictionary.setProperty("are you sure to quit application?", "Czy zako\u0144czy\u0107 dzia\u0142anie aplikacji?");
+        dictionary.setProperty("quit application", "Zamknij aplikacj\u0119");
         dictionary.setProperty("forcegcmnemonic", "F");
         dictionary.setProperty("Force GC", "Uruchom GC");
         dictionary.setProperty("Java Heap", "Java Heap");
-        dictionary.setProperty("used", "użyte");
+        dictionary.setProperty("used", "u\u017cyte");
         dictionary.setProperty("allocated", "przydzielone");
-        dictionary.setProperty("change language", "Zmień język");
+        dictionary.setProperty("change language", "Zmie\u0144 j\u0119zyk");
         dictionary.setProperty("changemnemonic", "L");
         dictionary.setProperty("cancelmnemonic", "C");
         dictionary.setProperty("cancel", "Zrezygnuj");
         dictionary.setProperty("yes", "Tak");
         dictionary.setProperty("no", "Nie");
         dictionary.setProperty("Functions", "Funkcje");
-        dictionary.setProperty("Error while executing function", "Błąd podczas wywołania funkcji");
-        dictionary.setProperty("Error", "Błąd");
+        dictionary.setProperty("Error while executing function", "B\u0142\u0105d podczas wywo\u0142ania funkcji");
+        dictionary.setProperty("Error", "B\u0142\u0105d");
         dictionary.setProperty("infoPanel", "Informacje");
         dictionary.setProperty("imageButton", "About");
         dictionary.setProperty("Window", "Okna");
         dictionary.setProperty("windowmnemonic", "W");
         dictionary.setProperty("Close All", "Zamknij wszystkie");
         dictionary.setProperty("closeallmnemonic", "A");
-        dictionary.setProperty("Press ENTER to find function", "Naciśnij ENTER by znaleźć funkcję");
-        dictionary.setProperty("Find Function", "Znajdź Funkcję");
+        dictionary.setProperty("Press ENTER to find function", "Naci\u015bnij ENTER by znale\u017a\u0107 funkcj\u0119");
+        dictionary.setProperty("Find Function", "Znajd\u017a Funkcj\u0119");
         dictionary.setProperty("Operation in progress...", "Operacja w toku...");
         dictionary.setProperty("close window", "Zamknij okno");
         dictionary.setProperty("reduce to icon", "Zmniejsz do ikony");
-        dictionary.setProperty("are you sure to close this window?", "Czy jesteś pewien że chcesz zamknąc to okno?\nNiezapamiętane zmiany zostaną utracone.");
-        dictionary.setProperty("confirm window closing", "Potwierdź zamknięcie okna");
-        dictionary.setProperty("change background","Zmień tło");
-        dictionary.setProperty("reset background","Przywróć tło");
+        dictionary.setProperty("are you sure to close this window?", "Czy jeste\u015b pewien \u017ce chcesz zamkn\u0105c to okno?\nNiezapami\u0119tane zmiany zostan\u0105 utracone.");
+        dictionary.setProperty("confirm window closing", "Potwierd\u017a zamkni\u0119cie okna");
+        dictionary.setProperty("change background","Zmie\u0144 t\u0142o");
+        dictionary.setProperty("reset background","Przywr\u00f3\u0107 t\u0142o");
 
-        dictionary.setProperty("switch", "Przełącz");
+        dictionary.setProperty("switch", "Prze\u0142\u0105cz");
         dictionary.setProperty("switchmnemonic", "S");
         dictionary.setProperty("window name", "Nazwa okna");
         dictionary.setProperty("opened windows", "Otwarte okna");
-        dictionary.setProperty("tile horizontally", "Układ poziomy");
+        dictionary.setProperty("tile horizontally", "Uk\u0142ad poziomy");
         dictionary.setProperty("tilehorizontallymnemonic", "H");
-        dictionary.setProperty("tile vertically", "Układ pionowy");
+        dictionary.setProperty("tile vertically", "Uk\u0142ad pionowy");
         dictionary.setProperty("tileverticallymnemonic", "V");
         dictionary.setProperty("cascade", "Kaskada");
         dictionary.setProperty("cascademnemonic", "C");
@@ -222,9 +222,9 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("minimizeallmnemonic", "A");
 
         // server...
-        dictionary.setProperty("Client request not supported", "Żądania do klienta nie są obsługiwane");
-        dictionary.setProperty("User disconnected", "Użytkownik jest odłączony");
-        dictionary.setProperty("Updating not performed: the record was previously updated.", "Aktualizacja się nie powiodła: rekord był juz uprzednio zaktualizowany.");
+        dictionary.setProperty("Client request not supported", "\u017b\u0105dania do klienta nie s\u0105 obs\u0142ugiwane");
+        dictionary.setProperty("User disconnected", "U\u017cytkownik jest od\u0142\u0105czony");
+        dictionary.setProperty("Updating not performed: the record was previously updated.", "Aktualizacja si\u0119 nie powiod\u0142a: rekord by\u0142 juz uprzednio zaktualizowany.");
 
         // wizard...
         dictionary.setProperty("back", "Wstecz");
@@ -232,42 +232,42 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("finish", "Koniec");
 
         // image panel...
-        dictionary.setProperty("image selection", "Wybór obrazu");
+        dictionary.setProperty("image selection", "Wyb\u00f3r obrazu");
 
         // tip of the day panel...
-        dictionary.setProperty("show 'tip of the day' after launching", "Pokazuj 'poradę dnia' po uruchomieniu aplikacji");
+        dictionary.setProperty("show 'tip of the day' after launching", "Pokazuj 'porad\u0119 dnia' po uruchomieniu aplikacji");
         dictionary.setProperty("previous tip", "Poprzednia");
-        dictionary.setProperty("next tip", "Następna");
+        dictionary.setProperty("next tip", "Nast\u0119pna");
         dictionary.setProperty("close", "Zamknij");
         dictionary.setProperty("tip of the day", "Porada dnia");
 
         // progress panel...
-        dictionary.setProperty("progress", "Postęp");
+        dictionary.setProperty("progress", "Post\u0119p");
 
         // licence agreement...
-        dictionary.setProperty("i accept the terms in the licence agreement", "Akceptuję warunki zawarte w umowie licencyjnej");
-        dictionary.setProperty("ok", "Zatwierdź");
-        dictionary.setProperty("i do not accept the terms in the licence agreement", "Nie akceptuję warunków umowy licencyjnej");
+        dictionary.setProperty("i accept the terms in the licence agreement", "Akceptuj\u0119 warunki zawarte w umowie licencyjnej");
+        dictionary.setProperty("ok", "Zatwierd\u017a");
+        dictionary.setProperty("i do not accept the terms in the licence agreement", "Nie akceptuj\u0119 warunk\u00f3w umowy licencyjnej");
 
         // property grid control
         dictionary.setProperty("property name", "Nazwa");
-        dictionary.setProperty("property value", "Wartość");
+        dictionary.setProperty("property value", "Warto\u015b\u0107");
 
         // grid profile
-        dictionary.setProperty("grid profile management", "Zarządzanie profilami układu tabeli");
-        dictionary.setProperty("restore default grid profile", "Odtwórz domyślny profil układu tabeli");
-        dictionary.setProperty("create new grid profile", "Utwórz nowy profil układu tabeli");
+        dictionary.setProperty("grid profile management", "Zarz\u0105dzanie profilami uk\u0142adu tabeli");
+        dictionary.setProperty("restore default grid profile", "Odtw\u00f3rz domy\u015blny profil uk\u0142adu tabeli");
+        dictionary.setProperty("create new grid profile", "Utw\u00f3rz nowy profil uk\u0142adu tabeli");
         dictionary.setProperty("profile description", "Opis profilu");
-        dictionary.setProperty("remove current grid profile", "Usuń bierzący profil układu tabeli");
-        dictionary.setProperty("select grid profile", "Wybierz profil układu tabeli");
-        dictionary.setProperty("default profile", "Profil domyślny");
+        dictionary.setProperty("remove current grid profile", "Usu\u0144 bierz\u0105cy profil uk\u0142adu tabeli");
+        dictionary.setProperty("select grid profile", "Wybierz profil uk\u0142adu tabeli");
+        dictionary.setProperty("default profile", "Profil domy\u015blny");
 
         // search box
         dictionary.setProperty("search", "Szukaj");
         dictionary.setProperty("not found", "Nie znaleziono");
 
         // drag...
-        dictionary.setProperty("drag", "Ciągnij");
+        dictionary.setProperty("drag", "Ci\u0105gnij");
 
         resources = new Resources(
                 dictionary,

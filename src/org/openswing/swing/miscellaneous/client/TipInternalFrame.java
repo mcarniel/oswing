@@ -124,6 +124,15 @@ public class TipInternalFrame extends InternalFrame implements TipPanelContainer
   }
 
 
+  /**
+   * Set/unset check-box 'show 'tip of the day' after launching'.
+   * @return <code>true</code> to show check-box 'show 'tip of the day' after launching', <code>false</code> to hide it
+   */
+  public final void setShowToolTip(boolean showToolTip) {
+    tipPanel.setShowToolTip(showToolTip);
+  }
+
+
   private void jbInit() throws Exception {
     this.getContentPane().add(tipPanel, BorderLayout.CENTER);
   }

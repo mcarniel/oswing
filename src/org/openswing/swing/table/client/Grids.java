@@ -1121,6 +1121,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         if (gridController!=null)
           gridController.loadDataCompleted(errorOnLoad);
 
+        if (!errorOnLoad)
+          for(int i=0;i<loadDataCompletedListeners.size();i++)
+            ((ActionListener)loadDataCompletedListeners.get(i)).actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"Load Data Completed"));
+
         resetButtonsState();
 
         // fire events related to navigator button pressed...
@@ -1185,6 +1189,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             // fire loading data completed event...
             if (gridController!=null)
               gridController.loadDataCompleted(errorOnLoad);
+
+            if (!errorOnLoad)
+              for(int i=0;i<loadDataCompletedListeners.size();i++)
+                ((ActionListener)loadDataCompletedListeners.get(i)).actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"Load Data Completed"));
 
             resetButtonsState();
 
@@ -1318,6 +1326,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           if (gridController!=null)
             gridController.loadDataCompleted(errorOnLoad);
 
+          if (!errorOnLoad)
+            for(int i=0;i<loadDataCompletedListeners.size();i++)
+              ((ActionListener)loadDataCompletedListeners.get(i)).actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"Load Data Completed"));
+
           resetButtonsState();
 
         }
@@ -1436,6 +1448,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         // fire loading data completed event...
         if (gridController!=null)
           gridController.loadDataCompleted(errorOnLoad);
+
+        if (!errorOnLoad)
+          for(int i=0;i<loadDataCompletedListeners.size();i++)
+            ((ActionListener)loadDataCompletedListeners.get(i)).actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"Load Data Completed"));
 
         resetButtonsState();
 
@@ -1640,8 +1656,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         if (model.getRowCount()==0) {
           statusPanel.setPage("");
           totalResultSetLength = -1;
-          if (getNavBar()!=null)
-            getNavBar().updatePageNumber(0);
+          if (getNavBar()!=null) {
+            if (startIndex>0 && blockSize>0)
+              getNavBar().updatePageNumber(startIndex/blockSize+1);
+            else
+              getNavBar().updatePageNumber(0);
+          }
         }
         else {
           if (!((VOListResponse)answer).isMoreRows() && startIndex==0) {
@@ -3438,6 +3458,14 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       } else {
         statusPanel.setText("");
         selectedRowBeforeReloading = 0;
+
+        // fire loading data completed event...
+        if (gridController!=null)
+          gridController.loadDataCompleted(errorOnLoad);
+
+        if (!errorOnLoad)
+          for(int i=0;i<loadDataCompletedListeners.size();i++)
+            ((ActionListener)loadDataCompletedListeners.get(i)).actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"Load Data Completed"));
       }
 //        grid.ensureRowIsVisible(grid.getSelectedRow());
 //        if (lockedGrid!=null)

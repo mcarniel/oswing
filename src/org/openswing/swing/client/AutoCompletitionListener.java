@@ -83,6 +83,35 @@ public final class AutoCompletitionListener extends KeyAdapter {
     list.setOpaque(false);
     list.setBackground(new Color(250,250,200));
     window.getContentPane().setBackground(new Color(250,250,200));
+    scrollPane.getVerticalScrollBar().setFocusable(true);
+    for(int i=0;i<scrollPane.getVerticalScrollBar().getComponents().length;i++)
+        if (scrollPane.getVerticalScrollBar().getComponents()[i] instanceof JButton) {
+          scrollPane.getVerticalScrollBar().getComponents()[i].addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+      //        e.consume();
+              window.setVisible(true);
+            }
+            public void mouseClicked(MouseEvent e) {
+              e.consume();
+            }
+            public void mouseReleased(MouseEvent e) {
+              e.consume();
+            }
+          });
+
+        }
+    scrollPane.getVerticalScrollBar().addMouseListener(new MouseAdapter() {
+      public void mousePressed(MouseEvent e) {
+//        e.consume();
+        window.setVisible(true);
+      }
+      public void mouseClicked(MouseEvent e) {
+        e.consume();
+      }
+      public void mouseReleased(MouseEvent e) {
+        e.consume();
+      }
+    });
     window.setBackground(new Color(250,250,200));
     window.getContentPane().setLayout(new BorderLayout());
     window.getContentPane().add(scrollPane,BorderLayout.CENTER);
@@ -133,7 +162,17 @@ public final class AutoCompletitionListener extends KeyAdapter {
       /**
        * Invoked when a component loses the keyboard focus.
        */
-      public void focusLost(FocusEvent e) {
+      public void focusLost(final FocusEvent e) {
+//        if (e.getOppositeComponent()!=null &&
+//            e.getOppositeComponent().equals(window)) {
+//          // user has clicked onto the scrollpane...
+//          SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//              window.toFront();
+//            }
+//          });
+//          return;
+//        }
         window.setVisible(false);
         try {
           if (timer != null)

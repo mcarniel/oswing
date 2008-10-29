@@ -76,7 +76,7 @@ public class ClientApplication {
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
 //com.jgoodies.looks.plastic.PlasticLookAndFeel
 //com.jgoodies.looks.plastic.Plastic3DLookAndFeel
-//    ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME = 1000;
+    ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME = 1000;
 
 
     Domain orderStateDomain = new Domain("ORDERSTATE");

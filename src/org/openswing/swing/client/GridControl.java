@@ -21,6 +21,7 @@ import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import org.openswing.swing.export.java.GridExportOptions;
+import org.openswing.swing.table.permissions.java.GridPermissions;
 
 
 /**
@@ -239,6 +240,9 @@ public class GridControl extends JPanel {
   /** default grid profile */
   private GridProfile defaultProfile = null;
 
+  /** grid permissions */
+  private GridPermissions permissions = null;
+
   /** profile management menu */
   private JMenu profileMenu = new JMenu(ClientSettings.getInstance().getResources().getResource("grid profile management"));
 
@@ -385,6 +389,42 @@ public class GridControl extends JPanel {
         columnProperties[i].setTable(table);
       }
 
+      // apply grid permissions, if defined...
+      if (ClientSettings.getInstance().GRID_PERMISSION_MANAGER!=null && functionId!=null) {
+        try {
+          String[] columnsAttribute = new String[columnProperties.length];
+          boolean[] columnsVisibility = new boolean[columnProperties.length];
+          boolean[] columnsEditableInIns = new boolean[columnProperties.length];
+          boolean[] columnsEditableInEdit = new boolean[columnProperties.length];
+          boolean[] columnsMandatory = new boolean[columnProperties.length];
+          for(int i=0;i<columnProperties.length;i++) {
+            columnsAttribute[i] = columnProperties[i].getColumnName();
+            columnsVisibility[i] = columnProperties[i].isColumnVisible();
+            columnsEditableInIns[i] = columnProperties[i].isEditableOnInsert();
+            columnsEditableInEdit[i] = columnProperties[i].isEditableOnEdit();
+            columnsMandatory[i] = columnProperties[i].isColumnRequired();
+          }
+
+          // compare current and last digests...
+          String lastDigest = ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getLastGridDigest(functionId);
+          String currentDigest = ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getCurrentGridDigest(columnsAttribute,functionId);
+          if (!currentDigest.equals(lastDigest)) {
+            // restore grid digest, remove all grid permissions and create grid permissions defaults...
+            ClientSettings.getInstance().GRID_PERMISSION_MANAGER.storeGridDigest(functionId,currentDigest);
+            ClientSettings.getInstance().GRID_PERMISSION_MANAGER.deleteAllGridPermissionsPerFunctionId(functionId);
+            ClientSettings.getInstance().GRID_PERMISSION_MANAGER.storeGridPermissionsDefaults(
+              functionId,columnsAttribute,columnsVisibility,columnsEditableInIns,columnsEditableInEdit,columnsMandatory
+            );
+          }
+
+          applyGridPermissions(columnsAttribute,columnsVisibility,columnsEditableInIns,columnsEditableInEdit,columnsMandatory);
+        }
+        catch (Throwable ex) {
+          Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid permissions:\n"+ex.getMessage(),ex);
+        }
+
+      }
+
       if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null) {
         try {
           // compare current and last digests...
@@ -514,7 +554,7 @@ public class GridControl extends JPanel {
 
             public void actionPerformed(ActionEvent e) {
               try {
-                if (profile.getId().equals(defaultProfile.getId())) // this test should be unutil...
+                if (profile.getId().equals(defaultProfile.getId())) // this test should be unuseful...
                   return;
 
                 for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
@@ -2413,7 +2453,9 @@ public class GridControl extends JPanel {
     labelPanel.setProfile(profile.getDescription());
 
     for(int i=0;i<profile.getColumnsAttribute().length;i++) {
-      columnProperties[i].setColumnVisible(profile.getColumnsVisibility()[i]);
+      if (this.permissions==null ||
+          this.permissions!=null && this.permissions.getColumnsVisibility()[i])
+        columnProperties[i].setColumnVisible(profile.getColumnsVisibility()[i]);
       columnProperties[i].setPreferredWidth(profile.getColumnsWidth()[i]);
     }
 
@@ -2460,6 +2502,33 @@ public class GridControl extends JPanel {
 
     if (reloadGrid)
       table.reload();
+  }
+
+
+  /**
+   * Apply grid permissions to grid.
+   */
+  private void applyGridPermissions(String[] columnsAttribute,boolean[] columnsVisibility,boolean[] columnsEditableInIns,boolean[] columnsEditableInEdit,boolean[] columnsMandatory) throws Throwable {
+    if (this.permissions==null) {
+      this.permissions = ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getUserGridPermissions(
+        functionId,
+        ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getUserRoles(),
+        columnsAttribute,
+        columnsVisibility,
+        columnsEditableInIns,
+        columnsEditableInEdit,
+        columnsMandatory
+      );
+    }
+
+    for(int i=0;i<permissions.getColumnsAttribute().length;i++) {
+      columnProperties[i].setColumnVisible(permissions.getColumnsVisibility()[i]);
+      if (!permissions.getColumnsVisibility()[i])
+        columnProperties[i].setColumnSelectable(false);
+      columnProperties[i].setEditableOnInsert(permissions.getColumnsEditabilityInInsert()[i]);
+      columnProperties[i].setEditableOnEdit(permissions.getColumnsEditabilityInEdit()[i]);
+      columnProperties[i].setColumnRequired(permissions.getColumnsMandatory()[i]);
+    }
   }
 
 

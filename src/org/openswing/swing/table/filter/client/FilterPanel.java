@@ -14,6 +14,7 @@ import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import javax.swing.text.DefaultFormatterFactory;
 
 
 /**
@@ -573,7 +574,8 @@ public class FilterPanel extends JPanel {
       final JComboBox list=new JComboBox(items);
       JPanel listPanel = new JPanel() {
         public void addFocusListener(FocusListener l) {
-           list.addFocusListener(l);
+          if (list!=null)
+            list.addFocusListener(l);
         }
       };
       listPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
@@ -674,7 +676,10 @@ public class FilterPanel extends JPanel {
       ;break;
       case Column.TYPE_FORMATTED_TEXT:
       {
-        JFormattedTextField edit = ((FormattedTextColumn)colProperties).getTextBox();
+        FormattedTextBox edit = new FormattedTextBox( ((FormattedTextColumn)colProperties).getController() );
+        edit.setFormatterFactory( ((FormattedTextColumn)colProperties).getFormatterFactory() );
+        edit.setFormatter( ((FormattedTextColumn)colProperties).getFormatter() );
+        edit.setPreferredSize(new Dimension(100,20));
         result=edit;
       }
       ;break;
@@ -792,6 +797,18 @@ public class FilterPanel extends JPanel {
    * @return filter value contained in the specified input control, created according to the specified column type
    */
   private Object getValueComponent(JComponent result,Column colProperties) {
+    Object value = getInternalValueComponent(result,colProperties);
+
+    // check for type conversion...
+    Class clazz = grid.getVOListTableModel().getColumnClass(grid.getVOListTableModel().findColumn(colProperties.getColumnName()));
+    return ClientUtils.convertObject(value,clazz);
+  }
+
+
+  /**
+   * @return filter value contained in the specified input control, created according to the specified column type
+   */
+  private Object getInternalValueComponent(JComponent result,Column colProperties) {
     if (colProperties.getColumnType()==Column.TYPE_COMBO) {
       Domain domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
       Vector couple = null;
@@ -1090,6 +1107,85 @@ public class FilterPanel extends JPanel {
       else
         return codes.get(selectedIndex).toString();
     }
+
+  }
+
+
+
+  /**
+   * <p>Title: OpenSwing Framework</p>
+   * <p>Description: Inner class used to redirect key event to the inner JFormattedTextField.</p>
+   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+   * @author Mauro Carniel
+   * @version 1.0
+   */
+  class FormattedTextBox extends JFormattedTextField implements FormatterController{
+
+    /** formatter controller */
+    private FormatterController controller;
+
+    public FormattedTextBox(FormatterController controller) {
+      this.controller = controller;
+    }
+
+
+
+//      public FormattedTextBox() {
+//        super();
+//        try {
+//          setFormatter(new javax.swing.text.MaskFormatter("###"));
+//        }
+//        catch (ParseException ex) {
+//        }
+//      }
+
+      public void processKeyEvent(KeyEvent e) {
+        try {
+          super.processKeyEvent(e);
+        }
+        catch (Exception ex) {
+        }
+      }
+
+
+      /**
+       * Invoked when the user inputs an invalid value.
+       */
+      public void invalidEdit() {
+        try {
+          if (controller == null) {
+            super.invalidEdit();
+          }
+          else {
+            controller.invalidEdit();
+          }
+        }
+        catch (Exception ex) {
+        }
+      }
+
+
+      /**
+       * Sets the current AbstractFormatter.
+       * @param format formatter to set
+       */
+      public void setFormatter(JFormattedTextField.AbstractFormatter format) {
+        try {
+          if (controller == null) {
+            if (getFormatterFactory()==null)
+              super.setFormatterFactory(new DefaultFormatterFactory(format));
+            else
+              super.setFormatter(format);
+
+          }
+          else {
+            controller.setFormatter(format);
+          }
+        }
+        catch (Exception ex) {
+        }
+      }
+
 
   }
 

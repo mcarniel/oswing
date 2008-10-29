@@ -143,7 +143,7 @@ public class NavigatorBar extends JPanel {
 
 
   private boolean checkValidPage() {
-    if (resultSetController.getTotalResultSetLength()!=1 &&
+    if (resultSetController.getTotalResultSetLength()!=-1 &&
         resultSetController.getBlockSize()!=-1 &&
         controlPageNr.getDouble().intValue()>resultSetController.getTotalResultSetLength()/resultSetController.getBlockSize()) {
       controlPageNr.setValue(new Integer(currentPageNr));
@@ -311,6 +311,7 @@ public class NavigatorBar extends JPanel {
     prevPgButton.setEnabled(!isFirstRecord);
     prevButton.setEnabled(!isFirstRecord);
     controlPageNr.setEnabled(true);
+//    controlPageNr.setEnabled(resultSetController.getTotalResultSetLength()!=-1);
   }
 
 
@@ -322,11 +323,16 @@ public class NavigatorBar extends JPanel {
     nextButton.setEnabled(!isLastRecord);
     nextPgButton.setEnabled(!isLastRecord);
     controlPageNr.setEnabled(true);
+//    controlPageNr.setEnabled(resultSetController.getTotalResultSetLength()!=-1);
   }
 
 
   public void setEnabled(boolean enabled) {
     controlPageNr.setEnabled(enabled);
+//    if (!enabled)
+//      controlPageNr.setEnabled(false);
+//    else
+//      controlPageNr.setEnabled(resultSetController.getTotalResultSetLength()!=-1);
     firstButton.setEnabled(enabled);
     prevPgButton.setEnabled(enabled);
     prevButton.setEnabled(enabled);

@@ -590,4 +590,29 @@ public class ClientUtils extends JApplet {
   }
 
 
+  /**
+   * @param value data to check
+   * @param targetType type of data
+   * @return object to return, i.e. the orginal data, if it has the type specified by "targetType" (or some subtype) otherwise its convertion
+   */
+  public static final Object convertObject(Object value,Class targetType) {
+    if (value==null)
+      return value;
+    if (value!=null && !targetType.isAssignableFrom(value.getClass())) {
+      try {
+        if (value instanceof Number)
+          value = targetType.getConstructor(new Class[] {String.class}).newInstance(new Object[] {value.toString()});
+        else if (value instanceof java.util.Date) {
+          if (targetType.equals(java.sql.Date.class))
+            value = new java.sql.Date(((java.util.Date)value).getTime());
+          else if (targetType.equals(java.sql.Timestamp.class))
+            value = new java.sql.Timestamp(((java.util.Date)value).getTime());
+        }
+      }
+      catch (Throwable ex1) {
+      }
+    }
+    return value;
+  }
+
 }

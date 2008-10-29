@@ -15,6 +15,7 @@ import org.openswing.swing.util.client.*;
 import org.openswing.swing.table.client.ListFilterController;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.FilterWhereClause;
+import javax.swing.text.DefaultFormatterFactory;
 
 
 /**
@@ -535,14 +536,16 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         ;break;
         case Column.TYPE_FORMATTED_TEXT:
         {
-          JFormattedTextField edit = ((FormattedTextColumn)colProperties).getTextBox();
+          FormattedTextBox edit = new FormattedTextBox( ((FormattedTextColumn)colProperties).getController() );
+          edit.setFormatterFactory( ((FormattedTextColumn)colProperties).getFormatterFactory() );
+          edit.setFormatter( ((FormattedTextColumn)colProperties).getFormatter() );
           edit.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
               if (e.getKeyCode()==e.VK_ENTER)
                 valueKeyPressed(e);
             }
           } );
-          edit.setText(initValue==null?"":initValue.toString());
+          edit.setValue(initValue==null?"":initValue.toString());
           result=edit;
         }
         ;break;
@@ -811,7 +814,7 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         ;break;
         case Column.TYPE_FORMATTED_TEXT:
         {
-          result=((JFormattedTextField)value).getText();
+          result=((JFormattedTextField)value).getValue();
         }
         ;break;
         default:
@@ -923,6 +926,87 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
     public Component getComponent() {
       return this;
     }
+
+
+
+
+    /**
+     * <p>Title: OpenSwing Framework</p>
+     * <p>Description: Inner class used to redirect key event to the inner JFormattedTextField.</p>
+     * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
+     * @author Mauro Carniel
+     * @version 1.0
+     */
+    class FormattedTextBox extends JFormattedTextField implements FormatterController{
+
+      /** formatter controller */
+      private FormatterController controller;
+
+      public FormattedTextBox(FormatterController controller) {
+        this.controller = controller;
+      }
+
+
+
+//      public FormattedTextBox() {
+//        super();
+//        try {
+//          setFormatter(new javax.swing.text.MaskFormatter("###"));
+//        }
+//        catch (ParseException ex) {
+//        }
+//      }
+
+        public void processKeyEvent(KeyEvent e) {
+          try {
+            super.processKeyEvent(e);
+          }
+          catch (Exception ex) {
+          }
+        }
+
+
+        /**
+         * Invoked when the user inputs an invalid value.
+         */
+        public void invalidEdit() {
+          try {
+            if (controller == null) {
+              super.invalidEdit();
+            }
+            else {
+              controller.invalidEdit();
+            }
+          }
+          catch (Exception ex) {
+          }
+        }
+
+
+        /**
+         * Sets the current AbstractFormatter.
+         * @param format formatter to set
+         */
+        public void setFormatter(JFormattedTextField.AbstractFormatter format) {
+          try {
+            if (controller == null) {
+              if (getFormatterFactory()==null)
+                super.setFormatterFactory(new DefaultFormatterFactory(format));
+              else
+                super.setFormatter(format);
+
+            }
+            else {
+              controller.setFormatter(format);
+            }
+          }
+          catch (Exception ex) {
+          }
+        }
+
+
+    }
+
 
 
 }

@@ -166,6 +166,15 @@ public class TipPanel extends JPanel {
 
 
   /**
+   * Set/unset check-box 'show 'tip of the day' after launching'.
+   * @return <code>true</code> to show check-box 'show 'tip of the day' after launching', <code>false</code> to hide it
+   */
+  public final void setShowToolTip(boolean showToolTip) {
+    controlShow.setSelected(showToolTip);
+  }
+
+
+  /**
    * Set tip image.
    * @param imageName tip image
    */

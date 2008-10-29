@@ -222,15 +222,19 @@ public class MDIFrame extends JFrame implements BusyListener {
         for (int i = 0; i < root.getChildCount(); i++) {
           final ApplicationFunction function = (ApplicationFunction) root.getChildAt(i);
 
-          if (!function.isFolder()) {
+          if (function.isFolder()) {
+            menu = new JMenu(function.toString());
+          }
+          else if (function.isSeparator()) {
+            continue;
+          }
+          else {
             menu = new JMenu(function.toString());
             menu.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent e) {
                 executeFunction(function);
               }
             });
-          } else {
-            menu = new JMenu(function.toString());
           }
           int j=0;
           try {
@@ -338,7 +342,14 @@ public class MDIFrame extends JFrame implements BusyListener {
     for (int i = 0; i < parentFunction.getChildCount(); i++) {
       final ApplicationFunction function = (ApplicationFunction) parentFunction.getChildAt(i);
 
-      if (!function.isFolder()) {
+      if (function.isFolder()) {
+        menu = new JMenu(function.toString());
+      }
+      else if (function.isSeparator()) {
+        parentMenu.add(new JSeparator());
+        continue;
+      }
+      else {
         if (function.getIconName()==null)
           menu = new JMenuItem(function.toString());
         else
@@ -353,10 +364,7 @@ public class MDIFrame extends JFrame implements BusyListener {
           functionsHooks.put(function.getFunctionId(),menu);
           functionsMenuHooks.put(function.getFunctionId(),parentMenu);
         }
-      } else {
-        menu = new JMenu(function.toString());
       }
-
       int j=0;
       try {
         while (j < menu.getText().length() &&

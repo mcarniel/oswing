@@ -27,6 +27,7 @@ import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import java.lang.reflect.*;
 
 
 /**
@@ -2295,6 +2296,11 @@ public class Grid extends JTable
   public void filter(Column colProps,Object value1,Object value2) {
     if(colProps==null) return;
 
+    // check for type conversion...
+    Class clazz = this.grids.getVOListTableModel().getColumnClass(this.grids.getVOListTableModel().findColumn(colProps.getColumnName()));
+    value1 = ClientUtils.convertObject(value1,clazz);
+    value2 = ClientUtils.convertObject(value2,clazz);
+
     if (gridController!=null) {
       value1 = gridController.beforeFilterGrid(colProps.getColumnName(),value1);
       if (value2!=null)
@@ -3651,17 +3657,27 @@ public class Grid extends JTable
         this.removeKeyListener(ll[i]);
       }
 
-      for(int i=0;i<this.getColumnModel().getColumnCount();i++) {
-        try {
-          this.getColumnModel().getColumn(i).getCellEditor().getClass().getMethod("finalize",new Class[0]).invoke(this.getColumnModel().getColumn(i).getCellEditor(), new Object[0]);
+      try {
+        for (int i = 0; i < this.getColumnModel().getColumnCount(); i++) {
+          try {
+            this.getColumnModel().getColumn(i).getCellEditor().getClass().
+                getMethod("finalize",
+                new Class[0]).invoke(this.getColumnModel().getColumn(i).
+                                     getCellEditor(), new Object[0]);
+          }
+          catch (NoSuchMethodException ex1) {
+          }
+          try {
+            this.getColumnModel().getColumn(i).getCellRenderer().getClass().
+                getMethod("finalize",
+                new Class[0]).invoke(this.getColumnModel().getColumn(i).
+                                     getCellRenderer(), new Object[0]);
+          }
+          catch (NoSuchMethodException ex1) {
+          }
         }
-        catch (NoSuchMethodException ex1) {
-        }
-        try {
-          this.getColumnModel().getColumn(i).getCellRenderer().getClass().getMethod("finalize",new Class[0]).invoke(this.getColumnModel().getColumn(i).getCellRenderer(), new Object[0]);
-        }
-        catch (NoSuchMethodException ex1) {
-        }
+      }
+      catch (Exception ex2) {
       }
 
       if (modelAdapter!=null)
