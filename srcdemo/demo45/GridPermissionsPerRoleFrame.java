@@ -104,13 +104,17 @@ public class GridPermissionsPerRoleFrame extends InternalFrame {
     colVis.setColumnName("visible");
     colVis.setEditableOnEdit(true);
     colVis.setPreferredWidth(80);
+    colVis.setColumnRequired(false);
     colEII.setColumnName("editableInIns");
     colEII.setEditableOnEdit(true);
+    colEII.setColumnRequired(false);
     colEII.setPreferredWidth(80);
     colEIE.setColumnName("editableInEdit");
+    colEIE.setColumnRequired(false);
     colEIE.setEditableOnEdit(true);
     colEIE.setPreferredWidth(80);
     colReq.setColumnName("required");
+    colReq.setColumnRequired(false);
     colReq.setEditableOnEdit(true);
     colReq.setPreferredWidth(80);
     this.getContentPane().add(grid, BorderLayout.CENTER);

@@ -368,6 +368,24 @@ public class ClientSettings {
   /** <code>true</code> to enable focus on disabled input controls: this allows to select disabled content of input control for copy & paste; <code>false</code> to do not allow focus setting on disabled input controls; default value: <code>false</code> */
   public static boolean DISABLED_INPUT_CONTROLS_FOCUSABLE = false;
 
+  /** collection of pairs <functionId of grid,HashMap with pairs <id,associated GridProfile object> */
+  private HashMap userGridProfiles = new HashMap();
+
+  /** collection of pairs <functionId of grid,associated digest> */
+  private HashMap lastUserGridDigests = new HashMap();
+
+  /** collection of pairs <functionId of grid,profile id> */
+  private HashMap lastUserGridProfileIds = new HashMap();
+
+  /** collection of pairs <functionId of grid,ArrayList of GridProfileDescription objects> */
+  private HashMap gridProfileDescriptions = new HashMap();
+
+  /** collection of pairs <functionId of grid,GridPermissions object> */
+  private HashMap gridPermissions = new HashMap();
+
+  /** collection of pairs <functionId of grid,associated digest> */
+  private HashMap lastGridPermissionsDigests = new HashMap();
+
 
   /**
    * Contains application settings.
@@ -482,6 +500,80 @@ public class ClientSettings {
    */
   public final ButtonsAuthorizations getButtonsAuthorizations() {
     return buttonsAuthorizations;
+  }
+
+
+  /**
+   * @return  collection of pairs <functionId of grid,associated GridProfile object>
+   */
+  public final HashMap getUserGridProfiles() {
+    return userGridProfiles;
+  }
+
+
+  /**
+   * @return  collection of pairs <functionId of grid,associated GridProfile object>
+   */
+  public final HashMap getUserGridProfiles(String functionId) {
+    HashMap map = (HashMap)userGridProfiles.get(functionId);
+    if (map==null) {
+      map = new HashMap();
+      userGridProfiles.put(functionId,map);
+    }
+    return map;
+  }
+
+
+  /**
+   * @return collection of pairs <functionId of grid,associated digest>
+   */
+  public final HashMap getLastUserGridDigests() {
+    return lastUserGridDigests;
+  }
+
+
+  /**
+   * @return collection of pairs <functionId of grid,profile id>
+   */
+  public final HashMap getLastUserGridProfileIds() {
+    return lastUserGridProfileIds;
+  }
+
+
+  /**
+   * @return collection of pairs <functionId of grid,List of GridProfileDescription objects>
+   */
+  public final HashMap getGridProfileDescriptions() {
+    return gridProfileDescriptions;
+  }
+
+
+  /**
+   * @return collection of pairs <functionId of grid,List of GridProfileDescription objects>
+   */
+  public final ArrayList getGridProfileDescriptions(String functionId) {
+    ArrayList list = (ArrayList)gridProfileDescriptions.get(functionId);
+    if (list==null) {
+      list = new ArrayList();
+      gridProfileDescriptions.put(functionId,list);
+    }
+    return list;
+  }
+
+
+  /**
+   * @return collection of pairs <functionId of grid,GridPermissions object>
+   */
+  public final HashMap getGridPermissions() {
+    return gridPermissions;
+  }
+
+
+  /**
+   * @return collection of pairs <functionId of grid,associated digest>
+   */
+  public final HashMap getLastGridPermissionsDigests() {
+    return lastGridPermissionsDigests;
   }
 
 

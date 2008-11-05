@@ -406,7 +406,12 @@ public class GridControl extends JPanel {
           }
 
           // compare current and last digests...
-          String lastDigest = ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getLastGridDigest(functionId);
+          String lastDigest = (String)ClientSettings.getInstance().getLastGridPermissionsDigests().get(functionId);
+          if (lastDigest==null) {
+            lastDigest = ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getLastGridDigest(functionId);
+            if (lastDigest!=null)
+              ClientSettings.getInstance().getLastGridPermissionsDigests().put(functionId,lastDigest);
+          }
           String currentDigest = ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getCurrentGridDigest(columnsAttribute,functionId);
           if (!currentDigest.equals(lastDigest)) {
             // restore grid digest, remove all grid permissions and create grid permissions defaults...
@@ -415,6 +420,8 @@ public class GridControl extends JPanel {
             ClientSettings.getInstance().GRID_PERMISSION_MANAGER.storeGridPermissionsDefaults(
               functionId,columnsAttribute,columnsVisibility,columnsEditableInIns,columnsEditableInEdit,columnsMandatory
             );
+            ClientSettings.getInstance().getLastGridPermissionsDigests().put(functionId,currentDigest);
+            ClientSettings.getInstance().getGridPermissions().remove(functionId);
           }
 
           applyGridPermissions(columnsAttribute,columnsVisibility,columnsEditableInIns,columnsEditableInEdit,columnsMandatory);
@@ -428,7 +435,12 @@ public class GridControl extends JPanel {
       if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null) {
         try {
           // compare current and last digests...
-          String lastDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridDigest(functionId);
+          String lastDigest = (String)ClientSettings.getInstance().getLastUserGridDigests().get(functionId);
+          if (lastDigest==null) {
+            lastDigest = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridDigest(functionId);
+            if (lastDigest!=null)
+              ClientSettings.getInstance().getLastUserGridDigests().put(functionId,lastDigest);
+          }
           String[] columnNames = new String[columnProperties.length];
           for(int i=0;i<columnProperties.length;i++)
             columnNames[i] = columnProperties[i].getColumnName();
@@ -438,6 +450,10 @@ public class GridControl extends JPanel {
             ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridDigest(functionId,currentDigest);
             ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteAllGridProfiles(functionId);
             ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteAllGridProfileIds(functionId);
+            ClientSettings.getInstance().getLastUserGridDigests().put(functionId,currentDigest);
+            ClientSettings.getInstance().getLastUserGridProfileIds().remove(functionId);
+            ClientSettings.getInstance().getUserGridProfiles().remove(functionId);
+            ClientSettings.getInstance().getGridProfileDescriptions().remove(functionId);
           }
 
           addPopupCommand(profileMenu);
@@ -445,26 +461,51 @@ public class GridControl extends JPanel {
           // define default profile...
           setDefaultProfile(columnProperties);
 
-          Object id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridProfileId(functionId);
+          Object id = ClientSettings.getInstance().getLastUserGridProfileIds().get(functionId);
+          if (id==null) {
+            id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getLastGridProfileId(functionId);
+            if (id!=null)
+              ClientSettings.getInstance().getLastUserGridProfileIds().put(functionId,id);
+          }
+
           if (id!=null) {
             // retrieve a previously stored profile...
             try {
-              profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId, id);
+              profile = (GridProfile)ClientSettings.getInstance().getUserGridProfiles(functionId).get(id);
+              if (profile==null) {
+                profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId, id);
+                if (profile!=null) {
+                  ClientSettings.getInstance().getUserGridProfiles(functionId).put(id,profile);
+//                  ClientSettings.getInstance().getGridProfileDescriptions(functionId).add(new GridProfileDescription(profile.getId(),profile.getDescription(),profile.isDefaultProfile()));
+                }
+              }
             }
             catch (IOException ex1) {
               Logger.error(this.getClass().getName(), "commitColumnContainer", ex1.getMessage()+": "+id,ex1);
               profile = (GridProfile)defaultProfile.clone();
 
-              ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+              id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+              profile.setId(id);
               ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+              if (profile!=null) {
+                ClientSettings.getInstance().getUserGridProfiles(functionId).put(profile.getId(),profile);
+                ClientSettings.getInstance().getLastUserGridProfileIds().put(functionId,profile.getId());
+//                ClientSettings.getInstance().getGridProfileDescriptions(functionId).add(new GridProfileDescription(profile.getId(),profile.getDescription(),profile.isDefaultProfile()));
+              }
             }
           }
           else {
             // create a new profile...
             profile = (GridProfile)defaultProfile.clone();
 
-            ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+            id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+            profile.setId(id);
             ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+            if (profile!=null) {
+              ClientSettings.getInstance().getUserGridProfiles(functionId).put(profile.getId(),profile);
+              ClientSettings.getInstance().getLastUserGridProfileIds().put(functionId,profile.getId());
+              ClientSettings.getInstance().getGridProfileDescriptions(functionId).add(new GridProfileDescription(profile.getId(),profile.getDescription(),profile.isDefaultProfile()));
+            }
           }
 
           JMenuItem restoreMenu = new JMenuItem(ClientSettings.getInstance().getResources().getResource("restore default grid profile"));
@@ -476,13 +517,23 @@ public class GridControl extends JPanel {
 
                 // remove previous default profile from the storage media...
                 profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getDefaultProfile(functionId);
-                if (profile!=null)
+                if (profile!=null) {
                   ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteUserProfile(functionId,profile.getId());
+                  ClientSettings.getInstance().getUserGridProfiles(functionId).remove(profile.getId());
+//                  ClientSettings.getInstance().getGridProfileDescriptions(functionId).remove(new GridProfileDescription(profile.getId(),profile.getDescription(),profile.isDefaultProfile()));
+                }
 
                 profile = (GridProfile)defaultProfile.clone();
-                ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+                Object id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+                profile.setId(id);
                 ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
                 applyProfile(columnProperties, profile, true);
+
+                if (profile!=null) {
+                  ClientSettings.getInstance().getUserGridProfiles(functionId).put(profile.getId(),profile);
+                  ClientSettings.getInstance().getLastUserGridProfileIds().put(functionId,profile.getId());
+//                  ClientSettings.getInstance().getGridProfileDescriptions(functionId).add(new GridProfileDescription(profile.getId(),profile.getDescription(),profile.isDefaultProfile()));
+                }
               }
               catch (Throwable ex) {
                 Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while storing grid profile: "+ex.getMessage(),ex);
@@ -510,9 +561,13 @@ public class GridControl extends JPanel {
               profile.setDefaultProfile(false);
               profile.setDescription(desc);
               try {
-                ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+                Object id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+                profile.setId(id);
                 ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
                 applyProfile(columnProperties, profile, true);
+                ClientSettings.getInstance().getUserGridProfiles(functionId).put(profile.getId(),profile);
+                ClientSettings.getInstance().getLastUserGridProfileIds().put(functionId,profile.getId());
+                ClientSettings.getInstance().getGridProfileDescriptions(functionId).add(new GridProfileDescription(profile.getId(),profile.getDescription(),profile.isDefaultProfile()));
               }
               catch (Throwable ex) {
                 Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while storing grid profile: "+ex.getMessage(),ex);
@@ -530,8 +585,15 @@ public class GridControl extends JPanel {
                       ((JCheckBoxMenuItem)profilesMenu.getMenuComponent(i)).setSelected(false);
                     item.setSelected(true);
                     maybeStoreProfile(columnProperties);
-                    GridControl.this.profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
+                    GridControl.this.profile = (GridProfile)ClientSettings.getInstance().getUserGridProfiles(functionId).get(id);
+                    if (GridControl.this.profile==null) {
+                      GridControl.this.profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
+                      if (GridControl.this.profile!=null) {
+                        ClientSettings.getInstance().getUserGridProfiles(functionId).put(id,GridControl.this.profile);
+                      }
+                    }
                     applyProfile(columnProperties,GridControl.this.profile,true);
+                    ClientSettings.getInstance().getLastUserGridProfileIds().put(functionId, GridControl.this.profile.getId());
                   }
                   catch (Throwable ex) {
                     Logger.error(this.getClass().getName(), "commitColumnContainer", "Error while fetching grid profile: "+ex.getMessage(),ex);
@@ -562,13 +624,19 @@ public class GridControl extends JPanel {
 
                 String descriptionToRemove = profile.getDescription();
                 ClientSettings.getInstance().GRID_PROFILE_MANAGER.deleteUserProfile(functionId,profile.getId());
+                ClientSettings.getInstance().getUserGridProfiles(functionId).remove(profile.getId());
+                ClientSettings.getInstance().getGridProfileDescriptions(functionId).remove(new GridProfileDescription(profile.getId(),profile.getDescription(),profile.isDefaultProfile()));
 
                 profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getDefaultProfile(functionId);
                 if (profile==null) {
                   profile = (GridProfile)defaultProfile.clone();
-                  ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+                  Object id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+                  profile.setId(id);
+                  ClientSettings.getInstance().getUserGridProfiles(functionId).put(profile.getId(),profile);
+                  ClientSettings.getInstance().getGridProfileDescriptions(functionId).add(new GridProfileDescription(profile.getId(),profile.getDescription(),profile.isDefaultProfile()));
                 }
                 ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId,profile.getId());
+                ClientSettings.getInstance().getLastUserGridProfileIds().put(functionId,profile.getId());
                 applyProfile(columnProperties,profile,true);
 
                 for(int i=0;i<profilesMenu.getMenuComponentCount();i++)
@@ -593,7 +661,25 @@ public class GridControl extends JPanel {
           profileMenu.addSeparator();
 
           try {
-            ArrayList list = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfiles(functionId);
+            ArrayList list =  ClientSettings.getInstance().getGridProfileDescriptions(functionId);
+            if (list.size()==0) {
+              list = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfiles(functionId);
+              ClientSettings.getInstance().getGridProfileDescriptions(functionId).addAll(list);
+            }
+//            Arrays.sort(list,new Comparator() {
+//
+//              public boolean equals(Object obj) {
+//                return obj.equals(this);
+//              }
+//
+//              public int compare(Object o1, Object o2) {
+//                GridProfileDescription p1 = (GridProfileDescription)o1;
+//                GridProfileDescription p2 = (GridProfileDescription)o2;
+//                return p1.getDescription().compareTo(p2.getDescription());
+//              }
+//
+//            });
+
             for(int i=0;i<list.size();i++) {
               final GridProfileDescription desc = (GridProfileDescription)list.get(i);
               if (((GridProfileDescription)list.get(i)).isDefaultProfile())
@@ -609,8 +695,13 @@ public class GridControl extends JPanel {
                   try {
                     maybeStoreProfile(columnProperties);
 
-                    profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
+                    profile = (GridProfile)ClientSettings.getInstance().getUserGridProfiles(functionId).get(id);
+                    if (profile==null) {
+                      profile = ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUserProfile(functionId,id);
+                      ClientSettings.getInstance().getUserGridProfiles(functionId).put(id,profile);
+                    }
                     ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId,id);
+                    ClientSettings.getInstance().getLastUserGridProfileIds().put(functionId,id);
                     applyProfile(columnProperties,profile,true);
                   }
                   catch (Throwable ex) {
@@ -2510,15 +2601,20 @@ public class GridControl extends JPanel {
    */
   private void applyGridPermissions(String[] columnsAttribute,boolean[] columnsVisibility,boolean[] columnsEditableInIns,boolean[] columnsEditableInEdit,boolean[] columnsMandatory) throws Throwable {
     if (this.permissions==null) {
-      this.permissions = ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getUserGridPermissions(
-        functionId,
-        ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getUserRoles(),
-        columnsAttribute,
-        columnsVisibility,
-        columnsEditableInIns,
-        columnsEditableInEdit,
-        columnsMandatory
-      );
+      this.permissions = (GridPermissions)ClientSettings.getInstance().getGridPermissions().get(functionId);
+      if (this.permissions==null) {
+        this.permissions = ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getUserGridPermissions(
+          functionId,
+          ClientSettings.getInstance().GRID_PERMISSION_MANAGER.getUserRoles(),
+          columnsAttribute,
+          columnsVisibility,
+          columnsEditableInIns,
+          columnsEditableInEdit,
+          columnsMandatory
+        );
+        if (this.permissions!=null)
+          ClientSettings.getInstance().getGridPermissions().put(functionId,this.permissions);
+      }
     }
 
     for(int i=0;i<permissions.getColumnsAttribute().length;i++) {
@@ -2671,8 +2767,10 @@ public class GridControl extends JPanel {
 
 
       if (changed) {
-        ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+        Object id = ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeUserProfile(profile);
+        profile.setId(id);
         ClientSettings.getInstance().GRID_PROFILE_MANAGER.storeGridProfileId(functionId, profile.getId());
+        ClientSettings.getInstance().getLastUserGridProfileIds().put(functionId, profile.getId());
       }
     }
     catch (Throwable ex) {

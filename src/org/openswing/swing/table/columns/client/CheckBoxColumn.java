@@ -161,7 +161,7 @@ public class CheckBoxColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new CheckBoxCellEditor(isColumnRequired(),getItemListeners(),isAllowNullValue());
+    return new CheckBoxCellEditor(grids,isColumnRequired(),getItemListeners(),isAllowNullValue());
   }
 
 

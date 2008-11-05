@@ -422,10 +422,11 @@ public class DbGridProfileManager extends GridProfileManager {
   /**
    * Store the specified grid profile.
    * @param profile profile to store
+   * @return profile id
    * @throws Throwable throwed if storing operation does not correctly accomplished
    * Note: if profile.getId() is null then this method must define id property.
    */
-  public void storeUserProfile(GridProfile profile) throws Throwable {
+  public Object storeUserProfile(GridProfile profile) throws Throwable {
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rset = null;
@@ -656,7 +657,7 @@ public class DbGridProfileManager extends GridProfileManager {
       }
 
       conn.commit();
-
+      return profile.getId();
     }
     catch (Throwable t) {
       throw new IOException(t.getMessage());

@@ -20,6 +20,7 @@ public class AddressVO extends ValueObjectImpl {
   private String city;
   private String state;
   private String country;
+  private Integer phone;
 
 
   public AddressVO() {
@@ -56,6 +57,12 @@ public class AddressVO extends ValueObjectImpl {
   }
   public void setId(BigDecimal id) {
     this.id = id;
+  }
+  public Integer getPhone() {
+    return phone;
+  }
+  public void setPhone(Integer phone) {
+    this.phone = phone;
   }
 
 

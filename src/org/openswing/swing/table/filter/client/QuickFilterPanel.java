@@ -16,6 +16,7 @@ import org.openswing.swing.table.client.ListFilterController;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.FilterWhereClause;
 import javax.swing.text.DefaultFormatterFactory;
+import java.text.*;
 
 
 /**
@@ -545,7 +546,7 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
                 valueKeyPressed(e);
             }
           } );
-          edit.setValue(initValue==null?"":initValue.toString());
+          edit.setValue(initValue==null?"":initValue);
           result=edit;
         }
         ;break;
@@ -814,7 +815,13 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         ;break;
         case Column.TYPE_FORMATTED_TEXT:
         {
-          result=((JFormattedTextField)value).getValue();
+          try {
+            ( (JFormattedTextField) value).commitEdit();
+            result = ( (JFormattedTextField) value).getValue();
+          }
+          catch (ParseException ex) {
+            result = null;
+          }
         }
         ;break;
         default:

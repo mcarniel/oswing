@@ -678,6 +678,9 @@ public class JPAUtils {
         action = GridParams.NEXT_BLOCK_ACTION;
         startIndex = Math.max(startIndex-blockSize,0);
       }
+      if(startIndex<0)
+        startIndex = 0;
+        
       query.setFirstResult(startIndex);
       query.setMaxResults(blockSize+1);
     }

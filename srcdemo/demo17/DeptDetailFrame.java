@@ -74,7 +74,7 @@ public class DeptDetailFrame extends InternalFrame {
       pk.add("deptCode"); // pk for Form is based on one only attribute...
       mainPanel.linkGrid(dataController.getGridFrame().getGrid(),pk,true,true,true,navigatorBar);
 
-      setSize(590,200);
+      setSize(590,220);
       setMinimumSize(new Dimension(590,200));
       setMaximumSize(new Dimension(590,200));
     }
@@ -181,8 +181,8 @@ public class DeptDetailFrame extends InternalFrame {
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(labelState,     new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlAddressLookup,   new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    mainPanel.add(controlAddressLookup,    new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 0, 5, 5), 0, 0));
     controlDeptCode.setAttributeName("deptCode");
     controlDeptCode.setRequired(true);
 

@@ -138,6 +138,16 @@ public class MDIFrame extends JFrame implements BusyListener {
       });
 
       client.afterMDIcreation(this);
+      try {
+        ClientSettings.getInstance().getUserGridProfiles().clear();
+        ClientSettings.getInstance().getLastUserGridDigests().clear();
+        ClientSettings.getInstance().getLastUserGridProfileIds().clear();
+        ClientSettings.getInstance().getGridProfileDescriptions().clear();
+        ClientSettings.getInstance().getGridPermissions().clear();
+        ClientSettings.getInstance().getLastGridPermissionsDigests().clear();
+      }
+      catch (Exception ex2) {
+      }
 
       //view MDI...
       try {

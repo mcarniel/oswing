@@ -58,7 +58,7 @@ public class ClientApplication implements MDIController,LoginController {
 
       Properties props = new Properties();
 
-
+      props.setProperty("address.phone","Phone");
       props.setProperty("address.address","Address");
       props.setProperty("address.state","State");
       props.setProperty("address.country","Country");
@@ -315,9 +315,9 @@ public class ClientApplication implements MDIController,LoginController {
         }
         stmt.close();
 
-        stmt = conn.prepareStatement("insert into ADDRESSES values(1,'34, Fifth Av.','New York','NY','USA')");
+        stmt = conn.prepareStatement("insert into ADDRESSES values(1,'34, Fifth Av.','New York','NY','USA',222123456)");
         stmt.execute();
-        stmt = conn.prepareStatement("insert into ADDRESSES values(2,'34, Brown St.','Los Angeles','CA','USA')");
+        stmt = conn.prepareStatement("insert into ADDRESSES values(2,'34, Brown St.','Los Angeles','CA','USA',111654321)");
         stmt.execute();
 
         for(int i=0;i<5;i++) {

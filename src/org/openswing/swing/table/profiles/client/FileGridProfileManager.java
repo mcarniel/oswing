@@ -273,10 +273,11 @@ public class FileGridProfileManager extends GridProfileManager {
   /**
    * Store the specified grid profile.
    * @param profile profile to store
+   * @return profile id
    * @throws Throwable throwed if storing operation does not correctly accomplished
    * Note: if profile.getId() is null then this method must define id property.
    */
-  public void storeUserProfile(GridProfile profile) throws Throwable {
+  public Object storeUserProfile(GridProfile profile) throws Throwable {
     if (profile.getId()==null)
       profile.setId(
         profile.getFunctionId().replace(' ','_')+"_"+getUsername().replace(' ','_')+"_"+System.currentTimeMillis()+".cfg"
@@ -390,7 +391,7 @@ public class FileGridProfileManager extends GridProfileManager {
         }
         pw.println(aux);
       }
-
+      return profile.getId();
     }
     catch (Throwable t) {
       throw new IOException(t.getMessage());

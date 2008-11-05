@@ -1,5 +1,17 @@
 
 
+Release Notes 1.8.2
+-------------------
+
+Final release 1.8.2 available
+Improved HibernateUtil class, in order to support sorting/filtering per attributes of inner value objects (see "demo17" sample application).
+Improved user grid profile and columns level permissions: now settings are cached after retrieval.
+Fixed problem in GridControl with check-box type cells, when move to edit mode directly within the check-box cell.
+Fixed problem with TextFormattedColumn when used with numeric values in filter panel.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.8.1
 -------------------
 

@@ -28,6 +28,7 @@ import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import java.lang.reflect.*;
+import org.openswing.swing.table.editors.client.CheckBoxCellEditor;
 
 
 /**
@@ -705,6 +706,19 @@ public class Grid extends JTable
       setColumnSelectionInterval(column,column);
 
       return super.editCellAt(row, column, e);
+    }
+
+
+    protected void processMouseEvent(MouseEvent e) {
+      super.processMouseEvent(e);
+      if (getMode()!=Consts.READONLY &&
+          getCellEditor()!=null &&
+          getCellEditor() instanceof CheckBoxCellEditor &&
+          e.getID()==e.MOUSE_PRESSED &&
+          SwingUtilities.isLeftMouseButton(e) &&
+          e.getClickCount()==1) {
+        ((CheckBoxCellEditor)getCellEditor()).changeSelectedValue();
+      }
     }
 
 

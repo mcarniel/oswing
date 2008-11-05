@@ -8,6 +8,8 @@ import org.openswing.swing.mdi.client.InternalFrame;
 import org.openswing.swing.mdi.client.MDIFrame;
 import org.openswing.swing.util.client.ClientSettings;
 import java.awt.event.*;
+import javax.swing.text.MaskFormatter;
+import java.text.ParseException;
 
 
 /**
@@ -26,6 +28,8 @@ public class DeptGridFrame extends InternalFrame {
   FlowLayout flowLayout1 = new FlowLayout();
   TextColumn colDeptCode = new TextColumn();
   TextColumn colDescription = new TextColumn();
+//  IntegerColumn colPhone = new IntegerColumn();
+  FormattedTextColumn colPhone = new FormattedTextColumn();
   InsertButton insertButton = new InsertButton();
   EditButton editButton = new EditButton();
   SaveButton saveButton = new SaveButton();
@@ -38,7 +42,7 @@ public class DeptGridFrame extends InternalFrame {
     this.controller = controller;
     try {
       jbInit();
-      setSize(500,300);
+      setSize(620,300);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
       MDIFrame.add(this);
@@ -81,6 +85,52 @@ public class DeptGridFrame extends InternalFrame {
     colDescription.setEditableOnInsert(true);
     colDescription.setPreferredWidth(350);
 
+    colPhone.setColumnName("address.phone");
+    colPhone.setColumnFilterable(true);
+    colPhone.setColumnSortable(true);
+    JFormattedTextField.AbstractFormatter formatter = new JFormattedTextField.AbstractFormatter() {
+
+      /**
+       * Parses <code>text</code> returning an arbitrary Object. Some
+       * formatters may return null.
+       *
+       * @throws ParseException if there is an error in the conversion
+       * @param text String to convert
+       * @return Object representation of text
+       */
+      public Object stringToValue(String text) throws ParseException {
+        if (text==null || text.equals(""))
+          return null;
+        String t = "";
+        for(int i=0;i<text.length();i++)
+          if (Character.isDigit(text.charAt(i)))
+            t += text.charAt(i);
+          else
+            if (!( text.charAt(i)=='-' && (i==3 || i==6) ))
+                throw new ParseException("Invalid pattern!",i);
+        return new Integer(t);
+      }
+
+      /**
+       * Returns the string value to display for <code>value</code>.
+       *
+       * @throws ParseException if there is an error in the conversion
+       * @param value Value to convert
+       * @return String representation of value
+       */
+      public String valueToString(Object value) throws ParseException {
+        if (value==null)
+          return null;
+        String t = value.toString();
+        if (t.length()!=9)
+          throw new ParseException("Invalid pattern!",t.length()-1);
+        t = t.substring(0,3)+"-"+t.substring(3,5)+"-"+t.substring(5);
+        return t;
+      }
+
+    };
+    colPhone.setFormatter(formatter);
+
     insertButton.setText("insertButton1");
     insertButton.addActionListener(new DeptGridFrame_insertButton_actionAdapter(this));
     editButton.setText("editButton1");
@@ -96,7 +146,7 @@ public class DeptGridFrame extends InternalFrame {
     buttonsPanel.add(navigatorBar1, null);
     grid.getColumnContainer().add(colDeptCode, null);
     grid.getColumnContainer().add(colDescription, null);
-
+    grid.getColumnContainer().add(colPhone, null);
   }
 
   void insertButton_actionPerformed(ActionEvent e) {

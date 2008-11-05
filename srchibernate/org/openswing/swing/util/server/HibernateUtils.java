@@ -90,21 +90,61 @@ public class HibernateUtils {
   /**
    * Fill in "attributesMap" according to attributes defined in xxx.hdm.xml.
    */
-  private static void fillInMetaData(SessionFactory sessions,String tableName,String prefix,ClassMetadata meta,Map attributesMap) {
+  private static void fillInMetaData(
+      SessionFactory sessions,
+      String tableName,
+      String prefix,
+      ClassMetadata meta,
+      Map attributesMap,
+      Map attributesTypeMap
+  ) {
     if (meta!=null) {
       String[] attrNames = meta.getPropertyNames();
       for(int i=0;i<attrNames.length;i++) {
         attributesMap.put(prefix+attrNames[i],tableName+"."+attrNames[i]);
-        if (meta.getPropertyType(attrNames[i]) instanceof org.hibernate.type.EntityType) {
+        attributesTypeMap.put(prefix+attrNames[i],meta.getPropertyType(attrNames[i]));
+        if (meta.getPropertyType(attrNames[i]) instanceof org.hibernate.type.EntityType &&
+            !prefix.equals(attrNames[i]+".")) {
           ClassMetadata submeta = sessions.getClassMetadata(((org.hibernate.type.EntityType)meta.getPropertyType(attrNames[i])).getReturnedClass());
-          fillInMetaData(sessions,tableName+"."+attrNames[i],prefix+prefix+attrNames[i]+".",submeta,attributesMap);
+          fillInMetaData(
+            sessions,
+            tableName+"."+attrNames[i],
+            prefix+prefix+attrNames[i]+".",
+            submeta,
+            attributesMap,
+            attributesTypeMap
+          );
         }
       }
+/*
+ if (meta.getPropertyType(attrNames[i]) instanceof org.hibernate.type.EntityType) {
+   if (!prefix.equals(attrNames[i]+".")) {
+     ClassMetadata submeta =
+       sessions.getClassMetadata(((org.hibernate.type.EntityType)meta.getPropertyType(attrNames[i])).getReturnedClass());
+     fillInMetaData(
+       sessions,
+       tableName+"."+attrNames[i],
+       prefix+prefix+attrNames[i]+".",
+       submeta,
+       attributesMap
+     );
+   }
+ }
 
+*/
       attributesMap.put(prefix+meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
-      if (meta.getPropertyType(meta.getIdentifierPropertyName()) instanceof org.hibernate.type.EntityType) {
+      attributesTypeMap.put(prefix+meta.getIdentifierPropertyName(),meta.getPropertyType(meta.getIdentifierPropertyName()));
+      if (meta.getPropertyType(meta.getIdentifierPropertyName()) instanceof org.hibernate.type.EntityType &&
+          !prefix.equals(meta.getIdentifierPropertyName()+".")) {
         ClassMetadata submeta = sessions.getClassMetadata(((org.hibernate.type.EntityType)meta.getPropertyType(meta.getIdentifierPropertyName())).getReturnedClass());
-        fillInMetaData(sessions,((org.hibernate.type.EntityType)meta.getPropertyType(meta.getIdentifierPropertyName())).getReturnedClass().getName(),prefix+prefix+meta.getIdentifierPropertyName()+".",submeta,attributesMap);
+        fillInMetaData(
+          sessions,
+          ((org.hibernate.type.EntityType)meta.getPropertyType(meta.getIdentifierPropertyName())).getReturnedClass().getName(),
+          prefix+prefix+meta.getIdentifierPropertyName()+".",
+          submeta,
+          attributesMap,
+          attributesTypeMap
+        );
       }
 
     }
@@ -114,8 +154,7 @@ public class HibernateUtils {
   /**
    * Apply filtering and sorting conditions to the specified baseSQL and return
    * a new baseSQL that contains those conditions too.
-   * If decodedAttributes is filled, then baseSQL can contains a HSQL query.
-   * @param decodedAttributes collection of pairs <value object attribute name,attribute defined in HSQL query>
+   * @param decodedAttributes collection of pairs <value object attribute name,attribute defined in HSQL query>; if not specified, this method tries to automatically fetch mappings
    * @param filteredColumns filtering conditions
    * @param currentSortedColumns sorting conditions (attribute names)
    * @param currentSortedVersusColumns sorting conditions (order versus)
@@ -169,16 +208,17 @@ public class HibernateUtils {
     ClassMetadata meta = sessions.getClassMetadata(valueObjectType);
     Map propDescriptors = new HashMap();
     Map attributesMap = new HashMap();
+    Map attributesTypeMap = new HashMap();
     if (meta!=null) {
-      fillInMetaData(sessions,tableName,"",meta,attributesMap);
+      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap);
       attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
     }
     else {
-      attributesMap.putAll(decodedAttributes);
       PropertyDescriptor[] p = Introspector.getBeanInfo(valueObjectType).getPropertyDescriptors();
       for(int i=0;i<p.length;i++)
         propDescriptors.put(p[i].getName(),p[i].getPropertyType());
     }
+    attributesMap.putAll(decodedAttributes);
 
     // append filtering and sorting conditions to the base SQL...
     ArrayList filterAttrNames = new ArrayList();
@@ -190,18 +230,18 @@ public class HibernateUtils {
 
       if (where[0].getValue()!=null && where[0].getValue() instanceof List) {
         for(int j=0;j<((List)where[0].getValue()).size();j++)
-          paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
+          paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
       }
       else
-        paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
+        paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
 
       if (where[1]!=null) {
         if (where[1].getValue()!=null && where[1].getValue() instanceof List) {
           for(int j=0;j<((List)where[1].getValue()).size();j++)
-            paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
+            paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
         }
         else
-          paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
+          paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
       }
     }
 
@@ -349,17 +389,18 @@ public class HibernateUtils {
     // fill in "attributesMap" according to attributes defined in xxx.hdm.xml...
     ClassMetadata meta = sessions.getClassMetadata(valueObjectType);
     Map attributesMap = new HashMap();
+    Map attributesTypeMap = new HashMap();
     Map propDescriptors = new HashMap();
     if (meta!=null) {
-      fillInMetaData(sessions,tableName,"",meta,attributesMap);
+      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap);
       attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
     }
     else {
-      attributesMap.putAll(decodedAttributes);
       PropertyDescriptor[] p = Introspector.getBeanInfo(valueObjectType).getPropertyDescriptors();
       for(int i=0;i<p.length;i++)
         propDescriptors.put(p[i].getName(),p[i].getPropertyType());
     }
+    attributesMap.putAll(decodedAttributes);
 
     // append filtering and sorting conditions to the base SQL...
     ArrayList filterAttrNames = new ArrayList();
@@ -385,18 +426,18 @@ public class HibernateUtils {
 
       if (whereC[0].getValue()!=null && whereC[0].getValue() instanceof List) {
         for(int j=0;j<((List)whereC[0].getValue()).size();j++)
-          paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
+          paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
       }
       else
-        paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
+        paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
 
       if (whereC[1]!=null) {
         if (whereC[1].getValue()!=null && whereC[1].getValue() instanceof List) {
           for(int j=0;j<((List)whereC[1].getValue()).size();j++)
-            paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
+            paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
         }
         else
-          paramTypes.add(getPropertyType(meta,filterAttrNames.get(i).toString(),propDescriptors));
+          paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
       }
     }
 
@@ -1379,7 +1420,12 @@ public class HibernateUtils {
   }
 
 
-  private static org.hibernate.type.Type getPropertyType(ClassMetadata meta,String attrName,Map propDescriptors) {
+  private static org.hibernate.type.Type getPropertyType(Map attributesTypeMap,ClassMetadata meta,String attrName,Map propDescriptors) {
+    if (attributesTypeMap!=null) {
+      org.hibernate.type.Type type = (org.hibernate.type.Type)attributesTypeMap.get(attrName);
+      if (type!=null)
+        return type;
+    }
     if (meta!=null)
       return meta.getPropertyType(attrName);
     Class clazz = (Class)propDescriptors.get(attrName);

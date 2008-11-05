@@ -83,7 +83,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       attribute2dbField.put("numericValue","DEMO4.DECNUM");
       attribute2dbField.put("currencyValue","DEMO4.CURRNUM");
       attribute2dbField.put("dateValue","DEMO4.THEDATE");
-      attribute2dbField.put("combo.code","DEMO4.COMBO");
+      attribute2dbField.put("combo.code","COMBOCODE");
       attribute2dbField.put("combo","DEMO4.COMBO");
       attribute2dbField.put("checkValue","DEMO4.CHECK_BOX");
       attribute2dbField.put("radioButtonValue","DEMO4.RADIO");
@@ -94,7 +94,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       Response res = QueryUtil.getQuery(
         conn,
         new UserSessionParameters(),
-        "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE",
+        "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO AS COMBOCODE,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE",
         vals,
         attribute2dbField,
         TestVO.class,

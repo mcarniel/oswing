@@ -15,6 +15,7 @@ import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import javax.swing.text.DefaultFormatterFactory;
+import java.text.*;
 
 
 /**
@@ -783,7 +784,7 @@ public class FilterPanel extends JPanel {
       ;break;
       case Column.TYPE_FORMATTED_TEXT:
       {
-        ((JFormattedTextField)result).setValue(initValue==null?"":initValue.toString());
+        ((JFormattedTextField)result).setValue(initValue==null?"":initValue);
       }
       ;break;
       default: {
@@ -852,7 +853,13 @@ public class FilterPanel extends JPanel {
       case Column.TYPE_TEXT:
         return ((TextControl)result).getValue();
       case Column.TYPE_FORMATTED_TEXT:
-        return ((JFormattedTextField)result).getValue();
+        try {
+          ( (JFormattedTextField) result).commitEdit();
+          return ( (JFormattedTextField) result).getValue();
+        }
+        catch (ParseException ex) {
+          return null;
+        }
       case Column.TYPE_LOOKUP: {
         if (((CodLookupColumn)colProperties).isAllowOnlyNumbers())
           return ((NumericControl)result).getValue();

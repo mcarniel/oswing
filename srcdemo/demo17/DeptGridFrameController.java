@@ -62,7 +62,7 @@ public class DeptGridFrameController extends GridController implements GridDataL
       Class valueObjectType,
       Map otherGridParams) {
     try {
-//      String baseSQL = "from demo17.DeptVO as DeptVO where status='E'";
+      String baseSQL = "from demo17.DeptVO as DeptVO join fetch DeptVO.address where status='E'";
       Session sess = sessions.openSession(); // obtain a JDBC connection and instantiate a new Session
 
 //      READ WHOLE RESULT-SET...
@@ -84,7 +84,7 @@ public class DeptGridFrameController extends GridController implements GridDataL
 
 
 //    READ A BLOCK OF DATA FROM RESULT-SET...
-
+/*
       Response res = HibernateUtils.getBlockFromClass(
         valueObjectType,
         filteredColumns,
@@ -96,8 +96,8 @@ public class DeptGridFrameController extends GridController implements GridDataL
         FetchMode.JOIN,
         sess
       );
+*/
 
-/*
       Response res = HibernateUtils.getBlockFromQuery(
         action,
         startIndex,
@@ -113,7 +113,7 @@ public class DeptGridFrameController extends GridController implements GridDataL
         sessions,
         sess
       );
-*/
+
 
       sess.close();
       return res;

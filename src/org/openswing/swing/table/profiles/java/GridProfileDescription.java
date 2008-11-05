@@ -67,4 +67,11 @@ public class GridProfileDescription implements Serializable {
     return defaultProfile;
   }
 
+
+  public final boolean equals(Object o) {
+    if (o==null || !(o instanceof GridProfileDescription))
+      return false;
+    return ((GridProfileDescription)o).getId().equals(id);
+  }
+
 }

@@ -64,10 +64,11 @@ public abstract class GridProfileManager {
   /**
    * Store the specified grid profile.
    * @param profile profile to store
+   * @return profile id
    * @throws Throwable throwed if storing operation does not correctly accomplished
    * Note: if profile.getId() is null then this method must define id property.
    */
-  public abstract void storeUserProfile(GridProfile profile) throws Throwable;
+  public abstract Object storeUserProfile(GridProfile profile) throws Throwable;
 
 
   /**
