@@ -61,7 +61,6 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
       this.defaultFolderIcon = new ImageIcon( ClientUtils.getImage(ClientSettings.PERC_TREE_FOLDER));
       this.setOpaque(false);
       this.setBackgroundNonSelectionColor(new java.awt.Color(0,0,0,0));
-
     } catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -90,6 +89,10 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
           setIcon(defaultFunctionIcon);
         else
           setIcon(defaultFolderIcon);
+        JLabel l = (JLabel)this;
+        if (ClientSettings.SHOW_TOOLTIP_IN_TREEMENU) {
+          l.setToolTipText(node.getTooltipText());
+        }
       }
       else
           setIcon(defaultFolderIcon);

@@ -216,6 +216,7 @@ public class TreeMenu extends JPanel {
       TreeNodeRenderer renderer = new TreeNodeRenderer(menuTree);
       menuTree.setCellRenderer(renderer);
       menuTree.revalidate();
+      menuTree.setToolTipText("");
       if (ClientSettings.AUTO_EXPAND_TREE_MENU)
         expandAllNodes();
     } catch (Throwable ex) {
@@ -237,17 +238,20 @@ public class TreeMenu extends JPanel {
       oldChildNode = (ApplicationFunction)oldNode.getChildAt(i);
       if (oldChildNode.isSeparator())
         continue;
-      if (oldChildNode.isFolder())
+      if (oldChildNode.isFolder()) {
         newChildNode = new ApplicationFunction(
           oldChildNode.getDescription(),
-          oldChildNode.getIconName()
+          oldChildNode.getIconName(),
+          oldChildNode.getTooltipText()
         );
+      }
       else
         newChildNode = new ApplicationFunction(
           oldChildNode.getDescription(),
           oldChildNode.getFunctionId(),
           oldChildNode.getIconName(),
-          oldChildNode.getMethodName()
+          oldChildNode.getMethodName(),
+          oldChildNode.getTooltipText()
         );
       newNode.add(newChildNode);
       copyChildNodes(oldChildNode,newChildNode);

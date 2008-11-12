@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="appClientModule"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_04"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.generic.runtimeTarget/JBoss v5.0"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/demo47EJBClient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/demo47JPA"/>
+	<classpathentry kind="lib" path="D:/java/projects/OpenSwing/lib/clientos.jar"/>
+	<classpathentry kind="lib" path="D:/java/projects/OpenSwing/lib/poi-2.0-RC2-20040102.jar"/>
+	<classpathentry kind="lib" path="D:/java/projects/OpenSwing/lib/itext-1.4.8.jar"/>
+	<classpathentry kind="lib" path="D:/java/projects/OpenSwing/lib/jcalendar.jar"/>
+	<classpathentry kind="lib" path="D:/java/projects/OpenSwing/lib/jnlp.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

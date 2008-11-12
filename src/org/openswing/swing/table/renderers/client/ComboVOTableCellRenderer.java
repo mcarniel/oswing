@@ -71,7 +71,7 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
   private Hashtable getters = new Hashtable();
 
   /** value objects list  */
-  private ArrayList items = null;
+  private java.util.List items = null;
 
   /** cell content */
   private ItemRenderer rend = new ItemRenderer();

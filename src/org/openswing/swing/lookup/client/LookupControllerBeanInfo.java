@@ -20,6 +20,7 @@ public class LookupControllerBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _allColumnPreferredWidth = new PropertyDescriptor("allColumnPreferredWidth", beanClass, "getAllColumnPreferredWidth", "setAllColumnPreferredWidth");
+      PropertyDescriptor _allColumnsSelectable = new PropertyDescriptor("allColumnsSelectable", beanClass, "isAllColumnsSelectable", "setAllColumnsSelectable");
       PropertyDescriptor _allColumnVisible = new PropertyDescriptor("allColumnVisible", beanClass, "isAllColumnVisible", "setAllColumnVisible");
       PropertyDescriptor _allowTreeLeafSelectionOnly = new PropertyDescriptor("allowTreeLeafSelectionOnly", beanClass, "isAllowTreeLeafSelectionOnly", "setAllowTreeLeafSelectionOnly");
       PropertyDescriptor _anchorLastColumn = new PropertyDescriptor("anchorLastColumn", beanClass, "isAnchorLastColumn", "setAnchorLastColumn");
@@ -37,6 +38,7 @@ public class LookupControllerBeanInfo extends SimpleBeanInfo {
       _onInvalidCode.setPropertyEditorClass(InvalidCodeEditor.class);
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _allColumnPreferredWidth,
+        _allColumnsSelectable,
         _allColumnVisible,
         _allowTreeLeafSelectionOnly,
         _anchorLastColumn,

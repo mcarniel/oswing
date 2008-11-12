@@ -81,6 +81,9 @@ public class LookupController {
   /** flag used to set visibility on all columns of lookup grid; default "false"  */
   private boolean allColumnVisible = false;
 
+  /** flag used to set the selectable property on all columns of lookup grid; default: null  */
+  private Boolean allColumnsSelectable = null;
+
   /** default preferredWidth for all columns of lookup grid; default 100 pixels */
   private int allColumnPreferredWidth = 100;
 
@@ -909,7 +912,8 @@ public class LookupController {
     this.allColumnVisible = visible;
     for(int i=0; i<colProperties.length; i++) {
       colProperties[i].setColumnVisible(visible);
-      colProperties[i].setColumnSelectable(visible);
+      if (allColumnsSelectable==null)
+        colProperties[i].setColumnSelectable(visible);
     }
   }
 
@@ -1186,11 +1190,20 @@ public class LookupController {
 
 
   /**
+   * Method invoked by LookupAutoCompletitionDataLocator class, in order to retrieve the
+   * attribute in lookup value object mapped to the attribute of grid/form container.
    * @param parentAttributeName parent attribute name included in mapping
    * @return attribute name in lookup mapped to the specified parent attribute name
    */
   public final String getLookupAttributeName(String parentAttributeName) {
-    return lookupMapper.getLookupAttributeName(parentAttributeName);
+    String lookupAttribute = lookupMapper.getLookupAttributeName(parentAttributeName);
+    if (lookupAttribute==null &&
+        parentAttributeName.indexOf(".")!=-1) {
+      // in case of mapping <"",innervoAttribute> (i.e. the whole lookup v.o. is mapped to a single attribute of container v.o.)
+      // then the container "innervoAttribute.xxx" must be mapped with "xxx"
+      lookupAttribute = parentAttributeName.substring(parentAttributeName.indexOf("."));
+    }
+    return lookupAttribute;
   }
 
 
@@ -1335,6 +1348,8 @@ public class LookupController {
         if (colProperties[i].getHeaderColumnName().equals("columnname"))
           colProperties[i].setHeaderColumnName(String.valueOf(attributeName.charAt(0)).toUpperCase()+attributeName.substring(1));
         colProperties[i].setColumnVisible(this.allColumnVisible);
+        if (this.allColumnsSelectable!=null)
+          colProperties[i].setColumnSelectable(this.allColumnsSelectable.booleanValue());
         colProperties[i].setPreferredWidth(this.allColumnPreferredWidth);
       }
 
@@ -1581,6 +1596,27 @@ public class LookupController {
    */
   public final void removeComboFilter(String attributeName) {
     comboFilters.remove(attributeName);
+  }
+
+
+  /**
+   * @return define the selectable property on all columns of lookup grid
+   */
+  public final Boolean isAllColumnsSelectable() {
+    return allColumnsSelectable;
+  }
+
+
+  /**
+   * Set the selectable property on all columns of lookup grid.
+   * @param allColumnSelectable flag used to set the selectable property on all columns of lookup grid
+   */
+  public final void setAllColumnsSelectable(Boolean allColumnsSelectable) {
+    this.allColumnsSelectable = allColumnsSelectable;
+    if (allColumnsSelectable!=null)
+      for(int i=0; i<colProperties.length; i++) {
+        colProperties[i].setColumnSelectable(allColumnsSelectable.booleanValue());
+      }
   }
 
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+	<persistence-unit name="demo47JPA" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:/demo4ws</jta-data-source>
+		<class>demo47.java.Doc01Orders</class>
+		<class>demo47.java.Doc01OrdersPK</class>
+		<class>demo47.java.Doc02Customers</class>
+		<class>demo47.java.Doc03Pricelists</class>
+		<class>demo47.java.Doc03PricelistsPK</class>
+		<class>demo47.java.Doc04OrderRows</class>
+		<class>demo47.java.Doc04OrderRowsPK</class>
+		<class>demo47.java.Doc05Articles</class>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+			<!--  <property name="log4j.logger.org.hibernate" value="DEBUG" />-->
+<!-- 
+			<property name="log4j.category.org.hibernate.SQL" value="DEBUG" />
+			<property name="log4j.category.org.hibernate.type" value="DEBUG" />
+ -->
+ 			<property name="hibernate.show_sql" value="true"/>
+<!-- 			
+			<property name="log4j.additivity.org.hibernate.SQL" value="true" />
+			<property name="log4j.category.org.hibernate.type" value="DEBUG" />			
+-->
+<!-- it can be useful to disable batching during debugging, as HSQLDB doesn't report the exact statement which fails in batch mode -->
+			<!--  <property key="hibernate.jdbc.batch_size">0</property>-->
+
+			<!-- <property name="hibernate.max_fetch_depth" value="3"/> -->
+
+        <!-- alternatively to <class> and <property> declarations, you can use a regular 
+	     hibernate.cfg.xml file -->
+         <!-- property name="hibernate.ejb.cfgfile" 
+	     value="/org/hibernate/ejb/test/hibernate.cfg.xml"/ -->
+
+     <!-- Disable the second-level cache  -->
+     <!-- <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property> -->   
+
+	     
+		</properties>
+	</persistence-unit>
+</persistence>

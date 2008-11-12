@@ -78,7 +78,7 @@ public class OrdersGridFrameController extends GridController implements GridDat
         true
       );
       if (!res.isError()) {
-        ArrayList rows = ((VOListResponse)res).getRows();
+        List rows = ((VOListResponse)res).getRows();
         OrderVO vo = null;
         PreparedStatement pstmt = null;
         ResultSet rset = null;

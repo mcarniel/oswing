@@ -3140,7 +3140,78 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * Remove the sorting condition currently applied to the specified column.
+   * Do not invoke this method before grid is being visible.
+   * @param attributeName attribute name that identities the column
+   * @param reloadGrid <code>true</code> to force grid reloading; <code>false</code> to do not reload grid (for instance when sorting conditions for other columns must be removed too)
+   */
+  public final void removeSortedColumn(String attributeName,boolean reloadGrid) {
+    if (topTable!=null) {
+      int colIndex = topTable.getCurrentSortedColumns().indexOf(attributeName);
+      if (colIndex==-1) {
+        Logger.error(this.getClass().getName(), "removeSortedColumn", "The specified attribute name '"+attributeName+"' does not exists", null);
+        return;
+      }
+      topTable.getCurrentSortedColumns().remove(colIndex);
+      topTable.getCurrentSortedVersusColumns().remove(colIndex);
+      topTable.repaint();
+      if (reloadGrid)
+        reloadData();
+    }
+    else if (table!=null) {
+      int colIndex = table.getCurrentSortedColumns().indexOf(attributeName);
+      if (colIndex==-1) {
+        Logger.error(this.getClass().getName(), "removeSortedColumn", "The specified attribute name '"+attributeName+"' does not exists", null);
+        return;
+      }
+      table.getCurrentSortedColumns().remove(colIndex);
+      table.getCurrentSortedVersusColumns().remove(colIndex);
+      table.repaint();
+      if (reloadGrid)
+        reloadData();
+    }
+  }
 
+
+  /**
+   * Add the specified sorting condition to the column identified by the attribute name (as last sorting condition).
+   * Do not invoke this method before grid is being visible.
+   * @param attributeName attribute name that identities the column
+   * @param sortingVersus sorting versus; possible values: Consts.ASC_SORTED,Consts.DESC_SORTED
+   * @param reloadGrid <code>true</code> to force grid reloading; <code>false</code> to do not reload grid (for instance when sorting conditions for other columns must be add too)
+   */
+  public final void addSortedColumn(String attributeName,String sortingVersus,boolean reloadGrid) {
+    if (!sortingVersus.equals(Consts.ASC_SORTED) &&
+        !sortingVersus.equals(Consts.DESC_SORTED)) {
+      Logger.error(this.getClass().getName(), "addSortedColumn", "Invalid sorting versus. Allowed values: Consts.ASC_SORTED,Consts.DESC_SORTED", null);
+      return;
+    }
+    if (topTable!=null) {
+      int colIndex = topTable.getCurrentSortedColumns().indexOf(attributeName);
+      if (colIndex!=-1) {
+        topTable.getCurrentSortedColumns().remove(colIndex);
+        topTable.getCurrentSortedVersusColumns().remove(colIndex);
+      }
+      topTable.getCurrentSortedColumns().add(attributeName);
+      topTable.getCurrentSortedVersusColumns().add(sortingVersus);
+      topTable.repaint();
+      if (reloadGrid)
+        reloadData();
+    }
+    else if (table!=null) {
+      int colIndex = table.getCurrentSortedColumns().indexOf(attributeName);
+      if (colIndex!=-1) {
+        table.getCurrentSortedColumns().remove(colIndex);
+        table.getCurrentSortedVersusColumns().remove(colIndex);
+      }
+      table.getCurrentSortedColumns().add(attributeName);
+      table.getCurrentSortedVersusColumns().add(sortingVersus);
+      table.repaint();
+      if (reloadGrid)
+        reloadData();
+    }
+  }
 
 
 

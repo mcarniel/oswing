@@ -1,30 +1,27 @@
 package org.openswing.swing.mdi.client;
 
+import java.beans.*;
 import java.util.*;
 
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 
+import org.openswing.swing.client.*;
+import org.openswing.swing.form.client.*;
+import org.openswing.swing.logger.client.*;
+import org.openswing.swing.tree.client.*;
 import org.openswing.swing.util.client.*;
-import org.openswing.swing.client.OptionPane;
-import java.awt.Component;
-import org.openswing.swing.client.GridControl;
-import org.openswing.swing.form.client.Form;
-import org.openswing.swing.util.java.Consts;
-import java.awt.Container;
-import org.openswing.swing.tree.client.TreePanel;
-import java.awt.event.FocusEvent;
-import java.awt.DefaultKeyboardFocusManager;
-import java.awt.event.FocusListener;
-import java.beans.Beans;
-import org.openswing.swing.logger.client.Logger;
-import java.beans.*;
+import org.openswing.swing.util.java.*;
 
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: Base Internal Frame: to use together with MDI Frame.</p>
+ * <p>Description: Base Internal Frame: to use together with MDI Frame.
+ * You can set this internal frame as modal, by means of setModal() method BUT ONLY AFTER invoking MDIFrame.add() method,
+ * i.e. after internal frame is already visible.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
  * <p> This file is part of OpenSwing Framework.
@@ -70,6 +67,12 @@ public class InternalFrame extends JInternalFrame {
   /** last component added to the north of the internal frame, before hiding title bar */
   private JComponent lastNorthPane = null;
 
+  /** internal frame modal state; default value: <code>false</code> i.e. internal frame is not modal */
+  private boolean modal;
+
+  /** internal frame owner */
+  protected javax.swing.JInternalFrame owner = this;
+
 
   /**
    * Costructor.
@@ -99,7 +102,6 @@ public class InternalFrame extends JInternalFrame {
   public final void setParentFrame(InternalFrame parentFrame) {
     this.parentFrame = parentFrame;
   }
-
 
 
   /**
@@ -353,6 +355,105 @@ public class InternalFrame extends JInternalFrame {
   }
 
 
+  /**
+   * @return internal frame owner; used in case of modal internal frame
+   */
+  public final javax.swing.JInternalFrame getOwner() {
+    return owner;
+  }
+
+
+  /**
+   * Set the internal frame owner; used in case of modal internal frame.
+   * @param owner internal frame owner
+   */
+  public final void setOwner(javax.swing.JInternalFrame owner) {
+     this.owner=owner;
+  }
+
+
+  /**
+   * Define this internal frame as modal.
+   * IMPORTANT NOTE: do not call this method before showing this frame, but only AFTER MDIFrame.add() invokation.
+   * @param modal <code>true</code> to set this internal frame as modal, <code>false</code> otherwise
+   */
+  public final void setModal(boolean modal) {
+      this.modal=modal;
+      javax.swing.JDesktopPane desktop=getDesktopPane();
+      if (desktop instanceof JDesktopPane) {
+        ((DesktopPane)desktop).setModal(this,modal);
+      }
+  }
+
+
+  /**
+   * @return <code>true</code> whether this internal frame as modal, <code>false</code> otherwise
+   */
+  public final boolean isModal() {
+     return modal;
+  }
+
+
+  /**
+   * Iconify this internal frame.
+   * Please do not call this method for modal internal frames!
+   * @param iconifiable <code>true</code> to iconify internal frame
+   */
+  public final void setIconifiable(boolean iconifiable) {
+    if (modal && iconifiable)
+      throw new IllegalArgumentException("InternalFrame class cannot be iconifiable while modal");
+    super.setIconifiable(iconifiable);
+  }
+
+
+  /*
+   * Creates a new EventDispatchThread to dispatch events from this.
+   * This method returns when stopModal is invoked.
+   */
+  public synchronized void startModal() {
+    if (isVisible() && !isShowing()) {
+      Container parent = this.getParent();
+      while (parent!=null) {
+        if (!parent.isVisible())
+          parent.setVisible(true);
+        parent = parent.getParent();
+      }
+    }
+
+    try {
+      if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+        EventQueue theQueue = getToolkit().getSystemEventQueue();
+        while (isVisible()) {
+          // This is essentially the body of EventDispatchThread
+          AWTEvent event = theQueue.getNextEvent();
+          Object src = event.getSource();
+          // can't call theQueue.dispatchEvent, so I pasted its body here
+          if (event instanceof ActiveEvent) {
+              ((ActiveEvent) event).dispatch();
+          } else if (src instanceof Component) {
+              ((Component) src).dispatchEvent(event);
+          } else if (src instanceof MenuComponent) {
+              ((MenuComponent) src).dispatchEvent(event);
+          } else {
+            Logger.error(this.getClass().getName(), "startModal", "Unable to dispatch event: "+event,null);
+          }
+        }
+      } else {
+        while (isVisible())
+          wait();
+      }
+    } catch(Exception ex){
+      ex.printStackTrace();
+    }
+  }
+
+
+  /*
+   * Stops the event dispatching loop created by a previous call to <code>startModal</code>.
+   */
+  public synchronized void stopModal() {
+    notifyAll();
+  }
 
 
 }

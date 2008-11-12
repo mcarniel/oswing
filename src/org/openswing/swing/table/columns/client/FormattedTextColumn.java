@@ -458,6 +458,7 @@ public class FormattedTextColumn extends Column {
         rightMargin,
         topMargin,
         bottomMargin,
+        getTextAlignment(),
         getColumnName()
     );
   }

@@ -21,13 +21,19 @@ public class EmpVO extends ValueObjectImpl {
   private DeptVO dept;
   private String sex;
   private BigDecimal salary;
-  private Date hireDate;
   private String note;
   private TaskVO task;
   private String workingPlace;
+  private Date hireDate;
 
 
   public EmpVO() {
+  }
+  public Date getHireDate() {
+    return hireDate;
+  }
+  public void setHireDate(Date hireDate) {
+    this.hireDate = hireDate;
   }
 
 
@@ -59,9 +65,7 @@ public class EmpVO extends ValueObjectImpl {
   public BigDecimal getSalary() {
     return salary;
   }
-  public Date getHireDate() {
-    return hireDate;
-  }
+
   public String getNote() {
     return note;
   }
@@ -73,9 +77,6 @@ public class EmpVO extends ValueObjectImpl {
   }
   public void setNote(String note) {
     this.note = note;
-  }
-  public void setHireDate(Date hireDate) {
-    this.hireDate = hireDate;
   }
   public void setSalary(BigDecimal salary) {
     this.salary = salary;

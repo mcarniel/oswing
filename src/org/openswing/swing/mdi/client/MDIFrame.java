@@ -234,12 +234,18 @@ public class MDIFrame extends JFrame implements BusyListener {
 
           if (function.isFolder()) {
             menu = new JMenu(function.toString());
+            if (ClientSettings.SHOW_TOOLTIP_IN_MENUBAR)
+              menu.setToolTipText(function.getTooltipText());
+            maybeAddTooltipToStatusBar(menu,function);
           }
           else if (function.isSeparator()) {
             continue;
           }
           else {
             menu = new JMenu(function.toString());
+            if (ClientSettings.SHOW_TOOLTIP_IN_MENUBAR)
+              menu.setToolTipText(function.getTooltipText());
+            maybeAddTooltipToStatusBar(menu,function);
             menu.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent e) {
                 executeFunction(function);
@@ -340,6 +346,22 @@ public class MDIFrame extends JFrame implements BusyListener {
   }
 
 
+  private void maybeAddTooltipToStatusBar(JMenuItem menu,final ApplicationFunction function) {
+    if (ClientSettings.SHOW_TOOLTIP_IN_MDISTATUSBAR) {
+      ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
+      menu.addMouseListener(new MouseAdapter() {
+
+        public void mouseEntered(MouseEvent e) {
+          getStatusBar().setText(function.getTooltipText());
+        }
+
+        public void mouseExited(MouseEvent e) {
+          getStatusBar().setText("");
+        }
+
+      });
+    }
+  }
 
 
   /**
@@ -354,16 +376,27 @@ public class MDIFrame extends JFrame implements BusyListener {
 
       if (function.isFolder()) {
         menu = new JMenu(function.toString());
+        if (ClientSettings.SHOW_TOOLTIP_IN_MENUBAR)
+          menu.setToolTipText(function.getTooltipText());
+        maybeAddTooltipToStatusBar(menu,function);
       }
       else if (function.isSeparator()) {
         parentMenu.add(new JSeparator());
         continue;
       }
       else {
-        if (function.getIconName()==null)
+        if (function.getIconName()==null) {
           menu = new JMenuItem(function.toString());
-        else
+          if (ClientSettings.SHOW_TOOLTIP_IN_MENUBAR)
+            menu.setToolTipText(function.getTooltipText());
+          maybeAddTooltipToStatusBar(menu,function);
+        }
+        else {
           menu = new JMenuItem(function.toString(),new ImageIcon(ClientUtils.getImage(function.getIconName())));
+          if (ClientSettings.SHOW_TOOLTIP_IN_MENUBAR)
+            menu.setToolTipText(function.getTooltipText());
+          maybeAddTooltipToStatusBar(menu,function);
+        }
         menu.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             executeFunction(function);

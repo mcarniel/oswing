@@ -36,6 +36,7 @@ public class EmpGridFrame extends InternalFrame {
   TextColumn colDeptCode = new TextColumn();
   TextColumn colDeptDescr = new TextColumn();
   FilterButton filterButton1 = new FilterButton();
+  DateColumn colHireDate = new DateColumn();
   private EmpGridFrameController controller;
 
   public EmpGridFrame(EmpGridFrameController controller) {
@@ -89,6 +90,9 @@ public class EmpGridFrame extends InternalFrame {
     colDeptDescr.setColumnName("dept.description");
     colDeptDescr.setPreferredWidth(200);
     filterButton1.setText("filterButton1");
+    colHireDate.setColumnName("hireDate");
+    colHireDate.setColumnFilterable(true);
+    colHireDate.setHeaderColumnName("hire date");
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
@@ -102,8 +106,7 @@ public class EmpGridFrame extends InternalFrame {
     grid.getColumnContainer().add(colLName, null);
     grid.getColumnContainer().add(colDeptCode, null);
     grid.getColumnContainer().add(colDeptDescr, null);
-
-
+    grid.getColumnContainer().add(colHireDate, null);
   }
 
 

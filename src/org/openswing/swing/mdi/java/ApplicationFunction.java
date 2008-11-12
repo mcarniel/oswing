@@ -54,6 +54,9 @@ public class ApplicationFunction extends DefaultMutableTreeNode {
   /** this node is a separator */
   private boolean isSeparator;
 
+  /** tooltip text associated to folder or function */
+  private String tooltipText;
+
 
   /**
    * Root node.
@@ -82,7 +85,20 @@ public class ApplicationFunction extends DefaultMutableTreeNode {
     super(nodeName);
     this.description = nodeName;
     this.iconName = iconName;
+    this.tooltipText = nodeName;
     isFolder = true;
+  }
+
+
+  /**
+   * Constructor: a folder
+   * @param nodeName description (already translated) to view in the tree node/menu item
+   * @param iconName image name
+   * @param tooltipText tooltip text (already translated) to view in the tree node/menu item
+   */
+  public ApplicationFunction(String nodeName,String iconName,String tooltipText) {
+    this(nodeName,iconName);
+    this.tooltipText = tooltipText;
   }
 
 
@@ -99,7 +115,21 @@ public class ApplicationFunction extends DefaultMutableTreeNode {
     this.functionId = functionId;
     this.iconName = iconName;
     this.methodName = methodName;
+    this.tooltipText = nodeName;
     isFolder = false;
+  }
+
+
+  /**
+   * Constructor: a node function
+   * @param nodeName description (already translated) to view in the tree node/menu item
+   * @param functionId function identifier
+   * @param iconName image name
+   * @param methodName method name in ClientFacade to execute
+   */
+  public ApplicationFunction(String nodeName,String functionId,String iconName,String methodName,String tooltipText) {
+    this(nodeName,functionId,iconName,methodName);
+    this.tooltipText = tooltipText;
   }
 
 
@@ -161,6 +191,14 @@ public class ApplicationFunction extends DefaultMutableTreeNode {
    */
   public final boolean isSeparator() {
     return isSeparator;
+  }
+
+
+  /**
+   * @return tooltip text associated to folder or function
+   */
+  public final String getTooltipText() {
+    return tooltipText;
   }
 
 

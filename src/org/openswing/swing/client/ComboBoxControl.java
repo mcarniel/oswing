@@ -199,6 +199,8 @@ public class ComboBoxControl extends BaseInputControl implements InputControl,Se
     combo.setFocusable(enabled || ClientSettings.DISABLED_INPUT_CONTROLS_FOCUSABLE);
     if (!enabled)
       combo.setBackground((Color)UIManager.get("TextField.inactiveBackground"));
+    else
+      combo.setBackground(enabledBackColor);
   }
 
 

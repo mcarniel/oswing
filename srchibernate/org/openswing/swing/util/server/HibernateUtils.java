@@ -235,14 +235,14 @@ public class HibernateUtils {
       else
         paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
 
-      if (where[1]!=null) {
-        if (where[1].getValue()!=null && where[1].getValue() instanceof List) {
-          for(int j=0;j<((List)where[1].getValue()).size();j++)
-            paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
-        }
-        else
-          paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
-      }
+//      if (where[1]!=null) {
+//        if (where[1].getValue()!=null && where[1].getValue() instanceof List) {
+//          for(int j=0;j<((List)where[1].getValue()).size();j++)
+//            paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
+//        }
+//        else
+//          paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
+//      }
     }
 
     return baseSQL;
@@ -431,14 +431,14 @@ public class HibernateUtils {
       else
         paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
 
-      if (whereC[1]!=null) {
-        if (whereC[1].getValue()!=null && whereC[1].getValue() instanceof List) {
-          for(int j=0;j<((List)whereC[1].getValue()).size();j++)
-            paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
-        }
-        else
-          paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
-      }
+//      if (whereC[1]!=null) {
+//        if (whereC[1].getValue()!=null && whereC[1].getValue() instanceof List) {
+//          for(int j=0;j<((List)whereC[1].getValue()).size();j++)
+//            paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
+//        }
+//        else
+//          paramTypes.add(getPropertyType(attributesTypeMap,meta,filterAttrNames.get(i).toString(),propDescriptors));
+//      }
     }
 
 

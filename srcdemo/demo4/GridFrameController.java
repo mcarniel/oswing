@@ -110,7 +110,7 @@ public class GridFrameController extends GridController implements GridDataLocat
       if (!res.isError()) {
 
         Domain d = ClientSettings.getInstance().getDomain("ORDERSTATE");
-        ArrayList list = ((VOListResponse)res).getRows();
+        List list = ((VOListResponse)res).getRows();
         // this is a simplification: in a real situation combo v.o. will be retrieved from the database...
         TestVO vo = null;
         for(int i=0;i<list.size();i++) {

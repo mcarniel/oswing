@@ -257,7 +257,7 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
             return;
           }
           else {
-            ArrayList rows = ((VOListResponse)res).getRows();
+            java.util.List rows = ((VOListResponse)res).getRows();
             listControlDomain = new Domain("DOMAIN_LIST_FILTER_"+attributeName);
             for(int i=0;i<rows.size();i++)
               listControlDomain.addDomainPair(rows.get(i),rows.get(i).toString());

@@ -100,7 +100,7 @@ public class JPAUtils {
       attributesMap.put(attrName,valueObjectAlias+"."+attrName);
     }
     for(int i=0;i<currentSortedColumns.size();i++)
-      attributesMap.put(currentSortedColumns.get(i),valueObjectAlias+"."+currentSortedColumns.get(i));;
+      attributesMap.put(currentSortedColumns.get(i),valueObjectAlias+"."+currentSortedColumns.get(i));
 
     // append filtering and sorting conditions to the base SQL...
     ArrayList filterAttrNames = new ArrayList();
@@ -167,7 +167,7 @@ public class JPAUtils {
       attributesMap.put(attrName,valueObjectAlias+"."+attrName);
     }
     for(int i=0;i<currentSortedColumns.size();i++)
-      attributesMap.put(currentSortedColumns.get(i),valueObjectAlias+"."+currentSortedColumns.get(i));;
+      attributesMap.put(currentSortedColumns.get(i),valueObjectAlias+"."+currentSortedColumns.get(i));
 
     // append filtering and sorting conditions to the base SQL...
     ArrayList filterAttrNames = new ArrayList();
@@ -224,6 +224,41 @@ public class JPAUtils {
 
   /**
    * Read the whole result set, by applying filtering and sorting conditions + query parameters.
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param baseSQL base SQL
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param em EntityManager
+   * @param logger Log4J logger to use to log query parameters
+   */
+  public static Response getAllFromQuery(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String baseSQL,
+    Object[] paramValues,
+    EntityManager em,
+    org.apache.log4j.Logger logger
+  ) throws Exception {
+    return getAllFromQuery(
+         filteredColumns,
+         currentSortedColumns,
+         currentSortedVersusColumns,
+         valueObjectType,
+         baseSQL,
+         paramValues,
+         getValueObjectAlias(valueObjectType,baseSQL),
+         em,
+         logger
+    );
+  }
+
+
+  /**
+   * Read the whole result set, by applying filtering and sorting conditions + query parameters.
    * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
    *
    * Example: following query
@@ -279,6 +314,65 @@ public class JPAUtils {
   }
 
 
+  /**
+   * Read the whole result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param em EntityManager
+   * @param logger Log4J logger to use to log query parameters
+   */
+  public static Response getAllFromQuery(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    EntityManager em,
+    org.apache.log4j.Logger logger
+  ) throws Exception {
+    return getAllFromQuery(
+         filteredColumns,
+         currentSortedColumns,
+         currentSortedVersusColumns,
+         valueObjectType,
+         select,
+         from,
+         where,
+         group,
+         having,
+         order,
+         paramValues,
+         getValueObjectAlias(valueObjectType,from),
+         em,
+         logger
+    );
+  }
+
 
   /**
    * Read the whole result set, by applying filtering and sorting conditions + query parameters.
@@ -300,6 +394,43 @@ public class JPAUtils {
     Object[] paramValues,
     String valueObjectAlias,
     EntityManager em
+  ) throws Exception {
+    return getAllFromQuery(
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      valueObjectType,
+      baseSQL,
+      paramValues,
+      valueObjectAlias,
+      em,
+      null
+    );
+  }
+
+
+  /**
+   * Read the whole result set, by applying filtering and sorting conditions + query parameters.
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param baseSQL base SQL
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   * @param em EntityManager
+   * @param logger Log4J logger to use to log query parameters
+   */
+  public static Response getAllFromQuery(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String baseSQL,
+    Object[] paramValues,
+    String valueObjectAlias,
+    EntityManager em,
+    org.apache.log4j.Logger logger
   ) throws Exception {
 
     ArrayList values = new ArrayList();
@@ -325,6 +456,8 @@ public class JPAUtils {
     List list = q.getResultList();
     gridList.addAll(list);
     resultSetLength = gridList.size();
+    if (logger!=null)
+      logParams(logger,values);
     return new VOListResponse(gridList,moreRows,resultSetLength);
   }
 
@@ -371,6 +504,69 @@ public class JPAUtils {
     EntityManager em
   ) throws Exception {
 
+    return getAllFromQuery(
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      valueObjectType,
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      paramValues,
+      valueObjectAlias,
+      em,
+      null
+    );
+  }
+
+
+  /**
+   * Read the whole result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   * @param em EntityManager
+   * @param logger Log4J logger to use to log query parameters
+   */
+  public static Response getAllFromQuery(
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    String valueObjectAlias,
+    EntityManager em,
+    org.apache.log4j.Logger logger
+  ) throws Exception {
+
     ArrayList values = new ArrayList();
     values.addAll(Arrays.asList(paramValues));
     String baseSQL = applyFiltersAndSorter(
@@ -399,6 +595,8 @@ public class JPAUtils {
     List list = q.getResultList();
     gridList.addAll(list);
     resultSetLength = gridList.size();
+    if (logger!=null)
+      logParams(logger,values);
     return new VOListResponse(gridList,moreRows,resultSetLength);
   }
 
@@ -444,6 +642,51 @@ public class JPAUtils {
     );
   }
 
+
+  /**
+   * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param baseSQL base SQL
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   * @param em EntityManager
+   * @param logger Log4J logger to use to log query parameters
+   */
+  public static Response getBlockFromQuery(
+    int action,
+    int startIndex,
+    int blockSize,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String baseSQL,
+    Object[] paramValues,
+    EntityManager em,
+    org.apache.log4j.Logger logger
+  ) throws Exception {
+    return getBlockFromQuery(
+         action,
+         startIndex,
+         blockSize,
+         filteredColumns,
+         currentSortedColumns,
+         currentSortedVersusColumns,
+         valueObjectType,
+         baseSQL,
+         paramValues,
+         getValueObjectAlias(valueObjectType,baseSQL),
+         em,
+         logger
+    );
+  }
+  
 
   /**
    * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
@@ -514,6 +757,76 @@ public class JPAUtils {
 
   /**
    * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   * @param em EntityManager
+   * @param logger Log4J logger to use to log query parameters
+   */
+  public static Response getBlockFromQuery(
+    int action,
+    int startIndex,
+    int blockSize,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    EntityManager em,
+    org.apache.log4j.Logger logger
+  ) throws Exception {
+    return getBlockFromQuery(
+         action,
+         startIndex,
+         blockSize,
+         filteredColumns,
+         currentSortedColumns,
+         currentSortedVersusColumns,
+         valueObjectType,
+         select,
+         from,
+         where,
+         group,
+         having,
+         order,
+         paramValues,
+         getValueObjectAlias(valueObjectType,from),
+         em,
+         logger
+    );
+  }
+
+
+  /**
+   * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
    * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
    * @param startPos start position of data fetching in result set
    * @param blockSize number of records to read
@@ -539,6 +852,52 @@ public class JPAUtils {
     String valueObjectAlias,
     EntityManager em
   ) throws Exception {
+    return getBlockFromQuery(
+      action,
+      startIndex,
+      blockSize,
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      valueObjectType,
+      baseSQL,
+      paramValues,
+      valueObjectAlias,
+      em,
+      null
+    );
+  }
+
+
+  /**
+   * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param baseSQL base SQL
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   * @param em EntityManager
+   * @param logger Log4J logger to use to log query parameters
+   */
+  public static Response getBlockFromQuery(
+    int action,
+    int startIndex,
+    int blockSize,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String baseSQL,
+    Object[] paramValues,
+    String valueObjectAlias,
+    EntityManager em,
+    org.apache.log4j.Logger logger
+  ) throws Exception {
 
     ArrayList values = new ArrayList();
     values.addAll(Arrays.asList(paramValues));
@@ -556,12 +915,15 @@ public class JPAUtils {
     for(int i=0;i<values.size();i++)
       q.setParameter(i+1,values.get(i));
 
-    return getBlockFromQuery(
+    Response res = getBlockFromQuery(
       action,
       startIndex,
       blockSize,
       q
     );
+    if (logger!=null)
+      logParams(logger,values);
+    return res;
   }
 
 
@@ -612,6 +974,77 @@ public class JPAUtils {
     String valueObjectAlias,
     EntityManager em
   ) throws Exception {
+    return getBlockFromQuery(
+      action,
+      startIndex,
+      blockSize,
+      filteredColumns,
+      currentSortedColumns,
+      currentSortedVersusColumns,
+      valueObjectType,
+      select,
+      from,
+      where,
+      group,
+      having,
+      order,
+      paramValues,
+      valueObjectAlias,
+      em,
+      null
+    );
+  }
+
+
+  /**
+   * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
+   * SQL is expressed using more argument, each one without the related keyword (select, from, ...).
+   *
+   * Example: following query
+   *
+   * select customer_code,corporate_name from companies order by customer_code asc
+   *
+   * become an invokation of getSql:
+   *
+   * getSql(userSessionPars,"customer_code,corporate_name","companies","","customer_code asc","","",...);
+   *
+   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
+   * @param startPos start position of data fetching in result set
+   * @param blockSize number of records to read
+   * @param filteredColumns filtering conditions
+   * @param currentSortedColumns sorting conditions (attribute names)
+   * @param currentSortedVersusColumns sorting conditions (order versus)
+   * @param valueObjectType value object type
+   * @param select list of fields for select statement
+   * @param from list of tables for from statement
+   * @param where where statement; may be null
+   * @param group group by statement; may be null
+   * @param having having statement; may be null
+   * @param order list of fields for order by statement; may be null
+   * @param paramValues parameters values, related to "?" in "baseSQL" (optional)
+   * @param valueObjectAlias alias used to identify the value object to retrieve
+   * @param em EntityManager
+   * @param logger Log4J logger to use to log query parameters
+   */
+  public static Response getBlockFromQuery(
+    int action,
+    int startIndex,
+    int blockSize,
+    Map filteredColumns,
+    ArrayList currentSortedColumns,
+    ArrayList currentSortedVersusColumns,
+    Class valueObjectType,
+    String select,
+    String from,
+    String where,
+    String group,
+    String having,
+    String order,
+    Object[] paramValues,
+    String valueObjectAlias,
+    EntityManager em,
+    org.apache.log4j.Logger logger
+  ) throws Exception {
 
     ArrayList values = new ArrayList();
     values.addAll(Arrays.asList(paramValues));
@@ -634,12 +1067,15 @@ public class JPAUtils {
     for(int i=0;i<values.size();i++)
       q.setParameter(i+1,values.get(i));
 
-    return getBlockFromQuery(
+    Response res = getBlockFromQuery(
       action,
       startIndex,
       blockSize,
       q
     );
+    if (logger!=null)
+      logParams(logger,values);
+    return res;
   }
 
 
@@ -654,7 +1090,7 @@ public class JPAUtils {
     int action,
     int startIndex,
     int blockSize,
-    Query query
+    Query query 
   ) throws Exception {
 
     // read a block of records...
@@ -697,5 +1133,17 @@ public class JPAUtils {
     return new VOListResponse(gridList,moreRows,resultSetLength);
   }
 
+
+  private static void logParams(org.apache.log4j.Logger logger,ArrayList paramValues) {
+    if (paramValues.size()>0) {
+      StringBuffer sb = new StringBuffer();
+      for(int i=0;i<paramValues.size();i++)
+        if (paramValues.get(i)!=null)
+          sb.append("PARAM ").append(i+1).append(": '").append(paramValues.get(i)).append("' ").append(paramValues.get(i).getClass().getName()).append("\n");
+        else
+          sb.append("PARAM ").append(i+1).append(": null\n");
+      logger.info(sb.toString());
+    }
+  }
 
 }

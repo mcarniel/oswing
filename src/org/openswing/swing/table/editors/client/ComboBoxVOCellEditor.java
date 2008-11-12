@@ -180,7 +180,7 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
     if (itemsDataLocator!=null && itemsVO!=null) {
       Response res = itemsDataLocator.loadData(itemsVO.getClass());
       if (!res.isError()) {
-        ArrayList items = ((VOListResponse)res).getRows();
+        java.util.List items = ((VOListResponse)res).getRows();
         for(int i=0;i<items.size();i++) {
           model.addElement(items.get(i));
         }
@@ -223,7 +223,7 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
     if (itemsDataLocator!=null && itemsVO!=null) {
       Response res = itemsDataLocator.loadData(itemsVO.getClass());
       if (!res.isError()) {
-        ArrayList items = ((VOListResponse)res).getRows();
+        java.util.List items = ((VOListResponse)res).getRows();
         model = new DefaultComboBoxModel();
         for(int i=0;i<items.size();i++) {
           model.addElement(items.get(i));

@@ -102,7 +102,7 @@ public class FormattedTextControl extends BaseInputControl implements InputContr
       if (text == null) {
         text = "";
       }
-      textBox.setValue(text);
+      textBox.setText(text);
     }
     catch (Exception ex) {
     }

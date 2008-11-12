@@ -503,7 +503,7 @@ public class GanttControl extends JPanel {
       );
     }
     else {
-      ArrayList rows = ( (VOListResponse) res).getRows();
+      java.util.List rows = ( (VOListResponse) res).getRows();
       GanttRowVO vo = null;
       for(int i=0;i<rows.size();i++) {
         vo = (GanttRowVO)rows.get(i);

@@ -1603,7 +1603,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             if (res.isError())
               Logger.error(this.getClass().getName(), "save", "Error while loading new row for grid:\n"+res.getErrorMessage(),null);
             else {
-              ArrayList rows = ((VOListResponse)res).getRows();
+              java.util.List rows = ((VOListResponse)res).getRows();
               if (rows.size()==1) {
                 final int gridRowIndex = getRowIndexInGrid();
                 if (gridRowIndex==-1) {

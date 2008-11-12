@@ -386,6 +386,18 @@ public class ClientSettings {
   /** collection of pairs <functionId of grid,associated digest> */
   private HashMap lastGridPermissionsDigests = new HashMap();
 
+  /** define if a tooltip text must be showed for menu and menu items in menu bar; default value: <code>true</code> */
+  public static boolean SHOW_TOOLTIP_IN_MENUBAR = true;
+
+  /** define if a tooltip text must be showed for folders and function nodes in tree menu; default value: <code>true</code> */
+  public static boolean SHOW_TOOLTIP_IN_TREEMENU = true;
+
+  /** define if the tooltip text associated to application functions must be showed in the status bar of MDI frame (on the bottom); default value: <code>true</code> */
+  public static boolean SHOW_TOOLTIP_IN_MDISTATUSBAR = true;
+
+  /** ejb remote session bean to invoke for processing all export tasks; default name: "EJBExportBean/remote" */
+  public static String EJB_EXPORT_BEAN_NAME = "EJBExportBean/remote";
+
 
   /**
    * Contains application settings.

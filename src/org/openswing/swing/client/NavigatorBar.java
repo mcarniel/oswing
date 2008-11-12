@@ -87,6 +87,12 @@ public class NavigatorBar extends JPanel {
   /** panel that contains page number field */
   private JPanel pageNrPanel = new JPanel();
 
+  /** <code>true</code> to show pagination buttons in navigator bar; <code>false</code> to do not show them; default value: <code>ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR</code> */
+  private boolean showPaginationButtons = ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR;
+
+  /** <code>true</code> to show page number input field in navigator bar (note: it is automatically hided if result set is fully loaded in grid, independently from this setting); <code>false</code> to do not show it; default value: <code>true</code> */
+  private boolean showPageNumber = true;
+
 
   public NavigatorBar() {
     try {
@@ -123,6 +129,7 @@ public class NavigatorBar extends JPanel {
         }
 
       });
+
       firstButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the first block of records"));
       firstButton.setPreferredSize(new Dimension(32,32));
       prevPgButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Load the previous block of records"));
@@ -168,7 +175,7 @@ public class NavigatorBar extends JPanel {
   public final void updatePageNumber(int pageNr) {
     controlPageNr.setValue(new Integer(pageNr));
     pageNrPanel.removeAll();
-    if (pageNr>0)
+    if (pageNr>0 && showPageNumber)
       pageNrPanel.add(controlPageNr);
     pageNrPanel.revalidate();
     this.repaint();
@@ -212,12 +219,12 @@ public class NavigatorBar extends JPanel {
 
     this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     this.add(firstButton,null);
-    if (ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR)
+    if (showPaginationButtons)
       this.add(prevPgButton,null);
     this.add(prevButton,null);
     this.add(pageNrPanel,null);
     this.add(nextButton,null);
-    if (ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR)
+    if (showPaginationButtons)
       this.add(nextPgButton,null);
     this.add(lastButton,null);
   }
@@ -414,6 +421,41 @@ public class NavigatorBar extends JPanel {
    */
   public final void removeBeforerActionListener(ActionListener listener) {
     beforeActionListeners.remove(listener);
+  }
+
+
+  /**
+   * @return <code>true</code> to show pagination buttons in navigator bar; <code>false</code> to do not show them
+   */
+  public final boolean isShowPaginationButtons() {
+    return showPaginationButtons;
+  }
+
+
+  /**
+   * Show/hide pagination buttons in navigator bar; <code>false</code> to do not show them.
+   * @param showPaginationButtons <code>true</code> to show pagination buttons in navigator bar; <code>false</code> to do not show them
+   */
+  public final void setShowPaginationButtons(boolean showPaginationButtons) {
+    this.showPaginationButtons = showPaginationButtons;
+  }
+
+
+  /**
+   * @return boolean <code>true</code> to show page number input field in navigator bar; <code>false</code> to do not show it; default value: <code>true</code>
+   */
+  public final boolean isShowPageNumber() {
+    return showPageNumber;
+  }
+
+
+  /**
+   * <code>true</code> to show page number input field in navigator bar; <code>false</code> to do not show it.
+   * Note: it is automatically hided if result set is fully loaded in grid, independently from this setting.
+   * @param showPageNumber <code>true</code> to show page number input field in navigator bar; <code>false</code> to do not show it
+   */
+  public final void setShowPageNumber(boolean showPageNumber) {
+    this.showPageNumber = showPageNumber;
   }
 
 

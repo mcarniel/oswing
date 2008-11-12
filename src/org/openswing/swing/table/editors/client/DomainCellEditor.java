@@ -45,6 +45,9 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
   /** table */
   private JTable table = null;
 
+  /** current selected index; stored as attribute to allow the use of the same item description for multiple items */
+  private int selIndex = -1;
+
   /** combo-box inside the editable cell */
   private JComboBox field = new JComboBox() {
 
@@ -76,6 +79,12 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
         }
       }
       return true;
+    }
+
+
+    public void setSelectedIndex(int i) {
+      super.setSelectedIndex(i);
+      selIndex = i;
     }
 
   };
@@ -142,9 +151,11 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
 
 
   public final Object getCellEditorValue() {
-    int selIndex = field.getSelectedIndex();
+    if (selIndex==-1)
+      selIndex = field.getSelectedIndex();
     if (selIndex==-1)
       return null;
+
     return pairs[selIndex].getCode();
   }
 

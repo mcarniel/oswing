@@ -600,8 +600,21 @@ public class ClientUtils extends JApplet {
       return value;
     if (value!=null && !targetType.isAssignableFrom(value.getClass())) {
       try {
-        if (value instanceof Number)
+        if (value instanceof Number) {
+          if (targetType==Integer.TYPE)
+            value = new Integer(((Number)value).intValue());
+          else if (targetType==Long.TYPE)
+            value = new Long(((Number)value).longValue());
+          else if (targetType==Float.TYPE)
+            value = new Float(((Number)value).floatValue());
+          else if (targetType==Double.TYPE)
+            value = new Double(((Number)value).doubleValue());
+          else if (targetType==Short.TYPE)
+            value = new Short(((Number)value).shortValue());
+          else
+            value = new Long(((Number)value).longValue());
           value = targetType.getConstructor(new Class[] {String.class}).newInstance(new Object[] {value.toString()});
+        }
         else if (value instanceof java.util.Date) {
           if (targetType.equals(java.sql.Date.class))
             value = new java.sql.Date(((java.util.Date)value).getTime());

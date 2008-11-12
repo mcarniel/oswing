@@ -74,7 +74,7 @@ public class FormattedTextTableCellRenderer extends DefaultTableCellRenderer {
    * @param attributeName attribute name associated to this column
    */
   public FormattedTextTableCellRenderer(GridController gridController,JFormattedTextField formattedBox,
-                                        int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
+                                        int leftMargin,int rightMargin,int topMargin,int bottomMargin,int alignement,String attributeName) {
     this.gridController = gridController;
     this.formattedBox = formattedBox;
     this.leftMargin = leftMargin;
@@ -82,6 +82,7 @@ public class FormattedTextTableCellRenderer extends DefaultTableCellRenderer {
     this.topMargin = topMargin;
     this.bottomMargin = bottomMargin;
     this.attributeName = attributeName;
+    setHorizontalAlignment(alignement);
   }
 
 

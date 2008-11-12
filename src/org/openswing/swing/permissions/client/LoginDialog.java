@@ -455,6 +455,7 @@ public class LoginDialog extends JDialog implements ItemListener {
     usernameTF.setMinimumSize(new Dimension(usernameTF.getFontMetrics(usernameTF.getFont()).stringWidth("               "),usernameTF.getHeight()));
     passwdTF.setColumns(15);
     passwdTF.setMinimumSize(new Dimension(passwdTF.getFontMetrics(passwdTF.getFont()).stringWidth("               "),passwdTF.getHeight()));
+    usernameTF.addActionListener(new LoginDialog_usernameTF_actionAdapter(this));
     passwdTF.addActionListener(new LoginDialog_passwdTF_actionAdapter(this));
     mainPanel.setBorder(BorderFactory.createEtchedBorder());
     exitButton.setMnemonic(exitButtonMnemonic);
@@ -619,6 +620,11 @@ public class LoginDialog extends JDialog implements ItemListener {
   }
 
 
+  void usernameTF_actionPerformed(ActionEvent e) {
+    loginButton_actionPerformed(null);
+  }
+
+
   void passwdTF_actionPerformed(ActionEvent e) {
     loginButton_actionPerformed(null);
   }
@@ -678,5 +684,16 @@ class LoginDialog_this_windowAdapter extends java.awt.event.WindowAdapter {
   }
   public void windowClosed(WindowEvent e) {
     adaptee.this_windowClosed(e);
+  }
+}
+
+class LoginDialog_usernameTF_actionAdapter implements java.awt.event.ActionListener {
+  LoginDialog adaptee;
+
+  LoginDialog_usernameTF_actionAdapter(LoginDialog adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.usernameTF_actionPerformed(e);
   }
 }

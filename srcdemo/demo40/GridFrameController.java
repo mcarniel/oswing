@@ -81,7 +81,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         true
       );
       if (!res.isError()) {
-        ArrayList rows = ((VOListResponse)res).getRows();
+        List rows = ((VOListResponse)res).getRows();
         OrderVO vo = null;
         PreparedStatement pstmt = null;
         ResultSet rset = null;

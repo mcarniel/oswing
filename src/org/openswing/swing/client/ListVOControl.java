@@ -150,7 +150,7 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
       Response res = itemsDataLocator.loadData(itemsVO.getClass());
       if (!res.isError()) {
         model.clear();
-        ArrayList items = ((VOListResponse)res).getRows();
+        java.util.List items = ((VOListResponse)res).getRows();
         for(int i=0;i<items.size();i++) {
           model.addElement(items.get(i));
         }
@@ -173,7 +173,7 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
       if (itemsDataLocator!=null && itemsVO!=null) {
         Response res = itemsDataLocator.loadData(itemsVO.getClass());
         if (!res.isError()) {
-          ArrayList items = ((VOListResponse)res).getRows();
+          java.util.List items = ((VOListResponse)res).getRows();
           for(int i=0;i<items.size();i++) {
             model.addElement(items.get(i));
           }

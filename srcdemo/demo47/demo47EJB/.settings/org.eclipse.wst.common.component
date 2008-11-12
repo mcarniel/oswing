@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="demo47EJB">
+        <wb-resource deploy-path="/" source-path="/ejbModule"/>
+        <dependent-module deploy-path="/" handle="module:/resource/demo47EJBClient/demo47EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path"/>
+        <property name="ClientProject" value="demo47EJBClient"/>
+        <property name="ClientJARURI" value="demo47EJBClient.jar"/>
+    </wb-module>
+</project-modules>

@@ -174,6 +174,13 @@ public class WinIconsPanel extends JPanel {
         public void mouseClicked(MouseEvent e) {
           if (SwingUtilities.isRightMouseButton(e)) {
             frameToClose = (InternalFrame)buttons.get(btn);
+            if (frameToClose!=null &&
+                frameToClose.getDesktopPane()!=null &&
+                ((DesktopPane)frameToClose.getDesktopPane()).isModal() &&
+                !frameToClose.isModal()) {
+              e.consume();
+              return;
+            }
             iconMenu.setVisible( frameToClose.isIconifiable() );
 
             menu.show(btn,e.getX(),e.getY());
@@ -184,6 +191,14 @@ public class WinIconsPanel extends JPanel {
           if (SwingUtilities.isLeftMouseButton(e)) {
             btn.setSelected(true);
             InternalFrame f = (InternalFrame)buttons.get(btn);
+
+            if (f!=null &&
+                f.getDesktopPane()!=null &&
+                ((DesktopPane)f.getDesktopPane()).isModal()) {
+              e.consume();
+              return;
+            }
+
             f.toFront();
             try {
               f.setSelected(true);
@@ -199,6 +214,13 @@ public class WinIconsPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
           if (btn.isSelected()) {
             InternalFrame f = (InternalFrame)buttons.get(btn);
+            if (f!=null &&
+                f.getDesktopPane()!=null &&
+                ((DesktopPane)f.getDesktopPane()).isModal() &&
+                !f.isModal()) {
+              btn.setSelected(!btn.isSelected());
+              return;
+            }
             f.toFront();
             try {
               f.setSelected(true);
@@ -208,6 +230,13 @@ public class WinIconsPanel extends JPanel {
           }
           else {
             InternalFrame f = (InternalFrame)buttons.get(btn);
+            if (f!=null &&
+                f.getDesktopPane()!=null &&
+                ((DesktopPane)f.getDesktopPane()).isModal() &&
+                !f.isModal()) {
+              btn.setSelected(!btn.isSelected());
+              return;
+            }
             try {
               f.setSelected(false);
             }

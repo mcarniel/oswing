@@ -21,8 +21,20 @@ public class NavigatorBarBeanInfo extends SimpleBeanInfo {
   public NavigatorBarBeanInfo() {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
-    PropertyDescriptor[] pds = new PropertyDescriptor[] { };
-    return pds;
+    try {
+      PropertyDescriptor _showPaginationButtons = new PropertyDescriptor("showPaginationButtons", beanClass, "isShowPaginationButtons","setShowPaginationButtons");
+      PropertyDescriptor _showPageNumber = new PropertyDescriptor("showPageNumber", beanClass, "isShowPageNumber","setShowPageNumber");
+      PropertyDescriptor[] pds = new PropertyDescriptor[] {
+          _showPageNumber,
+          _showPaginationButtons
+      };
+      return pds;
+    }
+    catch (IntrospectionException ex) {
+      ex.printStackTrace();
+      return null;
+    }
+
   }
   public java.awt.Image getIcon(int iconKind) {
     switch (iconKind) {

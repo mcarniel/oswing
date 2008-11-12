@@ -35,7 +35,7 @@ import java.util.*;
 public class VOListResponse extends Response {
 
   /** list of value objects */
-  private ArrayList rows = null;
+  private List rows = null;
 
   /** there are other rows in result set not yet loaded */
   private boolean moreRows;
@@ -52,7 +52,7 @@ public class VOListResponse extends Response {
    * @param moreRows there are other rows in result set not yet loaded
    * @param resultSetLength result set length
    */
-  public VOListResponse(ArrayList rows,boolean moreRows,int resultSetLength) {
+  public VOListResponse(List rows,boolean moreRows,int resultSetLength) {
     this.rows = rows;
     this.moreRows = moreRows;
     this.resultSetLength = resultSetLength;
@@ -78,7 +78,7 @@ public class VOListResponse extends Response {
   /**
    * @return rows list of value objects
    */
-  public final ArrayList getRows() {
+  public final List getRows() {
     return rows;
   }
 

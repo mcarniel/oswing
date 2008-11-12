@@ -1,17 +1,17 @@
 package org.openswing.swing.mdi.client;
 
 import java.beans.*;
+import java.io.*;
+import java.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.filechooser.FileFilter;
 
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import javax.swing.filechooser.FileFilter;
-import java.io.*;
-import java.util.Properties;
 
 
 /**
@@ -42,13 +42,22 @@ import java.util.Properties;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class DesktopPane extends JDesktopPane {
+public class DesktopPane extends JDesktopPane implements InternalFrameListener {
 
   /** background image */
   private Image background = null;
 
   /** file related to custom background image */
   private String backgroundFileName = null;
+
+  /** flag used to manage modal internal frames */
+  private boolean modal;
+
+  /** modal panel */
+  protected JPanel modalPane = new JPanel();
+
+  /** layering component */
+  protected Component layeringComp;
 
 
   public DesktopPane() {
@@ -77,7 +86,88 @@ public class DesktopPane extends JDesktopPane {
         }
       }
     });
+
+    initModalPane();
   }
+
+
+  /**
+   * Initialize modal pane, in case of modal internal frames.
+   */
+  private void initModalPane() {
+    modalPane.setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
+    modalPane.setOpaque(false);
+    modalPane.setVisible(true);
+
+    // add mouse listener to modal internal frame,
+    // in order to generate a beep when clicking on it...
+    modalPane.addMouseListener(new MouseListener () {
+
+       public void mouseClicked(MouseEvent e) {
+       }
+       public void mouseEntered(MouseEvent e) {
+       }
+       public void mouseExited(MouseEvent e) {
+       }
+       public void mousePressed(MouseEvent e) {
+         Toolkit.getDefaultToolkit().beep();
+       }
+       public void mouseReleased(MouseEvent e) {
+       }
+
+    });
+  }
+
+
+  /**
+   *
+   * @param modal boolean
+   */
+  public final void setModal(boolean modal) {
+    if (this.modal!=modal)
+      setModal(getSelectedFrame(), modal);
+  }
+
+
+  /**
+   * Set modal state to the specified internal frame.
+   * @param modalDialog internal frame whose modal state must be changed
+   * @param modal modal state
+   */
+  public final void setModal(javax.swing.JInternalFrame modalDialog, boolean modal) {
+     this.modal=modal;
+
+     if (this.modal) {
+       this.add(modalPane);
+       this.setLayer(modalPane, JLayeredPane.PALETTE_LAYER.intValue());
+       javax.swing.JInternalFrame[] frames=this.getAllFrames();
+       int defaultLayer=JLayeredPane.DEFAULT_LAYER.intValue();
+       for (int i=0;i<frames.length;i++) {
+           if (frames[i].getLayer()!=defaultLayer) {
+               this.setLayer(frames[i], defaultLayer);
+           }
+       }
+       this.setLayer(modalDialog, JLayeredPane.MODAL_LAYER.intValue());
+       modalDialog.moveToFront();
+     } else {
+       this.remove(modalPane);
+       javax.swing.JInternalFrame[] frames=this.getAllFrames();
+       int defaultLayer=JLayeredPane.DEFAULT_LAYER.intValue();
+       for (int i=0;i<frames.length;i++) {
+           if (frames[i].getLayer()!=defaultLayer) {
+               this.setLayer(frames[i], defaultLayer);
+           }
+       }
+     }
+   }
+
+
+   /**
+    * @return <code>true</code> if there exists a modal internal frame or <code>false</code> otherwise
+    */
+   public final boolean isModal() {
+       return this.modal;
+   }
 
 
   /**
@@ -294,6 +384,129 @@ public class DesktopPane extends JDesktopPane {
       ex.printStackTrace();
     }
   }
+
+
+
+
+  /**
+   * Sets the layer attribute for the specified component and also sets its position within that layer.
+   * @param c         the Component to set the layer for
+   * @param layer     an int specifying the layer to set, where
+   *                  lower numbers are closer to the bottom
+   * @param position  an int specifying the position within the
+   *                  layer, where 0 is the topmost position and -1
+   *                  is the bottommost position
+   */
+  public final void setLayer(Component c, int layer, int position) {
+      if (layeringComp!=c) {
+          layeringComp=c;
+          super.setLayer(c, layer, position);
+          layeringComp=null;
+      }
+  }
+
+
+  /**
+   * Method overrided in order to inject modal state to internal frames.
+   * @param comp componente to add
+   * @param constraints constraints to apply to the specified component
+   * @param index component position
+   */
+  protected final void addImpl(Component comp, Object constraints, int index) {
+      DesktopManager manager=null;
+      if (comp instanceof javax.swing.JInternalFrame) {
+          javax.swing.JInternalFrame frame=(javax.swing.JInternalFrame)comp;
+          EventListener[] listeners=frame.getListeners(InternalFrameListener.class);
+          int i=0;
+          for (i=0;i<listeners.length;i++) {
+              if (listeners[i]==this) {
+                  break;
+              }
+          }
+          if (i>=listeners.length) {
+              frame.addInternalFrameListener(this);
+          }
+          if (comp.getParent()==this) {
+              return;
+          }
+          if (layeringComp!=comp) {
+              manager=getDesktopManager();
+          }
+      }
+      super.addImpl(comp, constraints, index);
+      if (manager!=null) {
+          manager.openFrame((javax.swing.JInternalFrame)comp);
+      }
+  }
+
+
+  public final void internalFrameActivated(InternalFrameEvent e) {
+      EventListener[] listeners=listenerList.getListeners(InternalFrameListener.class);
+      for (int i=0;i<listeners.length;i++) {
+          InternalFrameListener listener=(InternalFrameListener)listeners[i];
+          listener.internalFrameActivated(e);
+      }
+  }
+
+
+  public final void internalFrameClosed(InternalFrameEvent e) {
+      if (this.modal) {
+          // removed internal frame modal state...
+          setModal(false);
+      }
+      EventListener[] listeners=listenerList.getListeners(InternalFrameListener.class);
+      for (int i=0;i<listeners.length;i++) {
+          InternalFrameListener listener=(InternalFrameListener)listeners[i];
+          listener.internalFrameClosed(e);
+      }
+  }
+
+
+  public final void internalFrameClosing(InternalFrameEvent e) {
+      EventListener[] listeners=listenerList.getListeners(InternalFrameListener.class);
+      for (int i=0;i<listeners.length;i++) {
+          InternalFrameListener listener=(InternalFrameListener)listeners[i];
+          listener.internalFrameClosing(e);
+      }
+  }
+
+
+  public final void internalFrameDeactivated(InternalFrameEvent e) {
+      EventListener[] listeners=listenerList.getListeners(InternalFrameListener.class);
+      for (int i=0;i<listeners.length;i++) {
+          InternalFrameListener listener=(InternalFrameListener)listeners[i];
+          listener.internalFrameDeactivated(e);
+      }
+  }
+
+
+  public final void internalFrameDeiconified(InternalFrameEvent e) {
+      EventListener[] listeners=listenerList.getListeners(InternalFrameListener.class);
+      for (int i=0;i<listeners.length;i++) {
+          InternalFrameListener listener=(InternalFrameListener)listeners[i];
+          listener.internalFrameDeiconified(e);
+      }
+  }
+
+
+  public final void internalFrameIconified(InternalFrameEvent e) {
+      EventListener[] listeners=listenerList.getListeners(InternalFrameListener.class);
+      for (int i=0;i<listeners.length;i++) {
+          InternalFrameListener listener=(InternalFrameListener)listeners[i];
+          listener.internalFrameIconified(e);
+      }
+  }
+
+
+  public final void internalFrameOpened(InternalFrameEvent e) {
+      EventListener[] listeners=listenerList.getListeners(InternalFrameListener.class);
+      for (int i=0;i<listeners.length;i++) {
+          InternalFrameListener listener=(InternalFrameListener)listeners[i];
+          listener.internalFrameOpened(e);
+      }
+  }
+
+
 
 
 }

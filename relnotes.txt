@@ -1,5 +1,41 @@
 
 
+Release Notes 1.8.3
+-------------------
+
+Final release 1.8.3 available
+Added "demo47" sample application, in order to show how to create a 3 tier client-server application, having server-side realized using EJB 3.0 and JPA 
+(see README.txt file included in "demo47" source folder for details).
+Added EJB 3.0 remote invokation, based on ClientSettings.EJB_EXPORT_BEAN_NAME and EJBExportBean stateless session bean and EJBGridDataLocator.
+Improved login dialog: now authentication task is performed when user press enter key onto username field too, if store account check-box is selected.
+Improved NavigatorBar: 
+- added "showPaginationButtons" property in order to redefine global property ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR per single navigator bar.
+- added "showPageNumber" property in order to hide the page number input field.
+Improved LookupController class:
+- added "allColumnsSelectable" property that sets "columnSelectable" property for all columns, in order to show/hide menu items for all columns in popup menu on lookup grid
+- now auto completition feature is able to work with inner value objects
+Improved internal frame: added "modal" property, in order to set a modal internal frame. See "demo10" employee detail frame to see how to use this property.
+Improved application menu:
+- added new constructors to ApplicationFunction class, in order to specify tooltip text for functions and folders
+- tooltip text is now showed for tree menu nodes
+- tooltip text is now showed for menu items in menu bar
+- added ClientSettings.SHOW_TOOLTIP_IN_MENUBAR global property, in order to deactivate tooltip text in menu bar
+- added ClientSettings.SHOW_TOOLTIP_IN_TREEMENU global property, in order to deactivate tooltip text in tree menu nodes
+- added ClientSettings.SHOW_TOOLTIP_IN_MDISTATUSBAR global property, in order to show tooltip text in MDI bottom area (status bar), when user is selecting a menu item in menu bar
+Changed VOListResponse signature: ArrayList argument has been replaced by List type argument, in order to simplify its adoption with ORM tools.
+Fixed problem in HibernateUtils, when applying lower and uppoer value filter conditions onto date type columns.
+Fixed problem in ComboBoxControl when switch it to edit mode: now its background color is correctly setted.
+Fixed problem in FormattedTextControl, when using setText method with numeric type attribute.
+Improved grid control:
+- added "removeSortedColumn" method in order to remove current sorting condition, for a specified column
+- added "addSortedColumn" method in order to add a sorting condition, for a specified column
+- in combo-box column is now possible to specify a collection of combo values having items with the same item description
+- grid filter now supports the filtering of column binded to primitive type attributes
+Fixed a problem with FormattedTextColumn: now horizontal alignment setting is correctly managed by this column.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.8.2
 -------------------
 

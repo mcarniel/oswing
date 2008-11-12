@@ -1621,7 +1621,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           );
       }
       else {
-        ArrayList data = ((VOListResponse)answer).getRows();
+        java.util.List data = ((VOListResponse)answer).getRows();
         moreRows = ((VOListResponse)answer).isMoreRows();
         if (action == GridParams.NEXT_BLOCK_ACTION)
           lastIndex = startIndex + data.size() - 1;
@@ -1991,12 +1991,13 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           return;
         }
 
-        gridExportOptions.setServerMethodName( ( (ServerGridDataLocator) gridDataLocator).
-                                getServerMethodName());
+        gridExportOptions.getOtherGridParams().put("LOAD_ALL",Boolean.TRUE);
+        gridExportOptions.setServerMethodName( ( (ServerGridDataLocator) gridDataLocator).getServerMethodName());
         Response response = ClientUtils.getData(
             "exportDataGrid",
             opt
-            );
+        );
+        gridExportOptions.getOtherGridParams().remove("LOAD_ALL");
         if (response.isError()) {
           OptionPane.showMessageDialog(
               ClientUtils.getParentFrame(this),
@@ -2009,6 +2010,41 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           ClientUtils.showDocument(((TextResponse)response).getMessage());
 
       }
+      if (gridDataLocator instanceof EJBGridDataLocator) {
+        // export data grid by calling the EJB on the server side...
+        if ( ((EJBGridDataLocator)gridDataLocator).getServerMethodName() == null) {
+          Logger.error(this.getClass().getName(), "export", "You cannot export data: 'serverMethodName' property in EJBGridDataLocator must be defined.", null);
+          return;
+        }
+        if ( ((EJBGridDataLocator)gridDataLocator).getInitialContext() == null) {
+          Logger.error(this.getClass().getName(), "export", "You cannot export data: 'initialContext' property in EJBGridDataLocator must be defined.", null);
+          return;
+        }
+        if ( ((EJBGridDataLocator)gridDataLocator).getEjbName() == null) {
+          Logger.error(this.getClass().getName(), "export", "You cannot export data: 'ejbName' property in EJBGridDataLocator must be defined.", null);
+          return;
+        }
+
+        Object obj = ((EJBGridDataLocator)gridDataLocator).getInitialContext().lookup(ClientSettings.EJB_EXPORT_BEAN_NAME);
+        Response response = (Response)obj.getClass().getMethod("export",new Class[]{ExportOptions.class}).invoke(obj,new Object[]{opt});
+        if (response.isError()) {
+          OptionPane.showMessageDialog(
+              ClientUtils.getParentFrame(this),
+              ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
+              ClientSettings.getInstance().getResources().getResource("Error"),
+              JOptionPane.WARNING_MESSAGE
+          );
+        }
+        else {
+          byte[] bytes = ((BytesResponse)response).getBytes();
+          String fileName = ((BytesResponse)response).getFileName();
+          FileOutputStream out = new FileOutputStream(fileName);
+          out.write(bytes);
+          out.close();
+
+          ClientUtils.displayURL("file://"+fileName);
+        }
+      }
       else {
         String fileName = System.getProperty("java.io.tmpdir").replace('\\','/');
         if (!fileName.endsWith("/"))
@@ -2016,6 +2052,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
         // export data grid directly in the client (Windows o.s. ONLY)...
         byte[] doc = null;
+        gridExportOptions.getOtherGridParams().put("LOAD_ALL",Boolean.TRUE);
 
         if (opt.getExportType().equals(opt.XLS_FORMAT)) {
           // generate the Excel document...
@@ -2059,6 +2096,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           fileName += "doc"+System.currentTimeMillis()+".rtf";
         }
 
+        gridExportOptions.getOtherGridParams().remove("LOAD_ALL");
         FileOutputStream out = new FileOutputStream(fileName);
         out.write(doc);
         out.close();
@@ -2379,14 +2417,16 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         getReloadButton().setEnabled(true);
       if (getSaveButton()!=null)
         getSaveButton().setEnabled(true);
-      if (grid.getSelectedRow()==-1) {
-        grid.setRowSelectionInterval(0, 0);
+      if (getVOListTableModel().getRowCount()>0) {
+        if (grid.getSelectedRow()==-1) {
+          grid.setRowSelectionInterval(0, 0);
+          if (lockedGrid!=null)
+            lockedGrid.setRowSelectionInterval(0, 0);
+        }
+        grid.setColumnSelectionInterval(0,0);
         if (lockedGrid!=null)
-          lockedGrid.setRowSelectionInterval(0, 0);
+          lockedGrid.setColumnSelectionInterval(0, 0);
       }
-      grid.setColumnSelectionInterval(0,0);
-      if (lockedGrid!=null)
-        lockedGrid.setColumnSelectionInterval(0, 0);
 
       resetButtonsState();
 
@@ -2735,12 +2775,24 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public int getLastIndex() {
     return lastIndex;
   }
-  public ArrayList getCurrentSortedColumns() {
+
+
+  /**
+   * @return current sorted columns
+   */
+  public final ArrayList getCurrentSortedColumns() {
     return currentSortedColumns;
   }
-  public ArrayList getCurrentSortedVersusColumns() {
+
+
+  /**
+   * @return current sorted columns versus (Ascending/Descending)
+   */
+  public final ArrayList getCurrentSortedVersusColumns() {
     return currentSortedVersusColumns;
   }
+
+
   public void setFilterPanel(QuickFilterPanel filterPanel) {
     this.filterPanel = filterPanel;
   }
@@ -3435,11 +3487,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
         SwingUtilities.invokeLater(new Runnable() {
           public void run() {
+            if (selectedRowBeforeReloading==-1)
+              return;
             grid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
             if (lockedGrid!=null)
               lockedGrid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
-            if (selectedRowBeforeReloading==-1)
-              return;
             grid.ensureRowIsVisible(selectedRowBeforeReloading);
             if (lockedGrid!=null)
               lockedGrid.ensureRowIsVisible(selectedRowBeforeReloading);

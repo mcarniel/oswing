@@ -19,6 +19,7 @@ public class GridEmpVO extends ValueObjectImpl {
   private String lastName;
   private String firstName;
   private DeptVO dept;
+  private Date hireDate;
 
 
   public GridEmpVO() {
@@ -48,6 +49,12 @@ public class GridEmpVO extends ValueObjectImpl {
   }
   public void setDept(DeptVO dept) {
     this.dept = dept;
+  }
+  public Date getHireDate() {
+    return hireDate;
+  }
+  public void setHireDate(Date hireDate) {
+    this.hireDate = hireDate;
   }
 
 
