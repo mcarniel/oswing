@@ -37,6 +37,8 @@ public class GridFrame extends JFrame {
   EditButton editButton = new EditButton();
   NavigatorBar navigatorBar1 = new NavigatorBar();
   ExportButton exportButton1 = new ExportButton();
+  LinkColumn colLink = new LinkColumn();
+
 
   public GridFrame(Connection conn,GridFrameController controller) {
     this.conn = conn;
@@ -98,6 +100,13 @@ public class GridFrame extends JFrame {
     textColumn1.setPreferredWidth(150);
     colCheck.setColumnName("checkValue");
     insertButton.setText("insertButton1");
+
+    colLink.setColumnName("linkLabel");
+    colLink.setUriAttributeName("uri");
+    colLink.setColumnSortable(false);
+    colLink.setColumnFilterable(true);
+    colLink.setTextAlignment(SwingConstants.CENTER);
+
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
@@ -111,6 +120,7 @@ public class GridFrame extends JFrame {
     grid.getColumnContainer().add(colCurrency, null);
     grid.getColumnContainer().add(colDate, null);
     grid.getColumnContainer().add(colCombo, null);
+    grid.getColumnContainer().add(colLink, null);
     grid.getColumnContainer().add(textColumn1, null);
     grid.getColumnContainer().add(colCheck, null);
     grid.getColumnContainer().add(colLookup, null);

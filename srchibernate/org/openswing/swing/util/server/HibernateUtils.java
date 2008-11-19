@@ -96,13 +96,15 @@ public class HibernateUtils {
       String prefix,
       ClassMetadata meta,
       Map attributesMap,
-      Map attributesTypeMap
+      Map attributesTypeMap,
+      String lastAttrName
   ) {
     if (meta!=null) {
       String[] attrNames = meta.getPropertyNames();
       for(int i=0;i<attrNames.length;i++) {
         attributesMap.put(prefix+attrNames[i],tableName+"."+attrNames[i]);
         attributesTypeMap.put(prefix+attrNames[i],meta.getPropertyType(attrNames[i]));
+/*
         if (meta.getPropertyType(attrNames[i]) instanceof org.hibernate.type.EntityType &&
             !prefix.equals(attrNames[i]+".")) {
           ClassMetadata submeta = sessions.getClassMetadata(((org.hibernate.type.EntityType)meta.getPropertyType(attrNames[i])).getReturnedClass());
@@ -115,7 +117,22 @@ public class HibernateUtils {
             attributesTypeMap
           );
         }
+*/
+      if (meta.getPropertyType(attrNames[i]) instanceof org.hibernate.type.EntityType &&
+          !lastAttrName.equals(meta.getEntityName()+"."+attrNames[i])) {
+        ClassMetadata submeta =
+        sessions.getClassMetadata(((org.hibernate.type.EntityType)meta.getPropertyType(attrNames[i])).getReturnedClass());
+        fillInMetaData(
+          sessions,
+          tableName+"."+attrNames[i],
+          prefix+prefix+attrNames[i]+".",
+          submeta,
+          attributesMap,
+          attributesTypeMap,
+          meta.getEntityName()+"."+attrNames[i]
+        );
       }
+
 /*
  if (meta.getPropertyType(attrNames[i]) instanceof org.hibernate.type.EntityType) {
    if (!prefix.equals(attrNames[i]+".")) {
@@ -130,10 +147,13 @@ public class HibernateUtils {
      );
    }
  }
-
 */
+
+      }
+
       attributesMap.put(prefix+meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
       attributesTypeMap.put(prefix+meta.getIdentifierPropertyName(),meta.getPropertyType(meta.getIdentifierPropertyName()));
+/*
       if (meta.getPropertyType(meta.getIdentifierPropertyName()) instanceof org.hibernate.type.EntityType &&
           !prefix.equals(meta.getIdentifierPropertyName()+".")) {
         ClassMetadata submeta = sessions.getClassMetadata(((org.hibernate.type.EntityType)meta.getPropertyType(meta.getIdentifierPropertyName())).getReturnedClass());
@@ -146,6 +166,23 @@ public class HibernateUtils {
           attributesTypeMap
         );
       }
+*/
+      if (meta.getPropertyType(meta.getIdentifierPropertyName()) instanceof org.hibernate.type.EntityType &&
+          !lastAttrName.equals(meta.getEntityName()+"."+meta.getIdentifierPropertyName())) {
+        ClassMetadata submeta =
+        sessions.getClassMetadata(((org.hibernate.type.EntityType)meta.getPropertyType(meta.getIdentifierPropertyName())).getReturnedClass());
+        fillInMetaData(
+          sessions,
+          ((org.hibernate.type.EntityType)
+        meta.getPropertyType(meta.getIdentifierPropertyName())).getReturnedClass().getName(),
+          prefix+prefix+meta.getIdentifierPropertyName()+".",
+          submeta,
+          attributesMap,
+          attributesTypeMap,
+          meta.getEntityName()+"."+meta.getIdentifierPropertyName()
+        );
+      }
+
 
     }
   }
@@ -210,7 +247,7 @@ public class HibernateUtils {
     Map attributesMap = new HashMap();
     Map attributesTypeMap = new HashMap();
     if (meta!=null) {
-      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap);
+      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap,"");
       attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
     }
     else {
@@ -392,7 +429,7 @@ public class HibernateUtils {
     Map attributesTypeMap = new HashMap();
     Map propDescriptors = new HashMap();
     if (meta!=null) {
-      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap);
+      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap,"");
       attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
     }
     else {

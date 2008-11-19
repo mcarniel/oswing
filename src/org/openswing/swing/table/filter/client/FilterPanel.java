@@ -360,7 +360,8 @@ public class FilterPanel extends JPanel {
         colOpsComboModel.addElement("");
         colOpsComboModel.addElement(Consts.EQ);
         colOpsComboModel.addElement(Consts.NEQ);
-        if (colProperties[i].getColumnType()==Column.TYPE_BUTTON ||
+        if (colProperties[i].getColumnType()==Column.TYPE_LINK ||
+            colProperties[i].getColumnType()==Column.TYPE_BUTTON ||
             colProperties[i].getColumnType()==Column.TYPE_FORMATTED_TEXT ||
             colProperties[i].getColumnType()==Column.TYPE_LOOKUP ||
             colProperties[i].getColumnType()==Column.TYPE_MULTI_LINE_TEXT ||
@@ -450,7 +451,8 @@ public class FilterPanel extends JPanel {
           colOpsComboModel2.addElement(Consts.IS_NOT_NULL);
           colOpsComboModel2.addElement(Consts.IS_NULL);
           colOpsComboModel2.addElement(Consts.LE);
-          if (colProperties[i].getColumnType()==Column.TYPE_BUTTON ||
+          if (colProperties[i].getColumnType()==Column.TYPE_LINK ||
+              colProperties[i].getColumnType()==Column.TYPE_BUTTON ||
               colProperties[i].getColumnType()==Column.TYPE_FORMATTED_TEXT ||
               colProperties[i].getColumnType()==Column.TYPE_LOOKUP ||
               colProperties[i].getColumnType()==Column.TYPE_MULTI_LINE_TEXT ||
@@ -675,6 +677,16 @@ public class FilterPanel extends JPanel {
         result=edit;
       }
       ;break;
+      case Column.TYPE_LINK:
+      {
+        TextControl edit = new TextControl();
+        try {
+        } catch (ClassCastException ex) {
+            Logger.error(this.getClass().getName(),"createValueComponent","Error while creating an input control for the filter",ex);
+        }
+        result=edit;
+      }
+      ;break;
       case Column.TYPE_FORMATTED_TEXT:
       {
         FormattedTextBox edit = new FormattedTextBox( ((FormattedTextColumn)colProperties).getController() );
@@ -778,6 +790,7 @@ public class FilterPanel extends JPanel {
       ;break;
       case Column.TYPE_TEXT:
       case Column.TYPE_LOOKUP:
+      case Column.TYPE_LINK:
       {
         ((TextControl)result).setValue(initValue==null?"":initValue.toString());
       }
@@ -851,6 +864,7 @@ public class FilterPanel extends JPanel {
         return ((NumericControl)result).getValue();
       }
       case Column.TYPE_TEXT:
+      case Column.TYPE_LINK:
         return ((TextControl)result).getValue();
       case Column.TYPE_FORMATTED_TEXT:
         try {
@@ -1071,9 +1085,11 @@ public class FilterPanel extends JPanel {
         else if ((value==null || "".equals(value)) && cc.length>1) {
           // there are more than one filters and
           // current filter value is null
-          parentPanel.remove(field);
-          parentPanel.revalidate();
-          parentPanel.repaint();
+          if (parentPanel!=null) {
+            parentPanel.remove(field);
+            parentPanel.revalidate();
+            parentPanel.repaint();
+          }
 
           for(int j=0;j<cc.length;j++)
             if (cc[j].equals(field)) {

@@ -104,6 +104,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   /** generic buttons, that inherit abilitation state of the other form buttons */
   private ArrayList genericButtons = new ArrayList();
 
+  /** LinkButton objects, that inherit abilitation state of the other form buttons */
+  private ArrayList linkButtons = new ArrayList();
+
   /** collection of input controls attribute names to disable when the specified attribute will be setted to the specified value; pairs of type (attribute name, List of AttributeCouple objects) */
   private Hashtable inputControlsToDisable = new Hashtable();
 
@@ -131,14 +134,23 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   /** flag used to define if an inner v.o. must be automatically instantiated when a setter method is invoked; default value: <code>true</code> */
   private boolean createInnerVO = true;
 
-  /** collection of GenericButtons linked to this Form, i.e. whose text is setted with the attribute value; pairs of type (attribute name, List of GenericButtons objects) */
-  private Hashtable linkedButtons = new Hashtable();
+  /** collection of GenericButtons binded to this Form, i.e. whose text is setted with the attribute value; pairs of type (attribute name, List of GenericButtons objects) */
+  private Hashtable bindedGenericButtons = new Hashtable();
+
+  /** collection of LinkButtons binded to this Form, i.e. whose text/tooltip/uri is setted with the attribute value; pairs of type (attribute name, List of GenericButtons objects) */
+  private Hashtable bindedLinkButtons = new Hashtable();
 
   /** key listener used to listen for shortcut events */
   private FormShortcutsListener shortcutsListener = new FormShortcutsListener(this);
 
   /** focus listener used to listen for Form's input controls focus events */
   private FormFocusListener formFocusListener = new FormFocusListener();
+
+  /** current enabled button state, before GenericButton.setEnabled method calling */
+  private HashMap currentValueButtons = new HashMap();
+
+  /** collection of buttons binded to grid (InsertButton, EditButton, etc) */
+  private HashSet bindedButtons = new HashSet();
 
 
   public Form() {}
@@ -149,6 +161,29 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   public final boolean isCurrentFormHasFocus() {
     return currentFormHasFocus;
+  }
+
+
+  /**
+   * Set current enabled value of button.
+   * @param button generic button that fires this event
+   * @param currentValue current enabled value
+   */
+  public final void setCurrentValue(GenericButton button,boolean currentValue) {
+    currentValueButtons.put(button,new Boolean(currentValue));
+  }
+
+
+  /**
+   * @param button generic button
+   * @return current enabled value for the specified button
+   */
+  public final boolean getCurrentValue(GenericButton button) {
+    Boolean currentValue = (Boolean)currentValueButtons.get(button);
+    if (currentValue==null)
+      return true;
+    else
+      return currentValue.booleanValue();
   }
 
 
@@ -180,8 +215,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           }
         }
       }
-      if (linkedButtons!=null) {
-        en = linkedButtons.keys();
+      if (bindedGenericButtons!=null) {
+        en = bindedGenericButtons.keys();
         GenericButton btn = null;
         while(en.hasMoreElements()) {
           attributeName = en.nextElement();
@@ -193,8 +228,26 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             btn = (GenericButton)list.get(i);
             list.remove(btn);
 //          ic.removeValueChangedListener(Form.this);
-            if (((GenericButton)btn).getParent()!=null)
-              ((GenericButton)btn).getParent().remove((GenericButton)btn);
+            if (btn.getParent()!=null)
+              btn.getParent().remove(btn);
+          }
+        }
+      }
+      if (bindedLinkButtons!=null) {
+        en = bindedLinkButtons.keys();
+        LinkButton btn = null;
+        while(en.hasMoreElements()) {
+          attributeName = en.nextElement();
+
+          ArrayList list = (ArrayList)bindings.get(attributeName);
+          if (list==null)
+            continue;
+          for(int i=0;i<list.size();i++) {
+            btn = (LinkButton)list.get(i);
+            list.remove(btn);
+//          ic.removeValueChangedListener(Form.this);
+            if (btn.getParent()!=null)
+              btn.getParent().remove(btn);
           }
         }
       }
@@ -215,13 +268,15 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     linkedPanels = null;
     previousVO = null;
     genericButtons = null;
+    linkButtons = null;
     inputControlsToDisable = null;
     buttonsToDisable = null;
     bindings = null;
     grid = null;
     navBar = null;
     pkAttributes = null;
-    linkedButtons = null;
+    bindedGenericButtons = null;
+    bindedLinkButtons = null;
   }
 
 
@@ -425,6 +480,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       // add a new listener...
       editButton.addDataController(this);
       editButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Edit record (CTRL+E)"));
+      bindedButtons.add(editButton);
     }
   }
 
@@ -442,6 +498,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       // add a new listener...
       insertButton.addDataController(this);
       insertButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("New record (CTRL+I)"));
+      bindedButtons.add(insertButton);
     }
   }
 
@@ -459,6 +516,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       // add a new listener...
       copyButton.addDataController(this);
       copyButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Copy record (CTRL+C)"));
+      bindedButtons.add(copyButton);
     }
   }
 
@@ -484,6 +542,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       // add a new listener...
       reloadButton.addDataController(this);
       reloadButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Reload record/Cancel current operation (CTRL+Z)"));
+      bindedButtons.add(reloadButton);
     }
   }
 
@@ -509,6 +568,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       // add a new listener...
       deleteButton.addDataController(this);
       deleteButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Delete record (CTRL+D)"));
+      bindedButtons.add(deleteButton);
     }
   }
 
@@ -533,6 +593,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       // add a new listener...
       saveButton.addDataController(this);
       saveButton.setToolTipText(ClientSettings.getInstance().getResources().getResource("Save record (CTRL+S)"));
+      bindedButtons.add(saveButton);
     }
   }
 
@@ -558,8 +619,16 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         if (saveButton!=null)
           saveButton.setEnabled(false);
 
-        for(int i=0;i<genericButtons.size();i++)
+        boolean[] oldGenericButtonValues = new boolean[genericButtons.size()];
+        for(int i=0;i<genericButtons.size();i++) {
+          oldGenericButtonValues[i] = ((GenericButton)genericButtons.get(i)).isEnabled();
           ((GenericButton)genericButtons.get(i)).setEnabled(false);
+        }
+//        boolean[] oldLinkButtonValues = new boolean[linkButtons.size()];
+        for(int i=0;i<linkButtons.size();i++) {
+//          oldLinkButtonValues[i] = ((LinkButton)linkButtons.get(i)).getOldValue();
+          ((LinkButton)linkButtons.get(i)).setEnabled(false);
+        }
 
         // reload data...
         errorOnLoad = ! loadData();
@@ -571,22 +640,27 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         }
         else {
           if (reloadButton!=null)
-            reloadButton.setEnabled(reloadButton.getOldValue());
+            reloadButton.setEnabled(true);
           if (saveButton!=null)
-            saveButton.setEnabled(saveButton.getOldValue());
+            saveButton.setEnabled(false);
 
 //          // set toolbar buttons state in the state previous to the insert/edit.
 //          if (editButton!=null)
-//            editButton.setEnabled(editButton.getOldValue());
+//            editButton.setEnabled(editButton));
 //          if (deleteButton!=null)
-//            deleteButton.setEnabled(deleteButton.getOldValue());
+//            deleteButton.setEnabled(deleteButton));
 //          if (insertButton!=null)
-//            insertButton.setEnabled(insertButton.getOldValue());
+//            insertButton.setEnabled(insertButton));
 //          if (copyButton!=null)
-//            copyButton.setEnabled(copyButton.getOldValue());
+//            copyButton.setEnabled(copyButton));
 
           for(int i=0;i<genericButtons.size();i++)
-            ((GenericButton)genericButtons.get(i)).setEnabled(((GenericButton)genericButtons.get(i)).getOldValue());
+            ((GenericButton)genericButtons.get(i)).setEnabled(oldGenericButtonValues[i]);
+//            ((GenericButton)genericButtons.get(i)).setEnabled(getOldValue((GenericButton)genericButtons.get(i)));
+
+          for(int i=0;i<linkButtons.size();i++)
+//            ((LinkButton)linkButtons.get(i)).setEnabled(oldLinkButtonValues[i]);
+            ((LinkButton)linkButtons.get(i)).setEnabled(((LinkButton)linkButtons.get(i)).getOldValue());
 
           // fire event...
           formController.afterReloadData();
@@ -656,6 +730,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
       for(int i=0;i<genericButtons.size();i++)
         ((GenericButton)genericButtons.get(i)).setEnabled(true);
+
+      for(int i=0;i<linkButtons.size();i++)
+        ((LinkButton)linkButtons.get(i)).setEnabled(true);
 
       // set input control values...
       pull();
@@ -755,8 +832,12 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       if (editButton!=null)
         editButton.setEnabled(false);
 
-      for(int i=0;i<genericButtons.size();i++)
+      for(int i=0;i<genericButtons.size();i++) {
         ((GenericButton)genericButtons.get(i)).setEnabled(false);
+      }
+
+      for(int i=0;i<linkButtons.size();i++)
+        ((LinkButton)linkButtons.get(i)).setEnabled(false);
 
       if (reloadButton!=null)
         reloadButton.setEnabled(true);
@@ -776,16 +857,20 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       }
 
       if (insertButton!=null)
-        insertButton.setEnabled(insertButton.getOldValue());
+        insertButton.setEnabled(true);
       if (copyButton!=null)
-        copyButton.setEnabled(copyButton.getOldValue());
+        copyButton.setEnabled(true);
       if (deleteButton!=null)
-        deleteButton.setEnabled(deleteButton.getOldValue());
+        deleteButton.setEnabled(true);
       if (editButton!=null)
-        editButton.setEnabled(editButton.getOldValue());
+        editButton.setEnabled(true);
 
       for(int i=0;i<genericButtons.size();i++)
-        ((GenericButton)genericButtons.get(i)).setEnabled(((GenericButton)genericButtons.get(i)).getOldValue());
+        ((GenericButton)genericButtons.get(i)).setEnabled(true);
+//        ((GenericButton)genericButtons.get(i)).setEnabled(getOldValue(((GenericButton)genericButtons.get(i))));
+
+      for(int i=0;i<linkButtons.size();i++)
+        ((LinkButton)linkButtons.get(i)).setEnabled(((LinkButton)linkButtons.get(i)).getOldValue());
 
       if (reloadButton!=null)
         reloadButton.setEnabled(true);
@@ -834,6 +919,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
       for(i=0;i<genericButtons.size();i++)
         ((GenericButton)genericButtons.get(i)).setEnabled(false);
+
+      for(i=0;i<linkButtons.size();i++)
+        ((LinkButton)linkButtons.get(i)).setEnabled(false);
 
       if (reloadButton!=null)
         reloadButton.setEnabled(true);
@@ -1150,6 +1238,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         for(int i=0;i<genericButtons.size();i++)
           ((GenericButton)genericButtons.get(i)).setEnabled(false);
 
+        for(int i=0;i<linkButtons.size();i++)
+          ((LinkButton)linkButtons.get(i)).setEnabled(false);
+
         if (reloadButton != null) {
           reloadButton.setEnabled(true);
         }
@@ -1457,7 +1548,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     }
 
 
-    list = (ArrayList)linkedButtons.get(attributeName);
+    list = (ArrayList)bindedGenericButtons.get(attributeName);
     if (list!=null) {
       GenericButton btn = null;
       for(int i=0;i<list.size();i++) {
@@ -1467,6 +1558,36 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             btn.setText( model.getValue(attributeName).toString() );
           else
             btn.setText("");
+        }
+        catch (Exception ex) {
+        }
+      }
+    }
+
+    list = (ArrayList)bindedLinkButtons.get(attributeName);
+    if (list!=null) {
+      LinkButton btn = null;
+      for(int i=0;i<list.size();i++) {
+        btn = (LinkButton)list.get(i);
+        try {
+          if (btn.getLabelAttributeName()!=null && !btn.getLabelAttributeName().equals("")) {
+            if (model.getValue(btn.getLabelAttributeName())!=null)
+              btn.setLabel( model.getValue(btn.getLabelAttributeName()).toString() );
+            else
+              btn.setLabel("");
+          }
+          if (btn.getTooltipAttributeName()!=null && !btn.getTooltipAttributeName().equals("")) {
+            if (model.getValue(btn.getTooltipAttributeName())!=null)
+              btn.setToolTipText( model.getValue(btn.getTooltipAttributeName()).toString() );
+            else
+              btn.setToolTipText("");
+          }
+          if (btn.getUriAttributeName()!=null && !btn.getUriAttributeName().equals("")) {
+            if (model.getValue(btn.getUriAttributeName())!=null)
+              btn.setUri( model.getValue(btn.getUriAttributeName()).toString() );
+            else
+              btn.setUri("");
+          }
         }
         catch (Exception ex) {
         }
@@ -1553,6 +1674,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
           for(int i=0;i<genericButtons.size();i++)
             ((GenericButton)genericButtons.get(i)).setEnabled(true);
+
+          for(int i=0;i<linkButtons.size();i++)
+            ((LinkButton)linkButtons.get(i)).setEnabled(true);
 
           // fire event...
           switch (previousMode) {
@@ -1785,11 +1909,11 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       else if (c[i] instanceof GenericButton &&
                ((GenericButton)c[i]).getAttributeName()!=null &&
                !((GenericButton)c[i]).getAttributeName().equals("")) {
-        ArrayList list = (ArrayList)linkedButtons.get(((GenericButton)c[i]).getAttributeName());
+        ArrayList list = (ArrayList)bindedGenericButtons.get(((GenericButton)c[i]).getAttributeName());
         if (list==null)
           list = new ArrayList();
         list.add(c[i]);
-        linkedButtons.put(
+        bindedGenericButtons.put(
           ((GenericButton)c[i]).getAttributeName(),
           list
         );
@@ -1804,6 +1928,58 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
                   ((GenericButton)auxList.get(j)).setText(e.getNewValue().toString());
                 else
                   ((GenericButton)auxList.get(j)).setText("");
+            }
+          }
+
+        });
+      }
+      else if (c[i] instanceof LinkButton && (
+               ((LinkButton)c[i]).getLabelAttributeName()!=null && !((LinkButton)c[i]).getLabelAttributeName().equals("") ||
+               ((LinkButton)c[i]).getTooltipAttributeName()!=null && !((LinkButton)c[i]).getTooltipAttributeName().equals("") ||
+               ((LinkButton)c[i]).getUriAttributeName()!=null && !((LinkButton)c[i]).getUriAttributeName().equals("")
+               )) {
+        final String labelAttributeName = ((LinkButton)c[i]).getLabelAttributeName();
+        final String tooltipAttributeName = ((LinkButton)c[i]).getTooltipAttributeName();
+        final String uriAttributeName = ((LinkButton)c[i]).getUriAttributeName();
+
+        String attrName = labelAttributeName;
+        if (attrName==null || attrName.equals(""))
+          attrName = tooltipAttributeName;
+        if (attrName==null || attrName.equals(""))
+          attrName = uriAttributeName;
+
+        ArrayList list = (ArrayList)bindedLinkButtons.get(attrName);
+        if (list==null)
+          list = new ArrayList();
+        list.add(c[i]);
+        bindedLinkButtons.put(
+          attrName,
+          list
+        );
+        final ArrayList auxList = list;
+        model.addValueChangeListener(new ValueChangeListener() {
+
+          public void valueChanged(ValueChangeEvent e) {
+            if (e.getAttributeName().equals(labelAttributeName)) {
+              for(int j=0;j<auxList.size();j++)
+                if (e.getNewValue()!=null)
+                  ((LinkButton)auxList.get(j)).setLabel(e.getNewValue().toString());
+                else
+                  ((LinkButton)auxList.get(j)).setLabel("");
+            }
+            else if (e.getAttributeName().equals(tooltipAttributeName)) {
+              for(int j=0;j<auxList.size();j++)
+                if (e.getNewValue()!=null)
+                  ((LinkButton)auxList.get(j)).setToolTipText(e.getNewValue().toString());
+                else
+                  ((LinkButton)auxList.get(j)).setToolTipText("");
+            }
+            else if (e.getAttributeName().equals(uriAttributeName)) {
+              for(int j=0;j<auxList.size();j++)
+                if (e.getNewValue()!=null)
+                  ((LinkButton)auxList.get(j)).setUri(e.getNewValue().toString());
+                else
+                  ((LinkButton)auxList.get(j)).setUri("");
             }
           }
 
@@ -1998,6 +2174,24 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
 
   /**
+   * Add a link button, that inherits abilitation state of the other form buttons.
+   * @param b link button, that inherits abilitation state of the other form buttons
+   */
+  public final void addLinkButton(LinkButton b) {
+    linkButtons.add(b);
+  }
+
+
+  /**
+   * Remove a link button, that inherits abilitation state of the other form buttons.
+   * @param b link button, that inherits abilitation state of the other form buttons
+   */
+  public final void removeLinkButton(LinkButton b) {
+    linkButtons.remove(b);
+  }
+
+
+  /**
    * Link the specified grid control to the current Form, so that:
    * - row selection event (fired by grid navigator bar) will force the Form data loading (ONLY IF loadModelWhenSelectingOnGrid is set to <code>true</code>)
    * - insert new data on the Form will refresh grid by adding a new row
@@ -2141,9 +2335,9 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   public final void actionPerformed(ActionEvent e) {
     // a row on the linked grid has been just selected: reload data model for this Form...
-    if (e.getSource().equals(navBar) ||
+    if (e!=null && e.getSource()!=null && navBar!=null && e.getSource().equals(navBar) ||
         (
-          grid.getNavBar()!=null && e.getSource().equals(grid.getNavBar()) &&
+          grid!=null && grid.getNavBar()!=null && e.getSource().equals(grid.getNavBar()) &&
           !(!reloadModelWhenClickingWithMouse && e.getActionCommand().equals(NavigatorBar.LEFT_MOUSE_BUTTON)) &&
           !(!reloadModelWhenPressingKey && e.getActionCommand().equals(NavigatorBar.UP_KEY)) &&
           !(!reloadModelWhenPressingKey && e.getActionCommand().equals(NavigatorBar.DOWN_KEY))
@@ -2171,6 +2365,15 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     if (model!=null)
       model.setCreateInnerVO(createInnerVO);
   }
+
+
+  /**
+   * @return collection of buttons binded to grid (InsertButton, EditButton, etc)
+   */
+  public final HashSet getBindedButtons() {
+    return bindedButtons;
+  }
+
 
 
 

@@ -220,6 +220,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   /** block size; -1 if loading is not based on one page per time */
   private int blockSize = -1;
 
+  /** current enabled button state, before GenericButton.setEnabled method calling */
+  private HashMap currentValueButtons = new HashMap();
+
+  /** collection of buttons binded to grid (InsertButton, EditButton, etc) */
+  private HashSet bindedButtons = new HashSet();
+
+//  /** collection of old abilitation state for GenericButton objects binded to grid: <GenericButton, Boolean> */
+//  private HashMap oldGenericButtonsState = new HashMap();
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -416,6 +425,28 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     }
 
 
+  }
+
+
+  /**
+   * Set current enabled value of button.
+   * @param button generic button that fires this event
+   * @param currentValue current enabled value
+   */
+  public final void setCurrentValue(GenericButton button,boolean currentValue) {
+    currentValueButtons.put(button,new Boolean(currentValue));
+  }
+
+
+  /**
+   * @param button generic button
+   */
+  public final boolean getCurrentValue(GenericButton button) {
+    Boolean currentValue = (Boolean)currentValueButtons.get(button);
+    if (currentValue==null)
+      return true;
+    else
+      return currentValue.booleanValue();
   }
 
 
@@ -628,6 +659,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (navBar!=null) {
       this.navBar = navBar;
       navBar.initNavigator(this);
+      bindedButtons.add(navBar);
     }
   }
 
@@ -867,8 +899,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (this.editButton != null)
       this.editButton.removeDataController(this);
     this.editButton = editButton;
-    if (editButton != null)
+    if (editButton != null) {
       editButton.addDataController(this);
+      bindedButtons.add(editButton);
+      editButton.setEnabled(true);
+    }
   }
 
 
@@ -880,8 +915,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (this.insertButton != null)
       this.insertButton.removeDataController(this);
     this.insertButton = insertButton;
-    if (insertButton != null)
+    if (insertButton != null) {
       insertButton.addDataController(this);
+      bindedButtons.add(insertButton);
+      insertButton.setEnabled(true);
+    }
   }
 
 
@@ -893,8 +931,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (this.exportButton != null)
       this.exportButton.removeDataController(this);
     this.exportButton = exportButton;
-    if (exportButton != null)
+    if (exportButton != null) {
       exportButton.addDataController(this);
+      bindedButtons.add(exportButton);
+      exportButton.setEnabled(true);
+    }
   }
 
 
@@ -906,8 +947,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (this.importButton != null)
       this.importButton.removeDataController(this);
     this.importButton = importButton;
-    if (importButton != null)
+    if (importButton != null) {
       importButton.addDataController(this);
+      bindedButtons.add(importButton);
+      importButton.setEnabled(true);
+    }
   }
 
 
@@ -919,8 +963,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (this.copyButton != null)
       this.copyButton.removeDataController(this);
     this.copyButton = copyButton;
-    if (copyButton != null)
+    if (copyButton != null) {
       copyButton.addDataController(this);
+      bindedButtons.add(copyButton);
+      copyButton.setEnabled(true);
+    }
   }
 
 
@@ -932,8 +979,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (this.filterButton != null)
       this.filterButton.removeDataController(this);
     this.filterButton = filterButton;
-    if (filterButton != null)
+    if (filterButton != null) {
       filterButton.addDataController(this);
+      bindedButtons.add(filterButton);
+      filterButton.setEnabled(true);
+    }
   }
 
 
@@ -961,8 +1011,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (this.reloadButton != null)
       this.reloadButton.removeDataController(this);
     this.reloadButton = reloadButton;
-    if (reloadButton != null)
+    if (reloadButton != null) {
       reloadButton.addDataController(this);
+      bindedButtons.add(reloadButton);
+      reloadButton.setEnabled(true);
+    }
   }
 
 
@@ -982,8 +1035,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (this.deleteButton != null)
       this.deleteButton.removeDataController(this);
     this.deleteButton = deleteButton;
-    if (deleteButton != null)
+    if (deleteButton != null) {
       deleteButton.addDataController(this);
+      bindedButtons.add(deleteButton);
+      deleteButton.setEnabled(true);
+    }
   }
 
 
@@ -1003,9 +1059,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (this.saveButton != null)
       this.saveButton.removeDataController(this);
     this.saveButton = saveButton;
-    if (saveButton != null)
-      //imposta listener per nuovo pulsante
+    if (saveButton != null) {
       saveButton.addDataController(this);
+      bindedButtons.add(saveButton);
+      saveButton.setEnabled(true);
+    }
   }
 
 
@@ -1057,21 +1115,31 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         boolean errorOnLoad = true;
         if (getNavBar()!=null)
           getNavBar().setEnabled(false);
-        if (getReloadButton()!=null)
+
+        if (getReloadButton()!=null) {
           getReloadButton().setEnabled(false);
-        if (getInsertButton()!=null)
+        }
+        if (getInsertButton()!=null) {
           getInsertButton().setEnabled(false);
-        if (getExportButton()!=null)
+        }
+        if (getExportButton()!=null) {
           getExportButton().setEnabled(false);
-        if (importButton!=null)
-          importButton.setEnabled(false);
-        if (getCopyButton()!=null)
+        }
+        if (getImportButton() != null) {
+          getImportButton().setEnabled(false);
+        }
+        if (getCopyButton()!=null) {
           getCopyButton().setEnabled(false);
-        if (getEditButton()!=null)
-          getEditButton().setEnabled(false);
-        setGenericButtonsEnabled(false);
-        if (getDeleteButton()!=null)
+        }
+        if (getDeleteButton()!=null) {
           getDeleteButton().setEnabled(false);
+        }
+        if (getEditButton()!=null) {
+          getEditButton().setEnabled(false);
+        }
+        if (getFilterButton()!=null) {
+          getFilterButton().setEnabled(false);
+        }
         if (getSaveButton()!=null)
           getSaveButton().setEnabled(false);
 
@@ -1095,7 +1163,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
         if (getReloadButton()!=null)
-          getReloadButton().setEnabled(getReloadButton().getOldValue());
+          getReloadButton().setEnabled(true);
 
         if (model.getRowCount()>0) {
           grid.setRowSelectionInterval(0,0);
@@ -1107,8 +1175,6 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
           if ((getNavBar()!=null) && (lastIndex==model.getRowCount()-1))
             getNavBar().setFirstRow(true);
-          if (getSaveButton()!=null)
-            getSaveButton().setEnabled(getSaveButton().getOldValue());
 
           // set focus inside the grid...
           if (lockedGrid==null)
@@ -1154,23 +1220,34 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             boolean errorOnLoad = true;
             if (getNavBar()!=null)
               getNavBar().setEnabled(false);
-            if (getReloadButton()!=null)
+
+            if (getReloadButton()!=null) {
               getReloadButton().setEnabled(false);
-            if (getInsertButton()!=null)
+            }
+            if (getInsertButton()!=null) {
               getInsertButton().setEnabled(false);
-            if (getExportButton()!=null)
+            }
+            if (getExportButton()!=null) {
               getExportButton().setEnabled(false);
-            if (getImportButton()!=null)
+            }
+            if (getImportButton() != null) {
               getImportButton().setEnabled(false);
-            if (getCopyButton()!=null)
+            }
+            if (getCopyButton()!=null) {
               getCopyButton().setEnabled(false);
-            if (getEditButton()!=null)
-              getEditButton().setEnabled(false);
-            setGenericButtonsEnabled(false);
-            if (getDeleteButton()!=null)
+            }
+            if (getDeleteButton()!=null) {
               getDeleteButton().setEnabled(false);
+            }
+            if (getEditButton()!=null) {
+              getEditButton().setEnabled(false);
+            }
+            if (getFilterButton()!=null) {
+              getFilterButton().setEnabled(false);
+            }
             if (getSaveButton()!=null)
               getSaveButton().setEnabled(false);
+
             // reload data...
             startIndex = lastIndex+1;
             errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
@@ -1181,9 +1258,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             }
             afterNextRow();
             if (getReloadButton()!=null)
-              getReloadButton().setEnabled(getReloadButton().getOldValue());
-            if (getSaveButton()!=null)
-              getSaveButton().setEnabled(getSaveButton().getOldValue());
+              getReloadButton().setEnabled(true);
             listenEvent = true;
 
             // fire loading data completed event...
@@ -1277,23 +1352,34 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           boolean errorOnLoad = true;
           if (getNavBar()!=null)
             getNavBar().setEnabled(false);
-          if (getReloadButton()!=null)
+
+          if (getReloadButton()!=null) {
             getReloadButton().setEnabled(false);
-          if (getInsertButton()!=null)
+          }
+          if (getInsertButton()!=null) {
             getInsertButton().setEnabled(false);
-          if (getExportButton()!=null)
+          }
+          if (getExportButton()!=null) {
             getExportButton().setEnabled(false);
-          if (getImportButton()!=null)
+          }
+          if (getImportButton() != null) {
             getImportButton().setEnabled(false);
-          if (getCopyButton()!=null)
+          }
+          if (getCopyButton()!=null) {
             getCopyButton().setEnabled(false);
-          if (getEditButton()!=null)
-            getEditButton().setEnabled(false);
-          setGenericButtonsEnabled(false);
-          if (getDeleteButton()!=null)
+          }
+          if (getDeleteButton()!=null) {
             getDeleteButton().setEnabled(false);
+          }
+          if (getEditButton()!=null) {
+            getEditButton().setEnabled(false);
+          }
+          if (getFilterButton()!=null) {
+            getFilterButton().setEnabled(false);
+          }
           if (getSaveButton()!=null)
             getSaveButton().setEnabled(false);
+
           // reload data...
 //          startIndex = Math.max(0,startIndex + 1);
           errorOnLoad = !loadData(GridParams.PREVIOUS_BLOCK_ACTION);
@@ -1317,9 +1403,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           });
           afterPreviousRow();
           if (getReloadButton()!=null)
-            getReloadButton().setEnabled(getReloadButton().getOldValue());
-          if (getSaveButton()!=null)
-            getSaveButton().setEnabled(getSaveButton().getOldValue());
+            getReloadButton().setEnabled(true);
           listenEvent = true;
 
           // fire loading data completed event...
@@ -1389,21 +1473,31 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         boolean errorOnLoad = true;
         if (getNavBar()!=null)
           getNavBar().setEnabled(false);
-        if (getReloadButton()!=null)
+
+        if (getReloadButton()!=null) {
           getReloadButton().setEnabled(false);
-        if (getInsertButton()!=null)
+        }
+        if (getInsertButton()!=null) {
           getInsertButton().setEnabled(false);
-        if (getExportButton()!=null)
+        }
+        if (getExportButton()!=null) {
           getExportButton().setEnabled(false);
-        if (getImportButton()!=null)
+        }
+        if (getImportButton() != null) {
           getImportButton().setEnabled(false);
-        if (getCopyButton()!=null)
+        }
+        if (getCopyButton()!=null) {
           getCopyButton().setEnabled(false);
-        if (getEditButton()!=null)
-          getEditButton().setEnabled(false);
-        setGenericButtonsEnabled(false);
-        if (getDeleteButton()!=null)
+        }
+        if (getDeleteButton()!=null) {
           getDeleteButton().setEnabled(false);
+        }
+        if (getEditButton()!=null) {
+          getEditButton().setEnabled(false);
+        }
+        if (getFilterButton()!=null) {
+          getFilterButton().setEnabled(false);
+        }
         if (getSaveButton()!=null)
           getSaveButton().setEnabled(false);
 
@@ -1440,9 +1534,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           }
         });
         if (getReloadButton()!=null)
-          getReloadButton().setEnabled(getReloadButton().getOldValue());
-        if (getSaveButton()!=null)
-          getSaveButton().setEnabled(getSaveButton().getOldValue());
+          getReloadButton().setEnabled(true);
         listenEvent = true;
 
         // fire loading data completed event...
@@ -1467,6 +1559,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * - reloads TableModel, by calling executeReload method
    */
   public final void reload() {
+    if (ClientSettings.MDI_TOOLBAR!=null &&
+        !ClientSettings.MDI_TOOLBAR.containsDataController(this))
+      ClientSettings.MDI_TOOLBAR.setDataController(this);
+
     if (getMode()!=Consts.READONLY) {
       // view confirmation dialog...
       boolean ok = true;
@@ -1509,18 +1605,19 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
       // reset toolbar state...
       if (getEditButton()!=null)
-        getEditButton().setEnabled(getEditButton().getOldValue());
+        getEditButton().setEnabled(model.getRowCount()>0);
       if (getDeleteButton()!=null)
-        getDeleteButton().setEnabled(getDeleteButton().getOldValue());
+        getDeleteButton().setEnabled(model.getRowCount()>0);
       if (getInsertButton()!=null)
-//        getInsertButton().setEnabled(getInsertButton().getOldValue());
         getInsertButton().setEnabled(true);
       if (getExportButton()!=null)
-        getExportButton().setEnabled(true);
+        getExportButton().setEnabled(model.getRowCount()>0);
       if (getImportButton()!=null)
         getImportButton().setEnabled(true);
       if (getCopyButton()!=null)
-        getCopyButton().setEnabled(true);
+        getCopyButton().setEnabled(model.getRowCount()>0);
+      if (getFilterButton()!=null)
+        getFilterButton().setEnabled(model.getRowCount()>0);
       this.gridController.afterReloadGrid();
 
       resetButtonsState();
@@ -1702,13 +1799,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       if (getInsertButton()!=null)
         getInsertButton().setEnabled(true);
       if (getExportButton()!=null)
-        getExportButton().setEnabled(true);
+        getExportButton().setEnabled(model.getRowCount()>0);
       if (getImportButton()!=null)
         getImportButton().setEnabled(true);
       if (getCopyButton()!=null)
         getCopyButton().setEnabled(model.getRowCount()>0);
       if (getEditButton()!=null)
         getEditButton().setEnabled(model.getRowCount()>0);
+      if (getFilterButton()!=null)
+        getFilterButton().setEnabled(model.getRowCount()>0);
       setGenericButtonsEnabled(model.getRowCount()>0);
       if (getDeleteButton()!=null)
         getDeleteButton().setEnabled(model.getRowCount()>0);
@@ -1744,14 +1843,27 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         return;
       currentNumberOfNewRows = 1;
       model.setMode(Consts.INSERT);
-      if (getInsertButton()!=null)
+      if (getInsertButton()!=null) {
         getInsertButton().setEnabled(false);
-      if (getCopyButton()!=null)
+      }
+      if (getExportButton()!=null) {
+        getExportButton().setEnabled(false);
+      }
+      if (getImportButton() != null) {
+        getImportButton().setEnabled(false);
+      }
+      if (getCopyButton()!=null) {
         getCopyButton().setEnabled(false);
-      if (getDeleteButton()!=null)
+      }
+      if (getDeleteButton()!=null) {
         getDeleteButton().setEnabled(false);
-      if (getEditButton()!=null)
+      }
+      if (getEditButton()!=null) {
         getEditButton().setEnabled(false);
+      }
+      if (getFilterButton()!=null) {
+        getFilterButton().setEnabled(false);
+      }
       setGenericButtonsEnabled(false);
       if (getReloadButton()!=null)
         getReloadButton().setEnabled(true);
@@ -2312,23 +2424,26 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
         // create a new empty v.o...
         model.setMode(Consts.INSERT);
-        if (getInsertButton() != null) {
+        if (getInsertButton()!=null) {
           getInsertButton().setEnabled(false);
         }
-        if (getExportButton() != null) {
+        if (getExportButton()!=null) {
           getExportButton().setEnabled(false);
         }
         if (getImportButton() != null) {
           getImportButton().setEnabled(false);
         }
-        if (getCopyButton() != null) {
+        if (getCopyButton()!=null) {
           getCopyButton().setEnabled(false);
         }
-        if (getDeleteButton() != null) {
+        if (getDeleteButton()!=null) {
           getDeleteButton().setEnabled(false);
         }
-        if (getEditButton() != null) {
+        if (getEditButton()!=null) {
           getEditButton().setEnabled(false);
+        }
+        if (getFilterButton()!=null) {
+          getFilterButton().setEnabled(false);
         }
         setGenericButtonsEnabled(false);
         if (getReloadButton() != null) {
@@ -2400,18 +2515,27 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         return;
 
       model.setMode(Consts.EDIT);
-      if (getInsertButton()!=null)
+      if (getInsertButton()!=null) {
         getInsertButton().setEnabled(false);
-      if (getExportButton()!=null)
+      }
+      if (getExportButton()!=null) {
         getExportButton().setEnabled(false);
-      if (getImportButton() != null)
+      }
+      if (getImportButton() != null) {
         getImportButton().setEnabled(false);
-      if (getCopyButton()!=null)
+      }
+      if (getCopyButton()!=null) {
         getCopyButton().setEnabled(false);
-      if (getDeleteButton()!=null)
+      }
+      if (getDeleteButton()!=null) {
         getDeleteButton().setEnabled(false);
-      if (getEditButton()!=null)
+      }
+      if (getEditButton()!=null) {
         getEditButton().setEnabled(false);
+      }
+      if (getFilterButton()!=null) {
+        getFilterButton().setEnabled(false);
+      }
       setGenericButtonsEnabled(false);
       if (getReloadButton()!=null)
         getReloadButton().setEnabled(true);
@@ -2667,18 +2791,20 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             getSaveButton().setEnabled(false);
           // reset toolbar buttons state...
           if (getEditButton()!=null)
-            getEditButton().setEnabled(true);
+            getEditButton().setEnabled(model.getRowCount()>0);
           if (getCopyButton()!=null)
-            getCopyButton().setEnabled(true);
+            getCopyButton().setEnabled(model.getRowCount()>0);
           setGenericButtonsEnabled(true);
           if (getDeleteButton()!=null)
-            getDeleteButton().setEnabled(true);
+            getDeleteButton().setEnabled(model.getRowCount()>0);
           if (getInsertButton()!=null)
-            getInsertButton().setEnabled(getInsertButton().getOldValue());
+            getInsertButton().setEnabled(true);
           if (getExportButton()!=null)
-            getExportButton().setEnabled(getExportButton().getOldValue());
+            getExportButton().setEnabled(model.getRowCount()>0);
           if (getImportButton()!=null)
-            getImportButton().setEnabled(getImportButton().getOldValue());
+            getImportButton().setEnabled(true);
+          if (getFilterButton()!=null)
+            getFilterButton().setEnabled(model.getRowCount()>0);
 
           // fire saving completed event...
           switch (previousMode) {
@@ -2742,6 +2868,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         getCopyButton().setEnabled(false);
       if (getEditButton()!=null)
         getEditButton().setEnabled(false);
+      if (getFilterButton()!=null)
+        getFilterButton().setEnabled(false);
       setGenericButtonsEnabled(false);
       if (getDeleteButton()!=null)
         getDeleteButton().setEnabled(false);
@@ -2828,16 +2956,16 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   }
 
 
-  /**
-   * Set (dis)abilitation for whole generic buttons, according to the old (previous) state.
-   */
-  public void setGenericButtonsOldValue() {
-    GenericButton button;
-    for (int i=0; i<getGenericButtons().size(); i++) {
-      button = (GenericButton) getGenericButtons().get(i);
-      button.setEnabled(button.getOldValue());
-    }
-  }
+//  /**
+//   * Set (dis)abilitation for whole generic buttons, according to the old (previous) state.
+//   */
+//  public void setGenericButtonsOldValue() {
+//    GenericButton button;
+//    for (int i=0; i<getGenericButtons().size(); i++) {
+//      button = (GenericButton) getGenericButtons().get(i);
+//      button.setEnabled(getOldValue(button));
+//    }
+//  }
 
 
   /**
@@ -3418,6 +3546,20 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
+   * @return collection of buttons binded to grid (InsertButton, EditButton, etc)
+   */
+  public final HashSet getBindedButtons() {
+    return bindedButtons;
+  }
+
+
+
+
+
+
+
+
+  /**
    * <p>Title: OpenSwing Framework</p>
    * <p>Description: JPopupMenu overrided to set focus on grid when the popup is being closed.</p>
    * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
@@ -3535,9 +3677,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           navBar.setFirstRow(true);
       }
       if (reloadButton!=null)
-        reloadButton.setEnabled(reloadButton.getOldValue());
+        reloadButton.setEnabled(true);
       if (saveButton!=null)
-        saveButton.setEnabled(saveButton.getOldValue());
+        saveButton.setEnabled(false);
 
       grid.revalidate();
       grid.repaint();

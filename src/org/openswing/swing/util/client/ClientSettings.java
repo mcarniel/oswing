@@ -398,6 +398,9 @@ public class ClientSettings {
   /** ejb remote session bean to invoke for processing all export tasks; default name: "EJBExportBean/remote" */
   public static String EJB_EXPORT_BEAN_NAME = "EJBExportBean/remote";
 
+  /** add a toolbar to MDIFrame; default value: null, i.e. do not add any toolbar; possible value: org.openswing.swing.mdi.client.DefaultToolBar */
+  public static ToolBar MDI_TOOLBAR = null;
+
 
   /**
    * Contains application settings.

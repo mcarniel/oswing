@@ -1,5 +1,28 @@
 
 
+Release Notes 1.8.4
+-------------------
+
+Final release 1.8.4 available
+Fixed a problem on selecting multiple rows in grid, using java 1.6.
+Implemented "hideButton" property in CodLookupColumn.
+Fixed problem with code autocompletition in lookup: now it correctly works also when using mouse to select code with Java 1.6.
+Improved LinkButton component:
+- added "uri" property, in order to automatically open an URI in default browser, when clicking on the link
+- added "labelAttributeName" property, in order to bind link button to the container Form panel and automatically set label from an attribute value of the Form's value object
+- added "tooltipAttributeName" property, in order to bind link button to the container Form panel and automatically set tooltip from an attribute value of the Form's value object
+- added "uriAttributeName" property, in order to bind link button to the container Form panel and automatically set URI to open, from an attribute value of the Form's value object
+- added "addLinkButton" and "removeLinkButton" methods in Form panel, in order to manage abilitation state of LinkButton, according to current Form state
+Created new GridControl column: LinkColumn; this link type column allows to click onto the link within the cell and automatically open the specified URI.
+Changed "demo4" sample application, in order to show how to use LinkButton and LinkColumn.
+Fixed problem in NavigatorBar when "showPaginationButtons" property is set to false and ClientSettings.SHOW_PAGINATION_BUTTONS_ON_NAVBAR is set to true.
+Fixed OutOfMemoryError problem when using HibernateUtils with inner value objects.
+Created unique toolbar on top of MDIFrame, in order to manage generic operations for grid and Form panel. 
+Created "demo48" sample application, to show how to use a unique toolbar in MDIFrame for all grids and Form panels.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.8.3
 -------------------
 

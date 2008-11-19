@@ -149,6 +149,15 @@ public class MDIFrame extends JFrame implements BusyListener {
       catch (Exception ex2) {
       }
 
+      if (ClientSettings.MDI_TOOLBAR!=null) {
+        // add toolbar...
+        toolbar.add(ClientSettings.MDI_TOOLBAR);
+        if (!toolbarAdded) {
+          toolbarAdded = true;
+          contentPane.add(toolbar,BorderLayout.NORTH);
+        }
+      }
+
       //view MDI...
       try {
         Thread.sleep(500);
@@ -820,7 +829,6 @@ public class MDIFrame extends JFrame implements BusyListener {
         }
     }
   }
-
 
 
   /**

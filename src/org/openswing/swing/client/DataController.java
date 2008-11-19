@@ -1,5 +1,7 @@
 package org.openswing.swing.client;
 
+import java.util.HashSet;
+
 
 
 
@@ -102,5 +104,27 @@ public interface DataController {
    * Method called when used has clicked on import button.
    */
   public void importData();
+
+
+  /**
+   * Set current enabled value of button.
+   * @param button generic button that fires this event.
+   * @param currentValue current enabled value
+   */
+  public void setCurrentValue(GenericButton button,boolean currentValue);
+
+
+  /**
+   * @param button generic button that fires this event
+   * @return current enabled value
+   */
+  public boolean getCurrentValue(GenericButton button);
+
+
+  /**
+   * @return collection of buttons binded to grid (InsertButton, EditButton, etc)
+   */
+  public HashSet getBindedButtons();
+
 
 }

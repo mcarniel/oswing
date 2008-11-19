@@ -470,6 +470,7 @@ public class CodLookupColumn extends Column {
         isAllowOnlyNumbers(),
         !isHideCodeBox(),
         isEnableCodBox(),
+        !isHideButton(),
         getControllerClassName(),
         getControllerMethodName(),
         getAutoCompletitionWaitTime(),

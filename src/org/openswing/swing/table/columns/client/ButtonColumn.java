@@ -94,7 +94,7 @@ public class ButtonColumn extends Column {
 
 
   /**
-   * Add an ItemListener to the combo.
+   * Add an ItemListener to the button.
    * @param listener ActionListener to add
    */
   public final void addActionListener(ActionListener listener) {
@@ -103,7 +103,7 @@ public class ButtonColumn extends Column {
 
 
   /**
-   * Remove an ActionListener from the combo.
+   * Remove an ActionListener from the button.
    * @param listener ActionListener to remove
    */
   public final void removeActionListener(ActionListener listener) {

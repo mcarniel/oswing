@@ -465,6 +465,8 @@ public class VOListAdapter {
 //        else
         if (colProperties[colIndex].getColumnType()==Column.TYPE_BUTTON && ((ButtonColumn)colProperties[colIndex]).isEnableInReadOnlyMode())
           return true;
+        else if (colProperties[colIndex].getColumnType()==Column.TYPE_LINK)
+          return true;
         else if (colProperties[colIndex].getColumnType()==Column.TYPE_CHECK && ((CheckBoxColumn)colProperties[colIndex]).isEnableInReadOnlyMode())
           return true;
         return false;

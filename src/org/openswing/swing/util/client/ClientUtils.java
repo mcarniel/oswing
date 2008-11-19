@@ -355,7 +355,9 @@ public class ClientUtils extends JApplet {
       desktop.getClass().getMethod("open",new Class[]{java.io.File.class}).invoke(desktop,new Object[]{new java.io.File(url)});
     }
     catch (Throwable ex1) {
-      if (!url.toLowerCase().startsWith("file://") && !url.toLowerCase().startsWith("http://"))
+      if (!url.toLowerCase().startsWith("file://") &&
+          !url.toLowerCase().startsWith("http://") &&
+          !url.toLowerCase().startsWith("https://"))
         url = "file://"+url;
       boolean windows = false;
       String os = System.getProperty("os.name");

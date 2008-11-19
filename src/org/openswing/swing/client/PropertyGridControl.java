@@ -1,6 +1,7 @@
 package org.openswing.swing.client;
 
 import java.beans.*;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -65,6 +66,12 @@ public class PropertyGridControl extends JScrollPane implements DataController {
   /** controller used to fetch data (property values) */
   private PropertyGridController controller = new PropertyGridController();
 
+  /** current enabled button state, before GenericButton.setEnabled method calling */
+  private HashMap currentValueButtons = new HashMap();
+
+  /** collection of buttons binded to grid (InsertButton, EditButton, etc) */
+  private HashSet bindedButtons = new HashSet();
+
 
   public PropertyGridControl() {
     try {
@@ -87,6 +94,29 @@ public class PropertyGridControl extends JScrollPane implements DataController {
     catch(Exception e) {
       e.printStackTrace();
     }
+  }
+
+
+  /**
+   * Set current enabled value of button.
+   * @param button generic button that fires this event
+   * @param currentValue current enabled value
+   */
+  public final void setCurrentValue(GenericButton button,boolean currentValue) {
+    currentValueButtons.put(button,new Boolean(currentValue));
+  }
+
+
+  /**
+   * @param button generic button
+   * @return current enabled value for the specified button
+   */
+  public final boolean getCurrentValue(GenericButton button) {
+    Boolean oldValue = (Boolean)currentValueButtons.get(button);
+    if (oldValue==null)
+      return true;
+    else
+      return oldValue.booleanValue();
   }
 
 
@@ -403,9 +433,6 @@ public class PropertyGridControl extends JScrollPane implements DataController {
   }
 
 
-
-
-
   /**
    * @return insert button linked to grid
    */
@@ -432,6 +459,7 @@ public class PropertyGridControl extends JScrollPane implements DataController {
     this.editButton = editButton;
     if (editButton != null)
       editButton.addDataController(this);
+    bindedButtons.add(editButton);
   }
 
 
@@ -445,6 +473,7 @@ public class PropertyGridControl extends JScrollPane implements DataController {
     this.insertButton = insertButton;
     if (insertButton != null)
       insertButton.addDataController(this);
+    bindedButtons.add(insertButton);
   }
 
 
@@ -466,6 +495,7 @@ public class PropertyGridControl extends JScrollPane implements DataController {
     this.reloadButton = reloadButton;
     if (reloadButton != null)
       reloadButton.addDataController(this);
+    bindedButtons.add(reloadButton);
   }
 
 
@@ -489,6 +519,7 @@ public class PropertyGridControl extends JScrollPane implements DataController {
       //imposta listener per nuovo pulsante
       saveButton.addDataController(this);
       saveButton.setEnabled(false);
+      bindedButtons.add(saveButton);
     }
   }
 
@@ -688,7 +719,7 @@ public class PropertyGridControl extends JScrollPane implements DataController {
           if (getEditButton()!=null)
             getEditButton().setEnabled(true);
           if (getInsertButton()!=null)
-            getInsertButton().setEnabled(getInsertButton().getOldValue());
+            getInsertButton().setEnabled(true);
 
         } else {
           // saving operation throws an error: it will be viewed on a dialog...
@@ -790,6 +821,14 @@ public class PropertyGridControl extends JScrollPane implements DataController {
 
   public final int getPropertyValueWidth() {
     return grid.getColumnModel().getColumn(1).getPreferredWidth();
+  }
+
+
+  /**
+   * @return collection of buttons binded to grid (InsertButton, EditButton, etc)
+   */
+  public final HashSet getBindedButtons() {
+    return bindedButtons;
   }
 
 

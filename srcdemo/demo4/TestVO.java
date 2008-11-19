@@ -27,6 +27,9 @@ public class TestVO extends ValueObjectImpl {
   private String descrLookupValue;
   private String taValue;
   private String formattedTextValue;
+  private String uri;
+  private String tooltipURI;
+  private String linkLabel;
 
 
   public TestVO() {
@@ -99,6 +102,24 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setCombo(ComboVO combo) {
     this.combo = combo;
+  }
+  public String getTooltipURI() {
+    return tooltipURI;
+  }
+  public String getUri() {
+    return uri;
+  }
+  public void setTooltipURI(String tooltipURI) {
+    this.tooltipURI = tooltipURI;
+  }
+  public void setUri(String uri) {
+    this.uri = uri;
+  }
+  public String getLinkLabel() {
+    return linkLabel;
+  }
+  public void setLinkLabel(String linkLabel) {
+    this.linkLabel = linkLabel;
   }
 
 

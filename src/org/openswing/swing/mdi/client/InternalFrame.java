@@ -91,6 +91,21 @@ public class InternalFrame extends JInternalFrame {
         }
       }
 
+      /**
+       * Invoked when an internal frame is activated.
+       */
+      public void internalFrameActivated(InternalFrameEvent e) {
+      }
+
+      /**
+       * Invoked when an internal frame is de-activated.
+       */
+      public void internalFrameDeactivated(InternalFrameEvent e) {
+        if (ClientSettings.MDI_TOOLBAR!=null)
+          ClientSettings.MDI_TOOLBAR.disableAllButtons();
+      }
+
+
     });
   }
 

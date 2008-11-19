@@ -23,6 +23,16 @@ public class LinkButtonBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _labelAttributeName = new PropertyDescriptor("labelAttributeName", beanClass, "getLabelAttributeName", "setLabelAttributeName");
+      _labelAttributeName.setPropertyEditorClass(StringAttributeNameEditor.class);
+
+      PropertyDescriptor _tooltipAttributeName = new PropertyDescriptor("tooltipAttributeName", beanClass, "getTooltipAttributeName", "setTooltipAttributeName");
+      _tooltipAttributeName.setPropertyEditorClass(StringAttributeNameEditor.class);
+
+      PropertyDescriptor _uriAttributeName = new PropertyDescriptor("uriAttributeName", beanClass, "getUriAttributeName", "setUriAttributeName");
+      _uriAttributeName.setPropertyEditorClass(StringAttributeNameEditor.class);
+
+      PropertyDescriptor _uri = new PropertyDescriptor("uri", beanClass, "getUri", "setUri");
       PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _foregroundColorWhenEntered = new PropertyDescriptor("foregroundColorWhenEntered", beanClass, "getForegroundColorWhenEntered", "setForegroundColorWhenEntered");
       PropertyDescriptor _label = new PropertyDescriptor("label", beanClass, "getLabel", "setLabel");
@@ -33,9 +43,14 @@ public class LinkButtonBeanInfo extends SimpleBeanInfo {
         _font,
         _foregroundColorWhenEntered,
         _label,
+        _labelAttributeName,
         _showUnderline,
         _textAlignment,
-        _toolTipText};
+        _toolTipText,
+        _tooltipAttributeName,
+        _uri,
+        _uriAttributeName
+    };
       return pds;
     }
     catch(IntrospectionException ex) {

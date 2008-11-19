@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Graphics;
+import org.openswing.swing.util.client.ClientUtils;
+import javax.swing.JPanel;
+import java.awt.FlowLayout;
+import java.awt.*;
 
 
 /**
@@ -44,7 +48,7 @@ import java.awt.Graphics;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class LinkButton extends JLabel {
+public class LinkButton extends JPanel {
 
   /** label not yet translated */
   private String label = null;
@@ -64,32 +68,85 @@ public class LinkButton extends JLabel {
   /** flag used to define if show an underline; default value: true */
   private boolean showUnderline = true;
 
+  /** attribute name linked to the text of this link (optional), used to bind this link to a Form's value object */
+  public String labelAttributeName = null;
+
+  /** attribute name linked to the tooltip text of this link (optional), used to bind this link to a Form's value object */
+  public String tooltipAttributeName = null;
+
+  /** attribute name linked to the uri of this link (optional), used to bind this link to a Form's value object; if binded, this is the URI to automatically open when clicking on link */
+  public String uriAttributeName = null;
+
+  /** URI to automatically open when clicking on the link (optional) */
+  private String uri = null;
+
+  /** old enabled value */
+  private boolean oldValue = true;
+
+  /** enabled value */
+  private boolean enabled = true;
+
+  /** link button */
+  private JLabel linkButton = new JLabel() {
+
+    public final void paint(Graphics g) {
+      super.paint(g);
+      if (showUnderline) {
+        g.setColor(linkButton.getForeground());
+        g.drawLine(0,getHeight()-2,getWidth(),getHeight()-2);
+      }
+    }
+
+  };
+
+
+  public final void linkClicked() {
+    if (!enabled)
+      return;
+    for(int i=0;i<listeners.size();i++)
+      ((ActionListener)listeners.get(i)).actionPerformed(new ActionEvent(
+        LinkButton.this,
+        ActionEvent.ACTION_PERFORMED,
+        ""
+      ));
+      if (uri!=null && !uri.equals(""))
+        ClientUtils.displayURL(uri);
+  }
+
 
   public LinkButton() {
     setTextAlignment(SwingConstants.LEFT);
-    setOpaque(false);
-    addMouseListener(new MouseAdapter() {
+    linkButton.setOpaque(false);
+    linkButton.addMouseListener(new MouseAdapter() {
 
       public void mouseClicked(MouseEvent e) {
-        for(int i=0;i<listeners.size();i++)
-          ((ActionListener)listeners.get(i)).actionPerformed(new ActionEvent(
-            LinkButton.this,
-            ActionEvent.ACTION_PERFORMED,
-            ""
-          ));
+        linkClicked();
       }
 
       public void mouseEntered(MouseEvent e) {
-        foregroundColorWhenExited = getForeground();
-        setForeground(foregroundColorWhenEntered);
+        if (!enabled)
+          return;
+        foregroundColorWhenExited = linkButton.getForeground();
+        linkButton.setForeground(foregroundColorWhenEntered);
       }
 
       public void mouseExited(MouseEvent e) {
-        setForeground(foregroundColorWhenExited);
+        if (!enabled)
+          return;
+        linkButton.setForeground(foregroundColorWhenExited);
       }
 
     });
     setLabel("text to translate");
+//    setLayout(new FlowLayout(FlowLayout.LEFT));
+//    add(linkButton,null);
+
+    setLayout(new GridBagLayout());
+    add(linkButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+          , GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+          new Insets(0, 0, 0, 0), 0, 0));
+
+    setEnabled(true);
   }
 
 
@@ -99,7 +156,7 @@ public class LinkButton extends JLabel {
    */
   public final void setText(String label) {
     this.label = label;
-    super.setText(ClientSettings.getInstance().getResources().getResource(label));
+    linkButton.setText(ClientSettings.getInstance().getResources().getResource(label));
   }
 
 
@@ -123,7 +180,12 @@ public class LinkButton extends JLabel {
    * @return current Font setting
    */
   public final Font getFont() {
-    return super.getFont();
+    try {
+      return linkButton.getFont();
+    }
+    catch (Exception ex) {
+      return super.getFont();
+    }
   }
 
 
@@ -132,7 +194,11 @@ public class LinkButton extends JLabel {
    * @param font Font to set
    */
   public final void setFont(Font font) {
-    super.setFont(font);
+    try {
+      linkButton.setFont(font);
+    }
+    catch (Exception ex) {
+    }
   }
 
 
@@ -143,7 +209,7 @@ public class LinkButton extends JLabel {
   public final void setToolTipText(String toolTipText) {
     this.toolTipText = toolTipText;
     if (!Beans.isDesignTime())
-      super.setToolTipText(ClientSettings.getInstance().getResources().getResource(toolTipText));
+      linkButton.setToolTipText(ClientSettings.getInstance().getResources().getResource(toolTipText));
   }
 
 
@@ -159,7 +225,7 @@ public class LinkButton extends JLabel {
    * @return column text horizontal alignment
    */
   public final int getTextAlignment() {
-    return super.getHorizontalAlignment();
+    return linkButton.getHorizontalAlignment();
   }
 
 
@@ -168,7 +234,7 @@ public class LinkButton extends JLabel {
    * @param alignment column text horizontal alignement; possible values: "SwingConstants.LEFT", "SwingConstants.RIGHT", "SwingConstants.CENTER".
    */
   public final void setTextAlignment(int alignment) {
-    super.setHorizontalAlignment(alignment);
+    linkButton.setHorizontalAlignment(alignment);
   }
 
 
@@ -232,12 +298,112 @@ public class LinkButton extends JLabel {
   }
 
 
-  public final void paint(Graphics g) {
-    super.paint(g);
-    if (showUnderline) {
-      g.setColor(getForeground());
-      g.drawLine(0,getHeight()-2,getWidth(),getHeight()-2);
+  /**
+   * Bind the link text to the form which contains it and with the specified the attribute.
+   * @param labelAttributeName attribute name binded to text of this link
+   */
+  public final void setLabelAttributeName(String labelAttributeName) {
+    this.labelAttributeName = labelAttributeName;
+  }
+
+
+  /**
+   * @return attribute name binded to the text of this link
+   */
+  public final String getLabelAttributeName() {
+    return labelAttributeName;
+  }
+
+
+  /**
+   * Bind the link tooltip to the form which contains it and with the specified the attribute.
+   * @param tooltipAttributeName attribute name binded to tooltip of this link
+   */
+  public final void setTooltipAttributeName(String tooltipAttributeName) {
+    this.tooltipAttributeName = tooltipAttributeName;
+  }
+
+
+  /**
+   * @return attribute name binded to the tooltip of this link
+   */
+  public final String getTooltipAttributeName() {
+    return tooltipAttributeName;
+  }
+
+
+  /**
+   * @return URI to automatically open when clicking on the link (optional)
+   */
+  public final String getUri() {
+    return uri;
+  }
+
+
+  /**
+   * Set the URI to automatically open when clicking on the link (optional).
+   * @param uri URI to automatically open when clicking on the link (optional)
+   */
+  public final void setUri(String uri) {
+    this.uri = uri;
+  }
+
+
+  /**
+   * @return attribute name linked to the uri of this link (optional); if binded, this is the URI to automatically open when clicking on link
+   */
+  public final String getUriAttributeName() {
+    return uriAttributeName;
+  }
+
+
+  /**
+   * Set the attribute name linked to the uri of this link (optional), used to bind this link to a Form's value object.
+   * If binded, this is the URI to automatically open when clicking on link.
+   * @param uriAttributeName attribute name linked to the uri of this link (optional); if binded, this is the URI to automatically open when clicking on link
+   */
+  public final void setUriAttributeName(String uriAttributeName) {
+    this.uriAttributeName = uriAttributeName;
+  }
+
+
+  /**
+   * @return old enabled value
+   */
+  public final boolean getOldValue() {
+    return oldValue;
+  }
+
+
+  /**
+   * @return link button current abilitation state
+   */
+  public final boolean isEnabled() {
+    return enabled;
+  }
+
+
+  /**
+   * Set abilitation state for this link button.
+   * @param enabled abilitation state
+   */
+  public final void setEnabled(boolean enabled) {
+    if (this.enabled && !enabled) {
+      foregroundColorWhenExited = linkButton.getForeground();
+      linkButton.setForeground(Color.gray);
     }
+    else if (!this.enabled && enabled) {
+      linkButton.setForeground(foregroundColorWhenExited);
+    }
+
+    if (this.enabled==enabled)
+      return;
+
+    oldValue = this.enabled || enabled;
+    this.enabled = enabled;
+  }
+  public JLabel getLinkButton() {
+    return linkButton;
   }
 
 

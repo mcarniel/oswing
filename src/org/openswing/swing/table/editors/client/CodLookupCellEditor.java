@@ -139,6 +139,7 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
    * @param numericValue allow number only on code input field
    * @param codBoxVisible flag used to hide code
    * @param codBoxEditable flag used to disable code editability
+   * @param buttonVisible flag used to hide button
    * @param controllerClassName class name of the controller that must be invoked by pressing the "+" button
    * @param controllerMethodName method name defined in ClientFacade class, related to the controller that must be invoked by pressing the "+" button
    * @param autoCompletitionWaitTime wait time (expressed in ms) before showing code auto completition feature for lookup controls; default value: ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME
@@ -151,6 +152,7 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
       boolean numericValue,
       boolean codBoxVisible,
       boolean codBoxEditable,
+      boolean buttonVisible,
       final String controllerClassName,
       final String controllerMethodName,
       final long autoCompletitionWaitTime,
@@ -167,12 +169,14 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
     if (codBoxVisible) {
       panel.add(codBox,      new GridBagConstraints(0, 0, 3, 1, 1.0, 1.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
-      lookupButton.setMinimumSize(new Dimension(20,panel.getPreferredSize().height));
-      panel.add(lookupButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0
-            , GridBagConstraints.WEST, GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0), 0, 0));
+      if (buttonVisible) {
+        lookupButton.setMinimumSize(new Dimension(20,panel.getPreferredSize().height));
+        panel.add(lookupButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0
+              , GridBagConstraints.WEST, GridBagConstraints.NONE,
+              new Insets(0, 0, 0, 0), 0, 0));
+      }
 
-      if (controllerMethodName!=null || controllerMethodName!=null) {
+      if (controllerMethodName!=null && !controllerMethodName.equals("")) {
         plusButton.setMinimumSize(new Dimension(16,panel.getPreferredSize().height));
         panel.add(plusButton, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0
               , GridBagConstraints.WEST, GridBagConstraints.NONE,
@@ -181,10 +185,13 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
 
     }
     else {
-//      lookupButton.setMinimumSize(new Dimension(panel.getPreferredSize().width-2,panel.getPreferredSize().height));
-      panel.add(lookupButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
-            , GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-            new Insets(0, 0, 0, 0), 0, 0));
+      if (buttonVisible) {
+      //      lookupButton.setMinimumSize(new Dimension(panel.getPreferredSize().width-2,panel.getPreferredSize().height));
+        panel.add(lookupButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+              , GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+              new Insets(0, 0, 0, 0), 0, 0));
+      }
+
 
       if (controllerMethodName!=null || controllerMethodName!=null) {
         plusButton.setMinimumSize(new Dimension(16,panel.getPreferredSize().height));

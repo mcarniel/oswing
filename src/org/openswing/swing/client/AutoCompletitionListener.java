@@ -121,11 +121,11 @@ public final class AutoCompletitionListener extends KeyAdapter {
           list.setSelectedIndex(list.locationToIndex(e.getPoint()));
           e.consume();
           AutoCompletitionListener.this.inputControl.setValue(list.getSelectedValue());
+          window.setVisible(false);
           if (AutoCompletitionListener.this.inputControl instanceof CodLookupControl)
             ((CodLookupControl)AutoCompletitionListener.this.inputControl).getCodBox().forceValidate();
           if (AutoCompletitionListener.this.inputControl instanceof CodLookupCellEditor)
             ((CodLookupCellEditor)AutoCompletitionListener.this.inputControl).forceValidate();
-          window.setVisible(false);
           try {
             if (timer != null)
               timer.interrupt();

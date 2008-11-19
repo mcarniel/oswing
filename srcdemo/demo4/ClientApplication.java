@@ -33,6 +33,8 @@ public class ClientApplication {
 
     Hashtable domains = new Hashtable();
     Properties props = new Properties();
+    props.setProperty("uri","URI");
+    props.setProperty("linkLabel","Link");
     props.setProperty("this text will\nbe translated","This text will\nbe translated");
     props.setProperty("date","Date");
     props.setProperty("combobox","Combobox");
@@ -124,7 +126,7 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO4(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,TA VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO4(TEXT VARCHAR,FORMATTED_TEXT VARCHAR,DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO VARCHAR,CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,TA VARCHAR,URI VARCHAR,LINK_LABEL VARCHAR,PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 
@@ -137,7 +139,7 @@ public class ClientApplication {
         stmt.close();
 
         for(int i=0;i<200;i++) {
-          stmt = conn.prepareStatement("insert into DEMO4 values('ABC"+getCode(3,i+1)+"',null,"+12+i+0.333+","+1234+i+0.56+",?,'C','Y','Y','A"+i+"','AAAAAA"+i+"')");
+          stmt = conn.prepareStatement("insert into DEMO4 values('ABC"+getCode(3,i+1)+"',null,"+12+i+0.333+","+1234+i+0.56+",?,'C','Y','Y','A"+i+"','AAAAAA"+i+"','https://sourceforge.net/forum/message.php?msg_id="+(5612560+i)+"','Link "+(i+1)+"')");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
           stmt.close();

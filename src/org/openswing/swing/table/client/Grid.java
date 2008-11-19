@@ -696,6 +696,9 @@ public class Grid extends JTable
           if (colProps[i].getColumnType()==Column.TYPE_BUTTON && ((ButtonColumn)colProps[i]).isEnableInReadOnlyMode()) {
             return super.editCellAt(row, column, e);
           }
+          else if (colProps[i].getColumnType()==Column.TYPE_LINK) {
+            return super.editCellAt(row, column, e);
+          }
           else if (colProps[i].getColumnType()==Column.TYPE_CHECK && ((CheckBoxColumn)colProps[i]).isEnableInReadOnlyMode()) {
             return super.editCellAt(row, column, e);
           }
@@ -3629,9 +3632,30 @@ public class Grid extends JTable
 //        !((JInternalFrame)parentFrame).isSelected())
 //      return;
 
-    if (grids.getCurrentNestedComponent()!=null)
+    if (grids.getCurrentNestedComponent()!=null) {
       grids.getCurrentNestedComponent().requestFocus();
+      if (ClientSettings.MDI_TOOLBAR!=null) {
+        if (grids.getCurrentNestedComponent() instanceof DataController)
+          rebindButtons((DataController)grids.getCurrentNestedComponent());
+        else
+          rebindButtons(grids);
+      }
+    }
+    else {
+      if (ClientSettings.MDI_TOOLBAR!=null)
+        rebindButtons(grids);
+    }
     super.requestFocus();
+  }
+
+
+  /**
+   * Method invoked to re-bind buttons to grid, in case of unique toolbar managed by MDIFrame.
+   */
+  private void rebindButtons(DataController dataController) {
+    if (ClientSettings.MDI_TOOLBAR!=null &&
+        !ClientSettings.MDI_TOOLBAR.containsDataController(dataController))
+      ClientSettings.MDI_TOOLBAR.setDataController(dataController);
   }
 
 
@@ -4678,7 +4702,7 @@ public class Grid extends JTable
           if (e.getKeyCode()==e.VK_DOWN && currentSelRow==selRows[0] && selRows.length>1)
             min++;
 
-          Grid.this.clearSelection();
+          Grid.this.getSelectionModel().clearSelection();
           if (selRows!=null) {
             for (int i = min; i < max; i++)
               Grid.this.addRowSelectionInterval(selRows[i], selRows[i]);

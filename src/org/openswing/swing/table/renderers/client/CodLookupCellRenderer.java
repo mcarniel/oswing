@@ -36,7 +36,7 @@ import org.openswing.swing.table.client.*;
  */
 public class CodLookupCellRenderer extends TextTableCellRenderer {
 
-  /** flag used to view "*" symbols instead of the real text */
+  /** flag used to view "" instead of the real text */
   private boolean hideCodBox;
 
 

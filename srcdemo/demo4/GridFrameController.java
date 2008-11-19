@@ -89,12 +89,14 @@ public class GridFrameController extends GridController implements GridDataLocat
       attribute2dbField.put("radioButtonValue","DEMO4.RADIO");
       attribute2dbField.put("lookupValue","DEMO4.CODE");
       attribute2dbField.put("descrLookupValue","DEMO4_LOOKUP.DESCRCODE");
+      attribute2dbField.put("uri","DEMO4.URI");
+      attribute2dbField.put("linkLabel","DEMO4.LINK_LABEL");
       GridParams gridParams = new GridParams(action,startIndex,filteredColumns,currentSortedColumns,currentSortedVersusColumns,otherGridParams);
 
       Response res = QueryUtil.getQuery(
         conn,
         new UserSessionParameters(),
-        "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO AS COMBOCODE,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE",
+        "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO AS COMBOCODE,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,DEMO4_LOOKUP.DESCRCODE,DEMO4.URI,DEMO4.LINK_LABEL from DEMO4,DEMO4_LOOKUP where DEMO4.CODE=DEMO4_LOOKUP.CODE",
         vals,
         attribute2dbField,
         TestVO.class,
@@ -123,6 +125,7 @@ public class GridFrameController extends GridController implements GridDataLocat
             vo.getCombo().setDescription("delivered");
           else if (vo.getCombo().getCode().equals("C"))
             vo.getCombo().setDescription("closed");
+
         }
       }
 

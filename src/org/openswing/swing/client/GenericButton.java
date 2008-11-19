@@ -46,16 +46,13 @@ public class GenericButton extends JButton {
   /** data controllers linked to this button*/
   protected List dataControllerList = new ArrayList(3);
 
-  /** previous button state, before setEnabled method calling */
-  private boolean oldValue = true;
-
   /** flag used to execute the action event in a separated thread (useful for heavy server executions); default value: false */
   private boolean executeAsThread = false;
 
   /** define whether showing image/text on default buttons (insert, edit, ...); allowed values: Consts.BUTTON_IMAGE_ONLY, Consts.BUTTON_TEXT_ONLY, Consts.BUTTON_IMAGE_AND_TEXT; default value: ClientSettings.BUTTON_BEHAVIOR */
   private int buttonBehavior = ClientSettings.BUTTON_BEHAVIOR;
 
-  /** attribute name linked to the button (optional) */
+  /** attribute name linked to the button (optional), used to bind this link to a Form's value object */
   public String attributeName = null;
 
 
@@ -175,6 +172,25 @@ public class GenericButton extends JButton {
 
 
   /**
+   * @return <code>true</code> if the specified listener is already added to this, <code>false</code> otherwise
+   */
+  public final boolean containsDataController(DataController dataController) {
+    for (int i = 0; i < dataControllerList.size(); i++)
+      if (dataControllerList.get(i).equals(dataController))
+        return true;
+    return false;
+  }
+
+
+  /**
+   * Remove all listeners from the button.
+   */
+  public final void removeAllDataControllers() {
+    dataControllerList.clear();
+  }
+
+
+  /**
    * Operation to execute when the button is pressed.
    * The method must be overridden by the subclass button.
    * @param controller data controller that contains the execute operation logic
@@ -212,18 +228,11 @@ public class GenericButton extends JButton {
         enabled = false;
         break;
       }
+
+      dataController.setCurrentValue(this,enabled);
     }
 
-    oldValue = this.isEnabled();
     super.setEnabled(enabled);
-  }
-
-
-  /**
-   * @return previous button state, before setEnabled method calling
-   */
-  public final boolean getOldValue() {
-    return oldValue;
   }
 
 
@@ -271,7 +280,7 @@ public class GenericButton extends JButton {
 
 
   /**
-   * @return attributeName attribute name linked to the input control
+   * @return attributeName attribute name linked to this button
    */
   public final String getAttributeName() {
     return attributeName;

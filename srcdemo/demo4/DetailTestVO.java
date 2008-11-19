@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 public class DetailTestVO extends TestVO{
 
+
   private ArrayList listValues;
 
 
@@ -24,5 +25,6 @@ public class DetailTestVO extends TestVO{
   public void setListValues(ArrayList listValues) {
     this.listValues = listValues;
   }
+
 
 }

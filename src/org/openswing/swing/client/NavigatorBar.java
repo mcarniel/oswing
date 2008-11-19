@@ -150,7 +150,8 @@ public class NavigatorBar extends JPanel {
 
 
   private boolean checkValidPage() {
-    if (resultSetController.getTotalResultSetLength()!=-1 &&
+    if (resultSetController!=null &&
+        resultSetController.getTotalResultSetLength()!=-1 &&
         resultSetController.getBlockSize()!=-1 &&
         controlPageNr.getDouble().intValue()>resultSetController.getTotalResultSetLength()/resultSetController.getBlockSize()) {
       controlPageNr.setValue(new Integer(currentPageNr));
@@ -164,7 +165,7 @@ public class NavigatorBar extends JPanel {
    * Reload grid, starting from the specified page.
    */
   private void gotoPage() {
-    if (currentPageNr>0)
+    if (currentPageNr>0 && resultSetController!=null)
       resultSetController.loadPage(currentPageNr);
   }
 
@@ -437,6 +438,18 @@ public class NavigatorBar extends JPanel {
    * @param showPaginationButtons <code>true</code> to show pagination buttons in navigator bar; <code>false</code> to do not show them
    */
   public final void setShowPaginationButtons(boolean showPaginationButtons) {
+    if (!this.showPaginationButtons && showPaginationButtons) {
+      this.add(prevPgButton,null);
+      this.add(nextPgButton,null);
+      this.revalidate();
+      this.repaint();
+    }
+    else if (this.showPaginationButtons && !showPaginationButtons) {
+      this.remove(prevPgButton);
+      this.remove(nextPgButton);
+      this.revalidate();
+      this.repaint();
+    }
     this.showPaginationButtons = showPaginationButtons;
   }
 

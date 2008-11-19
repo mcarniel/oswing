@@ -535,6 +535,19 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
           result=edit;
         }
         ;break;
+        case Column.TYPE_LINK:
+        {
+          TextControl edit = new TextControl();
+          edit.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+              if (e.getKeyCode()==e.VK_ENTER)
+                valueKeyPressed(e);
+            }
+          } );
+          edit.setText(initValue==null?"":initValue.toString());
+          result=edit;
+        }
+        ;break;
         case Column.TYPE_FORMATTED_TEXT:
         {
           FormattedTextBox edit = new FormattedTextBox( ((FormattedTextColumn)colProperties).getController() );
@@ -731,10 +744,10 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
 
             // patch introduced to allow focus setting on the input control when popup menu is a child of a JFrame (no MDI frame)...
             java.awt.Component window = value1;
-            while (!(window instanceof Window)) {
+            while (window!=null && !(window instanceof Window)) {
                 window = window.getParent();
             }
-            if (window == null || !((Window)window).isFocusableWindow()) {
+            if (window != null || !((Window)window).isFocusableWindow()) {
                 ((Window)window).setFocusableWindowState(true);
             }
 
@@ -808,6 +821,7 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         }
         ;break;
         case Column.TYPE_TEXT:
+        case Column.TYPE_LINK:
         case Column.TYPE_LOOKUP:
         {
           result=((TextControl)value).getText();
