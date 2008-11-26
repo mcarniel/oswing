@@ -1,5 +1,17 @@
 
 
+Release Notes 1.8.5
+-------------------
+
+Final release 1.8.5 available
+Changed About dialog content, by replacing max memory allocation with current memory allocation.
+Improved TreeGridPanel: now column headers use ClientSettings.HEADER_HEIGHT global property as header height.
+Added "autoFitCoumn" property to all columns, in order to auto fix column sizes, according to their text headers.
+Added AUTO_FIT_COLUMNS global property to ClientSettings, in order to define the default value for "autoFitCoumn" property of columns.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.8.4
 -------------------
 

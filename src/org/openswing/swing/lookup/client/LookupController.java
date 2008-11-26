@@ -177,6 +177,9 @@ public class LookupController {
   /** combo-box filters to apply to column headers */
   private HashMap comboFilters = new HashMap();
 
+  /** flag used to auto fit column sizes, according to text headers; default value: <code>ClientSettings.AUTO_FIT_COLUMNS</code> */
+  public boolean autoFitColumns = ClientSettings.AUTO_FIT_COLUMNS;
+
 
   /**
    * Execute the code validation.
@@ -1620,6 +1623,22 @@ public class LookupController {
   }
 
 
+  /**
+   * @return flag used to auto fit column sizes, according to text headers
+   */
+  public final boolean isAutoFitColumns() {
+    return autoFitColumns;
+  }
+
+
+  /**
+   * Set auto fit column sizes, according to text headers.
+   * Default value: <code>ClientSettings.AUTO_FIT_COLUMNS</code>
+   * @param autoFitColumns  used to auto fit column sizes, according to text headers
+   */
+  public final void setAutoFitColumns(boolean autoFitColumns) {
+    this.autoFitColumns = autoFitColumns;
+  }
 
 
 

@@ -44,6 +44,7 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _additionalHeaderColumnName = new PropertyDescriptor("additionalHeaderColumnName", beanClass, "getAdditionalHeaderColumnName", "setAdditionalHeaderColumnName");
       PropertyDescriptor _additionalHeaderColumnSpan = new PropertyDescriptor("additionalHeaderColumnSpan", beanClass, "getAdditionalHeaderColumnSpan", "setAdditionalHeaderColumnSpan");
+      PropertyDescriptor _autoFitColumn = new PropertyDescriptor("autoFitColumn", beanClass, "isAutoFitColumn", "setAutoFitColumn");
       PropertyDescriptor _columnDuplicable = new PropertyDescriptor("columnDuplicable", beanClass, "isColumnDuplicable", "setColumnDuplicable");
       PropertyDescriptor _columnFilterable = new PropertyDescriptor("columnFilterable", beanClass, "isColumnFilterable", "setColumnFilterable");
       PropertyDescriptor _columnRequired = new PropertyDescriptor("columnRequired", beanClass, "isColumnRequired", "setColumnRequired");
@@ -71,6 +72,7 @@ public class ColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
               _additionalHeaderColumnName,
               _additionalHeaderColumnSpan,
+              _autoFitColumn,
               _columnDuplicable,
 	      _columnFilterable,
 	      _columnRequired,

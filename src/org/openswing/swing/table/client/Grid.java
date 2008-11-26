@@ -225,6 +225,13 @@ public class Grid extends JTable
    * @param gridController grid controller
    * @param lockedGrid locked grid (optional)
    * @param anchorLastColumn define if last column must be anchored to the right margin
+   * @param expandableColumn optional column index, related to column expandable, i.e. a cell that can contains an inner panel
+   * @param singleExpandableRow flag used to define cell expansion policy
+   * @param overwriteRowWhenExpanding flag used to define cell expansion policy
+   * @param expandableRowController controller of cell expansion task
+   * @param comboFilters collection of combo filters
+   * @param headerHeight header height
+   * @param autoFitColumns flag used to define whether auto fit column sizes, according to text headers
    * @param gridType type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID
    */
   public Grid(
@@ -1094,6 +1101,7 @@ public class Grid extends JTable
       ));
     }
     JTableHeader th = this.getTableHeader();
+    th.setPreferredSize(new Dimension(th.getPreferredSize().width,headerHeight));
     th.setPreferredSize(new Dimension(th.getPreferredSize().width,headerHeight));
     th.setReorderingAllowed(reorderingAllowed);
     th.setResizingAllowed(resizingAllowed);

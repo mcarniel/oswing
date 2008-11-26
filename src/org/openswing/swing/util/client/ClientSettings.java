@@ -401,6 +401,9 @@ public class ClientSettings {
   /** add a toolbar to MDIFrame; default value: null, i.e. do not add any toolbar; possible value: org.openswing.swing.mdi.client.DefaultToolBar */
   public static ToolBar MDI_TOOLBAR = null;
 
+  /** flag used to auto fit column sizes, according to text headers; default value: <code>false</code> */
+  public static boolean AUTO_FIT_COLUMNS = false;
+
 
   /**
    * Contains application settings.

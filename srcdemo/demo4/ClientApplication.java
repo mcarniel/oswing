@@ -79,7 +79,7 @@ public class ClientApplication {
 //com.jgoodies.looks.plastic.PlasticLookAndFeel
 //com.jgoodies.looks.plastic.Plastic3DLookAndFeel
     ClientSettings.LOOKUP_AUTO_COMPLETITION_WAIT_TIME = 1000;
-
+    ClientSettings.AUTO_FIT_COLUMNS = true;
 
     Domain orderStateDomain = new Domain("ORDERSTATE");
     ComboVO comboVO = null;

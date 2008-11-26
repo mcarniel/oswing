@@ -126,6 +126,9 @@ public class Column extends JPanel {
   /** list-filter to add to this column (optional) */
   private ListFilterController filter = null;
 
+  /** flag used to auto fit column size, according to text header; default value: <code>ClientSettings.AUTO_FIT_COLUMNS</code> */
+  public boolean autoFitColumn = ClientSettings.AUTO_FIT_COLUMNS;
+
   public static final int TYPE_TEXT = 0;
   public static final int TYPE_DATE = Consts.TYPE_DATE;
   public static final int TYPE_DATE_TIME = Consts.TYPE_DATE_TIME;
@@ -658,6 +661,27 @@ public class Column extends JPanel {
   public final ListFilterController getListFilter() {
     return this.filter;
   }
+
+
+
+  /**
+   * @return flag used to auto fit column size, according to text header
+   */
+  public final boolean isAutoFitColum() {
+    return autoFitColumn;
+  }
+
+
+  /**
+   * Set auto fit column size, according to text headers.
+   * Default value: <code>ClientSettings.AUTO_FIT_COLUMNS</code>
+   * @param autoFitColumns  used to auto fit columns size, according to text header
+   */
+  public final void setAutoFitColumn(boolean autoFitColumn) {
+    this.autoFitColumn = autoFitColumn;
+  }
+
+
 
 
 

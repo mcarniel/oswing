@@ -118,14 +118,14 @@ public class AboutDialog extends JDialog {
    * Set memory occupation.
    */
   private void setMem() {
+    long total = Runtime.getRuntime().totalMemory();
     memLabel.setText(
-        ClientSettings.getInstance().getResources().getResource("Java Heap")+":     "+
-        (Runtime.getRuntime().maxMemory()-Runtime.getRuntime().freeMemory())/1024/1024+"MB "+
-        ClientSettings.getInstance().getResources().getResource("used")+",     "+
-        Runtime.getRuntime().maxMemory()/1024/1024+"MB "+
-        ClientSettings.getInstance().getResources().getResource("allocated")
+          ClientSettings.getInstance().getResources().getResource("Java Heap")+":     "+
+      (total-Runtime.getRuntime().freeMemory())/1024/1024+"MB "+
+      ClientSettings.getInstance().getResources().getResource("used")+",     "+
+      total/1024/1024+"MB "+
+      ClientSettings.getInstance().getResources().getResource("allocated")
     );
-
   }
 
 

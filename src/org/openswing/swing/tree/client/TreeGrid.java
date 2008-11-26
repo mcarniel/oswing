@@ -106,6 +106,9 @@ public class TreeGrid extends JTable {
         }
       }
 
+      JTableHeader th = this.getTableHeader();
+      th.setPreferredSize(new Dimension(th.getPreferredSize().width,ClientSettings.HEADER_HEIGHT));
+
       setRowHeight(ClientSettings.CELL_HEIGHT);
       setBackground(ClientSettings.GRID_CELL_BACKGROUND);
       setForeground(ClientSettings.GRID_CELL_FOREGROUND);

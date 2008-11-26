@@ -272,6 +272,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     this.gridType = gridType;
 
     try {
+      for(int i=0;i<colProps.length;i++)
+        if (colProps[i].isAutoFitColum())
+          colProps[i].setPreferredWidth(Toolkit.getDefaultToolkit().getFontMetrics(ClientSettings.HEADER_FONT==null?new JLabel().getFont():ClientSettings.HEADER_FONT).stringWidth(ClientSettings.getInstance().getResources().getResource(colProps[i].getHeaderColumnName()))+10);
+
+
       // construction of data model adapter linked to the grid...
       modelAdapter = new VOListAdapter(Class.forName(valueObjectClassName),gridController,colProps,this);
       model = new VOListTableModel(modelAdapter,this);
