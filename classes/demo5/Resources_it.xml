@@ -193,7 +193,21 @@
 <!-- search box -->
   <object key="search" value="Trova"/> 
   <object key="not found" value="Non trovato"/> 
-        
+
+<!-- pivot table -->
+  <object key="pivot table settings" value="Impostazione tabella Pivot"/> 
+  <object key="row fields" value="Campi riga"/> 
+  <object key="column fields" value="Campi colonna"/> 
+  <object key="data fields" value="Campi dati"/> 
+  <object key="filtering conditions" value="Condizioni di filtro"/> 
+  <object key="field" value="Campo"/> 
+  <object key="checked" value="Selez."/> 
+  <object key="at least one data field must be selected" value="Almeno un campo data deve essere selezionato."/> 
+  <object key="at least one row field must be selected" value="Almeno un campo riga deve essere selezionato."/> 
+  <object key="at least one column field must be selected" value="Almeno un campo colonna deve essere selezionato."/> 
+  <object key="expand all" value="Espandi tutto"/>
+  <object key="collapse all" value="Riduci tutto"/>
+          
 <!-- application translations -->
       <object key="this text will be translated" value="Questo testo &#232; stato tradotto" />
       <object key="date" value="Data" />

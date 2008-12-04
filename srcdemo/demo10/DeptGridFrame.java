@@ -96,6 +96,7 @@ public class DeptGridFrame extends InternalFrame {
     colAddress.setEditableOnInsert(true);
     colAddress.setMaxWidth(200);
     colAddress.setPreferredWidth(400);
+    this.setUniqueInstance(true);
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);

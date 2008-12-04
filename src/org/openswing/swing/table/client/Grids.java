@@ -273,7 +273,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
     try {
       for(int i=0;i<colProps.length;i++)
-        if (colProps[i].isAutoFitColum())
+        if (colProps[i].isAutoFitColumn())
           colProps[i].setPreferredWidth(Toolkit.getDefaultToolkit().getFontMetrics(ClientSettings.HEADER_FONT==null?new JLabel().getFont():ClientSettings.HEADER_FONT).stringWidth(ClientSettings.getInstance().getResources().getResource(colProps[i].getHeaderColumnName()))+10);
 
 

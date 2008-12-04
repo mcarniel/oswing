@@ -266,6 +266,20 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     // drag...
     dictionary.setProperty("drag","Arrastrar");
 
+    // pivot table...
+    dictionary.setProperty("pivot table settings","Pivot table settings");
+    dictionary.setProperty("row fields","Row fields");
+    dictionary.setProperty("column fields","Column fields");
+    dictionary.setProperty("data fields","Data fields");
+    dictionary.setProperty("filtering conditions","Filtering conditions");
+    dictionary.setProperty("field","Field");
+    dictionary.setProperty("checked","Checked");
+    dictionary.setProperty("at least one data field must be selected","At least one data field must be selected.");
+    dictionary.setProperty("at least one row field must be selected","At least one row field must be selected.");
+    dictionary.setProperty("at least one column field must be selected","At least one column field must be selected.");
+    dictionary.setProperty("expand all","Expand all");
+    dictionary.setProperty("collapse all","Collapse all");
+
     resources = new Resources(
       dictionary,
       currencySymbol,

@@ -88,6 +88,7 @@ public class TaskGridFrame extends InternalFrame {
     insertButton.setText("insertButton1");
     editButton.setText("editButton1");
     saveButton.setText("saveButton1");
+    this.setUniqueInstance(true);
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);

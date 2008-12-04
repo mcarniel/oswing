@@ -73,6 +73,9 @@ public class InternalFrame extends JInternalFrame {
   /** internal frame owner */
   protected javax.swing.JInternalFrame owner = this;
 
+  /** used to define whether this window can be opened more times or only one instance can be created per time; default value: <code>false</code>, i.e. any number of instances of this window can be created */
+  private boolean uniqueInstance = false;
+
 
   /**
    * Costructor.
@@ -468,6 +471,24 @@ public class InternalFrame extends JInternalFrame {
    */
   public synchronized void stopModal() {
     notifyAll();
+  }
+
+
+  /**
+   * @return used to define whether this window can be opened more times or only one instance can be created per time
+   */
+  public final boolean isUniqueInstance() {
+    return uniqueInstance;
+  }
+
+
+  /**
+   * Define whether this window can be opened more times or only one instance can be created per time.
+   * Default value: <code>false</code>, i.e. any number of instances of this window can be created.
+   * @param uniqueInstance <code>true</code> only one instance of this window will be opened per time, <code>false</code> otherwise
+   */
+  public final void setUniqueInstance(boolean uniqueInstance) {
+    this.uniqueInstance = uniqueInstance;
   }
 
 

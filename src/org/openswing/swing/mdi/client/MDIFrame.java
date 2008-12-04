@@ -93,6 +93,9 @@ public class MDIFrame extends JFrame implements BusyListener {
   /** collection of pairs <component name,JComponent added to the status bar> */
   private static Hashtable componentsHooks = new Hashtable();
 
+  /** unique instances of internal frames, expressed as Class elements */
+  private HashSet uniqueInstances = new HashSet();
+
 
   static {
     try {
@@ -594,6 +597,13 @@ public class MDIFrame extends JFrame implements BusyListener {
    * @param frame internal frame
    */
   public static final void add(InternalFrame frame,boolean maximum) {
+    if (frame.isUniqueInstance()) {
+      if (MDIFrame.getInstance().isUniqueInstanceAlreadyOpened(frame))
+        return;
+      else
+        MDIFrame.getInstance().uniqueInstances.add(frame.getClass());
+    }
+
     ClientUtils.fireBusyEvent(true);
     try {
       desktopPane.add(frame, maximum);
@@ -686,7 +696,11 @@ public class MDIFrame extends JFrame implements BusyListener {
   /**
    * Callback invoked by WindowMenu when closing an internal frame.
    */
-  public final void windowClosed() {
+  public final void windowClosed(JInternalFrame frame) {
+    if (frame instanceof InternalFrame && ((InternalFrame)frame).isUniqueInstance()) {
+      uniqueInstances.remove(frame.getClass());
+    }
+
     synchronized(busyCount) {
       busyCount = new Integer(1);
     }
@@ -1021,6 +1035,13 @@ public class MDIFrame extends JFrame implements BusyListener {
     toolbar.setRollover(rollover);
   }
 
+
+  /**
+   * @return <code>true</code> if the specified instance of internal frame is already opened, <code>false</code> otherwise
+   */
+  public final boolean isUniqueInstanceAlreadyOpened(InternalFrame frame) {
+    return uniqueInstances.contains(frame.getClass());
+  }
 
 
 }

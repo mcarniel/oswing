@@ -125,7 +125,9 @@ public class HibernateUtils {
         fillInMetaData(
           sessions,
           tableName+"."+attrNames[i],
-          prefix+prefix+attrNames[i]+".",
+//          prefix+prefix+attrNames[i]+".",
+// -MC 29/11/2008:
+          prefix+attrNames[i]+".",
           submeta,
           attributesMap,
           attributesTypeMap,

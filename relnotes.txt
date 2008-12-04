@@ -1,5 +1,20 @@
 
 
+Release Notes 1.8.6
+-------------------
+
+Final release 1.8.6 available
+Added "uniqueInstance" boolean property to InternalFrame, in order to disable the creation of more than one instance of subclass of InternalFrame.
+Added new component: PivotTable, used to aggregate data per rows/columns and show data in grid.
+Added several data readers: CSV file reader, generic TableModel reader, Value Objects list reader, used to feed PivotTable component.
+Updated documentation in web site, by adding a section about new PivotTable component.
+Fixed problem with bean info of "autoFitCoumn" property for all columns.
+Fixed problem with bean info of GridControl component.
+Fixed problem in HibernateUtils class on composing filtering conditions.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.8.5
 -------------------
 

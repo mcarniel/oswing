@@ -18,7 +18,6 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _allowInsertInEdit = new PropertyDescriptor("allowInsertInEdit", beanClass, "isAllowInsertInEdit", "setAllowInsertInEdit");
       PropertyDescriptor _anchorLastColumn = new PropertyDescriptor("anchorLastColumn", beanClass, "isAnchorLastColumn", "setAnchorLastColumn");
-      PropertyDescriptor _autoFitColumns = new PropertyDescriptor("autoFitColumns", beanClass, "isAutoFitColumns", "setAutoFitColumns");
       PropertyDescriptor _autoLoadData = new PropertyDescriptor("autoLoadData", beanClass, "isAutoLoadData", "setAutoLoadData");
       PropertyDescriptor _colorsInReadOnlyMode = new PropertyDescriptor("colorsInReadOnlyMode", beanClass, "isColorsInReadOnlyMode", "setColorsInReadOnlyMode");
       PropertyDescriptor _copyButton = new PropertyDescriptor("copyButton", beanClass, "getCopyButton", "setCopyButton");
@@ -67,7 +66,6 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _allowInsertInEdit,
         _anchorLastColumn,
-        _autoFitColumns,
         _autoLoadData,
         _colorsInReadOnlyMode,
         _copyButton,

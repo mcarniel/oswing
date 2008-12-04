@@ -667,7 +667,7 @@ public class Column extends JPanel {
   /**
    * @return flag used to auto fit column size, according to text header
    */
-  public final boolean isAutoFitColum() {
+  public final boolean isAutoFitColumn() {
     return autoFitColumn;
   }
 

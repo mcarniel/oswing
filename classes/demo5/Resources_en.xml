@@ -198,7 +198,19 @@
   <object key="search" value="Search"/> 
   <object key="not found" value="Not found"/>       
       
-      
+<!-- pivot table -->
+  <object key="pivot table settings" value="Pivot table settings"/> 
+  <object key="row fields" value="Row fields"/> 
+  <object key="column fields" value="Column fields"/> 
+  <object key="data fields" value="Data fields"/> 
+  <object key="filtering conditions" value="Filtering conditions"/> 
+  <object key="field" value="Field"/> 
+  <object key="checked" value="Checked"/> 
+  <object key="at least one data field must be selected" value="At least one data field must be selected."/> 
+  <object key="at least one row field must be selected" value="At least one row field must be selected."/> 
+  <object key="at least one column field must be selected" value="At least one column field must be selected."/>       
+  <object key="expand all" value="Expand all"/>
+  <object key="collapse all" value="Collapse all"/>
       
 <!-- application translations -->
 
@@ -230,7 +242,6 @@
       <object key="function3" value="function3" />
       <object key="function4" value="function4" />
       <object key="function5" value="function5" />
-
 
   <currencySymbol>E</currencySymbol>
   <decimalSymbol>.</decimalSymbol>

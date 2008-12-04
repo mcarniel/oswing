@@ -266,6 +266,20 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     // drag...
     dictionary.setProperty("drag","Drag");
 
+    // pivot table...
+    dictionary.setProperty("pivot table settings","Impostazione tabella Pivot");
+    dictionary.setProperty("row fields","Campi riga");
+    dictionary.setProperty("column fields","Campi colonna");
+    dictionary.setProperty("data fields","Campi dati");
+    dictionary.setProperty("filtering conditions","Condizioni di filtro");
+    dictionary.setProperty("field","Campo");
+    dictionary.setProperty("checked","Selez.");
+    dictionary.setProperty("at least one data field must be selected","Almeno un campo data deve essere selezionato.");
+    dictionary.setProperty("at least one row field must be selected","Almeno un campo riga deve essere selezionato.");
+    dictionary.setProperty("at least one column field must be selected","Almeno un campo colonna deve essere selezionato.");
+    dictionary.setProperty("expand all","Espandi tutto");
+    dictionary.setProperty("collapse all","Riduci tutto");
+
     resources = new Resources(
       dictionary,
       "\u20AC",
