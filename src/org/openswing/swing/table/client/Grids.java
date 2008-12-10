@@ -1822,12 +1822,17 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     }
     catch(Throwable ex) {
       Logger.error(this.getClass().getName(), "loadData", "Error while fetching data.", ex);
-      OptionPane.showMessageDialog(
-          ClientUtils.getParentFrame(this),
-          ClientSettings.getInstance().getResources().getResource("Error while loading data"),
-          ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
-          JOptionPane.ERROR_MESSAGE
-      );
+      SwingUtilities.invokeLater(new Runnable(){
+        public void run() {
+          OptionPane.showMessageDialog(
+              ClientUtils.getParentFrame(Grids.this),
+              ClientSettings.getInstance().getResources().getResource("Error while loading data"),
+              ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
+              JOptionPane.ERROR_MESSAGE
+          );
+        }
+      });
+
     }
     finally {
       grid.getSelectionModel().setSelectionMode(selMode);
@@ -2461,12 +2466,13 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         // fill in the new v.o. with the duplicable attributes of the cloned v.o...
         String attributeName = null;
         Object attributeValue = null;
+        int newRowIndex = isInsertRowsOnTop() ? 0 : model.getRowCount()-1;
         for(int i=0;i<model.getColumnCount();i++) {
           attributeName = model.getColumnName(i);
           if (modelAdapter.isFieldDuplicable(i)) {
             attributeValue = modelAdapter.getField(vo,i);
 //            attributeValue = vo.getClass().getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]).invoke(vo,new Object[0]);
-            modelAdapter.setField(model.getObjectForRow(0),i,attributeValue);
+            modelAdapter.setField(model.getObjectForRow(newRowIndex),i,attributeValue);
           }
 
         }

@@ -656,7 +656,12 @@ public class ListControl extends BaseInputControl implements InputControl,Search
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return list.isEnabled();
+    try {
+      return list.isEnabled();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

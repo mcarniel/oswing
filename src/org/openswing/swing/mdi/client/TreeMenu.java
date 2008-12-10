@@ -325,7 +325,7 @@ public class TreeMenu extends JPanel {
     if (node.isSeparator())
       return;
     ClientUtils.fireBusyEvent(true);
-    new Thread() {
+    SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
           try {
@@ -349,7 +349,7 @@ public class TreeMenu extends JPanel {
           );
         }
       }
-    }.start();
+    });
   }
 
 

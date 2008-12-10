@@ -127,7 +127,12 @@ public class FormattedTextControl extends BaseInputControl implements InputContr
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return textBox.isEditable();
+    try {
+      return textBox.isEditable();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

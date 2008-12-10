@@ -208,7 +208,12 @@ public class ComboBoxControl extends BaseInputControl implements InputControl,Se
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return combo.isEnabled();
+    try {
+      return combo.isEnabled();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

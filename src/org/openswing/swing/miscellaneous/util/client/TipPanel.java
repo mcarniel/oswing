@@ -79,6 +79,7 @@ public class TipPanel extends JPanel {
     try {
       jbInit();
       setImageName(imageName);
+      tipPane.setFont(labelTitle.getFont());
       tipPane.setEditorKit(new HTMLEditorKit());
 
       // automatically show a random tip of day...

@@ -90,7 +90,7 @@ public class BaseInputControl extends JPanel implements InputControl {
    * Constructor.
    */
   public BaseInputControl() {
-
+    this.setOpaque(false);
     addFocusListener(new FocusListener() {
       public void focusGained(FocusEvent e) {
         if (!getBindingComponent().hasFocus())
@@ -392,8 +392,15 @@ public class BaseInputControl extends JPanel implements InputControl {
    * @return current input control abilitation
    */
   public boolean isEnabled() {
-    Logger.error(this.getClass().getName(), "isEnabled", "This method must be overridden in '"+this.getClass().getName()+"'",null);
-    return false;
+    try {
+      Logger.error(this.getClass().getName(), "isEnabled",
+                   "This method must be overridden in '" +
+                   this.getClass().getName() + "'", null);
+      return false;
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

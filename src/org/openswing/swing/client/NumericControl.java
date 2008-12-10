@@ -441,7 +441,12 @@ public class NumericControl extends BaseInputControl implements InputControl {
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return numBox.isEditable();
+    try {
+      return numBox.isEditable();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

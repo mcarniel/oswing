@@ -285,7 +285,12 @@ public class ImageControl extends BaseInputControl implements InputControl {
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return selButton.isEnabled();
+    try {
+      return selButton.isEnabled();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

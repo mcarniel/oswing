@@ -1,5 +1,25 @@
 
 
+Release Notes 1.8.7
+-------------------
+
+Final release 1.8.7 available
+Improved PivotTable component:
+- now it is possible to drag 'n drop row/column/data fields directly into the PivotTable, in order to swap their position.
+- added "dataFieldRenderet" property to PivotTable component, in order to customize font, background/foreground color for data cells.
+Added INSERT_ROWS_ON_TOP global property to ClientSettings, in order to define for all grids that new rows are added at the bottom of the grid, 
+instead of adding them at the top.
+Improved DateControl, DateColumn and DateTimeColumn, by adding "defaultDate" property, used to set a default date in calendar window 
+when opening it and no date has been still set.
+Fixed problems in GridControl:
+- duplicate row feature now works also with "insertRowsOnTop" property set to false
+- new rows removing now correctly operates also with inner value objects
+Applied some changes to MDI environment and graphics components, in order to support "substance" Look 'n Feel library for Java 5.
+Changed "demo10" in order to show how to use "substance" Look 'n Feel library for Java 5.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.8.6
 -------------------
 

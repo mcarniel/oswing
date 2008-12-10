@@ -276,8 +276,8 @@ public class GridControl extends JPanel {
   /** flag used to allow insert row (using DOWN key) in edit mode too; default value: <code>false</code> */
   private boolean allowInsertInEdit = false;
 
-  /** define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom; default value: <code>true</code> */
-  private boolean insertRowsOnTop = true;
+  /** define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom; default value: <code>ClientSettings.INSERT_ROWS_ON_TOP</code> */
+  private boolean insertRowsOnTop = ClientSettings.INSERT_ROWS_ON_TOP;
 
   /**  header height; default value: <code>ClientSettings.HEADER_HEIGHT</code> */
   private int headerHeight = ClientSettings.HEADER_HEIGHT;

@@ -4357,7 +4357,8 @@ public class Grid extends JTable
               if (value!=null) {
                 // check if the value is the "default" value setted by createValueObject method,
                 // by comparing "cloned v.o." attribute with "v.o. to remove" attribute
-                clonedValue = clonedVO.getClass().getMethod("get"+Grid.this.model.getColumnName(i).toUpperCase().charAt(0)+Grid.this.model.getColumnName(i).substring(1),new Class[0]).invoke(clonedVO,new Object[0]);
+                clonedValue = modelAdapter.getField(clonedVO,modelAdapter.getFieldIndex(Grid.this.model.getColumnName(i)));
+//                clonedValue = clonedVO.getClass().getMethod("get"+Grid.this.model.getColumnName(i).toUpperCase().charAt(0)+Grid.this.model.getColumnName(i).substring(1),new Class[0]).invoke(clonedVO,new Object[0]);
                 if (!value.equals(clonedValue) &&
                     !(Grid.this.colProps[i] instanceof ComboColumn && !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue()) &&
                     !(value.equals("") && clonedValue==null)
@@ -4447,7 +4448,8 @@ public class Grid extends JTable
               if (value!=null) {
                 // check if the value is the "default" value setted by createValueObject method,
                 // by comparing "cloned v.o." attribute with "v.o. to remove" attribute
-                clonedValue = clonedVO.getClass().getMethod("get"+Grid.this.model.getColumnName(i).toUpperCase().charAt(0)+Grid.this.model.getColumnName(i).substring(1),new Class[0]).invoke(clonedVO,new Object[0]);
+                clonedValue = modelAdapter.getField(clonedVO,modelAdapter.getFieldIndex(Grid.this.model.getColumnName(i)));
+//                clonedValue = clonedVO.getClass().getMethod("get"+Grid.this.model.getColumnName(i).toUpperCase().charAt(0)+Grid.this.model.getColumnName(i).substring(1),new Class[0]).invoke(clonedVO,new Object[0]);
                 if (!value.equals(clonedValue) &&
                     !(Grid.this.colProps[i] instanceof ComboColumn && !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue()) &&
                     !(value.equals("") && clonedValue==null)

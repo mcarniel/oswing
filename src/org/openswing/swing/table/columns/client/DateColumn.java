@@ -63,6 +63,9 @@ public class DateColumn extends Column {
   /** flag used to show century */
   private boolean showCentury = true;
 
+  /** default date to set into the calendar, when opening it for the first time; null means today */
+  private Calendar defaultDate = null;
+
 
   public DateColumn() {
     setTextAlignment(SwingConstants.CENTER);
@@ -195,6 +198,25 @@ public class DateColumn extends Column {
   }
 
 
+
+  /**
+   * @return default date to set into the calendar, when opening it for the first time; null means today
+   */
+  public final Calendar getDefaultDate() {
+    return defaultDate;
+  }
+
+
+  /**
+   * Set the default date to set into the calendar, when opening it for the first time.
+   * A null value means today.
+   * @param defaultDate default date to set into the calendar, when opening it for the first time; null means today
+   */
+  public final void setDefaultDate(Calendar defaultDate) {
+    this.defaultDate = defaultDate;
+  }
+
+
   /**
    * @return TableCellRenderer for this column
    */
@@ -217,7 +239,7 @@ public class DateColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE);
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE,defaultDate);
   }
 
 

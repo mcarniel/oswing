@@ -37,7 +37,7 @@ import org.openswing.swing.util.client.*;
 public class Tree extends JTree {
 
   /** background image */
-  private Image backImage = ClientUtils.getImage(ClientSettings.TREE_BACK);
+  private Image backImage = ClientSettings.TREE_BACK!=null ? ClientUtils.getImage(ClientSettings.TREE_BACK) : null;
 
 
   public Tree() {

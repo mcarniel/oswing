@@ -671,7 +671,12 @@ public class CheckBoxListControl extends BaseInputControl implements InputContro
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return list.isEnabled();
+    try {
+      return list.isEnabled();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

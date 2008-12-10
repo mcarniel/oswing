@@ -65,6 +65,9 @@ public class DateTimeColumn extends Column {
   /** possibile values: Resources.HH_MM or Resources.H_MM_AAA */
   private String timeFormat = null;
 
+  /** default date to set into the calendar, when opening it for the first time; null means today */
+  private Calendar defaultDate = null;
+
 
   public DateTimeColumn() {
     setTextAlignment(SwingConstants.CENTER);
@@ -214,6 +217,24 @@ public class DateTimeColumn extends Column {
 
 
   /**
+   * @return default date to set into the calendar, when opening it for the first time; null means today
+   */
+  public final Calendar getDefaultDate() {
+    return defaultDate;
+  }
+
+
+  /**
+   * Set the default date to set into the calendar, when opening it for the first time.
+   * A null value means today.
+   * @param defaultDate default date to set into the calendar, when opening it for the first time; null means today
+   */
+  public final void setDefaultDate(Calendar defaultDate) {
+    this.defaultDate = defaultDate;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -235,7 +256,7 @@ public class DateTimeColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE_TIME);
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE_TIME,defaultDate);
   }
 
 

@@ -136,6 +136,59 @@ public class GridFrame extends JFrame {
       pivotTable.addDataField(dataFieldSellQty);
       pivotTable.addDataField(dataFieldSellAmount);
 
+      pivotTable.setDataFieldRenderer(new DataFieldRenderer() {
+
+        /**
+         * @param currentColor current color to set
+         * @param rowPath GenericNodeKey row fields path that identify current row
+         * @param colPath GenericNodeKey column fields path that identify current column
+         * @param value value to show in the specified cell
+         * @param row current row
+         * @param col current column
+         * @return Color background color to set
+         */
+        public Color getBackgroundColor(Color currentColor,GenericNodeKey rowPath,GenericNodeKey colPath,Object value,int row,int col) {
+          if (rowPath.getPath().length<pivotTable.getPivotTableParameters().getRowFields().size() ||
+              colPath.getPath().length<pivotTable.getPivotTableParameters().getColumnFields().size()+1) {
+            int c = 200+rowPath.getPath().length*colPath.getPath().length*5;
+            return new Color(c,c,c);
+          }
+          return currentColor;
+        }
+
+
+        /**
+         * @param currentColor current color to set
+         * @param rowPath GenericNodeKey row fields path that identify current row
+         * @param colPath GenericNodeKey column fields path that identify current column
+         * @param value value to show in the specified cell
+         * @param row current row
+         * @param col current column
+         * @return Color foreground color to set
+         */
+        public Color getForegroundColor(Color currentColor,GenericNodeKey rowPath,GenericNodeKey colPath,Object value,int row,int col) {
+          return currentColor;
+        }
+
+
+        /**
+         * @param currentFont current font to set
+         * @param rowPath GenericNodeKey row fields path that identify current row
+         * @param colPath GenericNodeKey column fields path that identify current column
+         * @param value value to show in the specified cell
+         * @param row current row
+         * @param col current column
+         * @return font to set
+         */
+        public Font getFont(Font currentFont,GenericNodeKey rowPath,GenericNodeKey colPath,Object value,int row,int col) {
+          if (rowPath.getPath().length<pivotTable.getPivotTableParameters().getRowFields().size() ||
+              colPath.getPath().length<pivotTable.getPivotTableParameters().getColumnFields().size()+1)
+            return new Font(currentFont.getFontName(),Font.BOLD,currentFont.getSize());
+          return currentFont;
+        }
+
+      });
+
       setVisible(true);
     }
     catch(Exception e) {

@@ -285,7 +285,12 @@ public class TextControl extends BaseInputControl implements InputControl {
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return textBox.isEditable();
+    try {
+      return textBox.isEditable();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

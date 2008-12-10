@@ -535,7 +535,12 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
       }
 
       public boolean isEnabled() {
-        return model.isEnabled();
+        try {
+          return model.isEnabled();
+        }
+        catch (Exception ex) {
+          return false;
+        }
       }
 
       public boolean isPressed() {

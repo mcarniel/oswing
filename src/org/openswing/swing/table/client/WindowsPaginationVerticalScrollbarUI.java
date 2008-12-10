@@ -58,8 +58,12 @@ public class WindowsPaginationVerticalScrollbarUI extends WindowsScrollBarUI imp
 
   protected void installDefaults() {
     super.installDefaults();
-    nextPgButton = createPageButton(SOUTH);
-    prevPgButton = createPageButton(NORTH);
+//    nextPgButton = createPageButton(SOUTH);
+//    prevPgButton = createPageButton(NORTH);
+
+
+    nextPgButton = createDecreaseButton(SOUTH);
+    prevPgButton = createIncreaseButton(NORTH);
     scrollbar.add(prevPgButton);
     scrollbar.add(nextPgButton);
   }
@@ -204,6 +208,7 @@ public class WindowsPaginationVerticalScrollbarUI extends WindowsScrollBarUI imp
     }
 
   }
+
 
 
 }

@@ -101,6 +101,13 @@ public class MDIFrame extends JFrame implements BusyListener {
     try {
       UIManager.setLookAndFeel(ClientSettings.LOOK_AND_FEEL_CLASS_NAME);
     }
+    catch (Throwable ex) {
+      ex.printStackTrace();
+    }
+    try {
+      JFrame.setDefaultLookAndFeelDecorated(true);
+      JDialog.setDefaultLookAndFeelDecorated(true);
+    }
     catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -445,7 +452,7 @@ public class MDIFrame extends JFrame implements BusyListener {
    */
   private void executeFunction(final ApplicationFunction node) {
     ClientUtils.fireBusyEvent(true);
-    new Thread() {
+    SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
           try {
@@ -468,7 +475,8 @@ public class MDIFrame extends JFrame implements BusyListener {
           );
         }
       }
-    }.start();
+    });
+
   }
 
 

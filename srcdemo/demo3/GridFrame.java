@@ -228,6 +228,13 @@ public class GridFrame extends JFrame {
     colDate.setColumnRequired(false);
     colDate.setEditableOnEdit(true);
     colDate.setEditableOnInsert(true);
+
+    Calendar cal = Calendar.getInstance();
+    cal.set(cal.YEAR,1983);
+    cal.set(cal.MONTH,1);
+    cal.set(cal.DAY_OF_MONTH,24);
+
+    colDate.setDefaultDate(cal);
     colCombo.setDomainId("ORDERSTATE");
     colCombo.setColumnDuplicable(true);
     colCombo.setColumnName("comboValue");

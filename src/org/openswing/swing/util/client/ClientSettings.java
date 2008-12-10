@@ -149,6 +149,9 @@ public class ClientSettings {
   /** increment to use for grid scrolling; default value: Consts.GRID_SCROLL_BLOCK_INCREMENT_PAGE; possible values: Consts.GRID_SCROLL_BLOCK_INCREMENT_ROW,Consts.GRID_SCROLL_BLOCK_INCREMENT_PAGE */
   public static int GRID_SCROLL_BLOCK_INCREMENT = Consts.GRID_SCROLL_BLOCK_INCREMENT_PAGE;
 
+  /** define where new rows must be added: <code>true</code> at the top of the grid or <code>false</code> at the bottom; default value: <code>true</code> */
+  public static boolean INSERT_ROWS_ON_TOP = true;
+
   /** border color of the form currently has the focus */
   public static Color FORM_FOCUS_BORDER = Color.gray;
 

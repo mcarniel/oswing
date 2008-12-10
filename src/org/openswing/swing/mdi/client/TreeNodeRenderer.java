@@ -99,6 +99,7 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer {
     } catch (Exception ex) {
       ex.printStackTrace();
     }
+    this.setOpaque(false);
     return this;
   }
 

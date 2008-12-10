@@ -1236,7 +1236,12 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return list.isEnabled();
+    try {
+      return list.isEnabled();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

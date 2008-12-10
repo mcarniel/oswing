@@ -129,7 +129,7 @@ public class TimeColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new DateCellEditor(isColumnRequired(),Column.TYPE_TIME);
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_TIME,null);
   }
 
 

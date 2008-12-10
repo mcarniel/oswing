@@ -237,6 +237,21 @@ public class GenericButton extends JButton {
 
 
   /**
+   * @param button generic button
+   * @return current enabled value for the specified button
+   */
+  public final boolean getOldValue() {
+    DataController dataController = null;
+    for(int i=0;i<dataControllerList.size();i++) {
+      dataController = (DataController) dataControllerList.get(i);
+      return dataController.getCurrentValue(this);
+    }
+    return false;
+  }
+
+
+
+  /**
    * @return flag used to execute the action event in a separated thread
    */
   public final boolean isExecuteAsThread() {

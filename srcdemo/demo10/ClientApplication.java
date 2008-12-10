@@ -139,24 +139,39 @@ public class ClientApplication implements MDIController,LoginController {
     );
 
     ClientSettings.BACKGROUND = "background4.jpg";
-    ClientSettings.TREE_BACK = "treeback2.jpg";
+//    ClientSettings.TREE_BACK = "treeback2.jpg";
     ClientSettings.VIEW_BACKGROUND_SEL_COLOR = true;
+    ClientSettings.TREE_BACK = null;
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.FILTER_PANEL_ON_GRID = true;
     ClientSettings.SHOW_FILTER_SYMBOL = true;
     ClientSettings.ASK_BEFORE_CLOSE = true;
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "net.infonode.gui.laf.InfoNodeLookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.birosoft.liquid.LiquidLookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.oyoaha.swing.plaf.oyoaha.OyoahaLookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "ch.randelshofer.quaqua.QuaquaLookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.l2fprod.gui.plaf.skin.SkinLookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.jvnet.substance.skin.SubstanceOfficeSilver2007LookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.jvnet.substance.skin.SubstanceBusinessLookAndFeel";
+    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.jvnet.substance.skin.SubstanceMistSilverLookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.jvnet.substance.skin.SubstanceModerateLookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "net.sourceforge.mlf.metouia.MetouiaLookAndFeel";
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.Office2003.Office2003LookAndFeel";
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.OfficeXP.OfficeXPLookAndFeel";
-    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.VisualStudio2005.VisualStudio2005LookAndFeel";
+//    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "org.fife.plaf.VisualStudio2005.VisualStudio2005LookAndFeel";
 
     ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
     ClientSettings.LOOKUP_FRAME_CONTENT = LookupController.GRID_AND_FILTER_FRAME;
 
     MDIFrame mdi = new MDIFrame(this);
 
+//    com.pagosoft.plaf.PlafOptions.setAsLookAndFeel();
+//    com.pagosoft.plaf.PlafOptions.updateAllUIs();
+
     // show tip of the day internal frame...
-    showTipFrame();
+//    showTipFrame();
+
   }
 
 
@@ -164,8 +179,8 @@ public class ClientApplication implements MDIController,LoginController {
    * Method called after MDI creation.
    */
   public void afterMDIcreation(MDIFrame frame) {
-    MDIFrame.addStatusComponent(new Clock());
-    frame.addSeparatorToMenuBar("getEmployees2","getDepts");
+//    MDIFrame.addStatusComponent(new Clock());
+//    frame.addSeparatorToMenuBar("getEmployees2","getDepts");
   }
 
 
@@ -321,7 +336,11 @@ public class ClientApplication implements MDIController,LoginController {
 
 
   public static void main(String[] argv) {
-    new ClientApplication();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        new ClientApplication();
+      }
+    });
   }
 
 

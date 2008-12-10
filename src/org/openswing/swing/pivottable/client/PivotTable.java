@@ -1,6 +1,7 @@
 package org.openswing.swing.pivottable.client;
 
 import java.beans.*;
+import java.io.*;
 import java.text.*;
 import java.util.*;
 
@@ -10,15 +11,14 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import org.openswing.swing.client.*;
+import org.openswing.swing.export.java.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.pivottable.cellspantable.client.*;
 import org.openswing.swing.pivottable.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import org.openswing.swing.export.java.*;
-import java.io.FileOutputStream;
-import org.openswing.swing.mdi.client.MDIFrame;
+import org.openswing.swing.pivottable.java.GenericNodeKey;
 
 
 /**
@@ -49,7 +49,7 @@ import org.openswing.swing.mdi.client.MDIFrame;
  * @author Mauro Carniel
  * @version 1.0
  */
-public final class PivotTable extends JPanel implements DataController {
+public final class PivotTable extends JPanel implements DataController,DraggableButtonListener {
 
   /** flag used in addNotify method */
   private boolean firstTime = true;
@@ -58,6 +58,10 @@ public final class PivotTable extends JPanel implements DataController {
   private boolean pivotTableChanged = false;
 
   GridBagLayout gridBagLayout1 = new GridBagLayout();
+
+  public static final String DATA_PANEL = "DATA_PANEL";
+  public static final String ROWS_PANEL = "ROWS_PANEL";
+  public static final String COLUMNS_PANEL = "COLUMNS_PANEL";
 
   /** panel that hosts data fields */
   JPanel dataPanel = new JPanel();
@@ -140,6 +144,9 @@ public final class PivotTable extends JPanel implements DataController {
 
   /** flag used to autocompile Pivot table when showing it; default value: <code>true</code> */
   private boolean autoCompile = true;
+
+  /** (optional) renderer used to set background/foreground color for each data field cell and related font */
+  private DataFieldRenderer dataFieldRenderer = null;
 
 
   public PivotTable() {
@@ -225,6 +232,14 @@ public final class PivotTable extends JPanel implements DataController {
         }
       });
     }
+  }
+
+
+  /**
+   * @return Pivot Table parameters, used to create PivotTable content
+   */
+  public final PivotTableParameters getPivotTableParameters() {
+    return pars;
   }
 
 
@@ -424,9 +439,54 @@ public final class PivotTable extends JPanel implements DataController {
   public final void compileDataInThread() {
     new Thread() {
       public void run() {
-        compileData();
+        try {
+          setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+          Toolkit.getDefaultToolkit().sync();
+          compileData();
+        }
+        catch (Throwable ex) {
+        }
+        finally {
+          setCursor(Cursor.getDefaultCursor());
+          Toolkit.getDefaultToolkit().sync();
+        }
       }
     }.start();
+  }
+
+
+  public final void dragEventFired(DraggableButtonEvent e) {
+    ArrayList list = null;
+    if (e.getPanelId().equals(ROWS_PANEL))
+      list = pars.getRowFields();
+    else if (e.getPanelId().equals(COLUMNS_PANEL))
+      list = pars.getColumnFields();
+    else if (e.getPanelId().equals(DATA_PANEL))
+      list = pars.getDataFields();
+
+    if (e.getTarget()<e.getSource()) {
+      Object obj = list.remove(e.getSource());
+      list.add(e.getTarget(),obj);
+    }
+    else {
+      Object obj = list.get(e.getSource());
+      if (e.getTarget()==list.size()-1)
+        list.add(obj);
+      else
+        list.add(e.getTarget()+1,obj);
+      list.remove(e.getSource());
+    }
+    compileDataInThread();
+  }
+
+
+  private void removeAllButtons(JPanel panel) {
+    DraggableButton b = null;
+    while(panel.getComponentCount()>0) {
+      b = (DraggableButton)panel.getComponent(0);
+      b.removeDraggableButtonListener(this);
+      panel.remove(0);
+    }
   }
 
 
@@ -465,14 +525,16 @@ public final class PivotTable extends JPanel implements DataController {
     pivotTableModel = (PivotTableModel)((VOResponse)res).getVo();
 
     // define data panel content...
-    JPanel button = null;
-    dataPanel.removeAll();
+    DraggableButton button = null;
+
+    removeAllButtons(dataPanel);
     dataPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
     for(int i=0;i<pars.getDataFields().size();i++) {
       final DataField dataField = (DataField)pars.getDataFields().get(i);
-      button = new JPanel();
+      button = new DraggableButton(DATA_PANEL,i);
       button.setBackground(backPanel);
       button.add(new JLabel(ClientSettings.getInstance().getResources().getResource(dataField.getDescription())));
+      button.addDraggableButtonListener(this);
       button.setBorder(BorderFactory.createRaisedBevelBorder());
       button.setSize(new Dimension(button.getPreferredSize().width,ClientSettings.CELL_HEIGHT));
       final int index = i;
@@ -487,15 +549,16 @@ public final class PivotTable extends JPanel implements DataController {
     dataPanel.repaint();
 
     // define rows panel content...
-    rowsPanel.removeAll();
+    removeAllButtons(rowsPanel);
     int w = 1;
     for(int i=0;i<pars.getRowFields().size();i++) {
       final RowField rowField = (RowField)pars.getRowFields().get(i);
-      button = new JPanel();
+      button = new DraggableButton(ROWS_PANEL,i);
       button.setBackground(backPanel);
       button.setLayout(new GridBagLayout());
       button.add(new JLabel(ClientSettings.getInstance().getResources().getResource(rowField.getDescription())),    new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0
               ,GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(0, 0, 0, 0), 0, 0));
+      button.addDraggableButtonListener(this);
       button.setBorder(BorderFactory.createRaisedBevelBorder());
       final int index = i;
       button.addMouseListener(new MouseAdapter() {
@@ -514,18 +577,19 @@ public final class PivotTable extends JPanel implements DataController {
     rowsPanel.repaint();
 
     // define columns panel content...
-    columnsPanel.removeAll();
+    removeAllButtons(columnsPanel);
     columnsPanel.setSize(new Dimension(rowsPanel.getPreferredSize().width,ClientSettings.HEADER_HEIGHT*pars.getColumnFields().size()+1));
     columnsPanel.setPreferredSize(new Dimension(rowsPanel.getPreferredSize().width,ClientSettings.HEADER_HEIGHT*pars.getColumnFields().size()+1));
     columnsPanel.setMinimumSize(new Dimension(rowsPanel.getPreferredSize().width,ClientSettings.HEADER_HEIGHT*pars.getColumnFields().size()+1));
     for(int i=0;i<pars.getColumnFields().size();i++) {
       final ColumnField columnField = (ColumnField)pars.getColumnFields().get(i);
-      button = new JPanel();
+      button = new DraggableButton(COLUMNS_PANEL,i);
       button.setBackground(backPanel);
       button.setSize(button.getWidth(),ClientSettings.HEADER_HEIGHT);
       button.setLayout(new GridBagLayout());
       button.add(new JLabel(ClientSettings.getInstance().getResources().getResource(columnField.getDescription())),    new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0
               ,GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(0, 0, 0, 0), 0, 0));
+      button.addDraggableButtonListener(this);
       button.setBorder(BorderFactory.createRaisedBevelBorder());
       final int index = i;
       button.addMouseListener(new MouseAdapter() {
@@ -1145,6 +1209,23 @@ public final class PivotTable extends JPanel implements DataController {
   }
 
 
+  /**
+   * @return (optional) renderer used to set background/foreground color for each data field cell and related font
+   */
+  public final DataFieldRenderer getDataFieldRenderer() {
+    return dataFieldRenderer;
+  }
+
+
+  /**
+   * Set the renderer used to set background/foreground color for each data field cell and related font.
+   * @param dataFieldRenderer renderer used to set background/foreground color for each data field cell and related font
+   */
+  public final void setDataFieldRenderer(DataFieldRenderer dataFieldRenderer) {
+    this.dataFieldRenderer = dataFieldRenderer;
+  }
+
+
 
 
 
@@ -1370,6 +1451,8 @@ public final class PivotTable extends JPanel implements DataController {
   class DataFieldsRenderer extends DefaultTableCellRenderer {
 
     private boolean hasFocus = false;
+    private JLabel l = new JLabel();
+    private Font defaultFont = l.getFont();
     private JPanel p = new JPanel() {
 
       public final void paint(Graphics g) {
@@ -1380,7 +1463,6 @@ public final class PivotTable extends JPanel implements DataController {
       }
 
     };
-    private JLabel l = new JLabel();
 
     private DataFieldsRenderer() {
       l.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -1401,11 +1483,91 @@ public final class PivotTable extends JPanel implements DataController {
           l.setText(value.toString());
         else
           l.setText( df.getFormatter().format(((Number)value).doubleValue()) );
+        if (dataFieldRenderer!=null) {
+          GenericNodeKey rowPath = new GenericNodeKey();
+          GenericNodeKey colPath = new GenericNodeKey();
+
+          int kk = rowsTable.getColumnCount()-1;
+          while(kk>=0 && rowsTable.getValueAt(row,kk)==null)
+            kk--;
+          if (kk>=0)
+            rowPath = rowPath.appendKey(rowsTable.getValueAt(row,kk));
+
+          int  k = row;
+          for(int i=kk-1;i>=0;i--) {
+            while(k>=0 && rowsTable.getValueAt(k,i)==null)
+              k--;
+            if (k>=0)
+              rowPath = rowPath.appendKey(rowsTable.getValueAt(k,i));
+            else
+              k = 0;
+          }
+
+          colPath = colPath.appendKey(colsTable.getValueAt(colsTable.getRowCount()-1,column));
+          kk = column;
+          while(kk%pars.getDataFields().size()>0 && colsTable.getValueAt(colsTable.getRowCount()-2,kk)==null)
+            kk--;
+          if (colsTable.getValueAt(colsTable.getRowCount()-2,kk)!=null)
+            colPath = colPath.appendKey(colsTable.getValueAt(colsTable.getRowCount()-2,kk));
+
+          k = colsTable.getRowCount()-3;
+          while(k>=0) {
+            while(kk>=0 && colsTable.getValueAt(k,kk)==null)
+              kk--;
+            if (kk>=0)
+              colPath = colPath.appendKey(colsTable.getValueAt(k,kk));
+            k--;
+          }
+
+
+//          k = colsTable.getRowCount()-2;
+//          kk = column;
+//          while(k>=0) {
+//            while(kk%pars.getDataFields().size()>=0 && colsTable.getValueAt(k,kk)==null)
+//              kk--;
+//            if (kk%pars.getDataFields().size()>=0)
+//              colPath = colPath.appendKey(colsTable.getValueAt(k,kk));
+//            k--;
+//          }
+
+
+          p.setBackground(
+            dataFieldRenderer.getBackgroundColor(
+              ClientSettings.GRID_CELL_BACKGROUND,
+              rowPath,
+              colPath,
+              value,
+              row,
+              column
+            )
+          );
+          p.setForeground(
+            dataFieldRenderer.getForegroundColor(
+              ClientSettings.GRID_CELL_FOREGROUND,
+              rowPath,
+              colPath,
+              value,
+              row,
+              column
+            )
+          );
+          l.setFont(
+            dataFieldRenderer.getFont(
+              defaultFont,
+              rowPath,
+              colPath,
+              value,
+              row,
+              column
+            )
+          );
+        }
       }
       return p;
     }
 
   } // end inner class
+
 
 
 }

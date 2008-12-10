@@ -297,7 +297,12 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return this.codBox.isEditable();
+    try {
+      return this.codBox.isEditable();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

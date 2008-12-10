@@ -153,7 +153,12 @@ public class TextAreaControl extends BaseInputControl implements InputControl {
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    return textArea.isEditable();
+    try {
+      return textArea.isEditable();
+    }
+    catch (Exception ex) {
+      return false;
+    }
   }
 
 

@@ -258,7 +258,12 @@ public class DetailFrame extends JFrame {
     controlDate.setDateType(Consts.TYPE_DATE_TIME);
     controlDate.setTimeFormat(Resources.H_MM_AAA);
 
+    Calendar cal = Calendar.getInstance();
+    cal.set(cal.MONTH,1);
+    cal.set(cal.DAY_OF_MONTH,24);
+    cal.set(cal.YEAR,1983);
 
+    controlDate.setDefaultDate(cal);
 
     controlRadioButton1.setButtonGroup(buttonGroup1);
     controlRadioButton2.setButtonGroup(buttonGroup1);

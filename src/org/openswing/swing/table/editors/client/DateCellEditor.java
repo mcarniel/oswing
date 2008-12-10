@@ -73,10 +73,12 @@ public class DateCellEditor extends AbstractCellEditor implements TableCellEdito
    * Constructor.
    * @param required flag used to set mandatory property of the cell
    * @param columnType column type; possible values: Column.TYPE_DATE, Column.TYPE_TIME, Column.TYPE_DATE_TIME
+   * @param defaultDate optional default date to set in calendar when opening it and no date has been still set
    */
-  public DateCellEditor(boolean required,int columnType) {
+  public DateCellEditor(boolean required,int columnType,Calendar defaultDate) {
     this.required = required;
     field.setDateType(columnType);
+    field.setDefaultDate(defaultDate);
     field.getDateField().addKeyListener(new KeyAdapter() {
 
       public void keyPressed(KeyEvent e) {

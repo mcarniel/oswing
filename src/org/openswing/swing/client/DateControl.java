@@ -85,6 +85,9 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   /** flag used in setDate to identify whre the date setting event has been fired */
   private boolean eventFiredByCalendar = false;
 
+  /** default date to set into the calendar, when opening it for the first time; null means today */
+  private Calendar defaultDate = null;
+
 
   public DateControl() {
     try {
@@ -471,10 +474,17 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    * @return current input control abilitation
    */
   public final boolean isEnabled() {
-    if (date!=null)
-      return date.isEditable();
-    else
+    try {
+      if (date != null) {
+        return date.isEditable();
+      }
+      else {
+        return false;
+      }
+    }
+    catch (Exception ex) {
       return false;
+    }
   }
 
 
@@ -739,7 +749,12 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
     if (e.getKeyCode()==ClientSettings.CALENDAR_OPEN_KEY.getKeyCode() &&
         e.getModifiers()+e.getModifiersEx()==ClientSettings.CALENDAR_OPEN_KEY.getModifiers()) {
       focusLost(null);
-      calendar.setCalendar(currentDate);
+
+      if (currentDate==null && defaultDate!=null) {
+        calendar.getJCalendar().setCalendar(defaultDate);
+      }
+      else
+        calendar.setCalendar(currentDate);
       calendar.actionPerformed(null);
       calendar.getJCalendar().requestFocus();
       calendar.getJCalendar().getDayChooser().requestFocus();
@@ -979,6 +994,24 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   }
 
 
+  /**
+   * @return default date to set into the calendar, when opening it for the first time; null means today
+   */
+  public final Calendar getDefaultDate() {
+    return defaultDate;
+  }
+
+
+  /**
+   * Set the default date to set into the calendar, when opening it for the first time.
+   * A null value means today.
+   * @param defaultDate default date to set into the calendar, when opening it for the first time; null means today
+   */
+  public final void setDefaultDate(Calendar defaultDate) {
+    this.defaultDate = defaultDate;
+  }
+
+
 
 
 
@@ -1009,7 +1042,10 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 
 
     public Date getDate() {
-      return DateControl.this.getDate();
+      Date dateToReturn = DateControl.this.getDate();
+      if (dateToReturn==null && defaultDate!=null)
+        dateToReturn = defaultDate.getTime();
+      return dateToReturn;
     }
 
 

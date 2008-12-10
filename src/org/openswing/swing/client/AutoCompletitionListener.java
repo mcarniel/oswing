@@ -347,7 +347,11 @@ public final class AutoCompletitionListener extends KeyAdapter {
     public void run() {
       try {
         sleep(waitTime);
-        checkInputControlValue();
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            checkInputControlValue();
+          }
+        });
       }
       catch (InterruptedException ex) {
       }
