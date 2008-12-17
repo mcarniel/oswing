@@ -1702,7 +1702,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         ClientUtils.fireBusyEvent(false);
       }
 
-      // crear table model...
+      // clear table model...
       model.clear();
       grid.revalidate();
       grid.repaint();
@@ -1777,11 +1777,25 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           }
           else {
             // only a block of data has been loaded...
-            String page = ClientSettings.getInstance().getResources().getResource("page")+" "+(getLastIndex()/model.getRowCount()+1);
+//            String page = ClientSettings.getInstance().getResources().getResource("page")+" "+(getLastIndex()/model.getRowCount()+1);
+//            if (blockSize==-1)
+//              blockSize = model.getRowCount();
+//            if ( ((VOListResponse)answer).getTotalAmountOfRows()>0) {
+//              page += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+(((VOListResponse)answer).getTotalAmountOfRows()/model.getRowCount());
+//              totalResultSetLength = ((VOListResponse)answer).getTotalAmountOfRows();
+//            }
+//            else {
+//              totalResultSetLength = -1;
+//            }
+//            statusPanel.setPage(page);
+//            if (getNavBar()!=null)
+//              getNavBar().updatePageNumber(getLastIndex()/model.getRowCount()+1);
+
             if (blockSize==-1)
               blockSize = model.getRowCount();
+            String page = ClientSettings.getInstance().getResources().getResource("page")+" "+(getLastIndex()/blockSize+1);
             if ( ((VOListResponse)answer).getTotalAmountOfRows()>0) {
-              page += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+(((VOListResponse)answer).getTotalAmountOfRows()/model.getRowCount());
+              page += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+(((VOListResponse)answer).getTotalAmountOfRows()/blockSize);
               totalResultSetLength = ((VOListResponse)answer).getTotalAmountOfRows();
             }
             else {
@@ -1789,7 +1803,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             }
             statusPanel.setPage(page);
             if (getNavBar()!=null)
-              getNavBar().updatePageNumber(getLastIndex()/model.getRowCount()+1);
+              getNavBar().updatePageNumber(getLastIndex()/blockSize+1);
+
           }
         }
 
@@ -3564,6 +3579,19 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   }
 
 
+  /**
+   * @param columnIndex column index, related to check-box, link button or button
+   * @return indicate if the check-box is enabled also when the grid is in readonly mode; default value: <code>false</code> i.e. the check-box is enabled only in INSERT/EDIT modes, according to "editableOnEdit" and "editableOnInsert" properties
+   */
+  public final boolean isEnableInReadOnlyMode(int columnIndex) {
+    if (colProps[columnIndex].getColumnType()==Column.TYPE_BUTTON)
+      return ((ButtonColumn)colProps[columnIndex]).isEnableInReadOnlyMode();
+    else if (colProps[columnIndex].getColumnType()==Column.TYPE_LINK)
+      return true;
+    else if (colProps[columnIndex].getColumnType()==Column.TYPE_CHECK)
+      return ((CheckBoxColumn)colProps[columnIndex]).isEnableInReadOnlyMode();
+    return false;
+  }
 
 
 

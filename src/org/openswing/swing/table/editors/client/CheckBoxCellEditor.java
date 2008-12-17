@@ -10,6 +10,7 @@ import javax.swing.table.*;
 
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.table.client.Grids;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -136,6 +137,16 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
         value = Boolean.FALSE;
       selected = (Boolean)value;
     }
+
+    if (column!=-1 &&
+        grids.isEnableInReadOnlyMode(column)&&
+        grids.getMode()==Consts.READONLY) {
+      if (selected==null || !selected.booleanValue())
+        selected = Boolean.TRUE;
+      else
+        selected = Boolean.FALSE;
+    }
+
     label.repaint();
 //    SwingUtilities.invokeLater(new Runnable() {
 //      public void run() {

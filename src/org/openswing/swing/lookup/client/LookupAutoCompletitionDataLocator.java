@@ -91,25 +91,76 @@ public class LookupAutoCompletitionDataLocator implements AutoCompletitionDataLo
       );
       if (!res.isError()) {
         List rows = ((VOListResponse)res).getRows();
-        ValueObject vo = null;
-        String lookupMethodName = "get" + String.valueOf(Character.toUpperCase(lookupCodeAttribute.charAt(0))) + lookupCodeAttribute.substring(1);
-        Method lookupMethod = null;
-        try {
-          lookupMethod = lookupVOClass.getMethod(lookupMethodName,new Class[0]);
+
+        String aName = lookupCodeAttribute;
+        Method getter = null;
+        Class clazz = null;
+        Object obj = null;
+
+        for(int i=0;i<rows.size();i++) {
+          obj = rows.get(i);
+          clazz = obj.getClass();
+
+          while(aName.indexOf(".")!=-1) {
+            try {
+              getter = clazz.getMethod(
+                "get" +
+                aName.substring(0, 1).
+                toUpperCase() +
+                aName.substring(1,aName.indexOf(".")),
+                new Class[0]
+              );
+            }
+            catch (NoSuchMethodException ex2) {
+              getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+            }
+            obj = getter.invoke(obj,new Object[0]);
+            if (obj==null)
+              break;
+            aName = aName.substring(aName.indexOf(".")+1);
+            clazz = getter.getReturnType();
+          }
+
+          if (obj!=null) {
+            try {
+              getter = clazz.getMethod(
+                "get" +
+                aName.substring(0, 1).
+                toUpperCase() +
+                aName.substring(1),
+                new Class[0]
+              );
+            }
+            catch (NoSuchMethodException ex2) {
+              getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+            }
+            obj = getter.invoke(obj,new Object[0]);
+            if (obj!=null)
+              data.add(obj);
+          }
         }
-        catch (NoSuchMethodException ex1) {
-          try {
-            lookupMethodName = "is" + String.valueOf(Character.toUpperCase(lookupCodeAttribute.charAt(0))) + lookupCodeAttribute.substring(1);
-            lookupMethod = lookupVOClass.getMethod(lookupMethodName,new Class[0]);
-          }
-          catch (NoSuchMethodException ex2) {
-          }
-        }
-        if (lookupMethod!=null)
-          for(int i=0;i<rows.size();i++) {
-            vo = (ValueObject)rows.get(i);
-            data.add( lookupMethod.invoke(vo,new Object[0]) );
-          }
+
+
+
+//        ValueObject vo = null;
+//        String lookupMethodName = "get" + String.valueOf(Character.toUpperCase(lookupCodeAttribute.charAt(0))) + lookupCodeAttribute.substring(1);
+//        Method lookupMethod = null;
+//        try {
+//          lookupMethod = lookupVOClass.getMethod(lookupMethodName,new Class[0]);
+//        }
+//        catch (NoSuchMethodException ex1) {
+//          try {
+//            lookupMethodName = "is" + String.valueOf(Character.toUpperCase(lookupCodeAttribute.charAt(0))) + lookupCodeAttribute.substring(1);
+//            lookupMethod = lookupVOClass.getMethod(lookupMethodName,new Class[0]);
+//          }
+//          catch (NoSuchMethodException ex2) {
+//          }
+//        }
+//        if (lookupMethod!=null)
+//          for(int i=0;i<rows.size();i++) {
+//            vo = (ValueObject)rows.get(i);
+//            data.add( lookupMethod.invoke(vo,new Object[0]) );
+//          }
       }
     }
     catch (Throwable ex) {

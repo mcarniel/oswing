@@ -407,6 +407,9 @@ public class ClientSettings {
   /** flag used to auto fit column sizes, according to text headers; default value: <code>false</code> */
   public static boolean AUTO_FIT_COLUMNS = false;
 
+  /** show scrollbars within MDI desktop pane; default value: <code>false</code> */
+  public static boolean SHOW_SCROLLBARS_IN_MDI = false;
+
 
   /**
    * Contains application settings.

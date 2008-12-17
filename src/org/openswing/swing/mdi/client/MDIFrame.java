@@ -44,6 +44,27 @@ import org.openswing.swing.client.OptionPane;
  */
 public class MDIFrame extends JFrame implements BusyListener {
 
+
+  static {
+    try {
+      if (System.getProperty("os.name").toLowerCase().startsWith("linux") &&
+          System.getProperty("java.version").startsWith("1.6") &&
+          ClientSettings.LOOK_AND_FEEL_CLASS_NAME.endsWith("GTKLookAndFeel"))
+        ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "javax.swing.plaf.metal.MetalLookAndFeel";
+      UIManager.setLookAndFeel(ClientSettings.LOOK_AND_FEEL_CLASS_NAME);
+    }
+    catch (Throwable ex) {
+      ex.printStackTrace();
+    }
+    try {
+      JFrame.setDefaultLookAndFeelDecorated(true);
+      JDialog.setDefaultLookAndFeelDecorated(true);
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
   private JPanel contentPane;
   private JMenuBar menuBar = new JMenuBar();
   private JMenu menuFile = new JMenu();
@@ -56,7 +77,7 @@ public class MDIFrame extends JFrame implements BusyListener {
   private static StatusBar statusBar = new StatusBar();
   private BorderLayout borderLayout1 = new BorderLayout();
   private static DesktopPane desktopPane = new DesktopPane();
-//  private JScrollPane scrollPane = new JScrollPane(desktopPane);
+  private JScrollPane scrollPane = new JScrollPane(desktopPane);
   private static TreeMenu treeMenu = null;
   private JSplitPane splitPane = new JSplitPane();
   private BasicSplitPaneUI splitPaneUI = new BasicSplitPaneUI();
@@ -96,22 +117,6 @@ public class MDIFrame extends JFrame implements BusyListener {
   /** unique instances of internal frames, expressed as Class elements */
   private HashSet uniqueInstances = new HashSet();
 
-
-  static {
-    try {
-      UIManager.setLookAndFeel(ClientSettings.LOOK_AND_FEEL_CLASS_NAME);
-    }
-    catch (Throwable ex) {
-      ex.printStackTrace();
-    }
-    try {
-      JFrame.setDefaultLookAndFeelDecorated(true);
-      JDialog.setDefaultLookAndFeelDecorated(true);
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
 
 
   /**
@@ -312,8 +317,26 @@ public class MDIFrame extends JFrame implements BusyListener {
       treeMenu.addMouseListener(new MenuMouseListener());
       lastTreeMenuWidth = treeMenu.getWidth();
       splitPane.setLeftComponent(treeMenu);
-//      splitPane.setRightComponent(scrollPane);
-      splitPane.setRightComponent(desktopPane);
+
+      if (ClientSettings.SHOW_SCROLLBARS_IN_MDI) {
+        scrollPane.setPreferredSize(
+          new Dimension(
+            this.getWidth()-ClientSettings.DIVIDER_WIDTH-6-ClientSettings.MENU_WIDTH,
+            this.getHeight()-menuBar.getHeight()-statusBar.getHeight()-103
+          )
+        );
+        desktopPane.setPreferredSize(
+          new Dimension(
+            this.getWidth()-ClientSettings.DIVIDER_WIDTH-6-ClientSettings.MENU_WIDTH-scrollPane.getVerticalScrollBar().getPreferredSize().width,
+            this.getHeight()-menuBar.getHeight()-statusBar.getHeight()-103-scrollPane.getHorizontalScrollBar().getPreferredSize().height-20
+          )
+        );
+        splitPane.setRightComponent(scrollPane);
+        scrollPane.getViewport().add(desktopPane);
+      }
+      else
+        splitPane.setRightComponent(desktopPane);
+
       resetSplitPane();
       contentPane.add(splitPane, BorderLayout.CENTER);
 
@@ -349,8 +372,24 @@ public class MDIFrame extends JFrame implements BusyListener {
 
     }
     else {
-//      contentPane.add(scrollPane, BorderLayout.CENTER);
-      contentPane.add(desktopPane, BorderLayout.CENTER);
+      if (ClientSettings.SHOW_SCROLLBARS_IN_MDI) {
+        scrollPane.setPreferredSize(
+          new Dimension(
+            this.getWidth()-ClientSettings.DIVIDER_WIDTH-6-ClientSettings.MENU_WIDTH,
+            this.getHeight()-menuBar.getHeight()-statusBar.getHeight()-103
+          )
+        );
+        desktopPane.setPreferredSize(
+          new Dimension(
+            this.getWidth()-ClientSettings.DIVIDER_WIDTH-6-ClientSettings.MENU_WIDTH-scrollPane.getVerticalScrollBar().getPreferredSize().width,
+            this.getHeight()-menuBar.getHeight()-statusBar.getHeight()-103-scrollPane.getHorizontalScrollBar().getPreferredSize().height-20
+          )
+        );
+        scrollPane.getViewport().add(desktopPane);
+        contentPane.add(scrollPane, BorderLayout.CENTER);
+      }
+      else
+        contentPane.add(desktopPane, BorderLayout.CENTER);
     }
 
     contentPane.add(bottomPanel, BorderLayout.SOUTH);
@@ -738,7 +777,7 @@ public class MDIFrame extends JFrame implements BusyListener {
    */
   public static MDIFrame getInstance() {
     Container c = desktopPane.getParent();
-    while(!(c instanceof JFrame))
+    while(c!=null && !(c instanceof JFrame))
       c = c.getParent();
     return (MDIFrame)c;
   }

@@ -29,16 +29,29 @@ public class ClientApplication implements MDIController,LoginController {
 
   private DemoClientFacade clientFacade = new DemoClientFacade();
 
-  public ClientApplication() {
+  public ClientApplication(String[] argv) {
     Properties props = new Properties();
 
     ClientSettings clientSettings = new ClientSettings(
         new EnglishOnlyResourceFactory("E",props,true),
         new Hashtable()
     );
+
+//    Enumeration k = System.getProperties().keys();
+//    while(k.hasMoreElements()) {
+//      String kk = k.nextElement().toString();
+//      System.out.println(kk+"="+System.getProperty(kk));
+//    }
+//    System.out.println(ClientSettings.LOOK_AND_FEEL_CLASS_NAME);
+
+
     ClientSettings.BACKGROUND = "background3.jpg";
     ClientSettings.TREE_BACK = "treeback2.jpg";
     ClientSettings.AUTO_EXPAND_TREE_MENU = true;
+
+    if(argv.length==1)
+      ClientSettings.LOOK_AND_FEEL_CLASS_NAME = argv[0];
+
 //    ClientSettings.MAX_MENU_WIDTH = 300;
 //    ClientSettings.MENU_WIDTH = 300;
 
@@ -173,7 +186,7 @@ public class ClientApplication implements MDIController,LoginController {
 
 
   public static void main(String[] argv) {
-    new ClientApplication();
+    new ClientApplication(argv);
   }
 
 

@@ -709,7 +709,6 @@ public class Grid extends JTable
           else if (colProps[i].getColumnType()==Column.TYPE_CHECK && ((CheckBoxColumn)colProps[i]).isEnableInReadOnlyMode()) {
             return super.editCellAt(row, column, e);
           }
-
         return false;
       }
       setRowSelectionInterval(row,row);

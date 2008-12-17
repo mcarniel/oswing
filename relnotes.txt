@@ -1,5 +1,18 @@
 
 
+Release Notes 1.8.8
+-------------------
+
+Final release 1.8.8 available
+Added SHOW_SCROLLBARS_IN_MDI global property to ClientSettings, in order to show scrollbars within MDI desktop pane.
+Fixed problem with page number in navigator bar when fetching last block of data.
+Fixed problem with check-box column in read only mode when clicking on it: now one click only is required to change check-box state.
+Fixed problem with auto completition feature in lookup component.
+Changed MDI frame default starting in Linux: now GTK look 'n feel is replaced by Metal Look 'n Feel.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.8.7
 -------------------
 

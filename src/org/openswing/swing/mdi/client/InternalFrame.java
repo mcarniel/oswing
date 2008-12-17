@@ -275,6 +275,7 @@ public class InternalFrame extends JInternalFrame {
       // close all children windows...
       while(frameList.size()>0){
         InternalFrame frame = (InternalFrame)frameList.get(0);
+        frameList.remove(0);
         frame.closeFrame();
       }
       // remove link with the parent window...

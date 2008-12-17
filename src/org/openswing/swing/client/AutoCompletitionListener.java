@@ -275,7 +275,7 @@ public final class AutoCompletitionListener extends KeyAdapter {
         checkInputControlValue();
     }
     else {
-      checkInputControlValue();
+//      checkInputControlValue();
       time = System.currentTimeMillis();
     }
   }

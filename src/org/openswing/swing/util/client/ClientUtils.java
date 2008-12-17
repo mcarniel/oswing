@@ -291,7 +291,7 @@ public class ClientUtils extends JApplet {
         }
       }
 
-      ex.printStackTrace();
+//      ex.printStackTrace();
 //      JOptionPane.showMessageDialog(
 //          ClientSettings.getInstance().getApplet(),
 //          ex.getMessage(),

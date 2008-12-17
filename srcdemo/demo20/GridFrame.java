@@ -256,6 +256,9 @@ public class GridFrame extends JFrame {
     colCheck.setColumnRequired(false);
     colCheck.setEditableOnEdit(true);
     colCheck.setEditableOnInsert(true);
+
+//    colCheck.setEnableInReadOnlyMode(true);
+
     insertButton.setText("insertButton1");
     editButton.setText("editButton1");
     saveButton.setText("saveButton1");

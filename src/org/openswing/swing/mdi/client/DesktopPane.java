@@ -379,6 +379,46 @@ public class DesktopPane extends JDesktopPane implements InternalFrameListener {
           }
         }
       });
+
+
+      if (ClientSettings.SHOW_SCROLLBARS_IN_MDI) {
+        Container c = this;
+        while(c!=null && !(c instanceof JScrollPane))
+          c = c.getParent();
+        if (c!=null) {
+          final JScrollPane scrollPane = (JScrollPane) c;
+          frame.addComponentListener(new ComponentAdapter() {
+
+            /**
+             * Invoked when the component's position changes.
+             */
+            public void componentMoved(final ComponentEvent e) {
+              if (e.getComponent().getLocation().x+e.getComponent().getSize().width>DesktopPane.this.getWidth() ||
+                  e.getComponent().getLocation().y+e.getComponent().getSize().height>DesktopPane.this.getHeight()) {
+                final int locx = e.getComponent().getLocation().x;
+                final int locy = e.getComponent().getLocation().y;
+                int x = Math.max(e.getComponent().getLocation().x+e.getComponent().getSize().width,DesktopPane.this.getWidth());
+                int y = Math.max(e.getComponent().getLocation().y+e.getComponent().getSize().height,DesktopPane.this.getHeight());
+
+                DesktopPane.this.setPreferredSize(new Dimension(x,y));
+                DesktopPane.this.setSize(new Dimension(x,y));
+                scrollPane.getViewport().setViewSize(new Dimension(x,y));
+                scrollPane.getViewport().setSize(new Dimension(x,y));
+                SwingUtilities.invokeLater(new Runnable() {
+                  public void run() {
+  //                    scrollPane.getHorizontalScrollBar().setValue(e.getComponent().getLocation().x);
+  //                    scrollPane.getVerticalScrollBar().setValue(e.getComponent().getLocation().y);
+                    scrollPane.getHorizontalScrollBar().setValue(locx);
+                    scrollPane.getVerticalScrollBar().setValue(locy);
+
+                  }
+                });
+              }
+            }
+
+         });
+        }
+      }
     }
     catch (Exception ex) {
       ex.printStackTrace();

@@ -374,6 +374,7 @@ public class VOListAdapter {
       if (m==null)
         Logger.error(this.getClass().getName(),"setField","No getter method for attribute name '"+attributeName+"'.",null);
       Object oldObj = obj;
+      String auxAttr;
       for(int i=0;i<m.length-1;i++){
         oldObj = obj;
         obj = (ValueObject)m[i].invoke(oldObj,new Object[0]);
@@ -383,9 +384,13 @@ public class VOListAdapter {
           else {
             obj = (ValueObject)m[i].getReturnType().newInstance();
             String[] attrs = attributeName.split("\\.");
-            Method aux = ((Method[])voSetterMethods.get(attrs[i]))[i];
-            aux.invoke(oldObj,new Object[]{obj});
 
+            auxAttr = "";
+            for(int k=0;k<=i;k++)
+              auxAttr += attrs[k]+".";
+            auxAttr = auxAttr.substring(0,auxAttr.length()-1);
+            Method aux = ((Method[])voSetterMethods.get(auxAttr))[i];
+            aux.invoke(oldObj,new Object[]{obj});
           }
         }
       }

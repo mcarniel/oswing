@@ -54,6 +54,7 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.ALLOW_OR_OPERATOR = false;
     ClientSettings.INCLUDE_IN_OPERATOR = false;
+    ClientSettings.SHOW_SCROLLBARS_IN_MDI = true;
 
     LoginDialog d = new LoginDialog(null,false,this);
   }
