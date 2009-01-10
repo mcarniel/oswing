@@ -190,6 +190,24 @@ public class TreeGridPanel extends JPanel {
 
 
   /**
+   * Expand a tree node.
+   * @param index index of node to expand
+   */
+  public final void expandNode(int index) {
+    tree.getTree().expandRow(index);
+  }
+
+
+  /**
+   * Collapse a tree node.
+   * @param index index of node to collapse
+   */
+  public final void collapseNode(int index) {
+    tree.getTree().collapseRow(index);
+  }
+
+
+  /**
    * Expand all tree nodes.
    */
   private final void expandAllNodes() {

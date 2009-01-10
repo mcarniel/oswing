@@ -6,6 +6,7 @@ import javax.swing.table.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.editors.client.*;
 import org.openswing.swing.table.renderers.client.*;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -54,8 +55,8 @@ public class DecimalColumn extends Column {
   /** dynamic settings used to reset numeric editor properties for each grid row */
   private DecimalColumnSettings dynamicSettings = null;
 
-  /** flag used to define whether zero digits (after decimal point) must be hided/showed; default value: <code>false</code> i.e. show zero digits */
-  private boolean hideZeroDigits = false;
+  /** flag used to define whether zero digits (after decimal point) must be hided/showed; default value: <code>ClientSettings.ZERO_SHOWS_AS_ABSENT</code> i.e. show zero digits */
+  private boolean hideZeroDigits = ClientSettings.HIDE_ZERO_DIGITS;
 
   /** component left margin, with respect to component container; defaut value: 0 */
   private int leftMargin = 0;

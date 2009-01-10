@@ -152,7 +152,6 @@ public class MDIFrame extends JFrame implements BusyListener {
         }
       });
 
-      client.afterMDIcreation(this);
       try {
         ClientSettings.getInstance().getUserGridProfiles().clear();
         ClientSettings.getInstance().getLastUserGridDigests().clear();
@@ -180,6 +179,14 @@ public class MDIFrame extends JFrame implements BusyListener {
       catch (Exception ex1) {
       }
       setVisible(true);
+
+
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          MDIFrame.this.client.afterMDIcreation(MDIFrame.this);
+        }
+      });
+
     }
     catch (Throwable ex) {
       ex.printStackTrace();

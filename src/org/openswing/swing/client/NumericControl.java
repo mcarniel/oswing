@@ -57,13 +57,16 @@ public class NumericControl extends BaseInputControl implements InputControl {
   private boolean grouping = false;
 
   /** format for the text */
-  protected DecimalFormat format = null;
+  private DecimalFormat format = null;
 
   /** value for an input control value not defined */
-  protected String nullValue = null;
+  private String nullValue = null;
 
   /** numeric field */
   private NumBox numBox = new NumBox();
+
+  /** flag used to define whether zero digits (after decimal point) must be hided/showed; default value: <code>ClientSettings.ZERO_SHOWS_AS_ABSENT</code> i.e. show zero digits */
+  private boolean hideZeroDigits = ClientSettings.HIDE_ZERO_DIGITS;
 
 
   /**
@@ -115,11 +118,15 @@ public class NumericControl extends BaseInputControl implements InputControl {
   /**
    * Method called to set the numeric format.
    */
-  protected void setFormat() {
+  private void setFormat() {
 
     DecimalFormatSymbols dfs = new DecimalFormatSymbols();
     dfs.setGroupingSeparator(ClientSettings.getInstance().getResources().getGroupingSymbol());
     dfs.setDecimalSeparator(ClientSettings.getInstance().getResources().getDecimalSymbol());
+
+    String zero = "0";
+    if (hideZeroDigits)
+      zero = "#";
 
     if (!grouping && decimals==0)
       format = new DecimalFormat("#");
@@ -128,12 +135,12 @@ public class NumericControl extends BaseInputControl implements InputControl {
     else if (grouping && decimals>0) {
       String dec = "";
       for(int i=0;i<decimals;i++)
-        dec += "#";
+        dec += zero;
       format = new DecimalFormat("#,##0."+dec,dfs);
     } else if (!grouping && decimals>0) {
       String dec = "";
       for(int i=0;i<decimals;i++)
-        dec += "#";
+        dec += zero;
       format = new DecimalFormat("0."+dec,dfs);
     }
     format.setGroupingUsed(grouping);
@@ -422,6 +429,23 @@ public class NumericControl extends BaseInputControl implements InputControl {
       }
 
     });
+  }
+
+
+  /**
+   * @return flag used to define whether zero digits (after decimal point) must be hided/showed
+   */
+  public final boolean isHideZeroDigits() {
+    return hideZeroDigits;
+  }
+
+
+  /**
+   * Define whether zero digits (after decimal point) must be hided/showed; default value: <code>false</code> i.e. show zero digits.
+   * @param hideZeroDigits flag used to define whether zero digits (after decimal point) must be hided/showed
+   */
+  public final void setHideZeroDigits(boolean hideZeroDigits) {
+    this.hideZeroDigits = hideZeroDigits;
   }
 
 

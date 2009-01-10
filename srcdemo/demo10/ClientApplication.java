@@ -106,31 +106,36 @@ public class ClientApplication implements MDIController,LoginController {
 
 
     // tips...
-    props.setProperty("shortcuts are customizable","Shortcuts are customizable");
-    props.setProperty("shortcuts can be customized using ClientSettings class","Shortcuts can be customized using ClientSettings class");
+    props.setProperty(
+      "<html><body><font style='FONT-SIZE: 80%;FONT-FAMILY: Verdana, Helvetica, sans-serif'>press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
+      "press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
+      "press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
+      "press ctrl+d to switch to delete records in a grid or in a form panel.</font></body></html>\n",
+      "<html><body><font style='FONT-SIZE: 80%;FONT-FAMILY: Verdana, Helvetica, sans-serif'>Press CTRL+I to switch to insert mode in a grid or in a form panel\n"+
+      "<br/>Press CTRL+E to switch to edit mode in a grid or in a form panel\n"+
+      "<br/>Press CTRL+Z to switch to read only mode in a grid or in a form panel\n"+
+      "<br/>Press CTRL+D to switch to delete records in a grid or in a form panel.</font></body></html>\n"
+    );
+    props.setProperty(
+      "<html><body><font style='FONT-SIZE: 80%;FONT-FAMILY: Verdana, Helvetica, sans-serif'>shortcuts can be customized using ClientSettings class</font></body></html>",
+      "<html><body><font style='FONT-SIZE: 80%;FONT-FAMILY: Verdana, Helvetica, sans-serif'>Shortcuts can be customized using ClientSettings class</font></body></html>"
+    );
 
+    props.setProperty(
+    "<html><body><font style='FONT-SIZE: 80%;FONT-FAMILY: Verdana, Helvetica, sans-serif'>you may right click with the mouse button inside a grid to show\n"+
+    "a popup menu that allows to:\n"+
+    "<ul><li>filter data of the current selected column</li>\n"+
+    "<li>show/hide columns</li></ul></font></body></html>",
+    "<html><body><font style='FONT-SIZE: 80%;FONT-FAMILY: Verdana, Helvetica, sans-serif'>You may right click with the mouse button inside a grid to show\n"+
+    "a popup menu that allows to:\n"+
+    "<ul><li>Filter data of the current selected column</li>\n"+
+    "<li>Show/hide columns</li></ul></font></body></html>"
+    );
+
+    props.setProperty("shortcuts are customizable","Shortcuts are customizable");
     props.setProperty("shortcuts in grid and form controls","Shortcuts in grid and form controls");
     props.setProperty("quick filter and other features in grid control","Quick filter and other features in grid control");
-    props.setProperty(
-        "press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
-        "press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
-        "press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
-        "press ctrl+d to switch to delete records in a grid or in a form panel.\n",
-        "Press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
-        "Press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
-        "Press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
-        "Press ctrl+d to switch to delete records in a grid or in a form panel.\n"
-    );
-    props.setProperty(
-        "<html><body>you may right click with the mouse button inside a grid to show\n"+
-        "a popup menu that allows to:\n"+
-        "<ul><li>filter data of the current selected column</li>\n"+
-        "<li>show/hide columns</li></ul></body></html>",
-        "<html><body>You may right click with the mouse button inside a grid to show\n"+
-        "a popup menu that allows to:\n"+
-        "<ul><li>filter data of the current selected column</li>\n"+
-        "<li>show/hide columns</li></ul></body></html>"
-    );
+
 
 
     ClientSettings clientSettings = new ClientSettings(
@@ -169,9 +174,6 @@ public class ClientApplication implements MDIController,LoginController {
 //    com.pagosoft.plaf.PlafOptions.setAsLookAndFeel();
 //    com.pagosoft.plaf.PlafOptions.updateAllUIs();
 
-    // show tip of the day internal frame...
-//    showTipFrame();
-
   }
 
 
@@ -179,8 +181,11 @@ public class ClientApplication implements MDIController,LoginController {
    * Method called after MDI creation.
    */
   public void afterMDIcreation(MDIFrame frame) {
-//    MDIFrame.addStatusComponent(new Clock());
-//    frame.addSeparatorToMenuBar("getEmployees2","getDepts");
+    MDIFrame.addStatusComponent(new Clock());
+    frame.addSeparatorToMenuBar("getEmployees2","getDepts");
+
+    // show tip of the day internal frame...
+    showTipFrame();
   }
 
 
@@ -207,23 +212,27 @@ public class ClientApplication implements MDIController,LoginController {
        */
       public String[] getTips() {
         return new String[] {
-            "press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
+            "<html><body><font style='FONT-SIZE: 80%;FONT-FAMILY: Verdana, Helvetica, sans-serif'>press ctrl+i to switch to insert mode in a grid or in a form panel\n"+
             "press ctrl+e to switch to edit mode in a grid or in a form panel\n"+
             "press ctrl+z to switch to read only mode in a grid or in a form panel\n"+
-            "press ctrl+d to switch to delete records in a grid or in a form panel.\n",
-            "shortcuts can be customized using ClientSettings class",
-            "<html><body>you may right click with the mouse button inside a grid to show\n"+
+            "press ctrl+d to switch to delete records in a grid or in a form panel.</font></body></html>\n",
+
+            "<html><body><font style='FONT-SIZE: 80%;FONT-FAMILY: Verdana, Helvetica, sans-serif'>shortcuts can be customized using ClientSettings class</font></body></html>",
+
+            "<html><body><font style='FONT-SIZE: 80%;FONT-FAMILY: Verdana, Helvetica, sans-serif'>you may right click with the mouse button inside a grid to show\n"+
             "a popup menu that allows to:\n"+
             "<ul><li>filter data of the current selected column</li>\n"+
-            "<li>show/hide columns</li></ul></body></html>"
+            "<li>show/hide columns</li></ul></font></body></html>"
         };
       }
+
 
     });
 
     tipFrame1.setShowCheck(false);
-    MDIFrame.add(tipFrame1);
+    tipFrame1.setSize(700,300);
 
+    MDIFrame.add(tipFrame1);
   }
 
 

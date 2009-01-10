@@ -22,6 +22,7 @@ import org.openswing.swing.table.model.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import org.openswing.swing.importdata.java.*;
+import java.lang.reflect.*;
 
 
 /**
@@ -3634,32 +3635,51 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     private boolean errorOnLoad = true;
 
     public void run() {
-      if (navBar!=null)
-        navBar.setEnabled(false);
-      if (reloadButton!=null)
-        reloadButton.setEnabled(false);
-      if (insertButton!=null)
-        insertButton.setEnabled(false);
-      if (exportButton!=null)
-        exportButton.setEnabled(false);
-      if (importButton!=null)
-        importButton.setEnabled(false);
-      if (copyButton!=null)
-        copyButton.setEnabled(false);
-      if (editButton!=null)
-        editButton.setEnabled(false);
-      setGenericButtonsEnabled(false);
-      if (deleteButton!=null)
-        deleteButton.setEnabled(false);
-      if (saveButton!=null)
-        saveButton.setEnabled(false);
+
+      try {
+        SwingUtilities.invokeAndWait(new Runnable() {
+          public void run() {
+            if (navBar!=null)
+              navBar.setEnabled(false);
+            if (reloadButton!=null)
+              reloadButton.setEnabled(false);
+            if (insertButton!=null)
+              insertButton.setEnabled(false);
+            if (exportButton!=null)
+              exportButton.setEnabled(false);
+            if (importButton!=null)
+              importButton.setEnabled(false);
+            if (copyButton!=null)
+              copyButton.setEnabled(false);
+            if (editButton!=null)
+              editButton.setEnabled(false);
+            setGenericButtonsEnabled(false);
+            if (deleteButton!=null)
+              deleteButton.setEnabled(false);
+            if (saveButton!=null)
+              saveButton.setEnabled(false);
 //        startIndex = Math.max(0,lastIndex-model.getRowCount()+1);
+          }
+        });
+      }
+      catch (Exception ex) {
+      }
+
 
       // reload data...
       currentNumberOfNewRows = 0;
       repaint();
       selectedRowBeforeReloading = getSelectedRow();
-      errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
+      try {
+        SwingUtilities.invokeAndWait(new Runnable() {
+          public void run() {
+            errorOnLoad = !loadData(GridParams.NEXT_BLOCK_ACTION);
+          }
+        });
+      }
+      catch (Exception ex) {
+      }
+
       if (model.getRowCount()>0) {
         if (selectedRowBeforeReloading==-1)
           selectedRowBeforeReloading = 0;
@@ -3703,37 +3723,48 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 //        grid.ensureRowIsVisible(grid.getSelectedRow());
 //        if (lockedGrid!=null)
 //          lockedGrid.ensureRowIsVisible(grid.getSelectedRow());
-      if (navBar!=null) {
-        if (grid.getSelectedRow() != -1 && !moreRows &&
-            grid.getSelectedRow() == model.getRowCount() - 1 ||
-            model.getRowCount() == 0)
-          navBar.setLastRow(true);
-        else
-          navBar.setLastRow(false);
-        if (grid.getSelectedRow() > 0 || lastIndex > model.getRowCount() - 1)
-          navBar.setFirstRow(false);
-        else
-          navBar.setFirstRow(true);
-      }
-      if (reloadButton!=null)
-        reloadButton.setEnabled(true);
-      if (saveButton!=null)
-        saveButton.setEnabled(false);
 
-      grid.revalidate();
-      grid.repaint();
-      if (grid.getTableHeader()!=null) {
-        grid.getTableHeader().revalidate();
-        grid.getTableHeader().repaint();
+      try {
+        SwingUtilities.invokeAndWait(new Runnable() {
+          public void run() {
+            if (navBar!=null) {
+              if (grid.getSelectedRow() != -1 && !moreRows &&
+                  grid.getSelectedRow() == model.getRowCount() - 1 ||
+                  model.getRowCount() == 0)
+                navBar.setLastRow(true);
+              else
+                navBar.setLastRow(false);
+              if (grid.getSelectedRow() > 0 || lastIndex > model.getRowCount() - 1)
+                navBar.setFirstRow(false);
+              else
+                navBar.setFirstRow(true);
+            }
+            if (reloadButton!=null)
+              reloadButton.setEnabled(true);
+            if (saveButton!=null)
+              saveButton.setEnabled(false);
+
+            grid.revalidate();
+            grid.repaint();
+            if (grid.getTableHeader()!=null) {
+              grid.getTableHeader().revalidate();
+              grid.getTableHeader().repaint();
+            }
+            if (lockedGrid!=null) {
+              lockedGrid.revalidate();
+              lockedGrid.repaint();
+              if (lockedGrid.getTableHeader()!=null) {
+                lockedGrid.getTableHeader().revalidate();
+                lockedGrid.getTableHeader().repaint();
+              }
+            }
+          }
+        });
       }
-      if (lockedGrid!=null) {
-        lockedGrid.revalidate();
-        lockedGrid.repaint();
-        if (lockedGrid.getTableHeader()!=null) {
-          lockedGrid.getTableHeader().revalidate();
-          lockedGrid.getTableHeader().repaint();
-        }
+      catch (Exception ex) {
       }
+
+
 
 
       listenEvent = true;

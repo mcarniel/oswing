@@ -67,34 +67,19 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
    */
   public NumericCellEditor(int colType, int decimals, boolean required, double minValue, double maxValue,IntegerColumnSettings dynamicSettings) {
-    if (colType==Column.TYPE_CURRENCY)
-      field = new CurrencyControl() {
+    field = new NumericControl() {
 
-          public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
-                                              int condition, boolean pressed) {
-            if (e.getSource()!=null && e.getSource() instanceof org.openswing.swing.table.client.Grid) {
-              field.processKeyEvent(e);
-            }
-            else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n')
-              stopCellEditing();
-            return true;
-          }
-
-      };
-    else
-      field = new NumericControl() {
-
-        public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
-                                            int condition, boolean pressed) {
-          if (e.getSource()!=null && e.getSource() instanceof org.openswing.swing.table.client.Grid) {
-            field.processKeyEvent(e);
-          }
-          else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n')
-            stopCellEditing();
-          return true;
+      public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
+                                          int condition, boolean pressed) {
+        if (e.getSource()!=null && e.getSource() instanceof org.openswing.swing.table.client.Grid) {
+          field.processKeyEvent(e);
         }
+        else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n')
+          stopCellEditing();
+        return true;
+      }
 
-      };
+    };
     this.field.setDecimals(decimals);
     this.required = required;
     this.dynamicSettings = dynamicSettings;
@@ -177,8 +162,6 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
         field.setDecimals(((DecimalColumnSettings)dynamicSettings).getDecimals(row));
       field.setMinValue(dynamicSettings.getMinValue(row));
       field.setMaxValue(dynamicSettings.getMaxValue(row));
-      if (this instanceof CurrencyCellEditor && dynamicSettings instanceof CurrencyColumnSettings)
-        ((CurrencyControl)field).setCurrencySymbol(((CurrencyColumnSettings)dynamicSettings).getCurrencySymbol(row));
     }
     if(value!=null && value.getClass().getSuperclass() == Number.class)
       field.setText(((Number)value).toString());

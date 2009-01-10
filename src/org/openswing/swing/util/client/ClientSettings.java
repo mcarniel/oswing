@@ -410,6 +410,12 @@ public class ClientSettings {
   /** show scrollbars within MDI desktop pane; default value: <code>false</code> */
   public static boolean SHOW_SCROLLBARS_IN_MDI = false;
 
+  /** define the behavior of numeric components in case of zero decimal digits: show or hide zeros; default value: <code>false</code>, i.e. shows zero digits */
+  public static boolean HIDE_ZERO_DIGITS = false;
+
+  /** flag used to define the default position of currency symbol in currency control/column: on the left or on the right of the numeric value; default value: <code>true</code> i.e. on the left of the numeric value */
+  public static boolean CURRENCY_SYMBOL_ON_LEFT = true;
+
 
   /**
    * Contains application settings.

@@ -277,6 +277,24 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
 
   /**
+   * Expand a tree node.
+   * @param index index of node to expand
+   */
+  public final void expandNode(int index) {
+    tree.expandRow(index);
+  }
+
+
+  /**
+   * Collapse a tree node.
+   * @param index index of node to collapse
+   */
+  public final void collapseNode(int index) {
+    tree.collapseRow(index);
+  }
+
+
+  /**
    * Expand all tree nodes.
    */
   public final void expandAllNodes() {

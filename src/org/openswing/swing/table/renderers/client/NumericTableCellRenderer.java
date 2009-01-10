@@ -42,7 +42,7 @@ import org.openswing.swing.table.model.client.VOListTableModel;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class NumericTableCellRenderer extends DefaultTableCellRenderer {
+public class NumericTableCellRenderer implements TableCellRenderer {
 
   /** representation of the "unknown value"; a value that is either of the wrong type or for which there is no available format */
   public static final String VALUE_UNKNOWN = "???";
@@ -89,6 +89,8 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
   /** component bottom margin, with respect to component container */
   protected int bottomMargin = 0;
 
+  /** cell content; used to support Substance LnF with editable cells in INSERT mode */
+  private JTextField c = new JTextField();
 
   /**
    * Constructor.
@@ -112,7 +114,7 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
     this.rightMargin = rightMargin;
     this.topMargin = topMargin;
     this.bottomMargin = bottomMargin;
-    setHorizontalAlignment(alignement);
+    c.setHorizontalAlignment(alignement);
     setFormat(decimals,grouping);
   }
 
@@ -150,7 +152,9 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
                           boolean isSelected, boolean hasFocus, int row, int column) {
     this.row = row;
     this.grid = (Grid)table;
-    JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
+
+    setValue(value);
+    //JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
 
     if (defaultFont==null)
       defaultFont = c.getFont();
@@ -253,6 +257,11 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
     c.setBorder(
       BorderFactory.createCompoundBorder(c.getBorder(),BorderFactory.createEmptyBorder(topMargin,leftMargin,bottomMargin,rightMargin))
     );
+
+    c.setMinimumSize(new Dimension(grid.getColumnModel().getColumn(column).getWidth(), grid.getRowHeight(row)));
+    c.setPreferredSize(new Dimension(grid.getColumnModel().getColumn(column).getWidth(), grid.getRowHeight(row)));
+    c.setSize(grid.getColumnModel().getColumn(column).getWidth(), grid.getRowHeight(row));
+
     return c;
   }
 
@@ -262,7 +271,7 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
     String s = VALUE_UNKNOWN;
 
     if (value==null) {
-      setText(null);
+      c.setText(null);
       return;
     }
 
@@ -286,7 +295,7 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
       val = (double)((java.math.BigDecimal)value).doubleValue();
     }
     else {
-      setText(VALUE_UNKNOWN);
+      c.setText(VALUE_UNKNOWN);
       return;
     }
 
@@ -303,7 +312,7 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
 
 
     s = format.format(val);
-    setText(s);
+    c.setText(s);
    }
 
 
@@ -312,7 +321,5 @@ public class NumericTableCellRenderer extends DefaultTableCellRenderer {
      grid = null;
      dynamicSettings = null;
    }
-
-
 
 }

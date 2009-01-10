@@ -40,21 +40,26 @@ public class CurrencyTableCellRenderer extends NumericTableCellRenderer {
   /** currency symbol */
   private String currencySymbol = null;
 
+  /** flag used to define the default position of currency symbol in currency control/column: on the left or on the right of the numeric value */
+  private boolean currencySymbolOnLeft;
+
 
   /**
    * Constructor.
    * @param decimals number of decimals
    * @param grouping flag used to enable grouping
+   * param currencySymbolOnLeft flag used to define the default position of currency symbol in currency control/column: on the left or on the right of the numeric value
    * @param currencySymbol currency symbol
    * @param gridController grid controller
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
    * @param attributeName attribute name associated to this column
    */
-  public CurrencyTableCellRenderer(int decimals, boolean grouping,boolean hideZeroDigits,
+  public CurrencyTableCellRenderer(int decimals, boolean grouping,boolean hideZeroDigits,boolean currencySymbolOnLeft,
                                    String currencySymbol,GridController gridController,IntegerColumnSettings dynamicSettings,
                                    int alignement,int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
     super(decimals,grouping,hideZeroDigits,gridController,dynamicSettings,alignement,leftMargin,rightMargin,topMargin,bottomMargin,attributeName);
     this.currencySymbol = currencySymbol;
+    this.currencySymbolOnLeft = currencySymbolOnLeft;
     setFormat(decimals,grouping);
   }
 
@@ -68,21 +73,35 @@ public class CurrencyTableCellRenderer extends NumericTableCellRenderer {
     dfs.setDecimalSeparator(ClientSettings.getInstance().getResources().getDecimalSymbol());
 
     // currency cell format...
-    if (!grouping && decimals==0)
-      format = new DecimalFormat(currencySymbol+" "+"0");
-    else if (grouping && decimals==0)
-      format = new DecimalFormat(currencySymbol+" "+"#,##0",dfs);
+    if (!grouping && decimals==0) {
+      if (currencySymbolOnLeft)
+        format = new DecimalFormat(currencySymbol+" "+"0");
+      else
+        format = new DecimalFormat("0 "+currencySymbol);
+    }
+    else if (grouping && decimals==0) {
+      if (currencySymbolOnLeft)
+        format = new DecimalFormat(currencySymbol+" "+"#,##0",dfs);
+      else
+        format = new DecimalFormat("#,##0 "+currencySymbol,dfs);
+    }
     else if (grouping && decimals>0) {
       String dec = "";
       for(int i=0;i<decimals;i++)
         dec += hideZeroDigits?"#":"0";
-      format = new DecimalFormat(currencySymbol+" "+"#,##0."+dec,dfs);
+      if (currencySymbolOnLeft)
+        format = new DecimalFormat(currencySymbol+" "+"#,##0."+dec,dfs);
+      else
+        format = new DecimalFormat("#,##0."+dec+" "+currencySymbol,dfs);
     }
     else if (!grouping && decimals>0) {
       String dec = "";
       for(int i=0;i<decimals;i++)
         dec += hideZeroDigits?"#":"0";
-      format = new DecimalFormat(currencySymbol+" "+"0."+dec,dfs);
+      if (currencySymbolOnLeft)
+        format = new DecimalFormat(currencySymbol+" "+"0."+dec,dfs);
+      else
+      format = new DecimalFormat("0."+dec+" "+currencySymbol,dfs);
     }
 
     format.setGroupingUsed(grouping);

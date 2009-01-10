@@ -348,15 +348,27 @@ public class DesktopPane extends JDesktopPane implements InternalFrameListener {
   public final void add(InternalFrame frame,boolean maximum) {
     try {
       super.add(frame);
+
+      int w = this.getVisibleRect().width;
+      int h = this.getVisibleRect().height;
+
+//      System.out.println(this.getVisibleRect()+" "+this.getSize()+" "+this.getPreferredSize()+" "+this.getMinimumSize());
+
+      if (w==0)
+        w = this.getSize().width;
+      if (h==0)
+        h = this.getSize().width;
+
       if (maximum) {
-        frame.setSize(new Dimension(this.getVisibleRect().width,this.getVisibleRect().height));
+        frame.setSize(new Dimension(w,h));
         frame.setLocation(0,0);
       }
 
+
       if (!frame.isMaximum()) {
         frame.setLocation(
-            (Math.max(this.getVisibleRect().width-frame.getWidth(),0))/2,
-            (Math.max(this.getVisibleRect().height-frame.getHeight(),0))/2
+            (Math.max(w-frame.getWidth(),0))/2,
+            (Math.max(h-frame.getHeight(),0))/2
             );
       }
 

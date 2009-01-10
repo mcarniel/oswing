@@ -347,7 +347,7 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
           validationController.setForm(form);
       }
 
-      if (!Beans.isDesignTime() && autoCompletitionWaitTime>=0 && autoCompletitionListener==null) {
+      if (!Beans.isDesignTime() && autoCompletitionWaitTime>=0 && autoCompletitionListener==null && getAttributeName()!=null) {
         autoCompletitionListener =
             new AutoCompletitionListener(
               this,

@@ -29,6 +29,7 @@ public class NumericControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _decimals = new PropertyDescriptor("decimals", beanClass, "getDecimals", "setDecimals");
       PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _grouping = new PropertyDescriptor("grouping", beanClass, "isGrouping", "setGrouping");
+      PropertyDescriptor _hideZeroDigits = new PropertyDescriptor("hideZeroDigits", beanClass, "isHideZeroDigits", "setHideZeroDigits");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
       PropertyDescriptor _maxValue = new PropertyDescriptor("maxValue", beanClass, "getMaxValue", "setMaxValue");
@@ -47,6 +48,7 @@ public class NumericControlBeanInfo extends SimpleBeanInfo {
         _decimals,
         _font,
         _grouping,
+        _hideZeroDigits,
         _linkLabel,
         _maxCharacters,
         _maxValue,
@@ -64,6 +66,7 @@ public class NumericControlBeanInfo extends SimpleBeanInfo {
       return null;
     }
   }
+
   public java.awt.Image getIcon(int iconKind) {
     switch (iconKind) {
       case BeanInfo.ICON_COLOR_16x16:

@@ -43,6 +43,9 @@ public class CurrencyColumn extends DecimalColumn {
   /** currency symbol; default value: ClientSettings.getInstance().getResources().getCurrencySymbol() */
   private String currencySymbol = ClientSettings.getInstance().getResources().getCurrencySymbol();
 
+  /** flag used to define the default position of currency symbol in currency control/column: on the left or on the right of the numeric value; default value: <code>ClientSettings.CURRENCY_SYMBOL_ON_LEFT</code> i.e. on the left of the numeric value */
+  private boolean currencySymbolOnLeft = ClientSettings.CURRENCY_SYMBOL_ON_LEFT;
+
 
   public CurrencyColumn() {
     setTextAlignment(SwingConstants.RIGHT);
@@ -66,6 +69,26 @@ public class CurrencyColumn extends DecimalColumn {
   }
 
 
+
+
+  /**
+   * @return flag used to define the default position of currency symbol in currency control/column: on the left or on the right of the numeric value
+   */
+  public final boolean isCurrencySymbolOnLeft() {
+    return currencySymbolOnLeft;
+  }
+
+
+  /**
+   * Set the flag used to define the default position of currency symbol in currency control/column: on the left or on the right of the numeric value.
+   * Default value: <code>ClientSettings.CURRENCY_SYMBOL_ON_LEFT</code> i.e. on the left of the numeric value.
+   * @param currencySymbolOnLeft flag used to define the default position of currency symbol in currency control/column: on the left or on the right of the numeric value
+   */
+  public final void setCurrencySymbolOnLeft(boolean currencySymbolOnLeft) {
+    this.currencySymbolOnLeft = currencySymbolOnLeft;
+  }
+
+
   /**
    * @return column type
    */
@@ -82,6 +105,7 @@ public class CurrencyColumn extends DecimalColumn {
         getDecimals(),
         isGrouping(),
         isHideZeroDigits(),
+        isCurrencySymbolOnLeft(),
         getCurrencySymbol(),
         tableContainer,
         getDynamicSettings(),
@@ -103,6 +127,7 @@ public class CurrencyColumn extends DecimalColumn {
         Column.TYPE_CURRENCY,
         getDecimals(),
         isColumnRequired(),
+        isCurrencySymbolOnLeft(),
         getMinValue(),
         getMaxValue(),
         getCurrencySymbol(),
@@ -110,6 +135,7 @@ public class CurrencyColumn extends DecimalColumn {
     );
 
   }
+
 
 
 }

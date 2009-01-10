@@ -154,8 +154,10 @@ public class WinIconsPanel extends JPanel {
 //        this.repaint();
 //      }
       while (x+len+20>this.getWidth()-200) {
-        x = x-this.getComponent(0).getWidth();
-        this.remove(0);
+        if (this.getComponentCount()>0)
+          x = x-this.getComponent(0).getWidth();
+        if (this.getComponentCount()>0)
+          this.remove(0);
 
         this.revalidate();
         this.repaint();

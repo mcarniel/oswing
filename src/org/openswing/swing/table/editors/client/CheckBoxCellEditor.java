@@ -55,6 +55,9 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
   /** ItemListener list associated to the check-box */
   private ArrayList itemListenerList = null;
 
+  /** current row index */
+  private int row = -1;
+
   /** current model column index */
   private int column = -1;
 
@@ -141,10 +144,17 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
     if (column!=-1 &&
         grids.isEnableInReadOnlyMode(column)&&
         grids.getMode()==Consts.READONLY) {
-      if (selected==null || !selected.booleanValue())
-        selected = Boolean.TRUE;
-      else
-        selected = Boolean.FALSE;
+      if (row!=grids.getSelectedRow()) {
+        if (selected==null || !selected.booleanValue())
+          selected = Boolean.TRUE;
+        else
+          selected = Boolean.FALSE;
+      }
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          grids.setRowSelectionInterval(row,row);
+        }
+      });
     }
 
     label.repaint();
@@ -161,6 +171,7 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
   public final Component getTableCellEditorComponent(JTable table, Object value,
                                                boolean isSelected, int row,
                                                int column) {
+    this.row = row;
     this.column = table.convertColumnIndexToModel(column);
 //    table.setRowSelectionInterval(row,row);
     label.setPreferredSize(new Dimension(table.getColumnModel().getColumn(column).getWidth(),table.getHeight()));

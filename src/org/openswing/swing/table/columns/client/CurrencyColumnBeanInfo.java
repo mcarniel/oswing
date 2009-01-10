@@ -44,8 +44,11 @@ public class CurrencyColumnBeanInfo extends SimpleBeanInfo {
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
       PropertyDescriptor _currencySymbol = new PropertyDescriptor("currencySymbol", beanClass, "getCurrencySymbol", "setCurrencySymbol");
+      PropertyDescriptor _currencySymbolOnLeft = new PropertyDescriptor("currencySymbolOnLeft", beanClass, "isCurrencySymbolOnLeft", "setCurrencySymbolOnLeft");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
-        _currencySymbol};
+        _currencySymbol,
+        _currencySymbolOnLeft
+      };
       return pds;
     }
     catch(IntrospectionException ex) {

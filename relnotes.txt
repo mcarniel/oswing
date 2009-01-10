@@ -1,5 +1,41 @@
 
 
+Release Notes 1.9.1
+-------------------
+
+Final release 1.9.1 available
+Added Norwegian internationalization settings class.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.9
+-----------------
+
+Final release 1.9 available
+Added "expandNode" and "collapseNode" methods to TreePanel and TreeGridPanel, in order to expand/collapse a single node.
+Fixed problem on opening some detail frames, having a lookup auto-completition feature enabled.
+Fixed problem when using Substance LNF on loading grid having an error.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.8.9
+-------------------
+
+Final release 1.8.9 available
+Added global boolean property HIDE_ZERO_DIGITS, used in numeric controls/columns in order to show/hide zero digits.
+Added "hideZeroDigits" boolean property to NumericControl and CurrencyControl, as for DecimalColumn, in order to show/hide zero digits. 
+Added global boolean property CURRENCY_SYMBOL_ON_LEFT, used in currency controls/columns 
+in order to show currency symbol on the left or on the right of the numeric value.
+Added "currencySymbolOnLeft" boolean property to CurrencyControl and CurrencyColumn, in order to show currency symbol on the left or on the right of the numeric value.
+Updated PolishOnlyResourceFactory content.
+Fixed problems when using afterMDIcreation callback with Substance Look 'n Feel in demo10.
+Fixed problem on selecting check-boxes in grid when it is in read-only mode.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.8.8
 -------------------
 

@@ -289,7 +289,7 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
       true,
       '/',
       "HH:mm",
-      "EN",
+      "ES",
       showResourceNotFoundWarning
     );
   }

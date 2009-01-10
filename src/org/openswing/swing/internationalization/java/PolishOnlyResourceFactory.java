@@ -60,8 +60,8 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("Sorting not allowed", "Sortowanie jest niemo\u017cliwe");
         dictionary.setProperty("Maximum number of sorted columns", "Wykorzystano maksymaln\u0105 liczb\u0119 sortowanych kolumn");
         dictionary.setProperty("Sorting not applicable", "Ograniczenie sortowania");
+        dictionary.setProperty("Selected Rows", "Wybrane pozycje");
         dictionary.setProperty("Selected Row", "Wybrana pozycja");
-        dictionary.setProperty("Selected Rows", "Wybrana pozycje");
         dictionary.setProperty("Cancel changes and reload data?", "Czy porzuci\u0107 zmiany i prze\u0142adowa\u0107 dane?");
         dictionary.setProperty("Attention", "Uwaga");
         dictionary.setProperty("Loading data...", "Trwa pobieranie danych...");
@@ -270,18 +270,18 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("drag", "Ci\u0105gnij");
 
         // pivot table...
-        dictionary.setProperty("pivot table settings","Pivot table settings");
-        dictionary.setProperty("row fields","Row fields");
-        dictionary.setProperty("column fields","Column fields");
-        dictionary.setProperty("data fields","Data fields");
-        dictionary.setProperty("filtering conditions","Filtering conditions");
-        dictionary.setProperty("field","Field");
-        dictionary.setProperty("checked","Checked");
-        dictionary.setProperty("at least one data field must be selected","At least one data field must be selected.");
-        dictionary.setProperty("at least one row field must be selected","At least one row field must be selected.");
-        dictionary.setProperty("at least one column field must be selected","At least one column field must be selected.");
-        dictionary.setProperty("expand all","Expand all");
-        dictionary.setProperty("collapse all","Collapse all");
+        dictionary.setProperty("pivot table settings","Ustawienia dla arkusza");
+        dictionary.setProperty("row fields","Wiersze");
+        dictionary.setProperty("column fields","Kolumny");
+        dictionary.setProperty("data fields","Dane");
+        dictionary.setProperty("filtering conditions", "Warunki wybierania");
+        dictionary.setProperty("field","Kom\u00f3rka");
+        dictionary.setProperty("checked","Wybierz");
+        dictionary.setProperty("at least one data field must be selected","Musiby\u0107 wybrana co najmniej jedna kom\u00f3rka danych.");
+        dictionary.setProperty("at least one row field must be selected","Musiby\u0107 wybrany co najmniej jeden wiersz.");
+        dictionary.setProperty("at least one column field must be selected","Musiby\u0107 wybrana co najmniej jedna kolumna.");
+        dictionary.setProperty("expand all","Rozwi\u0144 wszystko");
+        dictionary.setProperty("collapse all","Zwi\u0144 wszystko");
 
         resources = new Resources(
                 dictionary,
