@@ -119,7 +119,10 @@ public class StatusBar extends JPanel {
     progressBar.setPreferredSize(new Dimension(200, (int)statusText.getPreferredSize().getHeight()));
     this.add(progressBar,       new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 2), 0, 0));
-    this.add(statusText,       new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
+
+    int pos = 1;
+
+    this.add(statusText,       new GridBagConstraints(pos, 0, 1, 1, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 2), 0, 0));
   }
 

@@ -7,7 +7,7 @@ import java.awt.event.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: System event queue, used to intercept key events or mouse events for the MDIFrame or Form object
+ * <p>Description: System event queue, used to intercept key events or mouse events or focus events for the MDIFrame or Form object
  * or any other JComponent.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
@@ -45,8 +45,10 @@ public class ApplicationEventQueue {
   /** event queue */
   private InternalEventQueue eventQueue = new InternalEventQueue();
 
+
   /** single istance */
   private static ApplicationEventQueue applicationEventQueue = null;
+
 
 
   /**
@@ -105,6 +107,8 @@ public class ApplicationEventQueue {
 
   private ApplicationEventQueue() {
     Toolkit.getDefaultToolkit().getSystemEventQueue().push(eventQueue);
+
+
 //    getRootPane().putClientProperty("defeatSystemEventQueueCheck",Boolean.TRUE);
   }
 
@@ -125,29 +129,35 @@ public class ApplicationEventQueue {
           super.dispatchEvent(e);
         }
         catch (Exception ex) {
-        }
-        if (e instanceof MouseEvent && e.getID()==MouseEvent.MOUSE_PRESSED)
-          for(int i=0;i<mouseListeners.size();i++)
-            ((MouseListener)mouseListeners.get(i)).mousePressed((MouseEvent)e);
-        else if (e instanceof MouseEvent && e.getID()==MouseEvent.MOUSE_RELEASED)
-          for(int i=0;i<mouseListeners.size();i++)
-            ((MouseListener)mouseListeners.get(i)).mouseReleased((MouseEvent)e);
-        else if (e instanceof MouseEvent && e.getID()==MouseEvent.MOUSE_CLICKED)
-          for(int i=0;i<mouseListeners.size();i++)
-            ((MouseListener)mouseListeners.get(i)).mouseClicked((MouseEvent)e);
 
-        if (e instanceof KeyEvent &&
-            e.getID()==KeyEvent.KEY_PRESSED)
-          for(int i=0;i<keyListeners.size();i++)
-            ((KeyListener)keyListeners.get(i)).keyPressed((KeyEvent)e);
-        else if (e instanceof KeyEvent &&
-            e.getID()==KeyEvent.KEY_RELEASED)
-          for(int i=0;i<keyListeners.size();i++)
-            ((KeyListener)keyListeners.get(i)).keyReleased((KeyEvent)e);
-        else if (e instanceof KeyEvent &&
-            e.getID()==KeyEvent.KEY_TYPED)
-          for(int i=0;i<keyListeners.size();i++)
-            ((KeyListener)keyListeners.get(i)).keyTyped((KeyEvent)e);
+        }
+
+        if (e instanceof MouseEvent) {
+          if (e.getID()==MouseEvent.MOUSE_PRESSED)
+            for(int i=0;i<mouseListeners.size();i++)
+              ((MouseListener)mouseListeners.get(i)).mousePressed((MouseEvent)e);
+          else if (e.getID()==MouseEvent.MOUSE_RELEASED)
+            for(int i=0;i<mouseListeners.size();i++)
+              ((MouseListener)mouseListeners.get(i)).mouseReleased((MouseEvent)e);
+          else if (e.getID()==MouseEvent.MOUSE_CLICKED)
+            for(int i=0;i<mouseListeners.size();i++)
+              ((MouseListener)mouseListeners.get(i)).mouseClicked((MouseEvent)e);
+
+
+        }
+
+        if (e instanceof KeyEvent) {
+          if (e.getID()==KeyEvent.KEY_PRESSED)
+            for(int i=0;i<keyListeners.size();i++)
+              ((KeyListener)keyListeners.get(i)).keyPressed((KeyEvent)e);
+          else if (e.getID()==KeyEvent.KEY_RELEASED)
+            for(int i=0;i<keyListeners.size();i++)
+              ((KeyListener)keyListeners.get(i)).keyReleased((KeyEvent)e);
+          else if (e.getID()==KeyEvent.KEY_TYPED)
+            for(int i=0;i<keyListeners.size();i++)
+              ((KeyListener)keyListeners.get(i)).keyTyped((KeyEvent)e);
+
+        }
       }
 
   } // end inner class

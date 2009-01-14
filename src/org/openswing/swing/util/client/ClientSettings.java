@@ -417,6 +417,8 @@ public class ClientSettings {
   public static boolean CURRENCY_SYMBOL_ON_LEFT = true;
 
 
+
+
   /**
    * Contains application settings.
    * Buttons permission manager not defined: buttons are always enabled (as default).

@@ -429,6 +429,30 @@ public class TreeGridPanel extends JPanel {
 
 
   /**
+   * Add a pop-up menu item to a parent menu item.
+   * @param menuName menu item description (not yet translated)
+   * @param parentMenuName
+   * @param mnemonic mnemonic value
+   * @param enabled flag used to set menu item abilitation
+   * @param menuListener listener used to capture menu item selection
+   */
+  public final void addPopupMenuItem(String menuName, String parentMenuName,char mnemonic,
+                                     boolean enabled,
+                                     ActionListener menuListener) {
+    JMenuItem cbMenuItem = new JMenuItem(ClientSettings.getInstance().
+                                         getResources().getResource(menuName));
+    cbMenuItem.setMnemonic(mnemonic);
+    cbMenuItem.setEnabled(enabled);
+    cbMenuItem.addActionListener(menuListener);
+    JMenuItem parentItem = (JMenuItem)menuItems.get(parentMenuName);
+    if (parentItem!=null) {
+      parentItem.add(cbMenuItem);
+      menuItems.put(menuName, cbMenuItem);
+    }
+  }
+
+
+  /**
    * Set menu item abilitation.
    * @param menuName menu item description (not yet translated)
    * @param enabled flag used to enable the menu item
