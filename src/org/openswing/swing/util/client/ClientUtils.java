@@ -360,9 +360,12 @@ public class ClientUtils extends JApplet {
           !url.toLowerCase().startsWith("https://"))
         url = "file://"+url;
       boolean windows = false;
+      boolean mac = false;
       String os = System.getProperty("os.name");
       if ( os != null && os.startsWith("Windows"))
         windows = true;
+      if ( os != null && os.toLowerCase().indexOf("mac")!=-1)
+        mac = true;
 
       String cmd = null;
       try {
@@ -370,6 +373,16 @@ public class ClientUtils extends JApplet {
           // cmd = 'rundll32 url.dll,FileProtocolHandler http://...'
           cmd = "rundll32 url.dll,FileProtocolHandler " + url;
           Process p = Runtime.getRuntime().exec(cmd);
+        }
+        else if (mac) {
+          try {
+            Class clazz = Class.forName("com.apple.mrj.MRJFileUtils");
+            clazz.getMethod("openURL",new Class[]{String.class}).invoke(null,new Object[]{url});
+          }
+          catch (Throwable ex) {
+            String[] commandLine = {"netscape", url};
+            Process process = Runtime.getRuntime().exec(commandLine);
+          }
         }
         else {
           // Under Unix, Netscape has to be running for the "-remote"
@@ -395,7 +408,7 @@ public class ClientUtils extends JApplet {
           }
         }
       }
-      catch(Exception ex) {
+      catch(Throwable ex) {
         // couldn't exec viewer
         Logger.error("org.openswing.swing.util.client.ClientUtils", "displayURL", "Error while local document (cmd='"+cmd+"':\n"+ex.getMessage(), ex);
       }

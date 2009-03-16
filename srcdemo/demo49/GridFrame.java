@@ -16,6 +16,7 @@ import org.openswing.swing.pivottable.server.*;
 import org.openswing.swing.pivottable.tablemodelreaders.server.*;
 import org.openswing.swing.util.dataconverters.java.*;
 import org.openswing.swing.client.*;
+import java.awt.event.*;
 
 
 /**
@@ -34,6 +35,8 @@ public class GridFrame extends JFrame {
   ReloadButton reloadButton1 = new ReloadButton();
   ExportButton exportButton1 = new ExportButton();
   FilterButton filterButton1 = new FilterButton();
+  JToggleButton expRowButton = new JToggleButton("Expand/collapse row");
+  JToggleButton expColButton = new JToggleButton("Expand/collapse column");
 
 
   public GridFrame() {
@@ -203,15 +206,60 @@ public class GridFrame extends JFrame {
     pivotTable.setExportButton(exportButton1);
     pivotTable.setFilterButton(filterButton1);
     pivotTable.setReloadButton(reloadButton1);
+    expRowButton.addActionListener(new GridFrame_expRowButton_actionAdapter(this));
+    expColButton.addActionListener(new GridFrame_expColButton_actionAdapter(this));
     this.getContentPane().add(pivotTable, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(reloadButton1, null);
     buttonsPanel.add(exportButton1, null);
     buttonsPanel.add(filterButton1, null);
+    buttonsPanel.add(expRowButton, null);
+    buttonsPanel.add(expColButton, null);
+  }
+
+  void expRowButton_actionPerformed(ActionEvent e) {
+    if (pivotTable.getSelectedRow()==-1)
+      return;
+    if (expRowButton.isSelected())
+      pivotTable.expandRow(pivotTable.getSelectedRow());
+    else
+      pivotTable.collapseRow(pivotTable.getSelectedRow());
+  }
+
+  void expColButton_actionPerformed(ActionEvent e) {
+    if (pivotTable.getSelectedColumn()==-1)
+      return;
+    if (expColButton.isSelected())
+      pivotTable.expandColumn(pivotTable.getSelectedColumn());
+    else
+      pivotTable.collapseColumn(pivotTable.getSelectedColumn());
+
   }
 
 
 
 
+}
+
+class GridFrame_expRowButton_actionAdapter implements java.awt.event.ActionListener {
+  GridFrame adaptee;
+
+  GridFrame_expRowButton_actionAdapter(GridFrame adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.expRowButton_actionPerformed(e);
+  }
+}
+
+class GridFrame_expColButton_actionAdapter implements java.awt.event.ActionListener {
+  GridFrame adaptee;
+
+  GridFrame_expColButton_actionAdapter(GridFrame adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.expColButton_actionPerformed(e);
+  }
 }
 

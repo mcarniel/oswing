@@ -297,6 +297,12 @@ public class GridControl extends JPanel {
   /** flag used to show current page number in grid; default value: ClientSettings.SHOW_PAGE_NUMBER_IN_GRID */
   public boolean showPageNumber = ClientSettings.SHOW_PAGE_NUMBER_IN_GRID;
 
+  /** flag used in grid to enable the retrieval of additional rows in fast search, when search criteria fails; default value: ClientSettings.SEARCH_ADDITION_ROWS */
+  public boolean searchAdditionalRows = ClientSettings.SEARCH_ADDITIONAL_ROWS;
+
+
+
+
 
   /**
    * Costructor.
@@ -382,6 +388,7 @@ public class GridControl extends JPanel {
           expandableRowController,
           listFilters,
           headerHeight,
+          searchAdditionalRows,
           Grid.MAIN_GRID
       );
       table.setEditOnSingleRow(editOnSingleRow);
@@ -812,6 +819,7 @@ public class GridControl extends JPanel {
             null,
             listFilters,
             headerHeight,
+            searchAdditionalRows,
             Grid.TOP_GRID
         );
         topTable.setEditOnSingleRow(editOnSingleRow);
@@ -899,6 +907,7 @@ public class GridControl extends JPanel {
             null,
             new HashMap(),
             headerHeight,
+            searchAdditionalRows,
             Grid.BOTTOM_GRID
         );
         bottomTable.setEditOnSingleRow(editOnSingleRow);
@@ -3141,6 +3150,20 @@ public class GridControl extends JPanel {
 
 
   /**
+   * Show/hide a column.
+   * Do not invoke this method before grid is being visible.
+   * @param attributeName attribute name that identities the column
+   * @param visible <code>true</code> to show column; <code>false</code> to hide it
+   */
+  public final void setVisibleColumn(String attributeName,boolean visible) {
+    if (table!=null) {
+      table.setVisibleColumn(attributeName,visible);
+    }
+  }
+
+
+
+  /**
    * Remove the sorting condition currently applied to the specified column.
    * Do not invoke this method before grid is being visible.
    * @param attributeName attribute name that identities the column
@@ -3212,6 +3235,28 @@ public class GridControl extends JPanel {
         reloadData();
     }
   }
+
+
+  /**
+   * @return <code>true</code> means that grid has to automatically retrieve additional rows in fast search, when search criteria fails
+   */
+  public final boolean isSearchAdditionalRows() {
+    return searchAdditionalRows;
+  }
+
+
+  /**
+   * Define whether enabling the retrieval of additional rows in fast search, when search criteria fails.
+   * Default value: ClientSettings.SEARCH_ADDITION_ROWS
+   * @param searchAdditionalRows flag used in grid to enable the retrieval of additional rows in fast search, when search criteria fails
+   */
+  public final void setSearchAdditionalRows(boolean searchAdditionalRows) {
+    this.searchAdditionalRows = searchAdditionalRows;
+  }
+
+
+
+
 
 
 

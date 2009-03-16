@@ -212,6 +212,9 @@ public class Grid extends JTable
   /** combo-box filters to apply to column headers; collection of pairs <attribute name, ComboBoxFilterController> */
   private HashMap comboFilterControllers = new HashMap();
 
+  /** flag used in grid to enable the retrieval of additional rows in fast search, when search criteria fails; default value: ClientSettings.SEARCH_ADDITION_ROWS */
+  public boolean searchAdditionalRows = false;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -252,6 +255,7 @@ public class Grid extends JTable
       ExpandableRowController expandableRowController,
       HashMap comboFilters,
       int headerHeight,
+      boolean searchAdditionalRows,
       int gridType) {
     super();
     this.grids = grids;
@@ -279,6 +283,7 @@ public class Grid extends JTable
     this.setSelectionBackground(ClientSettings.GRID_SELECTION_BACKGROUND);
     this.setSelectionForeground(ClientSettings.GRID_SELECTION_FOREGROUND);
     this.headerHeight = headerHeight;
+    this.searchAdditionalRows = searchAdditionalRows;
     this.gridType = gridType;
 
     if (expandableColumn>=0)
@@ -3623,6 +3628,24 @@ public class Grid extends JTable
    */
   public final boolean disableListener() {
     return grids.getCurrentNestedComponent()!=null;
+  }
+
+
+  /**
+   * Method invoked by SearchWindowManager when the specified "textToSeach" pattern has not matchings in the current content
+   * of binded control.
+   * This callback can be used to retrieve additional data into control and to search inside new data.
+   * @param textToSearch patten of text to search
+   * @return -1 if no additional data is available, otherwise the row index of data just added that satify the pattern
+   */
+  public final int search(String textToSearch) {
+    if (searchAdditionalRows) {
+      if (getSelectedColumn()==-1)
+        return -1;
+      String attrName = grids.getVOListTableModel().getColumnName(convertColumnIndexToModel(getSelectedColumn()));
+      return grids.retrieveAdditionalRows(attrName,textToSearch);
+    }
+    return -1;
   }
 
 

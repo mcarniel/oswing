@@ -553,6 +553,7 @@ public class LookupController {
           null,
           comboFilters,
           ClientSettings.HEADER_HEIGHT,
+          false,
           Grid.MAIN_GRID
       );
       lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);
@@ -694,6 +695,7 @@ public class LookupController {
           null,
           comboFilters,
           ClientSettings.HEADER_HEIGHT,
+          false,
           Grid.MAIN_GRID
       );
       lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);

@@ -983,4 +983,16 @@ public class CheckBoxListControl extends BaseInputControl implements InputContro
   }
 
 
+  /**
+   * Method invoked by SearchWindowManager when the specified "textToSeach" pattern has not matchings in the current content
+   * of binded control.
+   * This callback can be used to retrieve additional data into control and to search inside new data.
+   * @param textToSeach patten of text to search
+   * @return -1 if no additional data is available, otherwise the row index of data just added that satify the pattern
+   */
+  public final int search(String textToSeach) {
+    return -1;
+  }
+
+
 }

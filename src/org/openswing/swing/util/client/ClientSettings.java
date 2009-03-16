@@ -416,6 +416,8 @@ public class ClientSettings {
   /** flag used to define the default position of currency symbol in currency control/column: on the left or on the right of the numeric value; default value: <code>true</code> i.e. on the left of the numeric value */
   public static boolean CURRENCY_SYMBOL_ON_LEFT = true;
 
+  /** flag used in grid to enable the retrieval of additional rows in fast search, when search criteria fails; default value: <code>false</code> i.e. do not retrieve additional rows */
+  public static boolean SEARCH_ADDITIONAL_ROWS = false;
 
 
 

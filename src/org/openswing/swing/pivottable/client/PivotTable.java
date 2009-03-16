@@ -1569,5 +1569,106 @@ public final class PivotTable extends JPanel implements DataController,Draggable
   } // end inner class
 
 
+  /**
+   * Expand all rows fields, starting from the specified row index.
+   * @param row row index to expand
+   */
+  public final void expandRow(int row) {
+      int r = 0;
+      if (row>0) {
+        int oldr = 0;
+        for(int i=0;i<row;i++)
+          if (rowsTable.rowAtPoint(new Point(5,i*dataTable.getRowHeight()))!=oldr) {
+            oldr = rowsTable.rowAtPoint(new Point(5, i * dataTable.getRowHeight()));
+            r++;
+          }
+      }
+      setExpansionStateNode(pivotTableModel.getHRoot().getChildren(r),true,r);
+      buildPivotTable();
+  }
+
+
+  /**
+   * Collapse all rows fields, starting from the specified row index.
+   * @param row row index to collapse
+   */
+  public final void collapseRow(int row) {
+    int r = 0;
+    if (row>0) {
+      int oldr = 0;
+      for(int i=0;i<row;i++)
+        if (rowsTable.rowAtPoint(new Point(5,i*dataTable.getRowHeight()))!=oldr) {
+          oldr = rowsTable.rowAtPoint(new Point(5, i * dataTable.getRowHeight()));
+          r++;
+        }
+    }
+    setExpansionStateNode(pivotTableModel.getHRoot().getChildren(r),false,r);
+    buildPivotTable();
+  }
+
+
+  /**
+   * Expand all column fields, starting from the specified column index.
+   * @param column column index to expand
+   */
+  public final void expandColumn(int column) {
+    int c = 0;
+    if (column>0) {
+      int oldc = 0;
+      int w = 0;
+      for(int i=0;i<column;i++) {
+       if (colsTable.columnAtPoint(new Point(w, 5)) != oldc) {
+          oldc = colsTable.columnAtPoint(new Point(w, 5));
+          c++;
+       }
+       w += dataTable.getColumnModel().getColumn(i).getWidth();
+      }
+      if (c>=pivotTableModel.getVRoot().getChildrenCount())
+        c = pivotTableModel.getVRoot().getChildrenCount()-1;
+    }
+    setExpansionStateNode(pivotTableModel.getVRoot().getChildren(c),true,c);
+    buildPivotTable();
+  }
+
+
+  /**
+   * Collapse all column fields, starting from the specified column index.
+   * @param column column index to collapse
+   */
+  public final void collapseColumn(int column) {
+    int c = 0;
+    if (column>0) {
+      int oldc = 0;
+      int w = 0;
+      for(int i=0;i<column;i++) {
+        if (colsTable.columnAtPoint(new Point(w, 5)) != oldc) {
+          oldc = colsTable.columnAtPoint(new Point( w, 5));
+          c++;
+        }
+        w += dataTable.getColumnModel().getColumn(i).getWidth();
+      }
+      if (c>=pivotTableModel.getVRoot().getChildrenCount())
+        c = pivotTableModel.getVRoot().getChildrenCount()-1;
+    }
+    setExpansionStateNode(pivotTableModel.getVRoot().getChildren(c),false,c);
+    buildPivotTable();
+  }
+
+
+  /**
+   * @return current selected row in data table
+   */
+  public final int getSelectedRow() {
+    return dataTable.getSelectedRow();
+  }
+
+
+  /**
+   * @return current selected column in data table
+   */
+  public final int getSelectedColumn() {
+    return dataTable.getSelectedColumn();
+  }
+
 
 }

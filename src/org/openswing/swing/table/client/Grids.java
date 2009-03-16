@@ -2,16 +2,19 @@ package org.openswing.swing.table.client;
 
 
 import java.io.*;
-import java.util.*;
 import java.text.*;
+import java.util.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 
 import org.openswing.swing.client.*;
 import org.openswing.swing.export.client.*;
 import org.openswing.swing.export.java.*;
 import org.openswing.swing.importdata.client.*;
+import org.openswing.swing.importdata.java.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.*;
@@ -21,8 +24,6 @@ import org.openswing.swing.table.java.*;
 import org.openswing.swing.table.model.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
-import org.openswing.swing.importdata.java.*;
-import java.lang.reflect.*;
 
 
 /**
@@ -260,6 +261,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       ExpandableRowController expandableRowController,
       HashMap comboFilters,
       int headerHeight,
+      boolean searchAdditionalRows,
       int gridType
   ) {
     this.gridControl = gridControl;
@@ -307,6 +309,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         expandableRowController,
         comboFilters,
         headerHeight,
+        searchAdditionalRows,
         gridType
     );
 
@@ -331,6 +334,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           expandableRowController,
           comboFilters,
           headerHeight,
+          searchAdditionalRows,
           gridType
       );
       this.lockedGrid.setReorderingAllowed(false);
@@ -1657,31 +1661,36 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @param startIndex row index used to start data fetching
    * @param action action to execute on the startIndex; three possible action may be executed: GridCommand.NEXT_BLOCK_ACTION, GridCommand.PREVIOUS_BLOCK_ACTION, GridCommand.LAST_BLOCK_ACTION
    */
-  private boolean loadData(int action) {
+  private boolean loadData(final int action) {
     boolean result = false;
     int selMode = grid.getSelectionModel().getSelectionMode();
     try {
-//      if (startIndex+1<lastIndex-model.getRowCount() && action==GridParams.PREVIOUS_BLOCK_ACTION) {
-//        startIndex = 0;
-//        lastIndex = -1;
-//        action = GridParams.NEXT_BLOCK_ACTION;
-//      }
-      grid.getSelectionModel().setSelectionMode(grid.getSelectionModel().SINGLE_SELECTION);
-      if (gridType==Grid.MAIN_GRID) {
-        statusPanel.setText(ClientSettings.getInstance().getResources().getResource("Loading data..."));
-        statusPanel.setPage("");
-      }
 
-      // data fetching is dispached to the grid controller...
-      ClientUtils.fireBusyEvent(true);
       try {
-        ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        ClientUtils.getParentFrame(this).getToolkit().sync();
+        SwingUtilities.invokeAndWait(new Runnable() {
+          public void run() {
+            // esecute on EventQueue thread...
+            grid.getSelectionModel().setSelectionMode(grid.getSelectionModel().SINGLE_SELECTION);
+            if (gridType==Grid.MAIN_GRID) {
+              statusPanel.setText(ClientSettings.getInstance().getResources().getResource("Loading data..."));
+              statusPanel.setPage("");
+            }
+
+            // data fetching is dispached to the grid controller...
+            ClientUtils.fireBusyEvent(true);
+            try {
+              ClientUtils.getParentFrame(Grids.this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+              ClientUtils.getParentFrame(Grids.this).getToolkit().sync();
+            }
+            catch (Exception ex3) {
+            }
+          }
+        });
       }
-      catch (Exception ex3) {
+      catch (Exception ex) {
       }
 
-      Response answer = null;
+      final Response answer;
       try {
         answer = gridDataLocator.loadData(
             action,
@@ -1691,93 +1700,107 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             currentSortedVersusColumns,
             modelAdapter.getValueObjectType(),
             otherGridParams
-            );
+        );
       }
       finally {
         try {
-          ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-          ClientUtils.getParentFrame(this).getToolkit().sync();
+          SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+              // execute on EventQueue thread...
+              try {
+                ClientUtils.getParentFrame(Grids.this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+                ClientUtils.getParentFrame(Grids.this).getToolkit().sync();
+              }
+              catch (Exception ex2) {
+              }
+              ClientUtils.fireBusyEvent(false);
+            }
+          });
         }
-        catch (Exception ex2) {
+        catch (Exception ex) {
         }
-        ClientUtils.fireBusyEvent(false);
       }
 
       // clear table model...
-      model.clear();
-      grid.revalidate();
-      grid.repaint();
-      if (lockedGrid!=null) {
-        lockedGrid.revalidate();
-        lockedGrid.repaint();
-      }
 
-      if (answer==null || answer instanceof ErrorResponse) {
-        lastIndex = -1;
-        moreRows = false;
-        if (answer!=null)
-          OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
-              ClientSettings.getInstance().getResources().getResource("Error while loading data")+":\n"+answer.getErrorMessage(),
-              ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
-              JOptionPane.ERROR_MESSAGE
-          );
-      }
-      else {
-        java.util.List data = ((VOListResponse)answer).getRows();
-        moreRows = ((VOListResponse)answer).isMoreRows();
-        if (action == GridParams.NEXT_BLOCK_ACTION)
-          lastIndex = startIndex + data.size() - 1;
-        else if (action == GridParams.PREVIOUS_BLOCK_ACTION) {
-          startIndex = startIndex - data.size();
-          lastIndex = startIndex + data.size() - 1; // lastIndex - data.size();
-        }
-        else if (action == GridParams.LAST_BLOCK_ACTION) {
-          lastIndex = ((VOListResponse)answer).getResultSetLength() - 1;
-          startIndex = lastIndex - data.size() + 1;
-        }
-        grid.clearSelection();
-        if (lockedGrid!=null) {
-          lockedGrid.clearSelection();
-        }
+      try {
+        SwingUtilities.invokeAndWait(new Runnable() {
+          public void run() {
+            // execute on EventQueue thread...
+            model.clear();
+            grid.revalidate();
+            grid.repaint();
+            if (lockedGrid!=null) {
+              lockedGrid.revalidate();
+              lockedGrid.repaint();
+            }
 
-          // fill in the table model with data fetched from the grid controller...
-        try {
-          for (int i = 0; i < data.size(); i++) {
-            model.addObject( (ValueObject) data.get(i));
-          }
-        }
-        catch (ClassCastException ex1) {
-          Logger.error(this.getClass().getName(), "loadData", "Error while fetching data: value object is not an instance of ValueObject class.",null);
-          throw ex1;
-        }
+            if (answer==null || answer instanceof ErrorResponse) {
+              lastIndex = -1;
+              moreRows = false;
+              if (answer!=null)
+                OptionPane.showMessageDialog(
+                    ClientUtils.getParentFrame(Grids.this),
+                    ClientSettings.getInstance().getResources().getResource("Error while loading data")+":\n"+answer.getErrorMessage(),
+                    ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+            else {
+              java.util.List data = ((VOListResponse)answer).getRows();
+              moreRows = ((VOListResponse)answer).isMoreRows();
+              if (action == GridParams.NEXT_BLOCK_ACTION)
+                lastIndex = startIndex + data.size() - 1;
+              else if (action == GridParams.PREVIOUS_BLOCK_ACTION) {
+                startIndex = startIndex - data.size();
+                lastIndex = startIndex + data.size() - 1; // lastIndex - data.size();
+              }
+              else if (action == GridParams.LAST_BLOCK_ACTION) {
+                lastIndex = ((VOListResponse)answer).getResultSetLength() - 1;
+                startIndex = lastIndex - data.size() + 1;
+              }
+              grid.clearSelection();
+              if (lockedGrid!=null) {
+                lockedGrid.clearSelection();
+              }
 
-        expandedRows.clear();
-        cache.clear();
+                // fill in the table model with data fetched from the grid controller...
+              try {
+                for (int i = 0; i < data.size(); i++) {
+                  model.addObject( (ValueObject) data.get(i));
+                }
+              }
+              catch (ClassCastException ex1) {
+                Logger.error(this.getClass().getName(), "loadData", "Error while fetching data: value object is not an instance of ValueObject class.",null);
+                throw ex1;
+              }
 
-        // update status bar content...
-        if (model.getRowCount()==0) {
-          statusPanel.setPage("");
-          totalResultSetLength = -1;
-          if (getNavBar()!=null) {
-            if (startIndex>0 && blockSize>0)
-              getNavBar().updatePageNumber(startIndex/blockSize+1);
-            else
-              getNavBar().updatePageNumber(0);
-          }
-        }
-        else {
-          if (!((VOListResponse)answer).isMoreRows() && startIndex==0) {
-            // the whole resultset has been loaded...
+              expandedRows.clear();
+              cache.clear();
+
+              // update status bar content...
+              if (model.getRowCount()==0) {
+                statusPanel.setPage("");
+                totalResultSetLength = -1;
+                if (getNavBar()!=null) {
+                  if (startIndex>0 && blockSize>0)
+                    getNavBar().updatePageNumber(startIndex/blockSize+1);
+                  else
+                    getNavBar().updatePageNumber(0);
+                }
+              }
+              else {
+                if (!((VOListResponse)answer).isMoreRows() && startIndex==0) {
+                  // the whole resultset has been loaded...
 //            String page = ClientSettings.getInstance().getResources().getResource("page")+" 1 "+ClientSettings.getInstance().getResources().getResource("of")+" 1";
 //            statusPanel.setPage(page);
-            statusPanel.setPage("");
-            if (getNavBar()!=null)
-              getNavBar().updatePageNumber(0);
-            totalResultSetLength = model.getRowCount();
-          }
-          else {
-            // only a block of data has been loaded...
+                  statusPanel.setPage("");
+                  if (getNavBar()!=null)
+                    getNavBar().updatePageNumber(0);
+                  totalResultSetLength = model.getRowCount();
+                }
+                else {
+                  // only a block of data has been loaded...
 //            String page = ClientSettings.getInstance().getResources().getResource("page")+" "+(getLastIndex()/model.getRowCount()+1);
 //            if (blockSize==-1)
 //              blockSize = model.getRowCount();
@@ -1792,48 +1815,55 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 //            if (getNavBar()!=null)
 //              getNavBar().updatePageNumber(getLastIndex()/model.getRowCount()+1);
 
-            if (blockSize==-1)
-              blockSize = model.getRowCount();
-            String page = ClientSettings.getInstance().getResources().getResource("page")+" "+(getLastIndex()/blockSize+1);
-            if ( ((VOListResponse)answer).getTotalAmountOfRows()>0) {
-              page += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+(((VOListResponse)answer).getTotalAmountOfRows()/blockSize);
-              totalResultSetLength = ((VOListResponse)answer).getTotalAmountOfRows();
+                  if (blockSize==-1)
+                    blockSize = model.getRowCount();
+                  String page = ClientSettings.getInstance().getResources().getResource("page")+" "+(getLastIndex()/blockSize+1);
+                  if ( ((VOListResponse)answer).getTotalAmountOfRows()>0) {
+                    page += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+(((VOListResponse)answer).getTotalAmountOfRows()/blockSize);
+                    totalResultSetLength = ((VOListResponse)answer).getTotalAmountOfRows();
+                  }
+                  else {
+                    totalResultSetLength = -1;
+                  }
+                  statusPanel.setPage(page);
+                  if (getNavBar()!=null)
+                    getNavBar().updatePageNumber(getLastIndex()/blockSize+1);
+
+                }
+              }
+
+              grid.revalidate();
+              grid.repaint();
+
+              Grids.this.revalidate();
+              Grids.this.repaint();
             }
-            else {
-              totalResultSetLength = -1;
-            }
-            statusPanel.setPage(page);
-            if (getNavBar()!=null)
-              getNavBar().updatePageNumber(getLastIndex()/blockSize+1);
+
+            // update toolbar...
+            if (getInsertButton()!=null)
+              getInsertButton().setEnabled(true);
+            if (getExportButton()!=null)
+              getExportButton().setEnabled(model.getRowCount()>0);
+            if (getImportButton()!=null)
+              getImportButton().setEnabled(true);
+            if (getCopyButton()!=null)
+              getCopyButton().setEnabled(model.getRowCount()>0);
+            if (getEditButton()!=null)
+              getEditButton().setEnabled(model.getRowCount()>0);
+            if (getFilterButton()!=null)
+              getFilterButton().setEnabled(model.getRowCount()>0);
+            setGenericButtonsEnabled(model.getRowCount()>0);
+            if (getDeleteButton()!=null)
+              getDeleteButton().setEnabled(model.getRowCount()>0);
+
+            resetButtonsState();
 
           }
-        }
-
-        grid.revalidate();
-        grid.repaint();
-
-        this.revalidate();
-        this.repaint();
+        });
+      }
+      catch (Exception ex) {
       }
 
-      // update toolbar...
-      if (getInsertButton()!=null)
-        getInsertButton().setEnabled(true);
-      if (getExportButton()!=null)
-        getExportButton().setEnabled(model.getRowCount()>0);
-      if (getImportButton()!=null)
-        getImportButton().setEnabled(true);
-      if (getCopyButton()!=null)
-        getCopyButton().setEnabled(model.getRowCount()>0);
-      if (getEditButton()!=null)
-        getEditButton().setEnabled(model.getRowCount()>0);
-      if (getFilterButton()!=null)
-        getFilterButton().setEnabled(model.getRowCount()>0);
-      setGenericButtonsEnabled(model.getRowCount()>0);
-      if (getDeleteButton()!=null)
-        getDeleteButton().setEnabled(model.getRowCount()>0);
-
-      resetButtonsState();
       result = true;
     }
     catch(Throwable ex) {
@@ -3268,6 +3298,18 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
+   * Show/hide a column.
+   * Do not invoke this method before grid is being visible.
+   * @param attributeName attribute name that identities the column
+   * @param visible <code>true</code> to show column; <code>false</code> to hide it
+   */
+  public final void setVisibleColumn(String attributeName,boolean colVisible) {
+    int columnModelIndex = modelAdapter.getFieldIndex(attributeName);
+    grid.setVisibleColumn(columnModelIndex,colVisible);
+  }
+
+
+  /**
    * @param attributeName attribute name related to a visible column
    * @return header column name if the specified attribute is found; attributeName otherwise
    */
@@ -3670,15 +3712,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       currentNumberOfNewRows = 0;
       repaint();
       selectedRowBeforeReloading = getSelectedRow();
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          public void run() {
-            errorOnLoad = !loadData(GridParams.NEXT_BLOCK_ACTION);
-          }
-        });
-      }
-      catch (Exception ex) {
-      }
+      errorOnLoad = !loadData(GridParams.NEXT_BLOCK_ACTION);
 
       if (model.getRowCount()>0) {
         if (selectedRowBeforeReloading==-1)
@@ -3848,6 +3882,126 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
 
+  /**
+   * This method fetches and appends additional rows that satify specified criteria.
+   * @param attributeName attribute used to filter data
+   * @param textToSearch text to search
+   * @return first added row that satify specified criteria
+   */
+  public final int retrieveAdditionalRows(String attributeName,String textToSearch) {
+    java.util.List data = null;
+    try {
+      Object value = gridController.beforeRetrieveAdditionalRows(attributeName,textToSearch);
+
+      // data fetching is dispached to the grid controller...
+      ClientUtils.fireBusyEvent(true);
+      try {
+        ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        ClientUtils.getParentFrame(this).getToolkit().sync();
+      }
+      catch (Exception ex3) {
+      }
+
+      FilterWhereClause[] filter = new FilterWhereClause[] {
+          new FilterWhereClause(attributeName,ClientSettings.LIKE,"%"+value+"%"),
+          null
+      };
+      quickFilterValues.put(attributeName,filter);
+
+      Response answer = null;
+      try {
+        answer = gridDataLocator.loadData(
+            GridParams.NEXT_BLOCK_ACTION,
+            startIndex,
+            quickFilterValues,
+            currentSortedColumns,
+            currentSortedVersusColumns,
+            modelAdapter.getValueObjectType(),
+            otherGridParams
+        );
+      }
+      finally {
+        try {
+          ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+          ClientUtils.getParentFrame(this).getToolkit().sync();
+        }
+        catch (Exception ex2) {
+        }
+        ClientUtils.fireBusyEvent(false);
+        quickFilterValues.remove(attributeName);
+      }
+
+      if (answer==null || answer instanceof ErrorResponse) {
+        if (answer!=null)
+          Logger.error(this.getClass().getName(), "loadData", "Error while fetching data:\n"+answer.getErrorMessage(),null);
+      }
+      else {
+        data = ((VOListResponse)answer).getRows();
+        lastIndex += data.size();
+
+          // append to table model the data fetched from the grid controller...
+        try {
+          for (int i = 0; i < data.size(); i++) {
+            model.addObject( (ValueObject) data.get(i));
+          }
+        }
+        catch (ClassCastException ex1) {
+          Logger.error(this.getClass().getName(), "loadData", "Error while fetching data: value object is not an instance of ValueObject class.",null);
+          throw ex1;
+        }
+
+       // update status bar content...
+        if (model.getRowCount()==0) {
+          statusPanel.setPage("");
+          totalResultSetLength = -1;
+          if (getNavBar()!=null) {
+            if (startIndex>0 && blockSize>0)
+              getNavBar().updatePageNumber(startIndex/blockSize+1);
+            else
+              getNavBar().updatePageNumber(0);
+          }
+        }
+        else {
+          if (!((VOListResponse)answer).isMoreRows() && startIndex==0) {
+            statusPanel.setPage("");
+            if (getNavBar()!=null)
+              getNavBar().updatePageNumber(0);
+            totalResultSetLength = model.getRowCount();
+          }
+          else {
+            // only a block of data has been loaded...
+            if (blockSize==-1)
+              blockSize = model.getRowCount();
+            String page = ClientSettings.getInstance().getResources().getResource("page")+" "+(getLastIndex()/blockSize+1);
+            if ( ((VOListResponse)answer).getTotalAmountOfRows()>0) {
+              page += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+(((VOListResponse)answer).getTotalAmountOfRows()/blockSize);
+              totalResultSetLength = ((VOListResponse)answer).getTotalAmountOfRows();
+            }
+            else {
+              totalResultSetLength = -1;
+            }
+            statusPanel.setPage(page);
+            if (getNavBar()!=null)
+              getNavBar().updatePageNumber(getLastIndex()/blockSize+1);
+
+          }
+        }
+
+        grid.revalidate();
+        grid.repaint();
+
+        this.revalidate();
+        this.repaint();
+      }
+
+    }
+    catch(Throwable ex) {
+      Logger.error(this.getClass().getName(), "loadData", "Error while fetching data.", ex);
+    }
+    if (data.size()>0)
+      return getVOListTableModel().getRowCount()-data.size();
+    return -1;
+  }
 
 
 

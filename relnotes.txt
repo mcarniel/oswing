@@ -1,5 +1,42 @@
 
 
+Release Notes 1.9.4
+-------------------
+
+Final release 1.9.4 available
+Added global property SEARCH_ADDITIONAL_ROWS in ClientSettings, used by grid control in order to enable the retrieval of additional rows in fast search, 
+when search criteria fails.
+Added boolean property named "searchAdditionalRows" to GridControl, in order to enable the retrieval of additional rows in fast search, 
+when search criteria fails. Its default value is defined through ClientSettings.SEARCH_ADDITIONAL_ROWS global property.
+Fixed problem in GridControl on retrieving data: now status bar showes "loading data..." message again.
+Fixed bug in CayenneUtils class, when applying filtering conditions having multiple values.
+PivotTable improvement: added expand/collapseRow and expand/collapseColumn methods, in order to 
+dynamically expand/collapse selected cell in data table.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.9.3
+-------------------
+
+Final release 1.9.3 available
+Improved check box column: now change value event is listened when clicking on check-box and no more after losting focus from cell,
+as for other columns.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.9.2
+-------------------
+
+Final release 1.9.2 available
+Improved ClientUtils.displayURL() method, in order to support Mac OS browsers.
+Fixed problem when using PivotTable in 3tiers applications.
+Added setVisibleColumn() method to GridControl, in order to dinamically show/hide columns in a already visible grid.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.9.1
 -------------------
 

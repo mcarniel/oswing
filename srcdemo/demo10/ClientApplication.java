@@ -23,7 +23,7 @@ import org.openswing.swing.table.profiles.client.FileGridProfileManager;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
 import org.openswing.swing.util.java.Consts;
 import org.openswing.swing.lookup.client.LookupController;
-import org.openswing.swing.kbs.client.FileKBSStorageManager;
+//import org.openswing.swing.kbs.client.FileKBSStorageManager;
 
 
 /**
@@ -170,7 +170,7 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
     ClientSettings.LOOKUP_FRAME_CONTENT = LookupController.GRID_AND_FILTER_FRAME;
 
-    ClientSettings.KB_STORAGE_MANAGER = new FileKBSStorageManager();
+//    ClientSettings.KB_STORAGE_MANAGER = new FileKBSStorageManager();
 
 
     MDIFrame mdi = new MDIFrame(this);

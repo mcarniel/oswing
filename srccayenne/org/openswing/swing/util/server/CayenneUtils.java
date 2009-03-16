@@ -94,7 +94,7 @@ public class CayenneUtils {
               num++;
             }
             baseSQL = baseSQL.substring(0,baseSQL.length()-1);
-            baseSQL += ") AND ";
+            baseSQL += ") and ";
           }
           else {
             // (name op value1 OR name op value2 OR ...)
@@ -104,19 +104,19 @@ public class CayenneUtils {
               baseSQL +=
                   attributeName +
                   " " + filterClauses[0].getOperator() +
-                  " $n"+num+" OR ";
+                  " $n"+num+" or ";
               values.put("n"+num,inValues.get(j));
               num++;
             }
             baseSQL = baseSQL.substring(0,baseSQL.length()-3);
-            baseSQL += ") AND ";
+            baseSQL += ") and ";
           }
         } else {
           // name op value
           baseSQL +=
               attributeName +
               " " + filterClauses[0].getOperator() +
-              " $n"+num+" AND ";
+              " $n"+num+" and ";
           values.put("n"+num,filterClauses[0].getValue());
           num++;
         }
@@ -127,7 +127,7 @@ public class CayenneUtils {
         baseSQL +=
               attributeName +
               " " + filterClauses[0].getOperator() + " " +
-              "AND ";
+              "and ";
       }
       if (filterClauses[1] != null) {
         if (  filterClauses[1].getValue()!=null &&
@@ -148,7 +148,7 @@ public class CayenneUtils {
                 num++;
               }
               baseSQL = baseSQL.substring(0,baseSQL.length()-1);
-              baseSQL += ") AND ";
+              baseSQL += ") and ";
             }
             else {
               // (name op value1 OR name op value2 OR ...)
@@ -158,19 +158,21 @@ public class CayenneUtils {
                 baseSQL +=
                     attributeName +
                     " " + filterClauses[1].getOperator() +
-                    " $n"+num+" OR ";
+                    " $n"+num+" or ";
                 values.put("n"+num,inValues.get(j));
+                num++;
               }
               baseSQL = baseSQL.substring(0,baseSQL.length()-3);
-              baseSQL += ") AND ";
+              baseSQL += ") and ";
             }
           } else {
             // name op value
             baseSQL +=
                 attributeName +
                 " " + filterClauses[1].getOperator() +
-                " $n"+num+" AND ";
+                " $n"+num+" and ";
             values.put("n"+num,filterClauses[1].getValue());
+            num++;
           }
         }
         else {
@@ -179,7 +181,7 @@ public class CayenneUtils {
           baseSQL +=
                 attributeName +
                 " " + filterClauses[1].getOperator() + " " +
-                "AND ";
+                "and ";
         }
       }
     }

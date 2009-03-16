@@ -291,8 +291,13 @@ public class SearchWindowManager {
             String text = searchField.getText().trim();
             if (text.length() != 0) {
               int found = searchFromCurrentIndex(text);
-              if (found == -1)
-                  searchField.setForeground(Color.red);
+              if (found == -1) {
+                 found = inputControl.search(text);
+                 if (found==-1)
+                   searchField.setForeground(Color.red);
+                 else
+                   searchField.setForeground(defaultForeground);
+              }
               else
                   searchField.setForeground(defaultForeground);
 

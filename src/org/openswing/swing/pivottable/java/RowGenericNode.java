@@ -36,7 +36,7 @@ import java.util.HashMap;
 public class RowGenericNode implements Serializable {
 
   /** collection of pairs <col fields path,ColGenericNode> */
-  private transient HashMap vtreeNodes = new HashMap();
+  private HashMap vtreeNodes = new HashMap();
 
   /** list of GenericNode objects */
   private ArrayList childrenNodes = new ArrayList();

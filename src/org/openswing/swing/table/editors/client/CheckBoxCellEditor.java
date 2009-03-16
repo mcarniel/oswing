@@ -90,10 +90,11 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
 
             changeSelectedValue();
 
-            CheckBoxCellEditor.this.grids.getGrid().setValueAt(selected,CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),column);
-            CheckBoxCellEditor.this.grids.getGrid().editCellAt(CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),column);
+            CheckBoxCellEditor.this.grids.getGrid().setValueAt(selected,CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),CheckBoxCellEditor.this.grids.getGrid().convertColumnIndexToView(column));
+            CheckBoxCellEditor.this.grids.getGrid().editCellAt(CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),CheckBoxCellEditor.this.grids.getGrid().convertColumnIndexToView(column));
             for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
               ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
+            CheckBoxCellEditor.this.grids.getGrid().repaint();
           }
         });
 
@@ -196,6 +197,19 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
       else
         selected = Boolean.TRUE;
     }
+
+
+    if (grids.getMode()!=Consts.READONLY) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          grids.getGrid().setValueAt(selected,grids.getGrid().getSelectedRow(),grids.getGrid().convertColumnIndexToView(column));
+          grids.getGrid().editCellAt(grids.getGrid().getSelectedRow(),grids.getGrid().convertColumnIndexToView(column));
+          for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
+            ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
+          grids.getGrid().repaint();
+        }
+      });
+    }
   }
 
 
@@ -255,10 +269,10 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
 
 //                if (!table.hasFocus())
 //                  table.requestFocus();
-                grids.getGrid().setValueAt(selected,grids.getGrid().getSelectedRow(),column);
-                grids.getGrid().editCellAt(grids.getGrid().getSelectedRow(),column);
-                for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
-                  ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
+//                grids.getGrid().setValueAt(selected,grids.getGrid().getSelectedRow(),column);
+//                grids.getGrid().editCellAt(grids.getGrid().getSelectedRow(),column);
+//                for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
+//                  ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
             }
           });
         }
