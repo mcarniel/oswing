@@ -12,6 +12,7 @@ import org.openswing.swing.logger.client.*;
 import org.openswing.swing.mdi.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.client.OptionPane;
+import java.beans.Beans;
 
 
 /**
@@ -47,7 +48,8 @@ public class MDIFrame extends JFrame implements BusyListener {
 
   static {
     try {
-      if (System.getProperty("os.name").toLowerCase().startsWith("linux") &&
+      if (!Beans.isDesignTime() &&
+          System.getProperty("os.name").toLowerCase().startsWith("linux") &&
           System.getProperty("java.version").startsWith("1.6") &&
           ClientSettings.LOOK_AND_FEEL_CLASS_NAME.endsWith("GTKLookAndFeel"))
         ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "javax.swing.plaf.metal.MetalLookAndFeel";

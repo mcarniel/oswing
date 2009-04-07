@@ -70,6 +70,9 @@ public class DecimalColumn extends Column {
   /** component bottom margin, with respect to component container; defaut value: 0 */
   private int bottomMargin = 0;
 
+  /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
+  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDIT;
+
 
   public DecimalColumn() {
     setTextAlignment(SwingConstants.RIGHT);
@@ -255,6 +258,23 @@ public class DecimalColumn extends Column {
 
 
   /**
+   * @return <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell
+   */
+  public final boolean isSelectDataOnEdit() {
+    return selectDataOnEdit;
+  }
+
+
+  /**
+   * Define if data stored in cell must be selected when cell is set in edit
+   * @param selectDataOnEdit <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell
+   */
+  public final void setSelectDataOnEdit(boolean selectDataOnEdit) {
+    this.selectDataOnEdit = selectDataOnEdit;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -284,7 +304,8 @@ public class DecimalColumn extends Column {
         isColumnRequired(),
         getMinValue(),
         getMaxValue(),
-        getDynamicSettings()
+        getDynamicSettings(),
+        selectDataOnEdit
     );
   }
 

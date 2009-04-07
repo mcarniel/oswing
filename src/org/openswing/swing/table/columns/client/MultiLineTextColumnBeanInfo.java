@@ -51,13 +51,15 @@ public class MultiLineTextColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(StringAttributeNameEditor.class);
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
+      PropertyDescriptor _selectDataOnEdit = new PropertyDescriptor("selectDataOnEdit", beanClass, "isSelectDataOnEdit", "setSelectDataOnEdit");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
           _bottomMargin,
           _columnName,
           _leftMargin,
           _maxCharacters,
           _rightMargin,
-          _topMargin,
+          _selectDataOnEdit,
+          _topMargin
       };
       return pds;
     }

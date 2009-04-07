@@ -84,6 +84,21 @@ public class VOModel {
 
 
   /**
+   * Set the value object class that this model will use.
+   * @param valueObjectClass value object class
+   * @throws java.lang.Exception if an error occours
+   */
+  public final void setValueObject(Class valueObjectClass) throws Exception {
+    this.valueObjectClass = valueObjectClass;
+    this.valueObject = null;
+    voSetterMethods.clear();
+    voGetterMethods.clear();
+    analyzeClassFields(new Hashtable(),"",new Method[0],valueObjectClass);
+    setValueObject( (ValueObject) valueObjectClass.newInstance());
+  }
+
+
+  /**
    * Define if an inner v.o. must be automatically instantiated when a setter method is invoked.
    * @param createInnerVO define if an inner v.o. must be automatically instantiated when a setter method is invoked
    */
@@ -128,7 +143,9 @@ public class VOModel {
                 Long.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
                 Float.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
                 Double.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
-                Character.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType())
+                Character.TYPE.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                ArrayList.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                java.util.List.class.isAssignableFrom(props[i].getReadMethod().getReturnType())
           ))
             continue;
         }
@@ -248,8 +265,8 @@ public class VOModel {
                       obj = (ValueObject)readMethods[i].getReturnType().newInstance();
                   }
                 }
-              oldValue = obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
 
+              oldValue = obj != null ? readMethods[readMethods.length - 1].invoke(obj, new Object[0]) : null;
               obj = valueObject;
               if (obj!=null)
                 for(int i=0;i<readMethods.length-1;i++) {
@@ -266,7 +283,21 @@ public class VOModel {
               newValue = obj!=null?readMethods[readMethods.length-1].invoke(obj, new Object[0]):null;
             }
             catch (Exception ex) {
-              Logger.error(this.getClass().getName(),"setValueObject","Error while setting the value object attribute '"+attrName+"'",ex);
+              String msg = "";
+              try {
+                msg = "Object: "+obj.getClass().getName()+"\n";
+                for(int i=0;i<readMethods.length;i++)
+                  msg +=
+                      "Getter: "+
+                      readMethods[i].getReturnType().getName()+" "+
+                      readMethods[i].getName()+
+                      "("+
+                      (readMethods[i].getParameterTypes().length==1?readMethods[i].getParameterTypes()[0].getName():"")+
+                      ")\n";
+              }
+              catch (Exception exx) {
+              }
+              Logger.error(this.getClass().getName(),"setValueObject","Error while setting the value object attribute '"+attrName+"'\n"+msg,ex);
               continue;
             }
           }

@@ -180,6 +180,9 @@ public class LookupController {
   /** flag used to auto fit column sizes, according to text headers; default value: <code>ClientSettings.AUTO_FIT_COLUMNS</code> */
   public boolean autoFitColumns = ClientSettings.AUTO_FIT_COLUMNS;
 
+  /** define if the navigator bar must be showed on top of the lookup grid; default value: <code>ClientSettings.SHOW_NAVIGATOR_BAR_IN_LOOKUP</code> */
+  private boolean showNavigatorBar = ClientSettings.SHOW_NAVIGATOR_BAR_IN_LOOKUP;
+
 
   /**
    * Execute the code validation.
@@ -1643,6 +1646,22 @@ public class LookupController {
   }
 
 
+  /**
+   * Define if the navigator bar must be showed on top of the lookup grid frame.
+   * @param showNavigatorBar <code>true</code> to show the navigator bar on top of the grid lookup frame
+   */
+  public final void setShowNavigatorBar(boolean showNavigatorBar) {
+    this.showNavigatorBar = showNavigatorBar;
+  }
+
+
+  /**
+   * @return define if the navigator bar must be showed on top of the lookup grid frame; default value: <code>false</code>
+   */
+  public final boolean isShowNavigatorBar() {
+    return this.showNavigatorBar;
+  }
+
 
 
 
@@ -1833,6 +1852,11 @@ public class LookupController {
         ExportButton b = new ExportButton();
         toolbarPanel.add(b,null);
         table.setExportButton(b);
+      }
+      if (showNavigatorBar) {
+        NavigatorBar b = new NavigatorBar();
+        toolbarPanel.add(b,null);
+        table.setNavBar(b);
       }
 
       if (toolbarPanel.getComponentCount()>0) {
@@ -2060,6 +2084,11 @@ public class LookupController {
         ExportButton b = new ExportButton();
         toolbarPanel.add(b,null);
         table.setExportButton(b);
+      }
+      if (showNavigatorBar) {
+        NavigatorBar b = new NavigatorBar();
+        toolbarPanel.add(b,null);
+        table.setNavBar(b);
       }
 
       if (toolbarPanel.getComponentCount()>0) {

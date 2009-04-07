@@ -58,6 +58,8 @@ public class CurrencyCellEditor extends AbstractCellEditor implements TableCellE
   /** current selected column */
   private int col = -1;
 
+  /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
+  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDIT;
 
 
   /**
@@ -69,7 +71,7 @@ public class CurrencyCellEditor extends AbstractCellEditor implements TableCellE
    * @param currencySymbol currency symbol
    * @param dynamicSettings dynamic settings (object of type CurrencyColumnSettings) used to reset currency editor properties for each grid row
    */
-  public CurrencyCellEditor(int colType, int decimals, boolean required, boolean currencySymbolOnLeft, double minValue, double maxValue,String currencySymbol,IntegerColumnSettings dynamicSettings) {
+  public CurrencyCellEditor(int colType, int decimals, boolean required, boolean currencySymbolOnLeft, double minValue, double maxValue,String currencySymbol,IntegerColumnSettings dynamicSettings,boolean selectDataOnEdit) {
     field = new CurrencyControl() {
 
         public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
@@ -90,6 +92,7 @@ public class CurrencyCellEditor extends AbstractCellEditor implements TableCellE
     this.field.setDecimals(decimals);
     this.required = required;
     this.dynamicSettings = dynamicSettings;
+    this.selectDataOnEdit = selectDataOnEdit;
     field.setMinValue(minValue);
     field.setMaxValue(maxValue);
     field.addKeyListener(new KeyAdapter() {
@@ -171,8 +174,13 @@ public class CurrencyCellEditor extends AbstractCellEditor implements TableCellE
       if (dynamicSettings instanceof CurrencyColumnSettings)
         field.setCurrencySymbol(((CurrencyColumnSettings)dynamicSettings).getCurrencySymbol(row));
     }
-    if(value!=null && value.getClass().getSuperclass() == Number.class)
+    if(value!=null && value.getClass().getSuperclass() == Number.class) {
       field.setText(((Number)value).toString());
+
+      if (selectDataOnEdit)
+        field.select(0,field.getText().length());
+
+    }
     else
       field.setText(null);
     return field;

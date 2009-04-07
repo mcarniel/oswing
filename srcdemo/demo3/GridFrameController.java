@@ -203,7 +203,8 @@ public class GridFrameController extends GridController implements GridDataLocat
     try {
       stmt = conn.prepareStatement("insert into DEMO3(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,FORMATTED_TEXT,INT_VALUE,ML_TEXT) values(?,?,?,?,?,?,?,?,?,?,?)");
       TestVO vo = (TestVO)newValueObjects.get(0);
-      stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
+      stmt.setObject(6,vo.getCheckValue());
+//      stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setBigDecimal(5,vo.getComboValue()==null?null:new BigDecimal(vo.getComboValue().intValue()));
       stmt.setBigDecimal(3,vo.getCurrencyValue());
       stmt.setDate(4,vo.getDateValue());
@@ -247,7 +248,8 @@ public class GridFrameController extends GridController implements GridDataLocat
       TestVO vo = null;
       for(int i=0;i<persistentObjects.size();i++) {
         vo = (TestVO)persistentObjects.get(i);
-        stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
+        stmt.setObject(6,vo.getCheckValue());
+//        stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
         stmt.setBigDecimal(5,vo.getComboValue()==null?null:new BigDecimal(vo.getComboValue().intValue()));
         stmt.setBigDecimal(3,vo.getCurrencyValue());
         stmt.setDate(4,vo.getDateValue());
@@ -355,7 +357,8 @@ public class GridFrameController extends GridController implements GridDataLocat
   public boolean isCellEditable(GridControl grid,int row,String attributeName) {
     TestVO vo = (TestVO)grid.getVOListTableModel().getObjectForRow(row);
     if ("formattedTextValue".equals(attributeName))
-      return vo.getCheckValue()!=null && vo.getCheckValue().booleanValue();
+      return vo.getCheckValue()!=null && vo.getCheckValue().equals("Y");
+//      return vo.getCheckValue()!=null && vo.getCheckValue().booleanValue();
     return grid.isFieldEditable(row,attributeName);
   }
 

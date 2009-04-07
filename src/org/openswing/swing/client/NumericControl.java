@@ -609,6 +609,39 @@ public class NumericControl extends BaseInputControl implements InputControl {
   }
 
 
+  /**
+   * Selects the text between the specified start and end positions.
+   * <p>
+   * This method sets the start and end positions of the
+   * selected text, enforcing the restriction that the start position
+   * must be greater than or equal to zero.  The end position must be
+   * greater than or equal to the start position, and less than or
+   * equal to the length of the text component's text.
+   * <p>
+   * If the caller supplies values that are inconsistent or out of
+   * bounds, the method enforces these constraints silently, and
+   * without failure. Specifically, if the start position or end
+   * position is greater than the length of the text, it is reset to
+   * equal the text length. If the start position is less than zero,
+   * it is reset to zero, and if the end position is less than the
+   * start position, it is reset to the start position.
+   * <p>
+   * This call is provided for backward compatibility.
+   * It is routed to a call to <code>setCaretPosition</code>
+   * followed by a call to <code>moveCaretPosition</code>.
+   * The preferred way to manage selection is by calling
+   * those methods directly.
+   *
+   * @param selectionStart the start position of the text
+   * @param selectionEnd the end position of the text
+   * @see #setCaretPosition
+   * @see #moveCaretPosition
+   */
+  public final void select(int selectionStart,int selectionEnd) {
+    numBox.select(selectionStart,selectionEnd);
+  }
+
+
 }
 
 

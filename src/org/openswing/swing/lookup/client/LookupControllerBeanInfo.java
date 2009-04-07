@@ -36,6 +36,8 @@ public class LookupControllerBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _maxSortedColumns = new PropertyDescriptor("maxSortedColumns", beanClass, "getMaxSortedColumns", "setMaxSortedColumns");
       PropertyDescriptor _onInvalidCode = new PropertyDescriptor("onInvalidCode", beanClass, "getOnInvalidCode", "setOnInvalidCode");
       _onInvalidCode.setPropertyEditorClass(InvalidCodeEditor.class);
+      PropertyDescriptor _showNavigatorBar = new PropertyDescriptor("showNavigatorBar", beanClass, "isShowNavigatorBar", "setShowNavigatorBar");
+
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _allColumnPreferredWidth,
         _allColumnsSelectable,
@@ -51,7 +53,8 @@ public class LookupControllerBeanInfo extends SimpleBeanInfo {
         _lookupGridController,
         _lookupValueObjectClassName,
         _maxSortedColumns,
-        _onInvalidCode
+        _onInvalidCode,
+        _showNavigatorBar
       };
       return pds;
     }

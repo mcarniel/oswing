@@ -79,10 +79,14 @@ public class MultiLineTextCellEditor extends AbstractCellEditor implements Table
   /** current selected column */
   private int col = -1;
 
+  /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
+  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDIT;
 
-  public MultiLineTextCellEditor(int maxCharacters,boolean required) {
+
+  public MultiLineTextCellEditor(int maxCharacters,boolean required,boolean selectDataOnEdit) {
     this.required = required;
     this.maxCharacters = maxCharacters;
+    this.selectDataOnEdit = selectDataOnEdit;
     ((JTextArea)field.getBindingComponent()).setLineWrap(true);
     ((JTextArea)field.getBindingComponent()).setWrapStyleWord(true);
     ((JTextArea)field.getBindingComponent()).setOpaque(true);
@@ -153,6 +157,10 @@ public class MultiLineTextCellEditor extends AbstractCellEditor implements Table
     this.col = column;
 
     field.setText((String)value);
+
+    if (selectDataOnEdit)
+      field.getTextArea().select(0,field.getTextArea().getText().length());
+
     if (required) {
       field.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_REQUIRED_CELL_BORDER));
 //      field.setBorder(new CompoundBorder(new RequiredBorder(),field.getBorder()));
@@ -166,6 +174,8 @@ public class MultiLineTextCellEditor extends AbstractCellEditor implements Table
     table = null;
     field = null;
   }
+
+
 
 
 }

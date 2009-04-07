@@ -67,19 +67,27 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
   /** attribute name associated to this column */
   private String attributeName = null;
 
+  /** value used to select the check-box */
+  private Object positiveValue = null;
+
+  /** value used to deselect the check-box */
+  private Object negativeValue = null;
+
 
   /**
    * Constructor.
    * @param gridContainer grid container
    * @param attributeName attribute name associated to this column
    */
-  public CheckBoxTableCellRenderer(GridController gridContainer,int alignement,boolean enableInReadOnlyMode,boolean allowNullValue,String attributeName) {
+  public CheckBoxTableCellRenderer(GridController gridContainer,int alignement,boolean enableInReadOnlyMode,boolean allowNullValue,String attributeName,Object positiveValue,Object negativeValue) {
     this.gridContainer = gridContainer;
     rend.setOpaque(true);
     rend.setHorizontalAlignment(alignement);
     this.enableInReadOnlyMode = enableInReadOnlyMode;
     this.allowNullValue = allowNullValue;
     this.attributeName = attributeName;
+    this.positiveValue = positiveValue;
+    this.negativeValue = negativeValue;
   }
 
 
@@ -158,7 +166,7 @@ public class CheckBoxTableCellRenderer extends DefaultTableCellRenderer {
       selected = null;
     else if (value==null && !allowNullValue)
       selected = Boolean.FALSE;
-    else if (value.equals(Boolean.TRUE))
+    else if (value.equals(positiveValue))
       selected = Boolean.TRUE;
     else
       selected = Boolean.FALSE;

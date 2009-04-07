@@ -20,7 +20,8 @@ public class TestVO extends ValueObjectImpl {
   private Integer comboValue;
   private BigDecimal numericValue;
   private BigDecimal currencyValue;
-  private Boolean checkValue;
+//  private Boolean checkValue;
+  private String checkValue;
   private Boolean radioButtonValue;
   private Date dateValue;
   private String lookupValue;
@@ -35,9 +36,6 @@ public class TestVO extends ValueObjectImpl {
   }
 
 
-  public Boolean getCheckValue() {
-    return checkValue;
-  }
   public Integer getComboValue() {
     return comboValue;
   }
@@ -74,9 +72,20 @@ public class TestVO extends ValueObjectImpl {
   public void setComboValue(Integer comboValue) {
     this.comboValue = comboValue;
   }
-  public void setCheckValue(Boolean checkValue) {
+//  public void setCheckValue(Boolean checkValue) {
+//    this.checkValue = checkValue;
+//  }
+//  public Boolean getCheckValue() {
+//    return checkValue;
+//  }
+
+  public void setCheckValue(String checkValue) {
     this.checkValue = checkValue;
   }
+  public String getCheckValue() {
+    return checkValue;
+  }
+
   public String getLookupValue() {
     return lookupValue;
   }

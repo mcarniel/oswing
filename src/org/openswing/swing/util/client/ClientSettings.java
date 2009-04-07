@@ -287,6 +287,9 @@ public class ClientSettings {
   /** define what a lookup has to do when an invalid code has been setted; possible values: LookupController.ON_INVALID_CODE_xxx; default value: LookupController.ON_INVALID_CODE_CLEAR_CODE */
   public static int ON_INVALID_CODE = LookupController.ON_INVALID_CODE_CLEAR_CODE;
 
+  /** define if the navigator bar must be showed on top of the lookup grid frame; default value: <code>false</code> i.e. the navigator is not showed in the grid lookup frame */
+  public static boolean SHOW_NAVIGATOR_BAR_IN_LOOKUP = false;
+
   /** background color of tree selected row */
   public static Color TREE_SELECTION_BACKGROUND = new Color(185,219,243);
 
@@ -419,6 +422,11 @@ public class ClientSettings {
   /** flag used in grid to enable the retrieval of additional rows in fast search, when search criteria fails; default value: <code>false</code> i.e. do not retrieve additional rows */
   public static boolean SEARCH_ADDITIONAL_ROWS = false;
 
+  /** foreground color for header columns of all grids; default value: null, i.e. default JLabel foreground color */
+  public static Color HEADER_FOREGROUND_COLOR = null;
+
+  /** flag used in grid to automatically select data in cell when editing cell; default value: <code>false</code> i.e. do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
+  public static boolean SELECT_DATA_IN_EDIT = false;
 
 
   /**

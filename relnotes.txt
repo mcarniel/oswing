@@ -1,4 +1,39 @@
 
+Release Notes 1.9.7
+-------------------
+
+Final release 1.9.7 available
+Fixed problem on using CheckBoxListControl with multiple selection mode setted.
+Added global property SHOW_NAVIGATOR_BAR_IN_LOOKUP to ClientSettings, in order to show a navigator bar in lookup grid frame, for all lookups.
+Added "showNavigatorBar" property to LookupController, in order to define if a navigator bar has to be showed in lookup grid frame, for a specific lookup.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.9.6
+-------------------
+
+Final release 1.9.6 available
+Added global property HEADER_FOREGROUND_COLOR to ClientSettings class, in order to set the default foreground 
+color for column headers for all grids.
+Changed default value for "headerForegroundColor" property in Column class: now it is filled with HEADER_FOREGROUND_COLOR
+global property.
+Fixed problem with CheckBoxColumn when positive/negative values are not Boolean.TRUE/FALSE values.
+Fixed problem on using UI designer for OpenSwing components on Linux+Java1.6.
+Added "selectDataInEdit" property to text/numeric type columns, in order to auto select cell content when starting the cell editing.
+Added "SELECT_DATA_IN_EDIT" global property to ClientSettings, in order to  auto select cell content when starting the cell editing for all grids.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 1.9.5
+-------------------
+
+Final release 1.9.5 available
+Rebuild whole project.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
 
 Release Notes 1.9.4
 -------------------

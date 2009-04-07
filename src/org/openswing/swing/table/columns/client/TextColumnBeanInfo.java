@@ -53,6 +53,7 @@ public class TextColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _encryptText = new PropertyDescriptor("encryptText", beanClass, "isEncryptText", "setEncryptText");
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
       PropertyDescriptor _rpadding = new PropertyDescriptor("rpadding", beanClass, "isRpadding", "setRpadding");
+      PropertyDescriptor _selectDataOnEdit = new PropertyDescriptor("selectDataOnEdit", beanClass, "isSelectDataOnEdit", "setSelectDataOnEdit");
       PropertyDescriptor _trimText = new PropertyDescriptor("trimText", beanClass, "isTrimText", "setTrimText");
       PropertyDescriptor _upperCase = new PropertyDescriptor("upperCase", beanClass, "isUpperCase", "setUpperCase");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
@@ -63,6 +64,7 @@ public class TextColumnBeanInfo extends SimpleBeanInfo {
         _leftMargin,
         _rightMargin,
         _rpadding,
+        _selectDataOnEdit,
         _topMargin,
         _trimText,
         _upperCase};

@@ -131,7 +131,8 @@ public class CurrencyColumn extends DecimalColumn {
         getMinValue(),
         getMaxValue(),
         getCurrencySymbol(),
-        getDynamicSettings()
+        getDynamicSettings(),
+        isSelectDataOnEdit()
     );
 
   }

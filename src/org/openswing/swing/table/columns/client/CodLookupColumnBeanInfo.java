@@ -58,6 +58,7 @@ public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _hideCodeBox = new PropertyDescriptor("hideCodBox", beanClass, "isHideCodeBox", "setHideCodeBox");
       PropertyDescriptor _lookupController = new PropertyDescriptor("lookupController", beanClass, "getLookupController", "setLookupController");
       PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
+      PropertyDescriptor _selectDataOnEdit = new PropertyDescriptor("selectDataOnEdit", beanClass, "isSelectDataOnEdit", "setSelectDataOnEdit");
       PropertyDescriptor _zeroLengthAsNull = new PropertyDescriptor("zeroLengthAsNull", beanClass, "isZeroLengthAsNull", "setZeroLengthAsNull");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
 	      _allowOnlyNumbers,
@@ -74,6 +75,7 @@ public class CodLookupColumnBeanInfo extends SimpleBeanInfo {
 	      _lookupController,
 	      _maxCharacters,
               _rightMargin,
+              _selectDataOnEdit,
               _topMargin,
 	      _zeroLengthAsNull
       };

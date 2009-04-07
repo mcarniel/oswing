@@ -51,6 +51,7 @@ public class IntegerColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _grouping = new PropertyDescriptor("grouping", beanClass, "isGrouping", "setGrouping");
       PropertyDescriptor _maxValue = new PropertyDescriptor("maxValue", beanClass, "getMaxValue", "setMaxValue");
       PropertyDescriptor _minValue = new PropertyDescriptor("minValue", beanClass, "getMinValue", "setMinValue");
+      PropertyDescriptor _selectDataOnEdit = new PropertyDescriptor("selectDataOnEdit", beanClass, "isSelectDataOnEdit", "setSelectDataOnEdit");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
           _bottomMargin,
           _columnName,
@@ -58,6 +59,7 @@ public class IntegerColumnBeanInfo extends SimpleBeanInfo {
           _leftMargin,
           _maxValue,
 	   _minValue,
+           _selectDataOnEdit,
            _rightMargin,
            _topMargin
       };

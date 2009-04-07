@@ -41,10 +41,10 @@ import org.openswing.swing.table.renderers.client.*;
  */
 public class CheckBoxColumn extends Column {
 
-  /** value used to select the check-box */
+  /** value used to select the check-box; default value: Boolean.TRUE */
   private Object positiveValue = new Boolean(true);
 
-  /** value used to deselect the check-box */
+  /** value used to deselect the check-box; default value: Boolean.FALSE */
   private Object negativeValue = new Boolean(false);
 
   /** list of ItemListener object linked to the check-box */
@@ -152,7 +152,9 @@ public class CheckBoxColumn extends Column {
       getTextAlignment(),
       isEnableInReadOnlyMode(),
       isAllowNullValue(),
-      getColumnName()
+      getColumnName(),
+      positiveValue,
+      negativeValue
     );
   }
 
@@ -161,7 +163,14 @@ public class CheckBoxColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new CheckBoxCellEditor(grids,isColumnRequired(),getItemListeners(),isAllowNullValue());
+    return new CheckBoxCellEditor(
+      grids,
+      isColumnRequired(),
+      getItemListeners(),
+      isAllowNullValue(),
+      positiveValue,
+      negativeValue
+    );
   }
 
 

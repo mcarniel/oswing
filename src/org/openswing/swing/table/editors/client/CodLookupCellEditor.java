@@ -130,6 +130,9 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
   /** last code value stored in the parent value object */
   private Object lastCodeValue = null;
 
+  /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
+  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDIT;
+
 
   /**
    * Constructor.
@@ -156,13 +159,15 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
       final String controllerClassName,
       final String controllerMethodName,
       final long autoCompletitionWaitTime,
-      String codAttributeName) {
+      String codAttributeName,
+      boolean selectDataOnEdit) {
     this.lookupController = lookupController;
     this.required = required;
     this.numericValue = numericValue;
     this.codBoxVisible = codBoxVisible;
     this.codBoxEditable = codBoxEditable;
     this.codAttributeName = codAttributeName;
+    this.selectDataOnEdit = selectDataOnEdit;
     codBox.setColumns(maxCharacters);
     codBox.setEnabled(codBoxEditable);
     panel.setLayout(new GridBagLayout());
@@ -503,6 +508,10 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
    */
   private final Component _prepareEditor(Object value) {
     codBox.setText(value==null?null:value.toString());
+
+    if (selectDataOnEdit)
+      codBox.select(0,codBox.getText().length());
+
     return panel;
   }
 

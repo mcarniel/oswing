@@ -108,8 +108,8 @@ public class Column extends JPanel {
   /** header font; default value: ClientSettings.HEADER_FONT */
   private Font headerFont = ClientSettings.HEADER_FONT;
 
-  /** header foreground color; default value: null (i.e. default JLabel foreground color) */
-  private Color headerForegroundColor = null;
+  /** header foreground color; default value: ClientSettings.HEADER_FOREGROUND_COLOR (which is null as default value, i.e. default JLabel foreground color) */
+  private Color headerForegroundColor = ClientSettings.HEADER_FOREGROUND_COLOR;
 
   /** column text horizontal alignment */
   private int textAlignment = SwingConstants.LEFT;

@@ -67,17 +67,25 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
   /** define if null value is alloed (i.e. distinct from Boolean.FALSE value); default value: <code>false</code> */
   private boolean allowNullValue;
 
+  /** value used to select the check-box */
+  private Object positiveValue = null;
+
+  /** value used to deselect the check-box */
+  private Object negativeValue = null;
+
 
   /**
    * Construtor.
    * @param required flag used to set mandatory property of the cell
    * @param itemListenerList ItemListener list associated to the check-box
    */
-  public CheckBoxCellEditor(Grids grids,boolean required,ArrayList itemListenerList,boolean allowNullValue) {
+  public CheckBoxCellEditor(Grids grids,boolean required,ArrayList itemListenerList,boolean allowNullValue,Object positiveValue,Object negativeValue) {
     this.grids = grids;
     this.required = required;
     this.itemListenerList = itemListenerList;
     this.allowNullValue = allowNullValue;
+    this.positiveValue = positiveValue;
+    this.negativeValue = negativeValue;
 
     label.setFocusable(true);
     label.addMouseListener(new MouseAdapter() {
@@ -90,8 +98,25 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
 
             changeSelectedValue();
 
-            CheckBoxCellEditor.this.grids.getGrid().setValueAt(selected,CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),CheckBoxCellEditor.this.grids.getGrid().convertColumnIndexToView(column));
-            CheckBoxCellEditor.this.grids.getGrid().editCellAt(CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),CheckBoxCellEditor.this.grids.getGrid().convertColumnIndexToView(column));
+            Object value = null;
+            if (selected==null && CheckBoxCellEditor.this.allowNullValue)
+              value = null;
+            else if (selected==null && !CheckBoxCellEditor.this.allowNullValue)
+              value = CheckBoxCellEditor.this.negativeValue;
+            else if (selected.booleanValue())
+              value = CheckBoxCellEditor.this.positiveValue;
+            else
+              value = CheckBoxCellEditor.this.negativeValue;
+
+            CheckBoxCellEditor.this.grids.getGrid().setValueAt(
+              value,
+              CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),
+              CheckBoxCellEditor.this.grids.getGrid().convertColumnIndexToView(column)
+             );
+            CheckBoxCellEditor.this.grids.getGrid().editCellAt(
+              CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),
+              CheckBoxCellEditor.this.grids.getGrid().convertColumnIndexToView(column)
+            );
             for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
               ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
             CheckBoxCellEditor.this.grids.getGrid().repaint();
@@ -119,7 +144,17 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
 
 
   public final Object getCellEditorValue() {
-    return selected;
+    Object value = null;
+    if (selected==null && CheckBoxCellEditor.this.allowNullValue)
+      value = null;
+    else if (selected==null && !CheckBoxCellEditor.this.allowNullValue)
+      value = CheckBoxCellEditor.this.negativeValue;
+    else if (selected.booleanValue())
+      value = CheckBoxCellEditor.this.positiveValue;
+    else
+      value = CheckBoxCellEditor.this.negativeValue;
+
+    return value;
   }
 
 
@@ -127,20 +162,16 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
    * Prepare the editor for a value.
    */
   private final Component _prepareEditor(Object value) {
-//    if (value!=null)
-//      selected = value.equals(new Boolean(true));
-//    else
-//      selected = false;
-//    label.repaint();
-//    return label;
-    if (allowNullValue) {
-      selected = (Boolean)value;
+    if (value==null) {
+      if (allowNullValue)
+        selected = null;
+      else
+        selected = Boolean.FALSE;
     }
-    else {
-      if (value==null)
-        value = Boolean.FALSE;
-      selected = (Boolean)value;
-    }
+    else if (positiveValue.equals(value))
+      selected = Boolean.TRUE;
+    else
+      selected = Boolean.FALSE;
 
     if (column!=-1 &&
         grids.isEnableInReadOnlyMode(column)&&
@@ -202,7 +233,22 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
     if (grids.getMode()!=Consts.READONLY) {
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
-          grids.getGrid().setValueAt(selected,grids.getGrid().getSelectedRow(),grids.getGrid().convertColumnIndexToView(column));
+
+          Object value = null;
+          if (selected==null && CheckBoxCellEditor.this.allowNullValue)
+            value = null;
+          else if (selected==null && !CheckBoxCellEditor.this.allowNullValue)
+            value = CheckBoxCellEditor.this.negativeValue;
+          else if (selected.booleanValue())
+            value = CheckBoxCellEditor.this.positiveValue;
+          else
+            value = CheckBoxCellEditor.this.negativeValue;
+
+          grids.getGrid().setValueAt(
+            value,
+            grids.getGrid().getSelectedRow(),
+            grids.getGrid().convertColumnIndexToView(column)
+          );
           grids.getGrid().editCellAt(grids.getGrid().getSelectedRow(),grids.getGrid().convertColumnIndexToView(column));
           for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
             ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));

@@ -58,6 +58,9 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
   /** current selected column */
   private int col = -1;
 
+  /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
+  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDIT;
+
 
   /**
    * Constructor.
@@ -66,7 +69,8 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
    * @param required flag used to set mandatory property of the cell
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
    */
-  public NumericCellEditor(int colType, int decimals, boolean required, double minValue, double maxValue,IntegerColumnSettings dynamicSettings) {
+  public NumericCellEditor(int colType, int decimals, boolean required, double minValue, double maxValue,
+                           IntegerColumnSettings dynamicSettings,boolean selectDataOnEdit) {
     field = new NumericControl() {
 
       public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
@@ -83,6 +87,7 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
     this.field.setDecimals(decimals);
     this.required = required;
     this.dynamicSettings = dynamicSettings;
+    this.selectDataOnEdit = selectDataOnEdit;
     field.setMinValue(minValue);
     field.setMaxValue(maxValue);
     field.addKeyListener(new KeyAdapter() {
@@ -163,8 +168,11 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
       field.setMinValue(dynamicSettings.getMinValue(row));
       field.setMaxValue(dynamicSettings.getMaxValue(row));
     }
-    if(value!=null && value.getClass().getSuperclass() == Number.class)
+    if(value!=null && value.getClass().getSuperclass() == Number.class) {
       field.setText(((Number)value).toString());
+      if (selectDataOnEdit)
+        field.select(0,field.getText().length());
+    }
     else
       field.setText(null);
     return field;

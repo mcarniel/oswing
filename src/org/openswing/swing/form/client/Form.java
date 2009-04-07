@@ -1840,6 +1840,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     try {
       if (Beans.isDesignTime())
         AttributeNameEditor.setDesignVOClass(Class.forName(voClassName));
+      else if (model!=null)
+        model.setValueObject(Class.forName(voClassName));
     }
     catch (Throwable ex) {
     }
