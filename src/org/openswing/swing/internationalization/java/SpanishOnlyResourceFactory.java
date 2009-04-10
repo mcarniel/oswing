@@ -237,6 +237,9 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("next tip","Consejo siguiente");
     dictionary.setProperty("close","Cerrar");
     dictionary.setProperty("tip of the day","Consejo del día");
+    dictionary.setProperty("select tip","Seleccion Consejo");
+    dictionary.setProperty("tip name","Nombre de el consejo");
+    dictionary.setProperty("tips list","Consejo list");
 
     // progress panel...
     dictionary.setProperty("progress","Progreso");

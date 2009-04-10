@@ -10,6 +10,8 @@ import org.openswing.swing.client.*;
 import org.openswing.swing.mdi.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
+import java.util.Enumeration;
+import org.openswing.swing.logger.client.Logger;
 
 
 /**
@@ -219,6 +221,8 @@ public class TreeMenu extends JPanel {
       menuTree.setToolTipText("");
       if (ClientSettings.AUTO_EXPAND_TREE_MENU)
         expandAllNodes();
+      else if (ClientSettings.AUTO_EXPAND_SUBTREE_MENU!=null)
+        expandNodes(ClientSettings.getInstance().getResources().getResource(ClientSettings.AUTO_EXPAND_SUBTREE_MENU));
     } catch (Throwable ex) {
       ex.printStackTrace();
     }
@@ -258,6 +262,39 @@ public class TreeMenu extends JPanel {
     }
   }
 
+
+  /**
+   * Expand subtree whose root is identified by the specified description.
+   * @param nodeDescription description of root node whose subtree has to be expanded
+   */
+  public final void expandNodes(String nodeDescription) {
+    DefaultMutableTreeNode node = findNode((DefaultMutableTreeNode)menuTree.getModel().getRoot(),nodeDescription);
+    if (node!=null) {
+      menuTree.expandPath(new TreePath(node.getPath()));
+      Enumeration en = node.depthFirstEnumeration();
+      while(en.hasMoreElements()) {
+        node = (DefaultMutableTreeNode)en.nextElement();
+        menuTree.expandPath(new TreePath(node.getPath()));
+      }
+    }
+    else
+      Logger.warn(this.getClass().getName(),"expandNodes","There is not a node having the specified description '"+nodeDescription+"'");
+  }
+
+
+  /**
+   * @param node node whose subtree must be analyzed
+   * @param nodeDescription description of the node to find
+   * @return node having the specified description and that is contained in the subtree identified by the specified node
+   */
+  public DefaultMutableTreeNode findNode(DefaultMutableTreeNode node,String nodeDescription) {
+    if (node.toString().equals(nodeDescription))
+      return node;
+    for(int i=0;i<node.getChildCount();i++)
+      if (findNode((DefaultMutableTreeNode)node.getChildAt(i),nodeDescription)!=null)
+        return (DefaultMutableTreeNode)node.getChildAt(i);
+    return null;
+  }
 
 
   /**

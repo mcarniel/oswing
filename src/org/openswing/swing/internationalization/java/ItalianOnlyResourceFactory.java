@@ -237,6 +237,9 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("next tip","Tip successivo");
     dictionary.setProperty("close","Chiudi");
     dictionary.setProperty("tip of the day","Tip of the day");
+    dictionary.setProperty("select tip","Selezione Tip");
+    dictionary.setProperty("tip name","Nome Tip");
+    dictionary.setProperty("tips list","Lista Tips");
 
     // progress panel...
     dictionary.setProperty("progress","Avanzamento");

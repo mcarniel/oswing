@@ -48,6 +48,7 @@ public class TipPanel extends JPanel {
   JScrollPane scrollPane = new JScrollPane();
   JEditorPane tipPane = new JEditorPane();
   CheckBoxControl controlShow = new CheckBoxControl();
+  JButton buttonList = new JButton();
   JButton buttonPrev = new JButton();
   JButton buttonNext = new JButton();
   JButton buttonClose = new JButton();
@@ -98,6 +99,8 @@ public class TipPanel extends JPanel {
     tipPane.setEditable(false);
     controlShow.setText("show 'tip of the day' after launching");
     controlShow.setFont(new Font(labelTitle.getFont().getName(),Font.PLAIN, 9));
+    buttonList.setText(ClientSettings.getInstance().getResources().getResource("select tip"));
+    buttonList.addActionListener(new TipPanel_buttonList_actionAdapter(this));
     buttonPrev.setText(ClientSettings.getInstance().getResources().getResource("previous tip"));
     buttonPrev.addActionListener(new TipPanel_buttonPrev_actionAdapter(this));
     buttonNext.setText(ClientSettings.getInstance().getResources().getResource("next tip"));
@@ -120,6 +123,7 @@ public class TipPanel extends JPanel {
     mainPanel.add(buttonsPanel,         new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
             ,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
     scrollPane.getViewport().add(tipPane, null);
+    buttonsPanel.add(buttonList,null);
     buttonsPanel.add(buttonPrev,null);
     buttonsPanel.add(buttonNext,null);
     buttonsPanel.add(buttonClose,null);
@@ -234,6 +238,16 @@ public class TipPanel extends JPanel {
   }
 
 
+  void buttonList_actionPerformed(ActionEvent e) {
+    TipSelectDialog dlg = new TipSelectDialog(tipPanelContent);
+    int idx = dlg.getTipIndex();
+    if ((idx >= 0) && (idx < tipPanelContent.getTips().length)) {
+      index = idx;
+      showTip();
+    }
+  }
+
+
 }
 
 class TipPanel_buttonPrev_actionAdapter implements java.awt.event.ActionListener {
@@ -266,5 +280,15 @@ class TipPanel_buttonClose_actionAdapter implements java.awt.event.ActionListene
   }
   public void actionPerformed(ActionEvent e) {
     adaptee.buttonClose_actionPerformed(e);
+  }
+}
+class TipPanel_buttonList_actionAdapter implements java.awt.event.ActionListener {
+  TipPanel adaptee;
+
+  TipPanel_buttonList_actionAdapter(TipPanel adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.buttonList_actionPerformed(e);
   }
 }

@@ -48,6 +48,7 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.BACKGROUND = "background3.jpg";
     ClientSettings.TREE_BACK = "treeback2.jpg";
     ClientSettings.AUTO_EXPAND_TREE_MENU = true;
+//    ClientSettings.AUTO_EXPAND_SUBTREE_MENU = "Folder3";
 
     if(argv.length==1)
       ClientSettings.LOOK_AND_FEEL_CLASS_NAME = argv[0];

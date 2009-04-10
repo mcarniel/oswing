@@ -11,6 +11,10 @@ Added "showPreview" property to ImageControl and ImageColumn components, in orde
 selected in the file chooser.
 Added SHOW_PREVIEW_OF_IMAGE global property to ClientSettings class, in order to define the default value of
 "showPreview" property of ImageControl and ImageColumn components.
+Added AUTO_EXPAND_SUBTREE_MENU global property to ClientSettings class, in order to define a subtree of tree menu
+to automatically expand when showing MDI frame.
+Improved TipPanel component: now a "Select tip" button has been added in order to select in a fast way from a list of tips the desired tip (thanks to Jacek ).
+Fixed problem with nested components in grid, when moving columns.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

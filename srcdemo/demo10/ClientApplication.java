@@ -197,7 +197,7 @@ public class ClientApplication implements MDIController,LoginController {
    * Show 'tip of the day' internal frame.
    */
   private void showTipFrame() {
-    final TipInternalFrame tipFrame1 = new TipInternalFrame(new TipPanelContent() {
+    TipPanelContent tipPanel = new TipPanelContent() {
 
       /**
        * @return list of titles, for each tip
@@ -231,11 +231,10 @@ public class ClientApplication implements MDIController,LoginController {
       }
 
 
-    });
-
+    };
+    TipInternalFrame tipFrame1 = new TipInternalFrame(tipPanel);
     tipFrame1.setShowCheck(false);
     tipFrame1.setSize(700,300);
-
     MDIFrame.add(tipFrame1);
   }
 

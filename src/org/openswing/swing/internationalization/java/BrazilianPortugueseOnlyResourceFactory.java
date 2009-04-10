@@ -216,6 +216,9 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       dictionary.setProperty("next tip", "Próxima dica");
       dictionary.setProperty("close", "Fechar");
       dictionary.setProperty("tip of the day", "Dica do dia");
+      dictionary.setProperty("select tip","Seleciona dica");
+      dictionary.setProperty("tip name","Nome dica");
+      dictionary.setProperty("tips list","Lista de dica");
       // progress panel...
       dictionary.setProperty("progress", "Progresso");
       // licence agreement...

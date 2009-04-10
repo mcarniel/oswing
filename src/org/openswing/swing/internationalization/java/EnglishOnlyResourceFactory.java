@@ -250,6 +250,9 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("next tip","Next tip");
     dictionary.setProperty("close","Close");
     dictionary.setProperty("tip of the day","Tip of the day");
+    dictionary.setProperty("select tip","Select tip");
+    dictionary.setProperty("tip name","Tip name");
+    dictionary.setProperty("tips list","Tips list");
 
     // progress panel...
     dictionary.setProperty("progress","Progress");

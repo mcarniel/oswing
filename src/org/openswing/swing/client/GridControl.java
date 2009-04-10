@@ -3255,6 +3255,14 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * @return height of status panel (expressed in pixels)
+   */
+  public final int getStatusPanelHeight() {
+    return labelPanel.getSize().height;
+  }
+
+
 
 
 

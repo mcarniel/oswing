@@ -114,7 +114,9 @@ public class DetailFrame extends JFrame {
     controlFormattedText.setAttributeName("formattedTextValue");
     controlFormattedText.setToolTipText("formattedTextValue");
 
-    MaskFormatter mask = new MaskFormatter("###-##-####");
+
+    MaskFormatter mask = new MaskFormatter("####/##.##.##");
+//    MaskFormatter mask = new MaskFormatter("###-##-####");
     mask.setValidCharacters("0123456789");
 
     controlFormattedText.setFormatter(mask);

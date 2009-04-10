@@ -77,6 +77,9 @@ public class ClientSettings {
   /** define if tree menu must by automatically expanded; default value: <code>false</code> */
   public static boolean AUTO_EXPAND_TREE_MENU = false;
 
+  /** define if a subtree of the tree menu must by automatically expanded; subtree root is identified as the node having a description whose entry (not yet translated) is defined thourgh this global property */
+  public static String AUTO_EXPAND_SUBTREE_MENU = null;
+
   /** image name for opened padlock icon in filter panel */
   public static String FILTER_PANEL_LOCK_ON = "lock.gif";
 

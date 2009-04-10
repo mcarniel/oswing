@@ -234,7 +234,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
         ((JComponent)c).setSize(new Dimension(width-13,height-delta));
         ((JComponent)c).setPreferredSize(new Dimension(width-13,height-delta));
 
-        // grid cell spans are changed, accortind to nested component dimension
+        // grid cell spans are changed, according to nested component dimension
         int[] cols = new int[grid.getColumnModel().getColumnCount()-expandableColumn];
         for(int i=0;i<cols.length;i++)
           cols[i] = i+expandableColumn;
@@ -253,7 +253,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
   //        JPanel rendPanel = null;
           int w = 0;
           for(int i=expandableColumn;i<grid.getColumnModel().getColumnCount();i++) {
-            comp = modelAdapter.getCellRenderer(i).getTableCellRendererComponent(grid, grid.getValueAt(row,i), false, false, row, i);
+            comp = modelAdapter.getCellRenderer(grid.convertColumnIndexToModel(i)).getTableCellRendererComponent(grid, grid.getValueAt(row,i), false, false, row, grid.convertColumnIndexToModel(i));
             if (i==expandableColumn) {
               aux.add(expTreePanel);
               expTreePanel.setBackground(comp.getBackground());

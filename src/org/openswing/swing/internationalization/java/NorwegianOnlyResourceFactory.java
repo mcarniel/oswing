@@ -250,6 +250,9 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("next tip","Neste tips");
     dictionary.setProperty("close","Lukk");
     dictionary.setProperty("tip of the day","Dagens tips");
+    dictionary.setProperty("select tip","Velg tip");
+    dictionary.setProperty("tip name","Tip navn");
+    dictionary.setProperty("tips list","Tips list");
 
     // progress panel...
     dictionary.setProperty("progress","Framdrift");

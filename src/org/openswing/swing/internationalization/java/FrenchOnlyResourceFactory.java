@@ -270,6 +270,9 @@ ResourcesFactory {
     dictionary.setProperty("next tip","Astuce suivante");
     dictionary.setProperty("close","Fermer");
     dictionary.setProperty("tip of the day","Astuce du jour");
+    dictionary.setProperty("select tip","Sélect astuce");
+    dictionary.setProperty("tip name","Nom de la astuce");
+    dictionary.setProperty("tips list","Lista astuce");
 
     // progress panel...
     dictionary.setProperty("progress","Progression");

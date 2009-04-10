@@ -19,6 +19,7 @@ import org.openswing.swing.util.java.*;
 import javax.swing.event.AncestorListener;
 import org.openswing.swing.table.client.Grid;
 import org.openswing.swing.table.renderers.client.ExpandablePanel;
+import java.text.*;
 
 
 /**
@@ -1421,6 +1422,13 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
               inputControlsNotValid.add( comp.getAttributeName() );
           }
           else {
+            try {
+              if (comp instanceof FormattedTextControl) {
+                ( (JFormattedTextField) ( (FormattedTextControl) comp).getBindingComponent()).commitEdit();
+              }
+            }
+            catch (ParseException ex) {
+            }
             value = comp.getValue();
             if ((value==null || value.equals("")) && comp.isRequired()) {
               if (comp.getLinkLabel()!=null)
