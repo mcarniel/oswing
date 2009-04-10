@@ -183,6 +183,9 @@ public class LookupController {
   /** define if the navigator bar must be showed on top of the lookup grid; default value: <code>ClientSettings.SHOW_NAVIGATOR_BAR_IN_LOOKUP</code> */
   private boolean showNavigatorBar = ClientSettings.SHOW_NAVIGATOR_BAR_IN_LOOKUP;
 
+  /** define if lookup grid frame must not be closed when selecting codes on it; default value: <code>false</code>, i.e. frame will be closed when selecting a code */
+  private boolean disableFrameClosing = false;
+
 
   /**
    * Execute the code validation.
@@ -508,8 +511,10 @@ public class LookupController {
     selectedRow = rowNumber;
     lookupVO = (ValueObject) lookupFrame.getTable().getVOListTableModel().getObjectForRow(selectedRow);
     updateParentModel(lookupParent);
-    lookupFrame.setVisible(false);
-    lookupFrame.dispose();
+    if (!disableFrameClosing) {
+      lookupFrame.setVisible(false);
+      lookupFrame.dispose();
+    }
     codeValid = true;
   }
 
@@ -606,15 +611,20 @@ public class LookupController {
       TreeController container = new TreeController() {
 
         public void leftClick(DefaultMutableTreeNode node) {}
+
         public boolean rightClick(DefaultMutableTreeNode node) { return false; }
+
         public void doubleClick(DefaultMutableTreeNode node) {
           if (allowTreeLeafSelectionOnly && !node.isLeaf())
             return;
           lookupVO = (ValueObject)node.getUserObject();
           updateParentModel(lookupParent);
-          lookupFrame.setVisible(false);
-          lookupFrame.dispose();
+          if (!disableFrameClosing) {
+            lookupFrame.setVisible(false);
+            lookupFrame.dispose();
+          }
         }
+
       };
 
       TreePanel treePanel = new TreePanel();
@@ -1660,6 +1670,25 @@ public class LookupController {
    */
   public final boolean isShowNavigatorBar() {
     return this.showNavigatorBar;
+  }
+
+
+  /**
+   * @return <code>false</code>, i.e. frame will be closed when selecting a code
+   */
+  public final boolean isDisableFrameClosing() {
+    return disableFrameClosing;
+  }
+
+
+  /**
+   * Define if lookup grid frame must not be closed when selecting codes on it.
+   * Default value: <code>false</code>, i.e. frame will be closed when selecting a code.
+   * If this property is set to <code>true</code> then the lookup frame is not automatically closed
+   * @param disableFrameClosing define if lookup grid frame must not be closed when selecting codes on it
+   */
+  public final void setDisableFrameClosing(boolean disableFrameClosing) {
+    this.disableFrameClosing = disableFrameClosing;
   }
 
 

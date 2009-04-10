@@ -14,6 +14,8 @@ import org.openswing.swing.logger.client.*;
 import org.openswing.swing.mdi.client.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 
 /**
@@ -82,7 +84,7 @@ public class ImageCellEditor extends AbstractCellEditor implements TableCellEdit
    * @param text button text
    * @param actionListeners list of ActionListeners linked to the button
    */
-  public ImageCellEditor(boolean showButton,final FileFilter fileFilter,final ArrayList listeners) {
+  public ImageCellEditor(boolean showButton,final FileFilter fileFilter,final ArrayList listeners,final boolean showPreview) {
     cell.setLayout(gridBagLayout1);
     cell.add(imagePanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     imagePanel.setScrollBarsPolicy(ImagePanel.SCROLLBAR_NEVER);
@@ -102,6 +104,29 @@ public class ImageCellEditor extends AbstractCellEditor implements TableCellEdit
         if (c==null)
           c = MDIFrame.getInstance();
         f.setFileSelectionMode(f.FILES_ONLY);
+
+        if (showPreview) {
+          final PreviewImage ip = new PreviewImage();
+          f.setAccessory(ip);
+          ip.setPreferredSize(new Dimension(100,100));
+          ip.setBorder(BorderFactory.createEtchedBorder());
+          f.addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+              try {
+                if (evt.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
+                  ip.setImage((File) evt.getNewValue());
+                }
+              }
+              catch (Exception ex) {
+                ex.printStackTrace();
+              }
+            }
+
+          });
+        }
+
+
         if (fileFilter!=null)
           f.setFileFilter(fileFilter);
         int res = f.showOpenDialog(c);
@@ -164,6 +189,27 @@ public class ImageCellEditor extends AbstractCellEditor implements TableCellEdit
 
   public final void finalize() {
     table = null;
+  }
+
+
+
+  class PreviewImage extends JLabel {
+
+    public PreviewImage() {
+      setPreferredSize(new Dimension(100,100));
+      setBorder(BorderFactory.createEtchedBorder());
+    }
+
+
+    public void setImage(File f) {
+      ImageIcon icon = new ImageIcon(f.getPath());
+      if (icon.getIconWidth()>getWidth())
+        icon = new ImageIcon(icon.getImage().getScaledInstance(getWidth(),-1,Image.SCALE_DEFAULT));
+      setIcon(icon);
+      repaint();
+    }
+
+
   }
 
 

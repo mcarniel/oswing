@@ -27,6 +27,7 @@ public class LookupControllerBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _codeSelectionWindow = new PropertyDescriptor("codeSelectionWindow", beanClass, "getCodeSelectionWindow", "setCodeSelectionWindow");
       _codeSelectionWindow.setPropertyEditorClass(SelectionWindowEditor.class);
       PropertyDescriptor _customPanel = new PropertyDescriptor("customPanel", beanClass, "getCustomPanel", "setCustomPanel");
+      PropertyDescriptor _disableFrameClosing = new PropertyDescriptor("disableFrameClosing", beanClass, "isDisableFrameClosing", "setDisableFrameClosing");
       PropertyDescriptor _form = new PropertyDescriptor("form", beanClass, "getForm", "setForm");
       PropertyDescriptor _framePreferedSize = new PropertyDescriptor("framePreferedSize", beanClass, "getFramePreferedSize", "setFramePreferedSize");
       PropertyDescriptor _frameTitle = new PropertyDescriptor("frameTitle", beanClass, "getFrameTitle", "setFrameTitle");
@@ -46,6 +47,7 @@ public class LookupControllerBeanInfo extends SimpleBeanInfo {
         _anchorLastColumn,
         _codeSelectionWindow,
         _customPanel,
+        _disableFrameClosing,
         _form,
         _framePreferedSize,
         _frameTitle,

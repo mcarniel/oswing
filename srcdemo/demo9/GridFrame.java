@@ -10,6 +10,9 @@ import java.awt.event.*;
 import org.openswing.swing.table.java.*;
 import java.awt.event.ActionEvent;
 import javax.swing.ListSelectionModel;
+import java.util.ArrayList;
+import org.openswing.swing.message.send.java.FilterWhereClause;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -43,18 +46,27 @@ public class GridFrame extends JFrame {
   ExportButton exportButton = new ExportButton();
   ButtonColumn colButton = new ButtonColumn();
   FilterButton filterButton = new FilterButton();
+  JPanel topPanel = new JPanel();
+  MultiLookupControl multiLookupControl1 = new MultiLookupControl(new LookupController(),new String[] {"lookupValue","descrLookupValue"}," - ");
+  GridBagLayout gridBagLayout1 = new GridBagLayout();
+  JButton searchButton = new JButton();
 
 
   public GridFrame(Connection conn,GridFrameController controller) {
     this.conn = conn;
     try {
       jbInit();
-      setSize(750,300);
+      setSize(750,500);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
 
       LookupController lookupController = new DemoLookupController(conn);
       colLookup.setLookupController(lookupController);
+
+      // setup multi code lookup...
+      multiLookupControl1.setController(new DemoLookupController(conn));
+
+
 //      grid.setLockedColumns(2);
       setVisible(true);
 
@@ -160,8 +172,15 @@ public class GridFrame extends JFrame {
     colButton.setShowAttributeValue(true);
 
 
+    topPanel.setLayout(gridBagLayout1);
+    searchButton.setMnemonic('S');
+    searchButton.setText("Search");
+    searchButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        searchButton_actionPerformed(e);
+      }
+    });
     this.getContentPane().add(grid, BorderLayout.CENTER);
-    this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(copyButton, null);
     buttonsPanel.add(editButton, null);
@@ -170,6 +189,13 @@ public class GridFrame extends JFrame {
     buttonsPanel.add(exportButton, null);
     buttonsPanel.add(deleteButton, null);
     buttonsPanel.add(filterButton, null);
+    topPanel.add(searchButton,  new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    this.getContentPane().add(topPanel, BorderLayout.NORTH);
+    topPanel.add(multiLookupControl1,    new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 0, 5), 0, 0));
+    topPanel.add(buttonsPanel,    new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
     grid.getColumnContainer().add(colText, null);
     grid.getColumnContainer().add(colInt, null);
     grid.getColumnContainer().add(colDecimal, null);
@@ -190,6 +216,23 @@ public class GridFrame extends JFrame {
   }
   public GridControl getGrid() {
     return grid;
+  }
+
+  void searchButton_actionPerformed(ActionEvent e) {
+    ArrayList vos = multiLookupControl1.getSelectedVOs();
+    if (vos.size()==0)
+      grid.getQuickFilterValues().remove("lookupValue");
+    else {
+      ArrayList list = new ArrayList();
+      TestLookupVO vo = null;
+      for(int i=0;i<vos.size();i++) {
+        vo = (TestLookupVO)vos.get(i);
+        list.add(vo.getLookupValue());
+      }
+      FilterWhereClause f = new FilterWhereClause("lookupValue",Consts.IN,list);
+      grid.getQuickFilterValues().put("lookupValue",new FilterWhereClause[]{f,null});
+    }
+    grid.reloadData();
   }
 
 

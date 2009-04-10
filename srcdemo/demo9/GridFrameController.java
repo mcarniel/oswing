@@ -12,6 +12,7 @@ import org.openswing.swing.client.GridControl;
 import org.openswing.swing.util.client.ClientUtils;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import org.openswing.swing.message.send.java.GridParams;
 
 
 /**
@@ -52,8 +53,41 @@ public class GridFrameController extends GridController implements GridDataLocat
       ArrayList currentSortedVersusColumns,
       Class valueObjectType,
       Map otherGridParams) {
-    PreparedStatement stmt = null;
     try {
+      String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK_BOX,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE,DEMO3.INTNUM from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
+      ArrayList vals = new ArrayList();
+      HashMap map = new HashMap();
+      map.put("stringValue","DEMO3.TEXT");
+      map.put("numericValue","DEMO3.DECNUM");
+      map.put("currencyValue","DEMO3.CURRNUM");
+      map.put("dateValue","DEMO3.THEDATE");
+      map.put("comboValue","DEMO3.COMBO");
+      map.put("checkValue","DEMO3.CHECK_BOX");
+      map.put("radioButtonValue","DEMO3.RADIO");
+      map.put("lookupValue","DEMO3.CODE");
+      map.put("descrLookupValue","DEMO3_LOOKUP.DESCRCODE");
+      map.put("intValue","DEMO3.INTNUM");
+
+      return QueryUtil.getQuery(
+        conn,
+        sql,
+        vals,
+        map,
+        TestVO.class,
+        "Y",
+        "N",
+        new GridParams(
+          action,
+          startIndex,
+          filteredColumns,
+          currentSortedColumns,
+          currentSortedVersusColumns,
+          new HashMap()
+        ),
+        true
+      );
+
+/*
       String sql = "select DEMO3.TEXT,DEMO3.DECNUM,DEMO3.CURRNUM,DEMO3.THEDATE,DEMO3.COMBO,DEMO3.CHECK_BOX,DEMO3.RADIO,DEMO3.CODE,DEMO3_LOOKUP.DESCRCODE,DEMO3.INTNUM from DEMO3,DEMO3_LOOKUP where DEMO3.CODE=DEMO3_LOOKUP.CODE";
       Vector vals = new Vector();
       if (filteredColumns.size()>0) {
@@ -105,19 +139,12 @@ public class GridFrameController extends GridController implements GridDataLocat
         list.add(vo);
       }
       return new VOListResponse(list,false,list.size());
+      */
     }
-    catch (SQLException ex) {
+    catch (Exception ex) {
       ex.printStackTrace();
       return new ErrorResponse(ex.getMessage());
     }
-    finally {
-      try {
-        stmt.close();
-      }
-      catch (SQLException ex1) {
-      }
-    }
-
   }
 
 

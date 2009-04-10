@@ -428,6 +428,9 @@ public class ClientSettings {
   /** flag used in grid to automatically select data in cell when editing cell; default value: <code>false</code> i.e. do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
   public static boolean SELECT_DATA_IN_EDIT = false;
 
+  /** flag used to show the preview of the image in ImageControl and Image Column components; default value: <code>true</code> */
+  public static boolean SHOW_PREVIEW_OF_IMAGE = true;
+
 
   /**
    * Contains application settings.

@@ -219,7 +219,7 @@ public class SearchWindowManager {
   /**
    * Hide the search window.
    */
-  private void hideSearchWindow() {
+  public void hideSearchWindow() {
     if (searchWindow != null) {
       searchWindow.setVisible(false);
       searchWindow.dispose();

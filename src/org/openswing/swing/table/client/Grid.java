@@ -3712,6 +3712,9 @@ public class Grid extends JTable
 
   public void finalize() {
     try {
+      if (searchWindowManager!=null)
+        searchWindowManager.hideSearchWindow();
+
       FocusListener[] fl = getFocusListeners();
       for (int i = 0; i < fl.length; i++) {
         this.removeFocusListener(fl[i]);

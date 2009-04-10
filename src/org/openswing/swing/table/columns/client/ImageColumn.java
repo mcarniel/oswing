@@ -11,6 +11,12 @@ import javax.swing.table.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.editors.client.*;
 import org.openswing.swing.table.renderers.client.*;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
+import java.awt.Dimension;
+import java.awt.Image;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -73,6 +79,9 @@ public class ImageColumn extends Column {
   /** list of ActionListener objects added to selection button */
   private ArrayList listeners = new ArrayList();
 
+  /** flag used to show the preview of the image in ImageControl and Image Column components; default value: <code>ClientSettings.SHOW_PREVIEW_OF_IMAGE</code> */
+  public static boolean showPreview = ClientSettings.SHOW_PREVIEW_OF_IMAGE;
+
 
   public ImageColumn() { }
 
@@ -117,6 +126,23 @@ public class ImageColumn extends Column {
    */
   public final void setFileFilter(FileFilter fileFilter) {
     this.fileFilter = fileFilter;
+  }
+
+
+  /**
+   * @return show the preview of the image in ImageControl and Image Column components; default value: <code>ClientSettings.SHOW_PREVIEW_OF_IMAGE</code>
+   */
+  public final boolean isShowPreview() {
+    return showPreview;
+  }
+
+
+  /**
+   * Define if showing the preview of the image in ImageControl and Image Column components; default value: <code>ClientSettings.SHOW_PREVIEW_OF_IMAGE</code>
+   * @param showPreview show/hide the preview of the image in ImageControl and Image Column components
+   */
+  public final void setShowPreview(boolean showPreview) {
+    this.showPreview = showPreview;
   }
 
 
@@ -166,9 +192,12 @@ public class ImageColumn extends Column {
     return new ImageCellEditor(
       isShowButton(),
       getFileFilter(),
-      getListeners()
+      getListeners(),
+      showPreview
     );
   }
+
+
 
 
 }

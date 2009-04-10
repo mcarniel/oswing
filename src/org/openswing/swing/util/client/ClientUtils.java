@@ -20,6 +20,7 @@ import org.openswing.swing.tree.client.TreeGridPanel;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseListener;
 import java.awt.event.KeyListener;
+import java.lang.reflect.Method;
 
 
 /**
@@ -642,5 +643,56 @@ public class ClientUtils extends JApplet {
     }
     return value;
   }
+
+
+  /**
+   * @param vo ValueObject to analyze
+   * @param attributeName v.o. attribute name
+   * @return value stored in v.o. related to the specified attribute name
+   */
+  public static Object getValue(ValueObject vo,String attributeName) throws Exception {
+    String aName = attributeName;
+    Method getter = null;
+    Class clazz = vo.getClass();
+    Object obj = vo;
+    while(aName.indexOf(".")!=-1) {
+      try {
+        getter = clazz.getMethod(
+          "get" +
+          aName.substring(0, 1).
+          toUpperCase() +
+          aName.substring(1,aName.indexOf(".")),
+          new Class[0]
+        );
+      }
+      catch (NoSuchMethodException ex2) {
+        getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1,aName.indexOf(".")),new Class[0]);
+      }
+      obj = getter.invoke(obj,new Object[0]);
+      if (obj==null)
+        break;
+      aName = aName.substring(aName.indexOf(".")+1);
+      clazz = getter.getReturnType();
+    }
+
+    if (obj!=null) {
+      try {
+        getter = clazz.getMethod(
+          "get" +
+          aName.substring(0, 1).
+          toUpperCase() +
+          aName.substring(1),
+          new Class[0]
+        );
+      }
+      catch (NoSuchMethodException ex2) {
+        getter = clazz.getMethod("is"+aName.substring(0,1).toUpperCase()+aName.substring(1),new Class[0]);
+      }
+      obj = getter.invoke(obj,new Object[0]);
+    }
+    return obj;
+  }
+
+
 
 }

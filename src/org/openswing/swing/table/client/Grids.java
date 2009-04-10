@@ -3938,6 +3938,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       else {
         data = ((VOListResponse)answer).getRows();
         lastIndex += data.size();
+        startIndex = lastIndex+1;
 
           // append to table model the data fetched from the grid controller...
         try {
