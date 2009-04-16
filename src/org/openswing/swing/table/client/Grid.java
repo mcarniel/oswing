@@ -3398,9 +3398,8 @@ public class Grid extends JTable
    * @return the element at the specified index, converted in String format
    */
   public final String getValueAt(int index) {
-      if (getSelectedColumn() == -1) {
-        return "";
-      }
+    if (getSelectedColumn()==-1 && getColumnCount()>0)
+      setColumnSelectionInterval(0,0);
     try {
       Object obj = getValueAt(index,getSelectedColumn());
       if (obj!=null && obj instanceof Number)
@@ -3640,8 +3639,8 @@ public class Grid extends JTable
    */
   public final int search(String textToSearch) {
     if (searchAdditionalRows) {
-      if (getSelectedColumn()==-1)
-        return -1;
+      if (getSelectedColumn()==-1 && getColumnCount()>0)
+        setColumnSelectionInterval(0,0);
       String attrName = grids.getVOListTableModel().getColumnName(convertColumnIndexToModel(getSelectedColumn()));
       return grids.retrieveAdditionalRows(attrName,textToSearch);
     }

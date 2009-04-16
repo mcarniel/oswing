@@ -1,20 +1,38 @@
 
+Release Notes 1.9.9
+-------------------
+
+Final release 1.9.9 available
+Rebuild whole project.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.9.8
 -------------------
 
 Final release 1.9.8 available
-Changed demo9 in order to show how to add a lookup allowing multi codes selection to filter grid according to 
-that list of codes. 
-Created MultiCodeLookupControl, in order to select more than one code from the list and use the list to filter data.
-Fixed problems related to search in grid feature when SEARCH_ADDITIONAL_ROWS global property is set to true. 
-Added "showPreview" property to ImageControl and ImageColumn components, in order to show a preview of the image
-selected in the file chooser.
-Added SHOW_PREVIEW_OF_IMAGE global property to ClientSettings class, in order to define the default value of
-"showPreview" property of ImageControl and ImageColumn components.
-Added AUTO_EXPAND_SUBTREE_MENU global property to ClientSettings class, in order to define a subtree of tree menu
-to automatically expand when showing MDI frame.
+Improvements on lookup:
+- changed demo9 in order to show how to add a lookup allowing multi codes selection to filter grid according to 
+  that list of codes. 
+- created MultiCodeLookupControl, in order to select more than one code from the list and use the list to filter data.
+Applied fixes on grid:
+- fixed problems related to search in grid feature when SEARCH_ADDITIONAL_ROWS global property is set to true. 
+- fixed problem with nested components in grid, when moving columns
+- changed export in XLS format in order to support recent versions of HSSF library
+- fixed problem on exporting data from grid when using Substance LnF
+Improvements in image components:
+- added "showPreview" property to ImageControl and ImageColumn components, in order to show a preview of the image
+  selected in the file chooser.
+- Added SHOW_PREVIEW_OF_IMAGE global property to ClientSettings class, in order to define the default value of
+  "showPreview" property of ImageControl and ImageColumn components.
+Improvements in MDI frame: 
+- added AUTO_EXPAND_SUBTREE_MENU global property to ClientSettings class, in order to define a subtree of tree menu
+  to automatically expand when showing MDI frame.
+- added global property MDI_FRAME_DECORATED to ClientSettings class, in order to (de)activate decoration of LnF.
 Improved TipPanel component: now a "Select tip" button has been added in order to select in a fast way from a list of tips the desired tip (thanks to Jacek ).
-Fixed problem with nested components in grid, when moving columns.
+Added MAX_NR_OF_LOOPS_IN_ANALYZE_VO global property to ClientSettings class, in order to limit the number of nested loops to execute when
+analyzing value object structure within VOModel, VOListAdapter and LookupController classes.
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 

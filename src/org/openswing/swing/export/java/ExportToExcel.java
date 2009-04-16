@@ -157,7 +157,11 @@ public class ExportToExcel {
           if (obj!=null) {
 
             if (obj instanceof String) {
-              c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+              try {
+                c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+              }
+              catch (NoSuchMethodError ex) {
+              }
               c.setCellValue(obj.toString());
               c.setCellStyle(csText);
             }
@@ -294,7 +298,11 @@ public class ExportToExcel {
     if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
       r = s.createRow(rownum);
       c = r.createCell((short)0);
-      c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+      try {
+        c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+      }
+      catch (NoSuchMethodError ex) {
+      }
       c.setCellValue(opt.getTitle());
       c.setCellStyle(csTitle);
       rownum++;
@@ -305,7 +313,11 @@ public class ExportToExcel {
       for(int i=0;i<filters.length;i++) {
         r = s.createRow(rownum);
         c = r.createCell((short)0);
-        c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+        try {
+          c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+        }
+        catch (NoSuchMethodError ex) {
+        }
         c.setCellValue(filters[i]);
         rownum++;
       }
@@ -333,7 +345,11 @@ public class ExportToExcel {
           r = s.createRow(rownum++);
           for(short i=0;i<opt.getExportColumns().size();i++) {
             c = r.createCell(i);
-            c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+            try {
+              c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+            }
+            catch (NoSuchMethodError ex) {
+            }
             c.setCellValue(opt.getExportColumns().get(i).toString());
             c.setCellStyle(csTitle);
           }
@@ -494,7 +510,11 @@ public class ExportToExcel {
 
       if (obj!=null) {
         if (obj instanceof String) {
-          c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+          try {
+            c.setEncoding(HSSFWorkbook.ENCODING_UTF_16);
+          }
+          catch (NoSuchMethodError ex) {
+          }
           c.setCellValue(obj.toString());
           c.setCellStyle(csText);
         }

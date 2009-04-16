@@ -240,9 +240,9 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("next tip", "Nast\u0119pna");
         dictionary.setProperty("close", "Zamknij");
         dictionary.setProperty("tip of the day", "Porada dnia");
-        dictionary.setProperty("select tip","Select tip");
-        dictionary.setProperty("tip name","Tip name");
-        dictionary.setProperty("tips list","Tips list");
+        dictionary.setProperty("select tip", "Wybierz");
+        dictionary.setProperty("tip name", "Tytu\u0142");
+        dictionary.setProperty("tips list", "Lista porad");
 
         // progress panel...
         dictionary.setProperty("progress", "Post\u0119p");

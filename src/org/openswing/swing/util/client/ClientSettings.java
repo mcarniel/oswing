@@ -104,6 +104,9 @@ public class ClientSettings {
   /** optional property used within the DekstopPane of the MDI frame to draw background content; default value: null */
   public static BackgroundPainter BACKGROUND_PAINTER = null;
 
+  /** flag used to show define if look 'n feel in MDI frame must be decorated; default value: <code>true</code> */
+  public static boolean MDI_FRAME_DECORATED = true;
+
   /** image name for calendar button in date input control */
   public static String CALENDAR = "calendar.gif";
 
@@ -433,6 +436,9 @@ public class ClientSettings {
 
   /** flag used to show the preview of the image in ImageControl and Image Column components; default value: <code>true</code> */
   public static boolean SHOW_PREVIEW_OF_IMAGE = true;
+
+  /** flag used to define the maximum number of nested loops to execute on the same value objects, when analyzing v.o. structure; default value: <code>10</code> */
+  public static int MAX_NR_OF_LOOPS_IN_ANALYZE_VO = 10;
 
 
   /**

@@ -1272,7 +1272,7 @@ public class LookupController {
     if (num==null)
       num = new Integer(0);
     num = new Integer(num.intValue()+1);
-    if (num.intValue()>10)
+    if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
       return;
     vosAlreadyProcessed.put(clazz,num);
     String attributeName = null;

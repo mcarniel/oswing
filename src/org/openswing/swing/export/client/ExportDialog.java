@@ -199,15 +199,18 @@ public class ExportDialog extends JDialog {
       return;
     }
 
-    // esporting data...
-    new Thread() {
+    // exporting data...
+    SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        exportButton.setEnabled(false);
-        grids.export(exportColumns,exportAttrColumns,(String)controlExportType.getSelectedItem());
-        setVisible(false);
+        try {
+          exportButton.setEnabled(false);
+          grids.export(exportColumns, exportAttrColumns,(String) controlExportType.getSelectedItem());
+          setVisible(false);
+        }
+        catch (Exception ex) {
+        }
       }
-    }.start();
-
+    });
   }
 
   void cancelButton_actionPerformed(ActionEvent e) {

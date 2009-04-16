@@ -12,6 +12,7 @@ import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.java.*;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -97,7 +98,7 @@ public class VOListAdapter {
       if (num==null)
         num = new Integer(0);
       num = new Integer(num.intValue()+1);
-      if (num.intValue()>10)
+      if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
         return;
       vosAlreadyProcessed.put(classType,num);
 

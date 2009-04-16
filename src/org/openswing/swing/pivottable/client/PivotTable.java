@@ -437,7 +437,7 @@ public final class PivotTable extends JPanel implements DataController,Draggable
    * Data analysis is perfomed in a separated thread, in order to avoid to block application usage.
    */
   public final void compileDataInThread() {
-    new Thread() {
+    SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
           setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -451,7 +451,7 @@ public final class PivotTable extends JPanel implements DataController,Draggable
           Toolkit.getDefaultToolkit().sync();
         }
       }
-    }.start();
+    });
   }
 
 

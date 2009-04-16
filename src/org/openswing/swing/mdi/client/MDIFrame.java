@@ -59,8 +59,8 @@ public class MDIFrame extends JFrame implements BusyListener {
       ex.printStackTrace();
     }
     try {
-      JFrame.setDefaultLookAndFeelDecorated(true);
-      JDialog.setDefaultLookAndFeelDecorated(true);
+      JFrame.setDefaultLookAndFeelDecorated(ClientSettings.MDI_FRAME_DECORATED);
+      JDialog.setDefaultLookAndFeelDecorated(ClientSettings.MDI_FRAME_DECORATED);
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -312,7 +312,7 @@ public class MDIFrame extends JFrame implements BusyListener {
     menuBar.add(menuHelp);
     this.setJMenuBar(menuBar);
 
-    JFrame.setDefaultLookAndFeelDecorated(true);
+    JFrame.setDefaultLookAndFeelDecorated(ClientSettings.MDI_FRAME_DECORATED);
     GraphicsEnvironment env =
       GraphicsEnvironment.getLocalGraphicsEnvironment();
     this.setExtendedState(this.getExtendedState() | client.getExtendedState());

@@ -1692,6 +1692,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
       final Response answer;
       try {
+        if (startIndex<0)
+          startIndex = 0;
         answer = gridDataLocator.loadData(
             action,
             startIndex,
