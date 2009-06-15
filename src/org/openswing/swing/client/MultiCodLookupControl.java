@@ -11,6 +11,7 @@ import java.awt.event.*;
 import org.openswing.swing.util.client.ClientUtils;
 import org.openswing.swing.logger.client.Logger;
 import java.util.ArrayList;
+import org.openswing.swing.util.client.ClientSettings;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -110,6 +111,10 @@ public class MultiCodLookupControl extends JPanel {
     try {
       jbInit();
       setController(controller);
+
+      if (ClientSettings.TEXT_ORIENTATION!=null)
+          setComponentOrientation(ClientSettings.TEXT_ORIENTATION);
+
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -219,6 +224,28 @@ public class MultiCodLookupControl extends JPanel {
       }
 
     });
+  }
+
+
+  /**
+   * Set the component orientation: from left to right or from right to left.
+   * @param o component orientation
+   */
+  public final void setTextOrientation(ComponentOrientation o) {
+    lookupControl.setComponentOrientation(o);
+  }
+
+
+  /**
+   * @return component orientation
+   */
+  public final ComponentOrientation getTextOrientation() {
+    try {
+      return lookupControl.getTextOrientation();
+    }
+    catch (Exception ex) {
+      return null;
+    }
   }
 
 

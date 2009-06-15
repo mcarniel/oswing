@@ -87,7 +87,7 @@ public class TextCellEditor extends AbstractCellEditor implements TableCellEdito
   private int col = -1;
 
   /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
-  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDIT;
+  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDITABLE_GRID;
 
 
   /**
@@ -100,7 +100,8 @@ public class TextCellEditor extends AbstractCellEditor implements TableCellEdito
   }
 
 
-  public TextCellEditor(int maxCharacters,boolean required,boolean rPadding,boolean trimText,boolean upperCase,boolean selectDataOnEdit) {
+  public TextCellEditor(int maxCharacters,boolean required,boolean rPadding,boolean trimText,boolean upperCase,
+                        boolean selectDataOnEdit,ComponentOrientation orientation) {
     this.required = required;
     this.maxCharacters = maxCharacters;
     this.selectDataOnEdit = selectDataOnEdit;
@@ -109,6 +110,9 @@ public class TextCellEditor extends AbstractCellEditor implements TableCellEdito
     field.setRpadding(rPadding);
     field.setTrimText(trimText);
     field.setUpperCase(upperCase);
+
+    if (orientation!=null)
+      field.setComponentOrientation(orientation);
 
     field.addKeyListener(new KeyAdapter() {
 

@@ -80,16 +80,19 @@ public class MultiLineTextCellEditor extends AbstractCellEditor implements Table
   private int col = -1;
 
   /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
-  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDIT;
+  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDITABLE_GRID;
 
 
-  public MultiLineTextCellEditor(int maxCharacters,boolean required,boolean selectDataOnEdit) {
+  public MultiLineTextCellEditor(int maxCharacters,boolean required,boolean selectDataOnEdit,ComponentOrientation orientation) {
     this.required = required;
     this.maxCharacters = maxCharacters;
     this.selectDataOnEdit = selectDataOnEdit;
     ((JTextArea)field.getBindingComponent()).setLineWrap(true);
     ((JTextArea)field.getBindingComponent()).setWrapStyleWord(true);
     ((JTextArea)field.getBindingComponent()).setOpaque(true);
+
+    if (orientation!=null)
+      field.setComponentOrientation(orientation);
 
     field.addKeyListener(new KeyAdapter() {
 

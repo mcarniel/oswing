@@ -60,7 +60,7 @@ public class NavigatorBar extends JPanel {
   private JButton prevPgButton = new GenericButton(new ImageIcon(ClientUtils.getImage("prevpg.gif")));
 
   /** grid control */
-  private Grids resultSetController = null;
+  private NavigatorBarController resultSetController = null;
 
   /** list of ActionListeners registered to this navigator bar; these listeners will be called AFTER a navigator button has been pressed (AFTER selecting row event) */
   private ArrayList afterActionListeners = new ArrayList();
@@ -350,7 +350,7 @@ public class NavigatorBar extends JPanel {
   }
 
 
-  public void initNavigator(Grids resultSetController){
+  public void initNavigator(NavigatorBarController resultSetController){
     this.resultSetController = resultSetController;
   }
 

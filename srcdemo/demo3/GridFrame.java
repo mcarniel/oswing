@@ -64,6 +64,7 @@ public class GridFrame extends JFrame {
 
       LookupController lookupController = new DemoLookupController(conn);
       colLookup.setLookupController(lookupController);
+      lookupController.setVisibleStatusPanel(true);
 
       // set top grid content, i.e. the first row...
       grid.setTopGridDataLocator(new GridDataLocator() {
@@ -260,6 +261,7 @@ public class GridFrame extends JFrame {
     colCheck.setEditableOnEdit(true);
     colCheck.setEditableOnInsert(true);
     colCheck.setAllowNullValue(true);
+    colCheck.setEnableInReadOnlyMode(true);
     insertButton.setText("insertButton1");
     editButton.setText("editButton1");
     saveButton.setText("saveButton1");

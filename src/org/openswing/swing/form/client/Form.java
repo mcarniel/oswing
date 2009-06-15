@@ -1463,8 +1463,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       list = list.substring(0,list.length()-2);
       OptionPane.showMessageDialog(
           ClientUtils.getParentFrame(this),
-          ClientSettings.getInstance().getResources().getResource("Error while saving: incorrect data.")+"\n"+list,
-          ClientSettings.getInstance().getResources().getResource("Saving Error"),
+          ClientSettings.getInstance().getResources().getResource("Error while validating data:")+"\n"+list,
+          ClientSettings.getInstance().getResources().getResource("Validation Error"),
           JOptionPane.WARNING_MESSAGE
       );
       return false;
@@ -1504,8 +1504,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           catch (Exception ex) {
             OptionPane.showMessageDialog(
                 ClientUtils.getParentFrame(this),
-                ClientSettings.getInstance().getResources().getResource("Error while saving: incorrect data.")+"\n"+comp.getAttributeName(),
-                ClientSettings.getInstance().getResources().getResource("Saving Error"),
+                ClientSettings.getInstance().getResources().getResource("Error while validating data:")+"\n"+comp.getAttributeName(),
+                ClientSettings.getInstance().getResources().getResource("Validation Error"),
                 JOptionPane.WARNING_MESSAGE
             );
             result = false;

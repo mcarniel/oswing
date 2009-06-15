@@ -131,6 +131,8 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         // form...
         dictionary.setProperty("Confirm deliting data?", "Czy potwierdzasz usuni\u0119cie danych?");
         dictionary.setProperty("Error while saving: incorrect data.", "Wyst\u0105pi\u0142 b\u0142\u0105d podczas zapisywania danych: nieprawid\u0142owe dane.");
+        dictionary.setProperty("Error while validating data:","Brak lub b\u0142\u0119dna warto\u015B\u0107 dla:");
+        dictionary.setProperty("Validation Error","B\u0142\u0105d kontroli danych");
         dictionary.setProperty("Error on deleting:", "B\u0142\u0105d podczas usuwania:");
         dictionary.setProperty("Error on Loading", "B\u0142\u0105d podczas \u0142adowania");
         dictionary.setProperty("Error while loading data:", "Wyst\u0105pi\u0142 b\u0142\u0105d podczas \u0142adowania danych:");

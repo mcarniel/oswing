@@ -176,15 +176,18 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
     if (column!=-1 &&
         grids.isEnableInReadOnlyMode(column)&&
         grids.getMode()==Consts.READONLY) {
-      if (row!=grids.getSelectedRow()) {
-        if (selected==null || !selected.booleanValue())
-          selected = Boolean.TRUE;
-        else
-          selected = Boolean.FALSE;
-      }
+//      if (row!=grids.getSelectedRow()) {
+//        if (selected==null || !selected.booleanValue())
+//          selected = Boolean.TRUE;
+//        else
+//          selected = Boolean.FALSE;
+//      }
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
-          grids.setRowSelectionInterval(row,row);
+          if (grids.getSelectedRow()!=row) {
+            grids.setRowSelectionInterval(row, row);
+            changeSelectedValue();
+          }
         }
       });
     }
@@ -230,7 +233,8 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
     }
 
 
-    if (grids.getMode()!=Consts.READONLY) {
+    if (grids.getMode()!=Consts.READONLY ||
+        grids.isEnableInReadOnlyMode(column) && grids.getMode()==Consts.READONLY) {
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
 

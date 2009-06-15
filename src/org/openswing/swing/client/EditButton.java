@@ -37,7 +37,7 @@ import org.openswing.swing.util.client.*;
 public class EditButton extends GenericButton {
 
   public EditButton() {
-    super(new ImageIcon(ClientUtils.getImage("edit.gif")));
+    super(new ImageIcon(ClientUtils.getImage(ClientSettings.BUTTON_EDIT_IMAGE_NAME)));
   }
 
 

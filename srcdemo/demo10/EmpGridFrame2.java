@@ -91,7 +91,6 @@ public class EmpGridFrame2 extends InternalFrame {
     splitPane.setDividerLocation(270);
 
     titledBorder3 = new TitledBorder("");
-    grid.setAnchorLastColumn(true);
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     grid.setDeleteButton(deleteButton);
@@ -211,6 +210,10 @@ public class EmpGridFrame2 extends InternalFrame {
     grid2.getColumnContainer().add(colEndMorningHour, null);
     grid2.getColumnContainer().add(colStartAfternoonHour, null);
     grid2.getColumnContainer().add(colEndAfternoonHour, null);
+
+//    grid.setAnchorLastColumn(true);
+    grid.setLockedColumns(2);
+    grid.setAnchorLockedColumnsToLeft(false);
 
   }
 

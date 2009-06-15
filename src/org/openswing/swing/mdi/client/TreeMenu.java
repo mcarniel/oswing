@@ -215,6 +215,11 @@ public class TreeMenu extends JPanel {
       menuTree.setModel(treeModel);
 //      menuTree.setModel(functions);
       menuTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+
+      if (!ClientSettings.SHOW_TREE_MENU_ROOT)
+        menuTree.setRootVisible(false);
+
       TreeNodeRenderer renderer = new TreeNodeRenderer(menuTree);
       menuTree.setCellRenderer(renderer);
       menuTree.revalidate();

@@ -1274,9 +1274,27 @@ public final class PivotTable extends JPanel implements DataController,Draggable
       GlobalColGenericNode vn = null;
       ColGenericNode obj = null;
       Number num = null;
+      GenericNodeKey currentKey = null;
+      Object obj1,obj2;
       for(int i=0;i<n.getChildrenCount();i++) {
         vn = (GlobalColGenericNode)n.getChildren(i);
-        obj = (ColGenericNode)dataValues.get(key.appendKey(vn.getValue()));
+        currentKey = key.appendKey(vn.getValue());
+        obj = (ColGenericNode)dataValues.get(currentKey);
+
+        colIndex = 0;
+        for(int x=0;x<currentKey.getPath().length;x++)
+          for (int y = colIndex; y < colsTable.getModel().getColumnCount(); y++) {
+            obj1 = currentKey.getPath()[x];
+            obj2 = colsTable.getModel().getValueAt(x,y);
+            if (obj1!=null && obj2!=null) {
+              if (obj1 instanceof Number && obj2 instanceof Number &&
+                  ((Number)obj1).doubleValue()==((Number)obj2).doubleValue() ||
+                  obj1.equals(obj2)) {
+                colIndex = y;
+                break;
+              }
+            }
+          }
 
         if (obj!=null) {
           for(int k=0;k<pars.getDataFields().size();k++) {

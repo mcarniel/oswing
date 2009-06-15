@@ -22,6 +22,7 @@ import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
 import org.openswing.swing.export.java.GridExportOptions;
 import org.openswing.swing.table.permissions.java.GridPermissions;
+import org.openswing.swing.table.client.OrderPolicy;
 
 
 /**
@@ -153,6 +154,9 @@ public class GridControl extends JPanel {
   /** number of locked columns, i.e. columns anchored to the left side of the grid; default value: 0 */
   private int lockedColumns = 0;
 
+  /** define where to anchor locked columns: to the left or to the right of the grid; default value: <code>true</code> i.e. to the left */
+  private boolean anchorLockedColumnsToLeft = true;
+
   /** grid identifier (optional); used in drag 'n drop events */
   private String gridId = null;
 
@@ -176,6 +180,9 @@ public class GridControl extends JPanel {
 
   /** flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded); default value: <code>true</code> */
   private boolean orderWithLoadData = true;
+
+  /** interface that must be implemented in order to sort columns */
+  private OrderPolicy orderPolicy = new OrderPolicy();
 
   /** <code>true</code> to automatically show a filter panel when moving mouse at right of the grid; <code>false</code> to do not show it */
   private boolean showFilterPanelOnGrid = ClientSettings.FILTER_PANEL_ON_GRID;
@@ -300,6 +307,8 @@ public class GridControl extends JPanel {
   /** flag used in grid to enable the retrieval of additional rows in fast search, when search criteria fails; default value: ClientSettings.SEARCH_ADDITION_ROWS */
   public boolean searchAdditionalRows = ClientSettings.SEARCH_ADDITIONAL_ROWS;
 
+  /** flag used to allow the columns sorting in edit mode too; default value: <code>false</code>; note that this setting is used only when <code>orderWithLoadData</code> property is set to <code>false</code> */
+  private boolean allowColumnsSortingInEdit = false;
 
 
 
@@ -349,8 +358,9 @@ public class GridControl extends JPanel {
   /**
    * This method is called by addNotify method when this panel is set to visible:
    * it will create the grid and add it to this panel.
+   * It must not be manually invoked!
    */
-  private final void commitColumnContainer() {
+  public final void commitColumnContainer() {
     try {
       long time = System.currentTimeMillis();
 
@@ -373,6 +383,7 @@ public class GridControl extends JPanel {
       table = new Grids(
           this,
           lockedColumns,
+          anchorLockedColumnsToLeft,
           valueObjectClassName,
           columnProperties,
           controller,
@@ -389,6 +400,7 @@ public class GridControl extends JPanel {
           listFilters,
           headerHeight,
           searchAdditionalRows,
+          allowColumnsSortingInEdit,
           Grid.MAIN_GRID
       );
       table.setEditOnSingleRow(editOnSingleRow);
@@ -804,6 +816,7 @@ public class GridControl extends JPanel {
         topTable = new Grids(
             this,
             lockedColumns,
+            anchorLockedColumnsToLeft,
             valueObjectClassName,
             columnProperties,
             topGridController,
@@ -820,6 +833,7 @@ public class GridControl extends JPanel {
             listFilters,
             headerHeight,
             searchAdditionalRows,
+            allowColumnsSortingInEdit,
             Grid.TOP_GRID
         );
         topTable.setEditOnSingleRow(editOnSingleRow);
@@ -892,6 +906,7 @@ public class GridControl extends JPanel {
         bottomTable = new Grids(
             this,
             lockedColumns,
+            anchorLockedColumnsToLeft,
             valueObjectClassName,
             columnProperties,
             bottomGridController,
@@ -908,6 +923,7 @@ public class GridControl extends JPanel {
             new HashMap(),
             headerHeight,
             searchAdditionalRows,
+            allowColumnsSortingInEdit,
             Grid.BOTTOM_GRID
         );
         bottomTable.setEditOnSingleRow(editOnSingleRow);
@@ -1227,9 +1243,9 @@ public class GridControl extends JPanel {
         }
       }
 
-      table.getGrid().setOrderWithLoadData(orderWithLoadData);
+      table.getGrid().setOrderWithLoadData(orderWithLoadData,orderPolicy);
       if (table.getLockedGrid()!=null)
-        table.getLockedGrid().setOrderWithLoadData(orderWithLoadData);
+        table.getLockedGrid().setOrderWithLoadData(orderWithLoadData,orderPolicy);
 
       // apply the profile (e.g. reorder column properties, etc)...
       if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null && profile!=null)
@@ -2040,6 +2056,17 @@ public class GridControl extends JPanel {
    */
   public final void setOrderWithLoadData(boolean orderWithLoadData) {
     this.orderWithLoadData = orderWithLoadData;
+  }
+
+
+  /**
+   * Used to define the sorting algorithm to use to sort columns.
+   * Note that this method is used by grid control ONLY IF <code>orderWithLoadData</code> property has been set to <code>false</code>,
+   * otherwise this setting will be ignored.
+   * @param orderPolicy interface that must be implemented in order to sort columns
+   */
+  public final void setOrderPolicy(OrderPolicy orderPolicy) {
+    this.orderPolicy = orderPolicy;
   }
 
 
@@ -3262,9 +3289,38 @@ public class GridControl extends JPanel {
     return labelPanel.getSize().height;
   }
 
+  /**
+   * @return allows the columns sorting in edit mode too; note that this setting is used only when <code>orderWithLoadData</code> property is set to <code>false</code> */
+  public final boolean isAllowColumnsSortingInEdit() {
+    return allowColumnsSortingInEdit;
+  }
 
 
+  /**
+   * Define whether columns sorting is enabled also in edit mode.
+   * Note that this setting is used only when <code>orderWithLoadData</code> property is set to <code>false</code>
+   * @param allowColumnsSortingInEdit allows the columns sorting in edit mode too
+   */
+  public final void setAllowColumnsSortingInEdit(boolean allowColumnsSortingInEdit) {
+    this.allowColumnsSortingInEdit = allowColumnsSortingInEdit;
+  }
 
+
+  /**
+   * @return define where to anchor locked columns: to the left or to the right of the grid; default value: <code>true</code> i.e. to the left
+   */
+  public final boolean isAnchorLockedColumnsToLeft() {
+    return anchorLockedColumnsToLeft;
+  }
+
+
+  /**
+   * Define where to anchor locked columns: to the left or to the right of the grid.
+   * @param anchorLockedColumnsToLeft <code>true</code> to anchor locked columns the left of the grid
+   */
+  public final void setAnchorLockedColumnsToLeft(boolean anchorLockedColumnsToLeft) {
+    this.anchorLockedColumnsToLeft = anchorLockedColumnsToLeft;
+  }
 
 
 

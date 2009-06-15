@@ -10,6 +10,7 @@ import org.openswing.swing.permissions.java.ButtonsAuthorizations;
 import org.openswing.swing.internationalization.java.*;
 import javax.swing.UIManager;
 import javax.swing.*;
+import java.awt.event.KeyEvent;
 
 
 /**
@@ -66,7 +67,7 @@ public class ClientApplication {
     auth.addButtonAuthorization("F1",true,false,true);
 
     ClientSettings clientSettings = new ClientSettings(
-        new EnglishOnlyResourceFactory("£",props,false),
+        new EnglishOnlyResourceFactory("$",props,false),
         domains,
         auth
     );
@@ -76,6 +77,8 @@ public class ClientApplication {
     ClientSettings.SHOW_SORTING_ORDER = true;
     ClientSettings.SHOW_FOCUS_BORDER_ON_FORM = false;
     ClientSettings.SHOW_NAVIGATOR_BAR_IN_LOOKUP = true;
+    ClientSettings.AS_TAB = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
 //com.jgoodies.looks.plastic.PlasticLookAndFeel
 //com.jgoodies.looks.plastic.Plastic3DLookAndFeel

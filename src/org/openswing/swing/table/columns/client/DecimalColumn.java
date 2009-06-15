@@ -71,7 +71,7 @@ public class DecimalColumn extends Column {
   private int bottomMargin = 0;
 
   /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
-  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDIT;
+  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDITABLE_GRID;
 
 
   public DecimalColumn() {

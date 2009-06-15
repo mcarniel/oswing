@@ -69,7 +69,8 @@ public class MultiLineTextTableCellRenderer extends JTextArea implements TableCe
    * @param gridController grid controller
    * @param attributeName attribute name associated to this column
    */
-  public MultiLineTextTableCellRenderer(GridController gridController,int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
+  public MultiLineTextTableCellRenderer(GridController gridController,int leftMargin,int rightMargin,int topMargin,int bottomMargin,
+                                        ComponentOrientation orientation,String attributeName) {
     this.gridController = gridController;
     this.leftMargin = leftMargin;
     this.rightMargin = rightMargin;
@@ -79,6 +80,9 @@ public class MultiLineTextTableCellRenderer extends JTextArea implements TableCe
     setLineWrap(true);
     setWrapStyleWord(true);
     setOpaque(true);
+
+    if (orientation!=null)
+        setComponentOrientation(orientation);
   }
 
 

@@ -79,6 +79,9 @@ public class TextControl extends BaseInputControl implements InputControl {
 //    setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 //    this.add(textBox);
 
+    if (ClientSettings.TEXT_ORIENTATION!=null)
+        setComponentOrientation(ClientSettings.TEXT_ORIENTATION);
+
     addFocusListener();
     addKeyListener();
     initListeners();
@@ -348,6 +351,28 @@ public class TextControl extends BaseInputControl implements InputControl {
    */
   public final int getColumns() {
     return textBox.getColumns();
+  }
+
+
+  /**
+   * Set the component orientation: from left to right or from right to left.
+   * @param o component orientation
+   */
+  public final void setTextOrientation(ComponentOrientation o) {
+    textBox.setComponentOrientation(o);
+  }
+
+
+  /**
+   * @return component orientation
+   */
+  public final ComponentOrientation getTextOrientation() {
+    try {
+      return textBox.getComponentOrientation();
+    }
+    catch (Exception ex) {
+      return null;
+    }
   }
 
 

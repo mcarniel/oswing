@@ -37,7 +37,7 @@ import org.openswing.swing.util.client.*;
 public class ImportButton extends GenericButton {
 
   public ImportButton() {
-    super(new ImageIcon(ClientUtils.getImage("import.gif")));
+    super(new ImageIcon(ClientUtils.getImage(ClientSettings.BUTTON_IMPORT_IMAGE_NAME)));
   }
 
 

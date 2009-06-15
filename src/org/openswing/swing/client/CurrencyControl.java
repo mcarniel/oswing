@@ -335,7 +335,7 @@ public class CurrencyControl extends BaseInputControl implements InputControl {
   public final String getText() {
     BigDecimal value = null;
     try {
-      if (currencyBox.getText().length()!=0 && !currencyBox.getText().equals(nullValue) && !"-".equals(currencyBox.getText()))
+      if (currencyBox.getText().length()!=0 && !currencyBox.getText().trim().equals(nullValue.trim()) && !"-".equals(currencyBox.getText()))
         value = new BigDecimal(format.parse(currencyBox.getText()).doubleValue());
       if ("-".equals(currencyBox.getText()))
         value = new BigDecimal(0).negate();

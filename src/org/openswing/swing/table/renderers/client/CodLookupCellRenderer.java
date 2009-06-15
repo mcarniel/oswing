@@ -3,6 +3,8 @@ package org.openswing.swing.table.renderers.client;
 import javax.swing.*;
 
 import org.openswing.swing.table.client.*;
+import org.openswing.swing.util.client.ClientSettings;
+import java.awt.ComponentOrientation;
 
 
 /**
@@ -47,8 +49,9 @@ public class CodLookupCellRenderer extends TextTableCellRenderer {
    * @param attributeName attribute name associated to this column
    */
   public CodLookupCellRenderer(GridController gridController,boolean hideCodBox,int alignement,
-                               int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
-    super(gridController,false,alignement,leftMargin,rightMargin,topMargin,bottomMargin,attributeName);
+                               int leftMargin,int rightMargin,int topMargin,int bottomMargin,
+                               ComponentOrientation orientation,String attributeName) {
+    super(gridController,false,alignement,leftMargin,rightMargin,topMargin,bottomMargin,orientation,attributeName);
     this.hideCodBox = hideCodBox;
   }
 

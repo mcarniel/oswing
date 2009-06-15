@@ -78,6 +78,9 @@ public class LookupController {
   /** columns associated to lookup grid */
   private Column[] colProperties = new Column[0];
 
+  /** selectable columns properties; optional */
+  private Boolean[] columnsSelectable = null;
+
   /** flag used to set visibility on all columns of lookup grid; default "false"  */
   private boolean allColumnVisible = false;
 
@@ -185,6 +188,9 @@ public class LookupController {
 
   /** define if lookup grid frame must not be closed when selecting codes on it; default value: <code>false</code>, i.e. frame will be closed when selecting a code */
   private boolean disableFrameClosing = false;
+
+  /** flag used to specify if the status panel is visible; default value: <code>ClientSettings.VISIBLE_STATUS_PANEL</code> */
+  private boolean visibleStatusPanel = ClientSettings.VISIBLE_STATUS_PANEL;
 
 
   /**
@@ -543,13 +549,15 @@ public class LookupController {
       ex.printStackTrace();
     }
     try {
+      GridStatusPanel statusPanel = new GridStatusPanel();
       Grids table = new Grids(
           null,
           0,
+          true,
           lookupValueObjectClassName,
           colProperties,
           lookupGridController,
-          new GridStatusPanel(),
+          statusPanel,
           dataLocator,
           new HashMap(),
           true,
@@ -562,6 +570,7 @@ public class LookupController {
           comboFilters,
           ClientSettings.HEADER_HEIGHT,
           false,
+          false,
           Grid.MAIN_GRID
       );
       lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);
@@ -569,7 +578,7 @@ public class LookupController {
       table.setMaxSortedColumns(maxSortedColumns);
 
       // create the lookup grid frame...
-      lookupFrame = new LookupGridFrame(parentFrame,frameTitle, table);
+      lookupFrame = new LookupGridFrame(parentFrame,frameTitle, table, statusPanel);
       lookupFrame.setSize(framePreferredSize);
       table.reload();
       ClientUtils.centerDialog(parentFrame,lookupFrame);
@@ -670,13 +679,15 @@ public class LookupController {
       ex.printStackTrace();
     }
     try {
+      GridStatusPanel statusPanel = new GridStatusPanel();
       final Grids table = new Grids(
           null,
           0,
+          true,
           lookupValueObjectClassName,
           colProperties,
           lookupGridController,
-          new GridStatusPanel(),
+          statusPanel,
           new GridDataLocator() {
 
             public Response loadData(
@@ -709,6 +720,7 @@ public class LookupController {
           comboFilters,
           ClientSettings.HEADER_HEIGHT,
           false,
+          false,
           Grid.MAIN_GRID
       );
       lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);
@@ -731,7 +743,7 @@ public class LookupController {
       treePanel.setTreeDataLocator(lookupDataLocator);
 
       // create the lookup tree grid frame...
-      lookupFrame = new LookupTreeGridFrame(parentFrame,frameTitle,treePanel,table);
+      lookupFrame = new LookupTreeGridFrame(parentFrame,frameTitle,treePanel,table, statusPanel);
       lookupFrame.setSize(framePreferredSize);
 //      table.reload();
       ClientUtils.centerDialog(parentFrame,lookupFrame);
@@ -804,7 +816,8 @@ public class LookupController {
           visibleIndex = i;
         if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
           colProperties[i].setColumnVisible(visible);
-          colProperties[i].setColumnSelectable(visible);
+          if (columnsSelectable[i]==null)
+            colProperties[i].setColumnSelectable(visible);
           index = i;
           break;
         }
@@ -818,6 +831,27 @@ public class LookupController {
           infoTemp = colProperties[index];
           colProperties[index] = colProperties[visibleIndex];
           colProperties[visibleIndex] = infoTemp;
+        }
+      }
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
+
+  /**
+   * Set selectable column in the lookup grid frame.
+   * @param lookupAttributeName attribute name that identifies the grid column
+   * @param flag used to set the selectable column state
+   */
+  public final void setSelectableColumn(String lookupAttributeName, boolean selectable) {
+    try {
+      for (int i = 0; i < colProperties.length; i++) {
+        if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
+          colProperties[i].setColumnSelectable(selectable);
+          this.columnsSelectable[i] = new Boolean(selectable);
+          break;
         }
       }
     }
@@ -931,7 +965,8 @@ public class LookupController {
     for(int i=0; i<colProperties.length; i++) {
       colProperties[i].setColumnVisible(visible);
       if (allColumnsSelectable==null)
-        colProperties[i].setColumnSelectable(visible);
+        if (columnsSelectable[i]==null)
+          colProperties[i].setColumnSelectable(visible);
     }
   }
 
@@ -1055,14 +1090,45 @@ public class LookupController {
         colProperties[i] = new ComboColumn();
         ((ComboColumn)colProperties[i]).setColumnName(lookupAttributeName);
         ((ComboColumn)colProperties[i]).setPreferredWidth(oldCol.getPreferredWidth());
-        ((ComboColumn)colProperties[i]).setVisible(oldCol.isVisible());
+        ((ComboColumn)colProperties[i]).setColumnVisible(oldCol.isColumnVisible());
+        ((ComboColumn)colProperties[i]).setColumnSelectable(oldCol.isColumnVisible());
         ((ComboColumn)colProperties[i]).setSortingOrder(oldCol.getSortingOrder());
         ((ComboColumn)colProperties[i]).setSortVersus(oldCol.getSortVersus());
         ((ComboColumn)colProperties[i]).setHeaderColumnName(oldCol.getHeaderColumnName());
         ((ComboColumn)colProperties[i]).setDomainId(domainId);
+        ((ComboColumn)colProperties[i]).setColumnFilterable(oldCol.isColumnFilterable());
+        ((ComboColumn)colProperties[i]).setColumnSortable(oldCol.isColumnSortable());
+        ((ComboColumn)colProperties[i]).setTextAlignment(oldCol.getTextAlignment());
         return;
       }
     Logger.error(this.getClass().getName(),"setDomainColumn","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);
+  }
+
+
+  /**
+   * Set the formatter to a formatted text type column column.
+   * @param lookupAttributeName attribute name that identifies the column
+   * @param formatter formatter to use for this column
+   */
+  public final void setFormattedTextColumn(String lookupAttributeName, JFormattedTextField.AbstractFormatter formatter) {
+    for(int i=0;i<colProperties.length;i++)
+      if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
+        Column oldCol = colProperties[i];
+        colProperties[i] = new FormattedTextColumn();
+        ((FormattedTextColumn)colProperties[i]).setColumnName(lookupAttributeName);
+        ((FormattedTextColumn)colProperties[i]).setPreferredWidth(oldCol.getPreferredWidth());
+        ((FormattedTextColumn)colProperties[i]).setColumnVisible(oldCol.isColumnVisible());
+        ((FormattedTextColumn)colProperties[i]).setColumnSelectable(oldCol.isColumnVisible());
+        ((FormattedTextColumn)colProperties[i]).setSortingOrder(oldCol.getSortingOrder());
+        ((FormattedTextColumn)colProperties[i]).setSortVersus(oldCol.getSortVersus());
+        ((FormattedTextColumn)colProperties[i]).setHeaderColumnName(oldCol.getHeaderColumnName());
+        ((FormattedTextColumn)colProperties[i]).setFormatter(formatter);
+        ((FormattedTextColumn)colProperties[i]).setColumnFilterable(oldCol.isColumnFilterable());
+        ((FormattedTextColumn)colProperties[i]).setColumnSortable(oldCol.isColumnSortable());
+        ((FormattedTextColumn)colProperties[i]).setTextAlignment(oldCol.getTextAlignment());
+        return;
+      }
+    Logger.error(this.getClass().getName(),"setFormattedTextColumn","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);
   }
 
 
@@ -1332,6 +1398,7 @@ public class LookupController {
       analyzeVO("",new Hashtable(),attributes,getterMethods,Class.forName(lookupValueObjectClassName));
       String attributeName = null;
       this.colProperties = new Column[getterMethods.size()];
+      this.columnsSelectable = new Boolean[this.colProperties.length];
       Class colType = null;
       Method getter = null;
       for(int i=0;i<getterMethods.size();i++) {
@@ -1367,8 +1434,10 @@ public class LookupController {
           colProperties[i].setHeaderColumnName(String.valueOf(attributeName.charAt(0)).toUpperCase()+attributeName.substring(1));
         colProperties[i].setColumnVisible(this.allColumnVisible);
         if (this.allColumnsSelectable!=null)
-          colProperties[i].setColumnSelectable(this.allColumnsSelectable.booleanValue());
+          if (columnsSelectable[i]==null)
+            colProperties[i].setColumnSelectable(this.allColumnsSelectable.booleanValue());
         colProperties[i].setPreferredWidth(this.allColumnPreferredWidth);
+        colProperties[i].setAutoFitColumn(autoFitColumns);
       }
 
     }
@@ -1633,7 +1702,8 @@ public class LookupController {
     this.allColumnsSelectable = allColumnsSelectable;
     if (allColumnsSelectable!=null)
       for(int i=0; i<colProperties.length; i++) {
-        colProperties[i].setColumnSelectable(allColumnsSelectable.booleanValue());
+        if (columnsSelectable[i]==null)
+          colProperties[i].setColumnSelectable(allColumnsSelectable.booleanValue());
       }
   }
 
@@ -1692,6 +1762,21 @@ public class LookupController {
   }
 
 
+  /**
+   * Set status panel visibility.
+   * @param visibleStatusPanel <code>true</code> to show the status panel, <code>false</code> to hide the status panel
+   */
+  public final void setVisibleStatusPanel(boolean visibleStatusPanel) {
+    this.visibleStatusPanel = visibleStatusPanel;
+  }
+
+
+  /**
+   * @return status panel visibility
+   */
+  public final boolean isVisibleStatusPanel() {
+    return visibleStatusPanel;
+  }
 
 
   /**
@@ -1775,7 +1860,7 @@ public class LookupController {
   class LookupGridFrame extends LookupFrame {
 
 
-    public LookupGridFrame(JFrame parentFrame,String title,Grids table) {
+    public LookupGridFrame(JFrame parentFrame,String title,Grids table,GridStatusPanel labelPanel) {
       super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
       this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
       this.table = table;
@@ -1787,7 +1872,16 @@ public class LookupController {
 
       JSplitPane split2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
       split2.setDividerSize(0);
-      split2.add(table,split2.BOTTOM);
+
+      JPanel gridStatusPanel = new JPanel();
+      gridStatusPanel.setLayout(new BorderLayout());
+      if (labelPanel!=null) {
+        labelPanel.setPreferredSize(new Dimension(framePreferredSize.width,22));
+        if (visibleStatusPanel)
+          gridStatusPanel.add(labelPanel,BorderLayout.SOUTH);
+      }
+      gridStatusPanel.add(table,BorderLayout.CENTER);
+      split2.add(gridStatusPanel,split2.BOTTOM);
       split2.setDividerLocation(0);
 
       p.add(split2,   new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
@@ -1990,7 +2084,7 @@ public class LookupController {
     private TreePanel treePanel = null;
 
 
-    public LookupTreeGridFrame(JFrame parentFrame,String title,TreePanel treePanel,Grids table) {
+    public LookupTreeGridFrame(JFrame parentFrame,String title,TreePanel treePanel,Grids table,GridStatusPanel labelPanel) {
       super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
       this.treePanel = treePanel;
       this.table = table;
@@ -2008,7 +2102,16 @@ public class LookupController {
 
       JSplitPane split2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
       split2.setDividerSize(0);
-      split2.add(table,split2.BOTTOM);
+
+      JPanel gridStatusPanel = new JPanel();
+      gridStatusPanel.setLayout(new BorderLayout());
+      if (labelPanel!=null) {
+        labelPanel.setPreferredSize(new Dimension(framePreferredSize.width,22));
+        if (visibleStatusPanel)
+          gridStatusPanel.add(labelPanel,BorderLayout.SOUTH);
+      }
+      gridStatusPanel.add(table,BorderLayout.CENTER);
+      split2.add(gridStatusPanel,split2.BOTTOM);
       split2.setDividerLocation(0);
 
       p.add(split2,   new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0

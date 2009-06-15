@@ -116,6 +116,7 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
 
     lookupButton.setText(null);
     lookupButton.setPreferredSize(new Dimension(21, codBox.getPreferredSize().height));
+    ClientUtils.addTabListener(lookupButton);
     lookupButton.addActionListener(new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
@@ -165,6 +166,9 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
 //    this.add(codBox);
 //    this.add(buttonSeparator);
 //    this.add(lookupButton);
+
+    if (ClientSettings.TEXT_ORIENTATION!=null)
+        setComponentOrientation(ClientSettings.TEXT_ORIENTATION);
 
 
     initListeners();
@@ -681,6 +685,28 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
   public final void setLookupButtonVisible(boolean lookupButtonVisible) {
     if (lookupButton!=null)
       this.lookupButton.setVisible(lookupButtonVisible);
+  }
+
+
+  /**
+   * Set the component orientation: from left to right or from right to left.
+   * @param o component orientation
+   */
+  public final void setTextOrientation(ComponentOrientation o) {
+    codBox.setComponentOrientation(o);
+  }
+
+
+  /**
+   * @return component orientation
+   */
+  public final ComponentOrientation getTextOrientation() {
+    try {
+      return codBox.getComponentOrientation();
+    }
+    catch (Exception ex) {
+      return null;
+    }
   }
 
 

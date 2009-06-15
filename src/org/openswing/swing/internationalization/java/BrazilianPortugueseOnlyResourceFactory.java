@@ -115,6 +115,8 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       // form...
       dictionary.setProperty("Confirm deliting data?", "Confirma a deleção dos dados?");
       dictionary.setProperty("Error while saving: incorrect data.", "Erro durante salvamento: dados nao corretos");
+      dictionary.setProperty("Error while validating data:","Erro durante validação de datos:");
+      dictionary.setProperty("Validation Error","Erro de validação");
       dictionary.setProperty("Error on deleting:", "Erro dutante exclusão:");
       dictionary.setProperty("Error on Loading", "Erro de carga");
       dictionary.setProperty("Error while loading data:", "Erro durante a carga de dados:");
@@ -241,7 +243,7 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       dictionary.setProperty("not found", "Não localizado");
       // drag...
       dictionary.setProperty("drag", "Drag");
-      resources = new Resources(dictionary, "R$", '.', ',', Resources.DMY, true, '/', "HH:mm", "PT_BR", showResourceNotFoundWarning);
+      resources = new Resources(dictionary, "R$", ',', '.', Resources.DMY, true, '/', "HH:mm", "PT_BR", showResourceNotFoundWarning);
    }
 
    /**

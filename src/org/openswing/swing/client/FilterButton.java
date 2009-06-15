@@ -37,7 +37,7 @@ import org.openswing.swing.util.client.*;
 public class FilterButton extends GenericButton {
 
   public FilterButton() {
-    super(new ImageIcon(ClientUtils.getImage("filter.gif")));
+    super(new ImageIcon(ClientUtils.getImage(ClientSettings.BUTTON_FILTER_IMAGE_NAME)));
   }
 
 

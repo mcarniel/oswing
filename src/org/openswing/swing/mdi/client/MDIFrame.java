@@ -321,7 +321,7 @@ public class MDIFrame extends JFrame implements BusyListener {
     if (client.viewFunctionsInTreePanel() && ((TreeNode)functions.getRoot()).getChildCount()>0) {
       // add tree nodes...
       treeMenu = new TreeMenu(functions);
-      treeMenu.setMinimumSize(new Dimension(0,0));
+      treeMenu.setMinimumSize(new Dimension(ClientSettings.MIN_MENU_WIDTH,0));
       treeMenu.setMaximumSize(new Dimension(ClientSettings.MAX_MENU_WIDTH,0));
       treeMenu.addMouseListener(new MenuMouseListener());
       lastTreeMenuWidth = treeMenu.getWidth();

@@ -123,6 +123,7 @@ public class DetailFrame extends JFrame {
     controlComboBox.setLinkLabel(labelCombo);
     controlComboBox.setRequired(false);
     controlCurrency.setCanCopy(true);
+//    controlCurrency.setCurrencySymbolOnLeft(false);
     controlCurrency.setDecimals(2);
     controlCurrency.setMaxValue(1000.0);
     controlCurrency.setMinValue(-1000.0);

@@ -256,7 +256,7 @@ public class DateTimeColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE_TIME,defaultDate);
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE_TIME,getFormat(),defaultDate);
   }
 
 

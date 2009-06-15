@@ -82,8 +82,14 @@ OpenSwing is based on these files:
 - log4j-1.2.7.jar - LOG4J component
 - pooler.jar - Java Database Connection Pool
 - beaninfo.jar - library that can be installed inside an IDE that supports Java Beans specifications (JBuilder, NetBeans, JDeveloper)
-
 which are available in build directory.
+
+IMPORTANT NOTE: do not include beaninfo.jar as project library: it has only to be included into IDE settings, in order to show the OpenSwing components palette
+within the IDE.
+
+IMPORTANT NOTE: in order to use QueryUtil class, an implementation of Servlet API must be provided: for instance servlet-api.jar file
+(from tomcat/lib folder) can be included as project library.
+
 
 Note: hsqldb.jar is only used in demos included with the OpenSwing distribution, so that it is not part of OpenSwing framework.
 Note: OfficeLnFs_2.7.jar is only used for demo10 sample application, to show how to include the Office LnF in a OpenSwing based application.

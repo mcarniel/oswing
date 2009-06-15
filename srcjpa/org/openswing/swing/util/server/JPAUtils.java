@@ -1100,8 +1100,27 @@ public class JPAUtils {
     int rowCount = 0;
     if (action==GridParams.LAST_BLOCK_ACTION) {
       // last block requested: the whole result set will be loaded, to determine the result set length
-      List list = query.getResultList();
-      rowCount = list.size();
+      List list = null;
+      if (query.getClass().getName().equals("org.hibernate.ejb.QueryImpl")) {
+	// Query is implemented by Hibernate: 
+	// use Hibernate API to move cursor at the end of the result set...
+	try {
+    		Object hibernateQuery = query.getClass().getMethod("getHibernateQuery", new Class[0]).invoke(query, new Object[0]);
+    		Object scrollableResults = hibernateQuery.getClass().getMethod("scroll", new Class[0]).invoke(hibernateQuery, new Object[0]);
+    		scrollableResults.getClass().getMethod("last", new Class[0]).invoke(scrollableResults, new Object[0]);
+    		Integer num = (Integer)scrollableResults.getClass().getMethod("getRowNumber", new Class[0]).invoke(scrollableResults, new Object[0]);
+    		rowCount = num.intValue();
+    		scrollableResults.getClass().getMethod("close", new Class[0]).invoke(scrollableResults, new Object[0]);
+	} catch(Throwable t) {
+	        list = query.getResultList();
+	        resultSetLength = list.size();
+	}            
+      }
+      else {
+	      list = query.getResultList();
+      	      rowCount = list.size();
+      }
+      
       resultSetLength = rowCount;
       action = GridParams.NEXT_BLOCK_ACTION;
       startIndex = Math.max(rowCount-blockSize,0);

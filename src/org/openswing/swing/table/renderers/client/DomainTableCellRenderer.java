@@ -81,7 +81,8 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
    * @param attributeName attribute name associated to this column
    */
   public DomainTableCellRenderer(Domain domain,boolean translateItemDescriptions,GridController gridController,int alignement,
-                                 int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
+                                 int leftMargin,int rightMargin,int topMargin,int bottomMargin,
+                                 ComponentOrientation orientation,String attributeName) {
     this.domain = domain;
     this.translateItemDescriptions = translateItemDescriptions;
     this.gridController = gridController;
@@ -92,6 +93,9 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
     this.attributeName = attributeName;
     rend.setOpaque(true);
     rend.setHorizontalAlignment(alignement);
+
+    if (orientation!=null)
+        setComponentOrientation(orientation);
   }
 
 

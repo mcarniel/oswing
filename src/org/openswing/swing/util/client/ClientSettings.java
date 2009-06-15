@@ -47,6 +47,33 @@ import org.openswing.swing.table.permissions.java.*;
  */
 public class ClientSettings {
 
+  /** image name for insert button */
+  public static String BUTTON_INSERT_IMAGE_NAME = "new.gif";
+
+  /** image name for insert button */
+  public static String BUTTON_EDIT_IMAGE_NAME = "edit.gif";
+
+  /** image name for insert button */
+  public static String BUTTON_COPY_IMAGE_NAME = "copy.gif";
+
+  /** image name for insert button */
+  public static String BUTTON_SAVE_IMAGE_NAME = "save.gif";
+
+  /** image name for insert button */
+  public static String BUTTON_RELOAD_IMAGE_NAME = "reload.gif";
+
+  /** image name for insert button */
+  public static String BUTTON_IMPORT_IMAGE_NAME = "import.gif";
+
+  /** image name for insert button */
+  public static String BUTTON_EXPORT_IMAGE_NAME = "export.gif";
+
+  /** image name for insert button */
+  public static String BUTTON_FILTER_IMAGE_NAME = "filter.gif";
+
+  /** image name for insert button */
+  public static String BUTTON_DELETE_IMAGE_NAME = "del.gif";
+
   /** image name for the MDI Frame */
   public static String ICON_FILENAME = "appicon.gif";
 
@@ -58,6 +85,9 @@ public class ClientSettings {
 
   /** image name for closed padlock icon in tree menu */
   public static String LOCK_OFF = "lock_off.gif";
+
+  /** show root node in the tree menu of MDI Frame */
+  public static boolean SHOW_TREE_MENU_ROOT = true;
 
   /** image name for "find function" icon in tree menu (optional); default value: null, i.e. do not show any icon */
   public static String FIND_FUNCTION_ICON = null;
@@ -115,6 +145,9 @@ public class ClientSettings {
 
   /** width of MDI Frame menu window */
   public static int MENU_WIDTH = 250;
+
+  /** minimum width of MDI Frame menu window */
+  public static int MIN_MENU_WIDTH = 0;
 
   /** maximum width of MDI Frame menu window */
   public static int MAX_MENU_WIDTH = 300;
@@ -293,6 +326,9 @@ public class ClientSettings {
   /** define what a lookup has to do when an invalid code has been setted; possible values: LookupController.ON_INVALID_CODE_xxx; default value: LookupController.ON_INVALID_CODE_CLEAR_CODE */
   public static int ON_INVALID_CODE = LookupController.ON_INVALID_CODE_CLEAR_CODE;
 
+  /** define if showing the status panel on bottom of the lookup grid; default value: <code>false</code> */
+  public static boolean VISIBLE_STATUS_PANEL = false;
+
   /** define if the navigator bar must be showed on top of the lookup grid frame; default value: <code>false</code> i.e. the navigator is not showed in the grid lookup frame */
   public static boolean SHOW_NAVIGATOR_BAR_IN_LOOKUP = false;
 
@@ -432,13 +468,22 @@ public class ClientSettings {
   public static Color HEADER_FOREGROUND_COLOR = null;
 
   /** flag used in grid to automatically select data in cell when editing cell; default value: <code>false</code> i.e. do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
-  public static boolean SELECT_DATA_IN_EDIT = false;
+  public static boolean SELECT_DATA_IN_EDITABLE_GRID = false;
+
+  /** flag used in grid to automatically select data in input controls when the controls gains focus; default value: <code>false</code> i.e. do not select data stored in input control; <code>true</code> to automatically select data already stored in input controls */
+  public static boolean SELECT_DATA_IN_EDITABLE_FORM = false;
 
   /** flag used to show the preview of the image in ImageControl and Image Column components; default value: <code>true</code> */
   public static boolean SHOW_PREVIEW_OF_IMAGE = true;
 
   /** flag used to define the maximum number of nested loops to execute on the same value objects, when analyzing v.o. structure; default value: <code>10</code> */
   public static int MAX_NR_OF_LOOPS_IN_ANALYZE_VO = 10;
+
+  /** component orientation of all text based input controls and grid columns; default value: <code>null</code>, i.e. use the default component orientation defined by Swing toolkit */
+  public static ComponentOrientation TEXT_ORIENTATION = null;
+
+  /** shortcut key used to fire a TAB key event, in order to move focus to next component; default value: null; it can be used, for instance, to define that the ENTER key move focus to next component */
+  public static KeyStroke AS_TAB = null;
 
 
   /**

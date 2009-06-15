@@ -37,7 +37,7 @@ import org.openswing.swing.util.client.*;
 public class DeleteButton extends GenericButton {
 
   public DeleteButton() {
-    super(new ImageIcon(ClientUtils.getImage("del.gif")));
+    super(new ImageIcon(ClientUtils.getImage(ClientSettings.BUTTON_DELETE_IMAGE_NAME)));
   }
 
 

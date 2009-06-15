@@ -142,6 +142,8 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     // form...
     dictionary.setProperty("Confirm deliting data?","Bekreft sletting av data?");
     dictionary.setProperty("Error while saving: incorrect data.","Feil under lagring: ukorrekte data.");
+    dictionary.setProperty("Error while validating data:","Feil under validering av data:");
+    dictionary.setProperty("Validation Error","Validering feil");
     dictionary.setProperty("Error on deleting:","Feil under sletting:");
     dictionary.setProperty("Error on Loading","Feil under Henting");
     dictionary.setProperty("Error while loading data:","Feil under henting av data:");

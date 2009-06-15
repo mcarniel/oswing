@@ -37,7 +37,7 @@ import org.openswing.swing.util.client.*;
 public class CopyButton extends GenericButton {
 
   public CopyButton() {
-    super(new ImageIcon(ClientUtils.getImage("copy.gif")));
+    super(new ImageIcon(ClientUtils.getImage(ClientSettings.BUTTON_COPY_IMAGE_NAME)));
   }
 
 

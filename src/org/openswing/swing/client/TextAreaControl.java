@@ -56,6 +56,9 @@ public class TextAreaControl extends BaseInputControl implements InputControl {
     this.add(scrollPane,BorderLayout.CENTER);
     textArea.setFont(UIManager.getFont("TextField.font"));
 
+    if (ClientSettings.TEXT_ORIENTATION!=null)
+        setComponentOrientation(ClientSettings.TEXT_ORIENTATION);
+
     addFocusListener();
     addKeyListener();
     initListeners();
@@ -194,6 +197,28 @@ public class TextAreaControl extends BaseInputControl implements InputControl {
    */
   public void setValue(Object value) {
     textArea.setText((String)value);
+  }
+
+
+  /**
+   * Set the component orientation: from left to right or from right to left.
+   * @param o component orientation
+   */
+  public final void setTextOrientation(ComponentOrientation o) {
+    textArea.setComponentOrientation(o);
+  }
+
+
+  /**
+   * @return component orientation
+   */
+  public final ComponentOrientation getTextOrientation() {
+    try {
+      return textArea.getComponentOrientation();
+    }
+    catch (Exception ex) {
+      return null;
+    }
   }
 
 

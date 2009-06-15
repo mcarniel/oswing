@@ -140,6 +140,8 @@ ResourcesFactory {
     // form...
     dictionary.setProperty("Confirm deliting data?","Confirmer la suppresion de données?");
     dictionary.setProperty("Error while saving: incorrect data.","Erreur lors de l'enregistrement: donnée incorrecte.");
+    dictionary.setProperty("Error while validating data:","Erreur lors de validation de données:");
+    dictionary.setProperty("Validation Error","Error du validation");
     dictionary.setProperty("Error on deleting:","Erreur sur suppression:");
     dictionary.setProperty("Error on Loading","Erreur sur Chargement");
     dictionary.setProperty("Error while loading data:","Erreur lors du chargement de données:");

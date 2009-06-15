@@ -129,6 +129,8 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     // form...
     dictionary.setProperty("Confirm deliting data?","¿Confirmación de borrado de los datos?");
     dictionary.setProperty("Error while saving: incorrect data.","Error mientras se guardaba: datos incorrectos.");
+    dictionary.setProperty("Error while validating data:","Error mientras se validación los datos:");
+    dictionary.setProperty("Validation Error","Error de validación");
     dictionary.setProperty("Error on deleting:","Error borrando:");
     dictionary.setProperty("Error on Loading","Error cargando");
     dictionary.setProperty("Error while loading data:","Error mientras se cargaban los datos:");

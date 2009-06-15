@@ -154,6 +154,8 @@ public class CheckBoxControl extends JCheckBox implements InputControl {
         }
     });
 
+    ClientUtils.addTabListener(this);
+
   }
 
 

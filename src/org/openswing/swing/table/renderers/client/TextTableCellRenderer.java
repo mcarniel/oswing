@@ -74,7 +74,8 @@ public class TextTableCellRenderer extends DefaultTableCellRenderer {
    * @param attributeName attribute name associated to this column
    */
   public TextTableCellRenderer(GridController gridController,boolean encryptText,int alignement,
-                               int leftMargin,int rightMargin,int topMargin,int bottomMargin,String attributeName) {
+                               int leftMargin,int rightMargin,int topMargin,int bottomMargin,
+                               ComponentOrientation orientation,String attributeName) {
     this.gridController = gridController;
     this.encryptText = encryptText;
     this.leftMargin = leftMargin;
@@ -83,6 +84,9 @@ public class TextTableCellRenderer extends DefaultTableCellRenderer {
     this.bottomMargin = bottomMargin;
     this.attributeName = attributeName;
     setHorizontalAlignment(alignement);
+
+    if (orientation!=null)
+        setComponentOrientation(orientation);
   }
 
 

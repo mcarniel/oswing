@@ -37,7 +37,7 @@ import org.openswing.swing.util.client.*;
 public class ReloadButton extends GenericButton {
 
   public ReloadButton() {
-    super(new ImageIcon(ClientUtils.getImage("reload.gif")));
+    super(new ImageIcon(ClientUtils.getImage(ClientSettings.BUTTON_RELOAD_IMAGE_NAME)));
   }
 
 

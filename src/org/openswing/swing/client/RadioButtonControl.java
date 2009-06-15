@@ -149,6 +149,7 @@ public class RadioButtonControl extends JRadioButton implements InputControl {
         }
     });
 
+    ClientUtils.addTabListener(this);
   }
 
 

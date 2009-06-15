@@ -102,6 +102,9 @@ public class ListControl extends BaseInputControl implements InputControl,Search
     });
 
     new SearchWindowManager(this);
+
+    if (ClientSettings.TEXT_ORIENTATION!=null)
+        setComponentOrientation(ClientSettings.TEXT_ORIENTATION);
   }
 
 
@@ -812,7 +815,7 @@ public class ListControl extends BaseInputControl implements InputControl,Search
    * @return <code>true</code> if the input control is in read only mode (so search is enabled), <code>false</code> otherwise
    */
   public final boolean isReadOnly() {
-    return !isEnabled();
+    return isEnabled();
   }
 
 
@@ -959,6 +962,28 @@ public class ListControl extends BaseInputControl implements InputControl,Search
    */
   public final int search(String textToSeach) {
     return -1;
+  }
+
+
+  /**
+   * Set the component orientation: from left to right or from right to left.
+   * @param o component orientation
+   */
+  public final void setTextOrientation(ComponentOrientation o) {
+    list.setComponentOrientation(o);
+  }
+
+
+  /**
+   * @return component orientation
+   */
+  public final ComponentOrientation getTextOrientation() {
+    try {
+      return list.getComponentOrientation();
+    }
+    catch (Exception ex) {
+      return null;
+    }
   }
 
 

@@ -37,7 +37,7 @@ import org.openswing.swing.util.client.*;
 public class ExportButton extends GenericButton {
 
   public ExportButton() {
-    super(new ImageIcon(ClientUtils.getImage("export.gif")));
+    super(new ImageIcon(ClientUtils.getImage(ClientSettings.BUTTON_EXPORT_IMAGE_NAME)));
   }
 
 

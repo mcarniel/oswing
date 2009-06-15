@@ -70,7 +70,7 @@ public class ClientApplication {
     ClientSettings.ALLOW_OR_OPERATOR = false;
     ClientSettings.INCLUDE_IN_OPERATOR = false;
     ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
-    ClientSettings.SELECT_DATA_IN_EDIT = true;
+    ClientSettings.SELECT_DATA_IN_EDITABLE_GRID = true;
 
     createConnection();
 

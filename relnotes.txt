@@ -1,4 +1,96 @@
 
+Release Notes 2.0.4
+-------------------
+
+Final release 2.0.4 available
+Changes in grid control:
+- changed from private to public the "commitColumnContainer" method
+- added "allowColumnsSortingInEdit" boolean property to GridControl, in order to allow the columns sorting
+  in edit mode too, only when sorting is internally managed, i.e. not demanded to loadData method
+- added "afterSorting" callback method to OrderPolicy class, in order to override it and listen for
+  the sorting event, in case of internal sorting of columns
+- fixed problem in DateColumn: now date format is correctly setted in cell editor
+- added "anchorLockedColumnsToLeft" property, in order to anchor columns on the right margin of the grid
+Fixed problem with currency component when "currencySymbolOnLeft" property is set to "false"
+Fixed problem in PivotTable on rendering quantities when data contains holes.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.0.3
+-------------------
+
+Final release 2.0.3 available
+Changes in grid control:
+- fixed problem when hiding expandable column in nested grids
+- added "setOrderPolicy" method to GridControl in order to customize columns sorting policy, 
+  in case of sorting that does not invoke reloading data method
+- moved later the invocation of "afterInsertGrid" or "afterEditGrid" grid's callback methods
+Fixed problem with setSelectableColumn in LookupController.
+Added tooltip text to toggle buttons of windows bar on bottom of the MDI frame.
+Added new global property "AS_TAB" to ClientSettings class: it allows to define a key to use as for a TAB key, i.e.
+to move focus to next input control.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.0.2
+-------------------
+
+Final release 2.0.2 available
+Improvements in lookup controller:
+- added "setSelectableColumn" method to LookupController.
+- added "setFormattedTextColumn" method to LookupController.
+- applied "autoFitColumns" property to LookupController.
+Added BUTTON_XXX_IMAGE_NAME global properties to ClientSettings, in order to customize the image name to use for OpenSwing buttons, 
+such as insert, edit, copy, etc.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.0.1
+-------------------
+
+Final release 2.0.1 available
+Rebuilt the whole distribution.
+Changes/improvements in MDIFrame:
+- added global property SHOW_TREE_MENU_ROOT to ClientSettings, in order to hide root node in tree menu
+- added MIN_MENU_WIDTH global property to ClientSettings, in order to set the minimum width of MDI frame's tree menu.
+Fixed problems in input controls/grid columns:
+- fixed problem with set/getTextOrientation methods in text input controls and text based columns.
+- fixed problem on formatting currency values with BrazilianPortugueseOnlyResourceFactory class.
+- fixed problem with search feature in combo and list controls
+Added NavigatorBarController interface, implemented by Grids component and used within NavigatorBar component:
+it decouples NavigatorBar and Grids components, allowing to use the navigator bar in other components.
+Improved JPAUtils.getBlockFromQuery method, when using Hibernate implementation: now the case LAST_BLOCK_ACTION
+is faster than the previous version.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.0
+-----------------
+
+Final release 2.0 available
+Rebuilt beaninfo.jar.
+Improvements on lookup component:
+- added "visibleStatusPanel" property to LookupController, in order to show status panel on bottom of the lookup grid.
+- added VISIBLE_STATUS_PANEL global property to ClientSettings, in order to show/hide status panel on all lookup grids.
+Improvements on input controls/grid's columns:
+- named SELECT_DATA_IN_EDITABLE_FORM, in order to auto select input controls content, when focus is gained into the control, 
+  as for a grid's cell.
+- renamed global property SELECT_DATA_IN_EDIT to SELECT_DATA_IN_EDITABLE_GRID in ClientSettings class and added new global property
+- added TEXT_ORIENTATION global property to ClientSettings, in order to define the component orientation
+  (left to right or right to left) to use in text based input controls and grid columns.
+- added "textOrientation" property and getter/setter methods to all text based input controls and grid columns, 
+  in order to define the component orientation; the default value of "textOrientation" property is set to ClientSettings.TEXT_ORIENTATION
+- a click on a check-box column will update the value object istantly, also when grid is in read only mode
+Fixed problem in HibernateUtils class, when using entities having relationships to other entities that recursivelly refers the first one.
+Fix problem on CustomValueObjectsUtils class, when retrieving CHAR type fields.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 1.9.9
 -------------------
 

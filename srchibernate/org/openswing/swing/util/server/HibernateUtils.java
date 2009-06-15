@@ -89,6 +89,7 @@ public class HibernateUtils {
 
   /**
    * Fill in "attributesMap" according to attributes defined in xxx.hdm.xml.
+   * Note: the same entity cannot be analyzed again more than 10 times.
    */
   private static void fillInMetaData(
       SessionFactory sessions,
@@ -97,9 +98,21 @@ public class HibernateUtils {
       ClassMetadata meta,
       Map attributesMap,
       Map attributesTypeMap,
-      String lastAttrName
+      String lastAttrName,
+      HashMap entitiesAlreadyAnalyzed
   ) {
     if (meta!=null) {
+      Integer num = (Integer)entitiesAlreadyAnalyzed.get(meta.getEntityName());
+      if (num==null) {
+        num = new Integer(1);
+        entitiesAlreadyAnalyzed.put(meta.getEntityName(),num);
+      }
+      else
+        entitiesAlreadyAnalyzed.put(meta.getEntityName(),new Integer(num.intValue()+1));
+      if (num.intValue()>10)
+        // the same entity cannot be analyzed again more than 10 times.
+        return;
+
       String[] attrNames = meta.getPropertyNames();
       for(int i=0;i<attrNames.length;i++) {
         attributesMap.put(prefix+attrNames[i],tableName+"."+attrNames[i]);
@@ -131,7 +144,8 @@ public class HibernateUtils {
           submeta,
           attributesMap,
           attributesTypeMap,
-          meta.getEntityName()+"."+attrNames[i]
+          meta.getEntityName()+"."+attrNames[i],
+          entitiesAlreadyAnalyzed
         );
       }
 
@@ -181,7 +195,8 @@ public class HibernateUtils {
           submeta,
           attributesMap,
           attributesTypeMap,
-          meta.getEntityName()+"."+meta.getIdentifierPropertyName()
+          meta.getEntityName()+"."+meta.getIdentifierPropertyName(),
+          new HashMap()
         );
       }
 
@@ -249,7 +264,7 @@ public class HibernateUtils {
     Map attributesMap = new HashMap();
     Map attributesTypeMap = new HashMap();
     if (meta!=null) {
-      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap,"");
+      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap,"",new HashMap());
       attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
     }
     else {
@@ -431,7 +446,7 @@ public class HibernateUtils {
     Map attributesTypeMap = new HashMap();
     Map propDescriptors = new HashMap();
     if (meta!=null) {
-      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap,"");
+      fillInMetaData(sessions,tableName,"",meta,attributesMap,attributesTypeMap,"",new HashMap());
       attributesMap.put(meta.getIdentifierPropertyName(),tableName+"."+meta.getIdentifierPropertyName());
     }
     else {

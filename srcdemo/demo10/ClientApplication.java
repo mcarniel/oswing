@@ -152,6 +152,8 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.FILTER_PANEL_ON_GRID = true;
     ClientSettings.SHOW_FILTER_SYMBOL = true;
     ClientSettings.ASK_BEFORE_CLOSE = true;
+//    ClientSettings.SHOW_TREE_MENU_ROOT = false;
+
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "net.infonode.gui.laf.InfoNodeLookAndFeel";
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.birosoft.liquid.LiquidLookAndFeel";
 //    ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.oyoaha.swing.plaf.oyoaha.OyoahaLookAndFeel";

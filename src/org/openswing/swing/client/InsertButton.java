@@ -38,7 +38,7 @@ import org.openswing.swing.util.client.*;
 public class InsertButton extends GenericButton {
 
   public InsertButton() {
-    super(new ImageIcon(ClientUtils.getImage("new.gif")));
+    super(new ImageIcon(ClientUtils.getImage(ClientSettings.BUTTON_INSERT_IMAGE_NAME)));
   }
 
 

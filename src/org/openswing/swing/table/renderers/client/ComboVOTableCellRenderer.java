@@ -111,6 +111,7 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
       Hashtable getters,
       GridController gridController,
       int leftMargin,int rightMargin,int topMargin,int bottomMargin,
+      ComponentOrientation orientation,
       String foreignKeyAttributeName
   ) {
     this.itemsDataLocator = itemsDataLocator;
@@ -127,7 +128,7 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
     this.bottomMargin = bottomMargin;
     this.foreignKeyAttributeName = foreignKeyAttributeName;
     rend.setOpaque(true);
-
+    setComponentOrientation(orientation);
 
     if (itemsDataLocator!=null && itemsVO!=null) {
       Response res = itemsDataLocator.loadData(itemsVO.getClass());

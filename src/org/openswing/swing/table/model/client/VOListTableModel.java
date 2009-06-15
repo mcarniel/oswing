@@ -476,6 +476,7 @@ public class VOListTableModel extends AbstractTableModel {
             value);
         if (isOk) {
           ValueObject object = (ValueObject)data.elementAt(row);
+
           fieldAdapter.setField(object, column, value);
           modified = true;
           fireTableCellUpdated(row,column);

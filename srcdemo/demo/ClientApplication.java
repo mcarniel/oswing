@@ -48,6 +48,8 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.BACKGROUND = "background3.jpg";
     ClientSettings.TREE_BACK = "treeback2.jpg";
     ClientSettings.AUTO_EXPAND_TREE_MENU = true;
+    ClientSettings.MIN_MENU_WIDTH = 300;
+    ClientSettings.DIVIDER_WIDTH = 0;
 //    ClientSettings.AUTO_EXPAND_SUBTREE_MENU = "Folder3";
 
     if(argv.length==1)

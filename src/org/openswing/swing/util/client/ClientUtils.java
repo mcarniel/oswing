@@ -21,6 +21,8 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseListener;
 import java.awt.event.KeyListener;
 import java.lang.reflect.Method;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 /**
@@ -694,5 +696,24 @@ public class ClientUtils extends JApplet {
   }
 
 
+  /**
+   * Utility method invoked by input controls in order to listen for a AS_TAB key event to translate in a TAB key event,
+   * to transfer focus to next component.
+   * @param c input control to whose add a KeyListener
+   */
+  public static void addTabListener(final JComponent c) {
+    if (ClientSettings.AS_TAB!=null) {
+      c.addKeyListener(new KeyAdapter() {
+
+        public void keyReleased(KeyEvent e) {
+          if (e.getKeyCode()==ClientSettings.AS_TAB.getKeyCode() &&
+              e.getModifiers()+e.getModifiersEx()==ClientSettings.AS_TAB.getModifiers()) {
+            c.transferFocus();
+          } // end if
+        } // end keyReleased method
+
+      });
+    } // end if
+  }
 
 }

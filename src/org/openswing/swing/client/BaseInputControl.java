@@ -11,6 +11,7 @@ import org.openswing.swing.form.model.client.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.util.client.*;
 import com.toedter.calendar.*;
+import javax.swing.text.JTextComponent;
 
 
 /**
@@ -145,6 +146,8 @@ public class BaseInputControl extends JPanel implements InputControl {
     }
 
     inputControlPopupMenu = new InputControlPopupMenu(this);
+
+    ClientUtils.addTabListener(getBindingComponent());
   }
 
 
@@ -212,6 +215,12 @@ public class BaseInputControl extends JPanel implements InputControl {
     if (ClientSettings.VIEW_BACKGROUND_SEL_COLOR && isEnabled()) {
       getBindingComponent().setBackground(ClientSettings.BACKGROUND_SEL_COLOR);
     }
+
+    if (ClientSettings.SELECT_DATA_IN_EDITABLE_FORM &&
+        isEnabled() &&
+        getBindingComponent() instanceof JTextComponent)
+      ((JTextComponent)getBindingComponent()).select(0,((JTextComponent)getBindingComponent()).getText().length());
+
   }
 
 
@@ -469,6 +478,7 @@ public class BaseInputControl extends JPanel implements InputControl {
     if (!Beans.isDesignTime() && getBindingComponent()!=null && getBindingComponent() instanceof JTextField)
       ((JTextField)getBindingComponent()).setHorizontalAlignment(alignment);
   }
+
 
 
 }

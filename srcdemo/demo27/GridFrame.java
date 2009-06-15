@@ -77,6 +77,7 @@ public class GridFrame extends JFrame {
     grid.setSaveButton(saveButton1);
     grid.setValueObjectClassName("demo27.TestVO");
     grid.setOrderWithLoadData(false);
+    grid.setAllowColumnsSortingInEdit(true);
     colCustomerCode.setColumnFilterable(true);
     colCustomerCode.setColumnName("customerCode");
     colCustomerCode.setColumnSortable(true);

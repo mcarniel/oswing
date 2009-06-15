@@ -73,13 +73,17 @@ public class LinkCellEditor extends AbstractCellEditor implements TableCellEdito
    * @param text button text
    * @param actionListeners list of ActionListeners linked to the button
    */
-  public LinkCellEditor(GridController gridController,String uriAttributeName,ArrayList actionListeners,String labelAttributeName) {
+  public LinkCellEditor(GridController gridController,String uriAttributeName,ArrayList actionListeners,
+                        ComponentOrientation orientation,String labelAttributeName) {
     this.gridController = gridController;
     this.uriAttributeName = uriAttributeName;
     this.labelAttributeName = labelAttributeName;
     this.actionListeners = actionListeners;
     field.addActionListener(this);
     field.setOpaque(true);
+
+    if (orientation!=null)
+      field.setComponentOrientation(orientation);
   }
 
 

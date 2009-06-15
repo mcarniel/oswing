@@ -47,6 +47,8 @@ public class LabelControl extends JLabel {
 
   public LabelControl() {
     setTextAlignment(SwingConstants.LEFT);
+    if (ClientSettings.TEXT_ORIENTATION!=null)
+        setComponentOrientation(ClientSettings.TEXT_ORIENTATION);
   }
 
 

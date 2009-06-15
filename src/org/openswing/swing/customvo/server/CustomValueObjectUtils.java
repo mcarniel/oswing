@@ -1,25 +1,12 @@
 package org.openswing.swing.customvo.server;
 
-import javax.swing.*;
-import java.awt.*;
-import org.openswing.swing.util.client.ClientSettings;
-import java.util.ArrayList;
-import org.openswing.swing.customvo.java.CustomFieldVO;
-import org.openswing.swing.domains.java.Domain;
-import java.math.BigDecimal;
 import java.sql.*;
-import java.util.HashMap;
-import org.openswing.swing.message.receive.java.Response;
-import org.openswing.swing.message.receive.java.ValueObject;
-import org.openswing.swing.message.receive.java.VOListResponse;
-import org.openswing.swing.message.receive.java.VOResponse;
-import java.util.Iterator;
-import java.util.Map;
-import org.openswing.swing.server.QueryUtil;
-import org.openswing.swing.message.send.java.GridParams;
-import org.openswing.swing.customvo.java.CustomValueObject;
-import org.openswing.swing.message.receive.java.ErrorResponse;
-import java.util.HashSet;
+import java.util.*;
+
+import org.openswing.swing.customvo.java.*;
+import org.openswing.swing.message.receive.java.*;
+import org.openswing.swing.message.send.java.*;
+import org.openswing.swing.server.*;
 
 
 /**
@@ -100,7 +87,7 @@ public class CustomValueObjectUtils {
           case Types.CHAR:
             vo.setAttributeName("attributeNameS"+sAttr);
             vo.setAttributeType(vo.TYPE_CHAR);
-            vo.setMaxChars(meta.getScale(i+1));
+            vo.setMaxChars(meta.getPrecision(i+1));
             sAttr++;
             break;
           case Types.DATE:

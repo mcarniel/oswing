@@ -11,6 +11,7 @@ import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.editors.client.*;
 import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
+import java.awt.ComponentOrientation;
 
 
 /**
@@ -70,6 +71,9 @@ public class ComboColumn extends Column {
 
   /** define if description in combo items must be translated; default value: <code>true</code> */
   private boolean translateItemDescriptions = true;
+
+  /** component orientation */
+  private ComponentOrientation orientation = ClientSettings.TEXT_ORIENTATION;
 
 
   public ComboColumn() { }
@@ -247,6 +251,23 @@ public class ComboColumn extends Column {
 
 
   /**
+   * Set the component orientation: from left to right or from right to left.
+   * @param orientation component orientation
+   */
+  public final void setTextOrientation(ComponentOrientation orientation) {
+    this.orientation = orientation;
+  }
+
+
+  /**
+   * @return component orientation
+   */
+  public final ComponentOrientation getTextOrientation() {
+      return orientation;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -268,6 +289,7 @@ public class ComboColumn extends Column {
         getRightMargin(),
         getTopMargin(),
         getBottomMargin(),
+        getTextOrientation(),
         getColumnName()
       );
     else {
@@ -294,6 +316,7 @@ public class ComboColumn extends Column {
           domain,
           translateItemDescriptions,
           isColumnRequired(),
+          getTextOrientation(),
           getItemListeners()
       );
     else {

@@ -111,7 +111,8 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
    * @param translateItemDescriptions define if description in combo items must be translated
    * @param required flag sed to set mandatory property of the cell
    */
-  public DomainCellEditor(Domain domain,boolean translateItemDescriptions,boolean required,ArrayList itemListeners) {
+  public DomainCellEditor(Domain domain,boolean translateItemDescriptions,boolean required,
+                          ComponentOrientation orientation,ArrayList itemListeners) {
     this.domain = domain;
     this.translateItemDescriptions = translateItemDescriptions;
     this.required = required;
@@ -122,6 +123,10 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
         model.addElement(ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()));
       else
         model.addElement(pairs[i].getDescription());
+
+    if (orientation!=null)
+      field.setComponentOrientation(orientation);
+
     field.setModel(model);
     for(int i=0;i<itemListeners.size();i++)
       field.addItemListener((ItemListener)itemListeners.get(i));

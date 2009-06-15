@@ -55,12 +55,15 @@ import org.openswing.swing.util.java.*;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class Grids extends JPanel implements VOListTableModelListener,DataController {
+public class Grids extends JPanel implements VOListTableModelListener,DataController,NavigatorBarController {
 
   private GridBagLayout gridBagLayout1 = new GridBagLayout();
 
   /** locked grid, anchored to the left (optional) */
   private Grid lockedGrid = null;
+
+  /** define where to anchor locked columns: to the left or to the right of the grid; default value: <code>true</code> i.e. to the left */
+  private boolean anchorLockedColumnsToLeft = true;
 
   /** main grid */
   private Grid grid = null;
@@ -246,6 +249,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public Grids(
       GridControl gridControl,
       int lockedColumns,
+      boolean anchorLockedColumnsToLeft,
       String valueObjectClassName,
       Column[] colProps,
       GridController gridController,
@@ -262,10 +266,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       HashMap comboFilters,
       int headerHeight,
       boolean searchAdditionalRows,
+      boolean allowColumnsSortingInEdit,
       int gridType
   ) {
     this.gridControl = gridControl;
     this.lockedColumns = lockedColumns;
+    this.anchorLockedColumnsToLeft = anchorLockedColumnsToLeft;
     this.colProps = colProps;
     this.gridController = gridController;
     this.statusPanel = statusPanel;
@@ -295,8 +301,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         this,
         colProps,
         statusPanel,
-        lockedColumns,
-        colProps.length,
+        anchorLockedColumnsToLeft?lockedColumns:0,
+        anchorLockedColumnsToLeft?colProps.length:colProps.length-lockedColumns,
         colorsInReadOnlyMode,
         model,
         modelAdapter,
@@ -310,18 +316,23 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         comboFilters,
         headerHeight,
         searchAdditionalRows,
+        allowColumnsSortingInEdit,
         gridType
     );
 
     if (lockedColumns>0) {
-      for(int i=0;i<lockedColumns;i++)
-        colProps[i].setColumnSelectable(false);
+      if (anchorLockedColumnsToLeft)
+        for(int i=0;i<lockedColumns;i++)
+          colProps[i].setColumnSelectable(false);
+      else
+        for(int i=colProps.length-lockedColumns;i<colProps.length;i++)
+          colProps[i].setColumnSelectable(false);
       this.lockedGrid = new Grid(
           this,
           colProps,
           statusPanel,
-          0,
-          lockedColumns,
+          anchorLockedColumnsToLeft?0:colProps.length-lockedColumns,
+          anchorLockedColumnsToLeft?lockedColumns:colProps.length,
           colorsInReadOnlyMode,
           model,
           modelAdapter,
@@ -335,6 +346,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           comboFilters,
           headerHeight,
           searchAdditionalRows,
+          allowColumnsSortingInEdit,
           gridType
       );
       this.lockedGrid.setReorderingAllowed(false);
@@ -471,7 +483,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       JViewport viewport = new JViewport();
       viewport.setView(lockedGrid);
       viewport.setPreferredSize(lockedGrid.getPreferredSize());
-      scroll.setRowHeaderView(viewport);
+      if (anchorLockedColumnsToLeft)
+        scroll.setRowHeaderView(viewport);
       if (lockedGrid.getTableHeader()!=null) {
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new GridLayout(lockedGrid.hasColSpan()?2:1,1));
@@ -530,13 +543,41 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
         headerPanel.add(lockedGrid.getTableHeader());
-        scroll.setCorner(JScrollPane.UPPER_LEFT_CORNER, headerPanel);
+        if (anchorLockedColumnsToLeft)
+          scroll.setCorner(JScrollPane.UPPER_LEFT_CORNER, headerPanel);
+        else {
+          final JScrollPane lockedscroll = new JScrollPane(lockedGrid);
+          lockedscroll.setBorder(BorderFactory.createEmptyBorder());
+
+          lockedscroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+          this.add(lockedscroll,  new GridBagConstraints(2, 1, 1, 1, 0.0, 1.0
+                  ,GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, new Insets(1, 0, scroll.getHorizontalScrollBar().getPreferredSize().height, 0), lockedGrid.getPreferredSize().width, 0));
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              lockedscroll.getVerticalScrollBar().hide();
+              scroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+                public void adjustmentValueChanged(AdjustmentEvent e) {
+                  listenEvent = false;
+                  lockedscroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getValue());
+                  listenEvent = true;
+                }
+              });
+              lockedscroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+                public void adjustmentValueChanged(AdjustmentEvent e) {
+                  if (listenEvent)
+                    scroll.getVerticalScrollBar().setValue(lockedscroll.getVerticalScrollBar().getValue());
+                }
+              });
+              scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+            }
+          });
+        }
       }
       this.add(scroll,  new GridBagConstraints(0, 1, 1, 1, 0.0, 1.0
               ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
     this.add(scroll,   new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(anchorLockedColumnsToLeft?0:1, 0, 0, 0), 0, 0));
 
   }
 
@@ -2291,7 +2332,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
-   * Method called by ImportDDialog to import data.
+   * Method called by ImportDialog to import data.
    * @param columnTypes column types
    * @param importAttrColumns attribute names related to the columns to import
    */
@@ -2865,6 +2906,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           if (getFilterButton()!=null)
             getFilterButton().setEnabled(model.getRowCount()>0);
 
+            // +MC move here otherwise "afterInsertGrid" or "afterEditGrid" callback methods
+            // are not able to change buttons states
+          resetButtonsState();
+
           // fire saving completed event...
           switch (previousMode) {
             case Consts.INSERT:
@@ -2875,7 +2920,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               break;
           }
 
-          resetButtonsState();
+          // -MC 05/06/2009: move before
+          //resetButtonsState();
 
         } else {
           // saving operation throws an error: it will be viewed on a dialog...
@@ -3068,8 +3114,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
                                               ClientSettings.getInstance().getResources().getResource("A mandatory column is empty.")+": "+ClientSettings.getInstance().getResources().getResource(this.colProps[j].getHeaderColumnName()),
                                               ClientSettings.getInstance().getResources().getResource("Value not valid"),
                                               JOptionPane.ERROR_MESSAGE);
-                if (j<lockedColumns) {
+                if (anchorLockedColumnsToLeft && j<lockedColumns) {
                   lockedGrid.editCellAt(rows[i], j);
+                  lockedGrid.requestFocus();
+                }
+                else if (!anchorLockedColumnsToLeft && lockedColumns>0 && j>=this.colProps.length-lockedColumns) {
+                  lockedGrid.editCellAt(rows[i], j-this.colProps.length-lockedColumns);
                   lockedGrid.requestFocus();
                 }
                 else {
@@ -3914,7 +3964,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       try {
         answer = gridDataLocator.loadData(
             GridParams.NEXT_BLOCK_ACTION,
-            startIndex,
+            0,
             quickFilterValues,
             currentSortedColumns,
             currentSortedVersusColumns,
@@ -4007,6 +4057,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   }
 
 
+  /**
+   * @return define where to anchor locked columns: to the left or to the right of the grid; default value: <code>true</code> i.e. to the left
+   */
+  public final boolean isAnchorLockedColumnsToLeft() {
+    return anchorLockedColumnsToLeft;
+  }
 
 
 

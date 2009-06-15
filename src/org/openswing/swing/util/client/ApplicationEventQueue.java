@@ -4,6 +4,7 @@ import java.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import org.openswing.swing.client.InputControl;
 
 /**
  * <p>Title: OpenSwing Framework</p>

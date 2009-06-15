@@ -11,6 +11,7 @@ import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.editors.client.*;
 import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.ClientSettings;
+import java.awt.ComponentOrientation;
 
 
 /**
@@ -93,7 +94,10 @@ public class CodLookupColumn extends Column {
   private int bottomMargin = 0;
 
   /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
-  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDIT;
+  private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDITABLE_GRID;
+
+  /** component orientation */
+  private ComponentOrientation orientation = ClientSettings.TEXT_ORIENTATION;
 
 
   public CodLookupColumn() { }
@@ -459,6 +463,23 @@ public class CodLookupColumn extends Column {
 
 
   /**
+   * Set the component orientation: from left to right or from right to left.
+   * @param orientation component orientation
+   */
+  public final void setTextOrientation(ComponentOrientation orientation) {
+    this.orientation = orientation;
+  }
+
+
+  /**
+   * @return component orientation
+   */
+  public final ComponentOrientation getTextOrientation() {
+      return orientation;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -470,6 +491,7 @@ public class CodLookupColumn extends Column {
         getRightMargin(),
         getTopMargin(),
         getBottomMargin(),
+        getTextOrientation(),
         getColumnName()
     );
   }
@@ -495,6 +517,7 @@ public class CodLookupColumn extends Column {
         getControllerMethodName(),
         getAutoCompletitionWaitTime(),
         getColumnName(),
+        getTextOrientation(),
         selectDataOnEdit
     );
 

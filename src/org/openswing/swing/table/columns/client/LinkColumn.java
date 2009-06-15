@@ -10,6 +10,7 @@ import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.editors.client.*;
 import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
+import java.awt.ComponentOrientation;
 
 
 /**
@@ -50,6 +51,9 @@ public class LinkColumn extends Column {
 
   /** attribute name linked to the uri of this link, used to bind this link to a row of GridControl's value object; this is the URI to automatically open when clicking on link */
   public String uriAttributeName = null;
+
+  /** component orientation */
+  private ComponentOrientation orientation = ClientSettings.TEXT_ORIENTATION;
 
 
   public LinkColumn() {
@@ -100,6 +104,7 @@ public class LinkColumn extends Column {
       tableContainer,
       getTextAlignment(),
       getUriAttributeName(),
+      getTextOrientation(),
       getColumnName()
     );
   }
@@ -113,8 +118,26 @@ public class LinkColumn extends Column {
       tableContainer,
       getUriAttributeName(),
       getActionListeners(),
+      getTextOrientation(),
       getColumnName()
     );
+  }
+
+
+  /**
+   * Set the component orientation: from left to right or from right to left.
+   * @param orientation component orientation
+   */
+  public final void setTextOrientation(ComponentOrientation orientation) {
+    this.orientation = orientation;
+  }
+
+
+  /**
+   * @return component orientation
+   */
+  public final ComponentOrientation getTextOrientation() {
+      return orientation;
   }
 
 

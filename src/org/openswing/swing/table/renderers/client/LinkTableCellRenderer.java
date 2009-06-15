@@ -63,11 +63,15 @@ public class LinkTableCellRenderer extends DefaultTableCellRenderer {
    * @param alignement horizontal alignement
    * @param attributeName attribute name associated to this column
    */
-  public LinkTableCellRenderer(GridController gridController,int alignement,String uriAttributeName,String attributeName) {
+  public LinkTableCellRenderer(GridController gridController,int alignement,String uriAttributeName,
+                               ComponentOrientation orientation,String attributeName) {
     this.gridController = gridController;
     rend.setTextAlignment(alignement);
     this.uriAttributeName = uriAttributeName;
     this.attributeName = attributeName;
+
+    if (orientation!=null)
+        setComponentOrientation(orientation);
   }
 
 

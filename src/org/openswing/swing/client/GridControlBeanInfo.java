@@ -16,8 +16,10 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
+      PropertyDescriptor _allowColumnsSortingInEdit = new PropertyDescriptor("allowColumnsSortingInEdit", beanClass, "isAllowColumnsSortingInEdit", "setAllowColumnsSortingInEdit");
       PropertyDescriptor _allowInsertInEdit = new PropertyDescriptor("allowInsertInEdit", beanClass, "isAllowInsertInEdit", "setAllowInsertInEdit");
       PropertyDescriptor _anchorLastColumn = new PropertyDescriptor("anchorLastColumn", beanClass, "isAnchorLastColumn", "setAnchorLastColumn");
+      PropertyDescriptor _anchorLockedColumnsToLeft = new PropertyDescriptor("anchorLockedColumnsToLeft", beanClass, "isAnchorLockedColumnsToLeft", "setAnchorLockedColumnsToLeft");
       PropertyDescriptor _autoLoadData = new PropertyDescriptor("autoLoadData", beanClass, "isAutoLoadData", "setAutoLoadData");
       PropertyDescriptor _colorsInReadOnlyMode = new PropertyDescriptor("colorsInReadOnlyMode", beanClass, "isColorsInReadOnlyMode", "setColorsInReadOnlyMode");
       PropertyDescriptor _copyButton = new PropertyDescriptor("copyButton", beanClass, "getCopyButton", "setCopyButton");
@@ -65,8 +67,10 @@ public class GridControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _valueObjectClassName = new PropertyDescriptor("valueObjectClassName", beanClass, "getValueObjectClassName", "setValueObjectClassName");
       PropertyDescriptor _visibleStatusPanel = new PropertyDescriptor("visibleStatusPanel", beanClass, "isVisibleStatusPanel", "setVisibleStatusPanel");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
+        _allowColumnsSortingInEdit,
         _allowInsertInEdit,
         _anchorLastColumn,
+        _anchorLockedColumnsToLeft,
         _autoLoadData,
         _colorsInReadOnlyMode,
         _copyButton,

@@ -164,7 +164,8 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
       boolean required,
       ArrayList itemListeners,
       String foreignKeyAttributeName,
-      int leftMargin,int rightMargin,int topMargin,int bottomMargin
+      int leftMargin,int rightMargin,int topMargin,int bottomMargin,
+      ComponentOrientation orientation
   ) {
     this.itemsMapper = itemsMapper;
     this.itemsDataLocator = itemsDataLocator;
@@ -176,6 +177,9 @@ public class ComboBoxVOCellEditor extends AbstractCellEditor implements TableCel
     this.getters = getters;
     this.required = required;
     this.foreignKeyAttributeName = foreignKeyAttributeName;
+
+    if (orientation!=null)
+      field.setComponentOrientation(orientation);
 
     if (itemsDataLocator!=null && itemsVO!=null) {
       Response res = itemsDataLocator.loadData(itemsVO.getClass());

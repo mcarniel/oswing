@@ -48,6 +48,8 @@ public class MultiLineLabelControl extends JTextArea {
 
   public MultiLineLabelControl() {
     setUI();
+    if (ClientSettings.TEXT_ORIENTATION!=null)
+        setComponentOrientation(ClientSettings.TEXT_ORIENTATION);
   }
 
 
@@ -154,6 +156,28 @@ public class MultiLineLabelControl extends JTextArea {
    * @param enabled flag used to set abilitation of control
    */
   public final void setEnabled(boolean enabled) {
+  }
+
+
+  /**
+   * Set the component orientation: from left to right or from right to left.
+   * @param o component orientation
+   */
+  public final void setTextOrientation(ComponentOrientation o) {
+    setComponentOrientation(o);
+  }
+
+
+  /**
+   * @return component orientation
+   */
+  public final ComponentOrientation getTextOrientation() {
+    try {
+      return getComponentOrientation();
+    }
+    catch (Exception ex) {
+      return null;
+    }
   }
 
 

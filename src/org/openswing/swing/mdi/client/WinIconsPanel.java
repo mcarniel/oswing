@@ -139,6 +139,7 @@ public class WinIconsPanel extends JPanel {
       }
 
       final JToggleButton btn = new JToggleButton((n.intValue()>1?" ["+n.intValue()+"] ":"")+frame.getTitle());
+      btn.setToolTipText(frame.getTitle());
 //      int len = btn.getFontMetrics(btn.getFont()).stringWidth(btn.getText());
 //      btn.setMinimumSize(new Dimension(len+20,24));
       int len = 120;

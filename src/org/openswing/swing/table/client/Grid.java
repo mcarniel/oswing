@@ -132,6 +132,9 @@ public class Grid extends JTable
   /** flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded); default value: <code>true</code> */
   private boolean orderWithLoadData = true;
 
+  /** interface that must be implemented in order to sort columns */
+  private OrderPolicy orderPolicy = null;
+
   /** type of grid; possible values: Grid.MAIN_GRID, Grid.TOP_GRID, Grid.BOTTOM_GRID */
   private int gridType;
 
@@ -215,6 +218,9 @@ public class Grid extends JTable
   /** flag used in grid to enable the retrieval of additional rows in fast search, when search criteria fails; default value: ClientSettings.SEARCH_ADDITION_ROWS */
   public boolean searchAdditionalRows = false;
 
+  /** flag used to allow the columns sorting in edit mode too; default value: <code>false</code>; note that this setting is used only when <code>orderWithLoadData</code> property is set to <code>false</code> */
+  private boolean allowColumnsSortingInEdit = false;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -256,6 +262,7 @@ public class Grid extends JTable
       HashMap comboFilters,
       int headerHeight,
       boolean searchAdditionalRows,
+      boolean allowColumnsSortingInEdit,
       int gridType) {
     super();
     this.grids = grids;
@@ -284,6 +291,7 @@ public class Grid extends JTable
     this.setSelectionForeground(ClientSettings.GRID_SELECTION_FOREGROUND);
     this.headerHeight = headerHeight;
     this.searchAdditionalRows = searchAdditionalRows;
+    this.allowColumnsSortingInEdit = allowColumnsSortingInEdit;
     this.gridType = gridType;
 
     if (expandableColumn>=0)
@@ -1113,7 +1121,11 @@ public class Grid extends JTable
       public void mouseClicked(MouseEvent e) {
 
         // mouse click event is ignored if grid is not in read only mode or is not enabled...
-        if(!isEnabled() || model.getMode()!=Consts.READONLY)
+        if(!(model.getMode()==Consts.READONLY ||
+             model.getMode()==Consts.EDIT && allowColumnsSortingInEdit && !orderWithLoadData))
+          return;
+
+        if (!isEnabled() && (model.getMode()!=Consts.EDIT || !allowColumnsSortingInEdit))
           return;
 
         if (Grid.this.grids.getCurrentNestedComponent()!=null) {
@@ -1268,6 +1280,7 @@ public class Grid extends JTable
    */
   private void internalSorting() {
     Vector list = getVOListTableModel().getDataVector();
+/*
     final Collator collator = Collator.getInstance(grids.getDefaultLocale());
 
     Collections.sort(list,new Comparator() {
@@ -1304,7 +1317,6 @@ public class Grid extends JTable
 //                return -1*sign;
 //              else if (val1.toString().compareTo(val2.toString())>0)
 //                return +1*sign;
-
               if (collator.compare(val1.toString(),val2.toString())<0)
                 return -1*sign;
               else if (collator.compare(val1.toString(),val2.toString())>0)
@@ -1314,6 +1326,14 @@ public class Grid extends JTable
         }
         return 0;
       }
+*/
+
+    Collections.sort(list,new Comparator() {
+
+      public int compare(Object o1, Object o2) {
+        return orderPolicy.compareRow(modelAdapter,grids,model,(ValueObject)o1,(ValueObject)o2);
+      }
+
 
       public boolean equals(Object obj) {
         return obj.equals(this);
@@ -1323,6 +1343,7 @@ public class Grid extends JTable
     this.repaint();
     if (grids.getLockedGrid()!=null)
       grids.getLockedGrid().repaint();
+    orderPolicy.afterSorting(model);
   }
 
 
@@ -1650,8 +1671,11 @@ public class Grid extends JTable
         }
 
         // add optional command to popup menu...
-        for(int i=0;i<grids.getPopupCommands().size();i++)
-          grids.getPopup().add((JMenuItem)grids.getPopupCommands().get(i));
+        JMenuItem menuItem = null;
+        for(int i=0;i<grids.getPopupCommands().size();i++) {
+          menuItem = (JMenuItem)grids.getPopupCommands().get(i);
+          grids.getPopup().add(menuItem);
+        }
         if (grids.getPopupCommands().size()>0)
           grids.getPopup().add(new JSeparator());
 
@@ -1716,6 +1740,9 @@ public class Grid extends JTable
 
         // add selectable columns to popup menu...
         JCheckBoxMenuItem cbMenuItem;
+        int expandableColIndex = -1;
+        if (expandableColumnAttributeName!=null)
+          expandableColIndex = Grid.this.modelAdapter.getFieldIndex(expandableColumnAttributeName);
         for(int i=0;i<colProps.length;i++)
           if (colProps[i].isColumnSelectable()) {
             if (colProps[i].getHeaderColumnName()!=null &&
@@ -1725,6 +1752,7 @@ public class Grid extends JTable
               cbMenuItem = new JCheckBoxMenuItem(ClientSettings.getInstance().getResources().getResource(colProps[i].getColumnName()));
             if (colProps[i].isColumnVisible())
               cbMenuItem.setState(true);
+            cbMenuItem.setEnabled(expandableColIndex==-1 || expandableColIndex!=i);
             cbMenuItem.addActionListener(new CheckboxMenuItem(i));
             grids.getPopup().add(cbMenuItem);
           }
@@ -1777,13 +1805,31 @@ public class Grid extends JTable
 
     public void actionPerformed(ActionEvent e) {
       colProps[columnIndex].setColumnVisible(!colProps[columnIndex].isColumnVisible());
-      if (fromColIndex<=columnIndex && columnIndex<toColIndex)
+      if (fromColIndex<=columnIndex && columnIndex<toColIndex) {
+        if (!colProps[columnIndex].isColumnVisible() &&
+             Grid.this.getColumnCount()==1)
+            // do not allow to hide column if this column is the only one visible...
+            return;
+
         setVisibleColumn(columnIndex,colProps[columnIndex].isColumnVisible());
+      }
       else if (grids!=null) {
-        if (!lockedGrid)
+        if (!lockedGrid) {
+          if (!colProps[columnIndex].isColumnVisible() &&
+               Grid.this.getColumnCount()==1)
+              // do not allow to hide column if this column is the only one visible...
+              return;
+
           grids.getLockedGrid().setVisibleColumn(columnIndex,colProps[columnIndex].isColumnVisible());
-        else
+        }
+        else {
+          if (!colProps[columnIndex].isColumnVisible() &&
+               Grid.this.getColumnCount()==1)
+              // do not allow to hide column if this column is the only one visible...
+              return;
+
           grids.getGrid().setVisibleColumn(columnIndex,colProps[columnIndex].isColumnVisible());
+        }
       }
     }
   }
@@ -2562,8 +2608,9 @@ public class Grid extends JTable
    * the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded).
    * @param orderWithLoadData flag used to define if grid sorting operation must always invoke loadData method to retrieve a new list of v.o. or the grid must sort the current v.o. list without invoking loadData (only with the whole result set loaded)
    */
-  public final void setOrderWithLoadData(boolean orderWithLoadData) {
+  public final void setOrderWithLoadData(boolean orderWithLoadData,OrderPolicy orderPolicy) {
     this.orderWithLoadData = orderWithLoadData;
+    this.orderPolicy = orderPolicy;
   }
 
 
@@ -4117,10 +4164,30 @@ public class Grid extends JTable
           (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_RIGHT) &&
           e.getModifiers()!=e.SHIFT_MASK &&
           Grid.this.lockedGrid &&
+          Grid.this.grids.isAnchorLockedColumnsToLeft() &&
           getSelectedColumn()==getColumnCount()-1) {
         // TAB pressed...
         e.consume();
         Grid.this.grids.setRowSelectionInterval(getSelectedRow(),getSelectedRow());
+        Grid.this.grids.getGrid().setColumnSelectionInterval(0,0);
+//            ensureRowIsVisible(getSelectedRow());
+        Grid.this.grids.getGrid().requestFocus();
+      }
+      if (Grid.this.grids.getLockedGrid()!=null &&
+          Grid.this.model.getRowCount()>0 &&
+          getSelectedRow()!=-1 &&
+          (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_RIGHT) &&
+          e.getModifiers()!=e.SHIFT_MASK &&
+          Grid.this.lockedGrid &&
+          !Grid.this.grids.isAnchorLockedColumnsToLeft() &&
+          getSelectedColumn()==getColumnCount()-1) {
+        // TAB pressed...
+        e.consume();
+        try {
+          Grid.this.grids.setRowSelectionInterval(getSelectedRow() + 1, getSelectedRow() + 1);
+        }
+        catch (Exception ex) {
+        }
         Grid.this.grids.getGrid().setColumnSelectionInterval(0,0);
 //            ensureRowIsVisible(getSelectedRow());
         Grid.this.grids.getGrid().requestFocus();
@@ -4130,6 +4197,7 @@ public class Grid extends JTable
           getSelectedRow()<Grid.this.model.getRowCount()-1 &&
           (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_RIGHT) &&
           e.getModifiers()!=e.SHIFT_MASK &&
+          Grid.this.grids.isAnchorLockedColumnsToLeft() &&
           !Grid.this.lockedGrid &&
           getSelectedColumn()==getColumnCount()-1) {
         // TAB pressed...
@@ -4145,8 +4213,28 @@ public class Grid extends JTable
       }
       else if (Grid.this.grids.getLockedGrid()!=null &&
           Grid.this.model.getRowCount()>0 &&
+          getSelectedRow()<Grid.this.model.getRowCount()-1 &&
+          (e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_RIGHT) &&
+          e.getModifiers()!=e.SHIFT_MASK &&
+          !Grid.this.grids.isAnchorLockedColumnsToLeft() &&
+          !Grid.this.lockedGrid &&
+          getSelectedColumn()==getColumnCount()-1) {
+        // TAB pressed...
+        e.consume();
+        try {
+          Grid.this.grids.setRowSelectionInterval(getSelectedRow(), getSelectedRow());
+        }
+        catch (Exception ex) {
+        }
+        Grid.this.grids.getLockedGrid().setColumnSelectionInterval(0,0);
+//            ensureRowIsVisible(getSelectedRow());
+        Grid.this.grids.getLockedGrid().requestFocus();
+      }
+      else if (Grid.this.grids.getLockedGrid()!=null &&
+          Grid.this.model.getRowCount()>0 &&
           getSelectedRow()>0 &&
           (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
+          Grid.this.grids.isAnchorLockedColumnsToLeft() &&
           Grid.this.lockedGrid &&
           getSelectedColumn()==0) {
         // TAB pressed...
@@ -4162,13 +4250,45 @@ public class Grid extends JTable
       }
       else if (Grid.this.grids.getLockedGrid()!=null &&
           Grid.this.model.getRowCount()>0 &&
+          getSelectedRow()>0 &&
+          (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
+          !Grid.this.grids.isAnchorLockedColumnsToLeft() &&
+          Grid.this.lockedGrid &&
+          getSelectedColumn()==0) {
+        // TAB pressed...
+        e.consume();
+        try {
+          Grid.this.grids.getGrid().setColumnSelectionInterval(Grid.this.grids.getGrid().getColumnCount()-1,Grid.this.grids.getGrid().getColumnCount()-1);
+          Grid.this.grids.setRowSelectionInterval(getSelectedRow(), getSelectedRow());
+//              ensureRowIsVisible(getSelectedRow()-1);
+        }
+        catch (Exception ex1) {
+        }
+        Grid.this.grids.getGrid().requestFocus();
+      }
+      else if (Grid.this.grids.getLockedGrid()!=null &&
+          Grid.this.model.getRowCount()>0 &&
           getSelectedRow()>=0 &&
           (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
+          Grid.this.grids.isAnchorLockedColumnsToLeft() &&
           !Grid.this.lockedGrid &&
           getSelectedColumn()==0) {
         // TAB pressed...
         e.consume();
         Grid.this.grids.setRowSelectionInterval(getSelectedRow(), getSelectedRow());
+        Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getLockedGrid().getColumnCount()-1,Grid.this.grids.getLockedGrid().getColumnCount()-1);
+        Grid.this.grids.getLockedGrid().requestFocus();
+      }
+      else if (Grid.this.grids.getLockedGrid()!=null &&
+          Grid.this.model.getRowCount()>0 &&
+          getSelectedRow()>=0 &&
+          (e.getModifiers()==e.SHIFT_MASK && e.getKeyCode()==e.VK_TAB || e.getKeyCode()==e.VK_LEFT) &&
+          !Grid.this.grids.isAnchorLockedColumnsToLeft() &&
+          !Grid.this.lockedGrid &&
+          getSelectedColumn()==0) {
+        // TAB pressed...
+        e.consume();
+        Grid.this.grids.setRowSelectionInterval(getSelectedRow()-1, getSelectedRow()-1);
         Grid.this.grids.getLockedGrid().setColumnSelectionInterval(Grid.this.grids.getLockedGrid().getColumnCount()-1,Grid.this.grids.getLockedGrid().getColumnCount()-1);
         Grid.this.grids.getLockedGrid().requestFocus();
       }
