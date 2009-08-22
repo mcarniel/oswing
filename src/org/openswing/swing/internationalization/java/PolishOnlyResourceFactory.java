@@ -263,7 +263,7 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("restore default grid profile", "Odtw\u00f3rz domy\u015blny profil uk\u0142adu tabeli");
         dictionary.setProperty("create new grid profile", "Utw\u00f3rz nowy profil uk\u0142adu tabeli");
         dictionary.setProperty("profile description", "Opis profilu");
-        dictionary.setProperty("remove current grid profile", "Usu\u0144 bierz\u0105cy profil uk\u0142adu tabeli");
+        dictionary.setProperty("remove current grid profile", "Usu\u0144 bie\u017C\u0105cy profil uk\u0142adu tabeli");
         dictionary.setProperty("select grid profile", "Wybierz profil uk\u0142adu tabeli");
         dictionary.setProperty("default profile", "Profil domy\u015blny");
 

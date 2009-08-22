@@ -49,7 +49,7 @@ public class Resources implements Serializable {
   /** grouping symbol */
   private char groupingSymbol;
 
-  /** time format;  possible values: HH_MM, H_MM_AAA */
+  /** time format;  possible values: HH_MM, H_MM_AAA, HH_MM_SS, H_MM_SS_AAA, HH_MM_SS, H_MM_SS_AAA */
   private String timeFormat;
 
   /** example 18:30 */
@@ -57,6 +57,12 @@ public class Resources implements Serializable {
 
   /** example 6:30 PM */
   public static final String H_MM_AAA = "h:mm aaa";
+
+  /** example 18:30:59 */
+  public static final String HH_MM_SS = "HH:mm:ss";
+
+  /** example 6:30:59 PM */
+  public static final String H_MM_SS_AAA = "h:mm:ss aaa";
 
   /** language identifier */
   private String languageId;
@@ -93,7 +99,7 @@ public class Resources implements Serializable {
    * @param decimalSymbol decimal symbol
    * @param groupingSymbol grouping symbol
    * @param dateFormat date format
-   * @param timeFormat time format; possibile values: HH_MM, H_MM_AAA
+   * @param timeFormat time format; possibile values: HH_MM, H_MM_AAA, HH_MM_SS, H_MM_SS_AAA
    * @param languageId language identifier
    * @param showResourceNotFoundWarning define if log when a resource is not found
    */
@@ -122,8 +128,11 @@ public class Resources implements Serializable {
     this.languageId = languageId;
     this.showResourceNotFoundWarning = showResourceNotFoundWarning;
 
-    if (!timeFormat.equals(HH_MM) && !timeFormat.equals(H_MM_AAA)) {
-      System.err.println("The time format specified '"+timeFormat+"' is not allowed.\nAllowable values are: '"+HH_MM+"' or '"+H_MM_AAA+"'");
+    if (!timeFormat.equals(HH_MM) &&
+        !timeFormat.equals(H_MM_AAA) &&
+        !timeFormat.equals(HH_MM_SS) &&
+        !timeFormat.equals(H_MM_SS_AAA)) {
+      System.err.println("The time format specified '"+timeFormat+"' is not allowed.\nAllowable values are: '"+HH_MM+"' or '"+H_MM_AAA+"'"+"' or '"+HH_MM_SS+"'"+"' or '"+H_MM_SS_AAA+"'");
       timeFormat = HH_MM;
     }
     this.timeFormat = timeFormat;

@@ -3189,6 +3189,31 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * @return current sorted columns
+   */
+  public final ArrayList getCurrentSortedColumns() {
+    if (topTable!=null)
+      return topTable.getCurrentSortedColumns();
+    else if (table!=null)
+      return table.getCurrentSortedColumns();
+    else
+      return null;
+  }
+
+
+  /**
+   * @return current sorted columns versus (Ascending/Descending)
+   */
+  public final ArrayList getCurrentSortedVersusColumns() {
+    if (topTable!=null)
+      return topTable.getCurrentSortedVersusColumns();
+    else if (table!=null)
+      return table.getCurrentSortedVersusColumns();
+    else
+      return null;
+  }
+
 
   /**
    * Remove the sorting condition currently applied to the specified column.
@@ -3208,6 +3233,12 @@ public class GridControl extends JPanel {
       topTable.repaint();
       if (reloadGrid)
         reloadData();
+      else if (!orderWithLoadData && table!=null) {
+        table.getGrid().internalSorting();
+        if (table.getLockedGrid()!=null)
+          table.getLockedGrid().internalSorting();
+      }
+
     }
     else if (table!=null) {
       int colIndex = table.getCurrentSortedColumns().indexOf(attributeName);
@@ -3220,6 +3251,12 @@ public class GridControl extends JPanel {
       table.repaint();
       if (reloadGrid)
         reloadData();
+      else if (!orderWithLoadData && table!=null) {
+        table.getGrid().internalSorting();
+        if (table.getLockedGrid()!=null)
+          table.getLockedGrid().internalSorting();
+      }
+
     }
   }
 
@@ -3248,6 +3285,11 @@ public class GridControl extends JPanel {
       topTable.repaint();
       if (reloadGrid)
         reloadData();
+      else if (!orderWithLoadData && table!=null) {
+        table.getGrid().internalSorting();
+        if (table.getLockedGrid()!=null)
+          table.getLockedGrid().internalSorting();
+      }
     }
     else if (table!=null) {
       int colIndex = table.getCurrentSortedColumns().indexOf(attributeName);
@@ -3260,6 +3302,11 @@ public class GridControl extends JPanel {
       table.repaint();
       if (reloadGrid)
         reloadData();
+      else if (!orderWithLoadData && table!=null) {
+        table.getGrid().internalSorting();
+        if (table.getLockedGrid()!=null)
+          table.getLockedGrid().internalSorting();
+      }
     }
   }
 

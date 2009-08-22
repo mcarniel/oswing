@@ -68,6 +68,9 @@ public class DateCellEditor extends AbstractCellEditor implements TableCellEdito
   /** selected column in the grid */
   private int selectedCol = -1;
 
+  /** date listeners */
+  private ArrayList dateListeners = null;
+
 
   /**
    * Constructor.
@@ -75,11 +78,16 @@ public class DateCellEditor extends AbstractCellEditor implements TableCellEdito
    * @param columnType column type; possible values: Column.TYPE_DATE, Column.TYPE_TIME, Column.TYPE_DATE_TIME
    * @param defaultDate optional default date to set in calendar when opening it and no date has been still set
    */
-  public DateCellEditor(boolean required,int columnType,int format,Calendar defaultDate) {
+  public DateCellEditor(boolean required,int columnType,int format,ArrayList dateListeners,Calendar defaultDate) {
     this.required = required;
+    this.dateListeners = dateListeners;
     field.setDateType(columnType);
     field.setDefaultDate(defaultDate);
     field.setFormat(format);
+
+    for(int i=0;i<dateListeners.size();i++)
+      field.addDateChangedListener( (DateChangedListener)dateListeners.get(i) );
+
     field.getDateField().addKeyListener(new KeyAdapter() {
 
       public void keyPressed(KeyEvent e) {

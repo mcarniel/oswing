@@ -202,13 +202,19 @@ public class ExportDialog extends JDialog {
     // exporting data...
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        try {
           exportButton.setEnabled(false);
-          grids.export(exportColumns, exportAttrColumns,(String) controlExportType.getSelectedItem());
+          new Thread() {
+
+            public void run() {
+              try {
+                grids.export(exportColumns, exportAttrColumns,(String) controlExportType.getSelectedItem());
+              }
+              catch (Exception ex) {
+              }
+            }
+
+          }.start();
           setVisible(false);
-        }
-        catch (Exception ex) {
-        }
       }
     });
   }

@@ -62,11 +62,14 @@ public class DateTimeColumn extends Column {
   /** flag used to show century */
   private boolean showCentury = true;
 
-  /** possibile values: Resources.HH_MM or Resources.H_MM_AAA */
+  /** possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA */
   private String timeFormat = null;
 
   /** default date to set into the calendar, when opening it for the first time; null means today */
   private Calendar defaultDate = null;
+
+  /** dynamic settings used to reset cell renderer properties for each grid cell */
+  private DateColumnSettings dynamicSettings = null;
 
 
   public DateTimeColumn() {
@@ -200,7 +203,7 @@ public class DateTimeColumn extends Column {
 
 
   /**
-   * @return possibile values: Resources.HH_MM or Resources.H_MM_AAA
+   * @return possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA
    */
   public final String getTimeFormat() {
     return timeFormat;
@@ -209,7 +212,7 @@ public class DateTimeColumn extends Column {
 
   /**
    * Set the time format.
-   * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA
+   * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA
    */
   public final void setTimeFormat(String timeFormat) {
     this.timeFormat = timeFormat;
@@ -235,6 +238,23 @@ public class DateTimeColumn extends Column {
 
 
   /**
+   * @return dynamic settings used to reset cell renderer properties for each grid row; default value = null (no dinamic settings)
+   */
+  public final DateColumnSettings getDynamicSettings() {
+    return dynamicSettings;
+  }
+
+
+  /**
+   * Set dynamic settings used to reset cell renderer properties for each grid row.
+   * @param dynamicSettings dynamic settings used to reset cell renderer properties for each grid row
+   */
+  public final void setDynamicSettings(DateColumnSettings dynamicSettings) {
+    this.dynamicSettings = dynamicSettings;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -244,9 +264,9 @@ public class DateTimeColumn extends Column {
       getTextAlignment(),
       getSeparator(),
       getFormat(),
-      getDateListeners(),
       isShowCentury(),
       getTimeFormat(),
+      getDynamicSettings(),
       getColumnName()
     );
   }
@@ -256,7 +276,7 @@ public class DateTimeColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE_TIME,getFormat(),defaultDate);
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE_TIME,getFormat(),getDateListeners(),defaultDate);
   }
 
 

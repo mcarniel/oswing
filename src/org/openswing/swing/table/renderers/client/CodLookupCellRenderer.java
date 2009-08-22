@@ -45,7 +45,6 @@ public class CodLookupCellRenderer extends TextTableCellRenderer {
   /**
    * Constructor.
    * @param gridController grid controller
-   * @param encryptText flag used to view "*" symbols instead of the real text
    * @param attributeName attribute name associated to this column
    */
   public CodLookupCellRenderer(GridController gridController,boolean hideCodBox,int alignement,

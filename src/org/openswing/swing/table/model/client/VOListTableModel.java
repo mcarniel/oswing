@@ -400,11 +400,77 @@ public class VOListTableModel extends AbstractTableModel {
         if (row<getRowCount()-fieldAdapter.getGrids().getCurrentNumberOfNewRows())
           changedVOs.put(new Integer(row), getObjectForRow(row).clone());
       }
+      if ( isValueChanged(value,row,fieldAdapter.getFieldIndex(attributeName)) &&
+          !changedRows.contains(new Integer(row)))
+         changedRows.add(new Integer(row));
     }
     catch (CloneNotSupportedException ex) {
       Logger.error(this.getClass().getName(),"setField","Error while duplicating the edited v.o.",ex);
     }
     fieldAdapter.setField(getObjectForRow(row),attributeName,value);
+  }
+
+
+  /**
+   * @param value balue just edited
+   * @param row row index
+   * @param column column index
+   * @return <code>true</code> if value being setted is changed, <code>false</code> otherwise
+   */
+  private boolean isValueChanged(Object value, int row, int column) {
+    // retrieve previous cell value ...
+    Object oldValue = getValueAt(row,column);
+    if (isCellEditable(row,column)) {
+      if (oldValue != null && oldValue instanceof Number &&
+          value instanceof Double) {
+        oldValue = new Double(oldValue.toString());
+      }
+
+      // maybe changed value should be converted...
+      if (value != null && value instanceof BigDecimal && oldValue != null &&
+          this.fieldAdapter.getFieldClass(column).equals(BigDecimal.class)) {
+        if (this.fieldAdapter.getFieldColumn(column) instanceof DecimalColumn &&
+            ( (DecimalColumn)this.fieldAdapter.getFieldColumn(column)).
+            getDecimals() > 0)
+          value = new BigDecimal(value.toString()).setScale( ( (DecimalColumn)this.
+              fieldAdapter.getFieldColumn(column)).getDecimals(),
+              BigDecimal.ROUND_HALF_UP);
+        else
+          value = new BigDecimal(value.toString()).setScale( ( (BigDecimal)
+              oldValue).scale(), BigDecimal.ROUND_HALF_UP);
+      }
+      else if (value != null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Integer.class) ||
+                this.fieldAdapter.getFieldClass(column).equals(Integer.TYPE))) {
+        value = new Integer(value.toString());
+      }
+      else if (value != null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Double.class) ||
+                this.fieldAdapter.getFieldClass(column).equals(Double.TYPE))) {
+        value = new Double(value.toString());
+      }
+      else if (value != null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Long.class) ||
+                this.fieldAdapter.getFieldClass(column).equals(Long.TYPE))) {
+        value = new Long(value.toString());
+      }
+      else if (value != null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Short.class) ||
+                this.fieldAdapter.getFieldClass(column).equals(Short.TYPE))) {
+        value = new Short(value.toString());
+      }
+      else if (value != null && value instanceof BigDecimal &&
+               (this.fieldAdapter.getFieldClass(column).equals(Float.class) ||
+                this.fieldAdapter.getFieldClass(column).equals(Float.TYPE))) {
+        value = new Float(value.toString());
+      }
+      if (oldValue == null && value != null ||
+          oldValue != null && value == null ||
+          oldValue != null && !oldValue.equals(value)) {
+        return true;
+      }
+    }
+    return false;
   }
 
 
@@ -432,41 +498,7 @@ public class VOListTableModel extends AbstractTableModel {
     // retrieve previous cell value ...
     Object oldValue = getValueAt(row,column);
     if (isCellEditable(row,column)) {
-      if (oldValue!=null && oldValue instanceof Number && value instanceof Double) {
-        oldValue = new Double(oldValue.toString());
-      }
-
-      // maybe changed value should be converted...
-      if (value!=null && value instanceof BigDecimal && oldValue!=null && this.fieldAdapter.getFieldClass(column).equals(BigDecimal.class)) {
-        if (this.fieldAdapter.getFieldColumn(column) instanceof DecimalColumn &&
-            ((DecimalColumn)this.fieldAdapter.getFieldColumn(column)).getDecimals()>0)
-          value = new BigDecimal(value.toString()).setScale(((DecimalColumn)this.fieldAdapter.getFieldColumn(column)).getDecimals(),BigDecimal.ROUND_HALF_UP);
-        else
-          value = new BigDecimal(value.toString()).setScale(((BigDecimal)oldValue).scale(),BigDecimal.ROUND_HALF_UP);
-      }
-      else if (value!=null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Integer.class) || this.fieldAdapter.getFieldClass(column).equals(Integer.TYPE))) {
-        value = new Integer(value.toString());
-      }
-      else if (value!=null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Double.class) || this.fieldAdapter.getFieldClass(column).equals(Double.TYPE))) {
-        value = new Double(value.toString());
-      }
-      else if (value!=null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Long.class) || this.fieldAdapter.getFieldClass(column).equals(Long.TYPE))) {
-        value = new Long(value.toString());
-      }
-      else if (value!=null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Short.class) || this.fieldAdapter.getFieldClass(column).equals(Short.TYPE))) {
-        value = new Short(value.toString());
-      }
-      else if (value!=null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Float.class) || this.fieldAdapter.getFieldClass(column).equals(Float.TYPE))) {
-        value = new Float(value.toString());
-      }
-      if (oldValue==null && value!=null ||
-          oldValue!=null && value==null ||
-          oldValue!=null && !oldValue.equals(value)) {
+      if (isValueChanged(value,row,column)) {
         // validate new value...
         super.setValueAt(value, row, column);
         boolean isOk = fieldAdapter.getTableContainer().validateCell(

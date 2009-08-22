@@ -10,6 +10,7 @@ import javax.swing.table.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import org.openswing.swing.table.columns.client.DateColumnSettings;
 
 
 /**
@@ -63,6 +64,12 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
   /** attribute name associated to this column */
   private String attributeName = null;
 
+  /** dynamic settings used to reset cell renderer properties for each grid cell */
+  private DateColumnSettings dynamicSettings = null;
+
+  /** current row to render */
+  private int row = -1;
+
 
   /**
    * Constructor.
@@ -76,15 +83,16 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
       int alignement,
       char separator,
       int dateFormat,
-      ArrayList dateListeners,
       boolean showCentury,
       String timeFormat,
+      DateColumnSettings dynamicSettings,
       String attributeName
   ) {
     this.type = type;
     this.gridController = gridController;
     this.dateFormat = ClientSettings.getInstance().getResources().getDateMask(type,dateFormat,separator,showCentury,timeFormat);
     this.alignement = alignement;
+    this.dynamicSettings = dynamicSettings;
     this.attributeName = attributeName;
   }
 
@@ -92,6 +100,7 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
   public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
                           boolean isSelected, boolean hasFocus, int row, int column) {
 
+    this.row = row;
     JComponent c = (JComponent)super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
     ((JLabel)c).setHorizontalAlignment(alignement);
 
@@ -215,7 +224,10 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
 
     String s = VALUE_UNKNOWN;
     if(d != null) {
-      s = new SimpleDateFormat(dateFormat).format(d);
+      if (dynamicSettings!=null)
+        s = new SimpleDateFormat(dynamicSettings.getDataFormat(row,attributeName)).format(d);
+      else
+        s = new SimpleDateFormat(dateFormat).format(d);
     }
     setText(s);
   }

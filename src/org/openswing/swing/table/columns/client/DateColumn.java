@@ -66,6 +66,9 @@ public class DateColumn extends Column {
   /** default date to set into the calendar, when opening it for the first time; null means today */
   private Calendar defaultDate = null;
 
+  /** dynamic settings used to reset cell renderer properties for each grid cell */
+  private DateColumnSettings dynamicSettings = null;
+
 
   public DateColumn() {
     setTextAlignment(SwingConstants.CENTER);
@@ -218,6 +221,23 @@ public class DateColumn extends Column {
 
 
   /**
+   * @return dynamic settings used to reset cell renderer properties for each grid row; default value = null (no dinamic settings)
+   */
+  public final DateColumnSettings getDynamicSettings() {
+    return dynamicSettings;
+  }
+
+
+  /**
+   * Set dynamic settings used to reset cell renderer properties for each grid row.
+   * @param dynamicSettings dynamic settings used to reset cell renderer properties for each grid row
+   */
+  public final void setDynamicSettings(DateColumnSettings dynamicSettings) {
+    this.dynamicSettings = dynamicSettings;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -227,9 +247,9 @@ public class DateColumn extends Column {
       getTextAlignment(),
       getSeparator(),
       getFormat(),
-      getDateListeners(),
       isShowCentury(),
       Resources.HH_MM,
+      getDynamicSettings(),
       getColumnName()
     );
   }
@@ -239,7 +259,7 @@ public class DateColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE,getFormat(),defaultDate);
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE,getFormat(),getDateListeners(),defaultDate);
   }
 
 

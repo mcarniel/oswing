@@ -99,6 +99,15 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
   }
 
 
+  /**
+   * Method invoked by ComboColumn, when Domain is changed after grid is already showed.
+   * @param domain new Domain to set
+   */
+  public final void setDomain(Domain domain) {
+    this.domain = domain;
+  }
+
+
   public Component getTableCellRendererComponent(JTable table, Object value,
                           boolean isSelected, boolean hasFocus, int row, int column) {
     if (defaultFont==null)

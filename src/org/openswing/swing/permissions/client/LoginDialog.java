@@ -337,10 +337,30 @@ public class LoginDialog extends JDialog implements ItemListener {
     this.usernameTextLabel = usernameTextLabel;
     this.passwordTextLabel = passwordTextLabel;
 
+    int width;
+    int height;
+    int halfWidth;
+    int halfHeight;
+    int lineHeight;
+    if (Toolkit.getDefaultToolkit().getScreenResolution() == 96) {
+        width = 380;
+        height = 180;
+        halfWidth = 190;
+        halfHeight = 90;
+        lineHeight = 20;
+    } else {
+        width = 476;
+        height = 226;
+        halfWidth = 238;
+        halfHeight = 113;
+        lineHeight = 25;
+    }
+
     Dimension dim = new Dimension(
-        (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-190,
-        (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-90
+        (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-halfWidth,
+        (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-halfHeight
     );
+
     if (parentFrame==null) {
       super.getParent().setVisible(true);
       super.getParent().setLocation(dim.width,dim.height);
@@ -349,7 +369,8 @@ public class LoginDialog extends JDialog implements ItemListener {
     this.loginController = loginController;
     try {
       jbInit();
-      setSize(380,180+(appId!=null && storeAccount!=null?20:0)+(supportedLanguageIds!=null?20:0));
+
+      setSize(width,height+(appId!=null && storeAccount!=null?lineHeight:0)+(supportedLanguageIds!=null?lineHeight:0));
       setLocation(dim.width,dim.height);
 
       if (storeAccount!=null && appId!=null)

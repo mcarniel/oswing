@@ -394,7 +394,7 @@ public class GridController {
    * @return new value to use as filter condition
    */
   public Object beforeRetrieveAdditionalRows(String attributeName,String textToSearch) {
-    return textToSearch;
+    return "%"+textToSearch+"%";
   }
 
 

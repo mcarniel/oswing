@@ -203,7 +203,7 @@ public class TreeMenu extends JPanel {
       DefaultMutableTreeNode newRoot = null;
       if (oldRoot instanceof OpenSwingTreeNode)
         newRoot = new OpenSwingTreeNode();
-      else if (oldRoot instanceof OpenSwingTreeNode)
+      else if (oldRoot instanceof ApplicationFunction)
         newRoot = new ApplicationFunction();
       else
         newRoot = new DefaultMutableTreeNode();
@@ -334,8 +334,11 @@ public class TreeMenu extends JPanel {
     try {
       int selRow = menuTree.getRowForLocation(e.getX(), e.getY());
       javax.swing.tree.TreePath selPath = menuTree.getPathForLocation(e.getX(), e.getY());
-      ApplicationFunction node = (ApplicationFunction)(selPath.getPathComponent(selPath.getPathCount()-1));
-      if (node.getFunctionId()!=null)
+      Object objNode = selPath.getPathComponent(selPath.getPathCount()-1);
+      ApplicationFunction node = null;
+      if (objNode!=null && objNode instanceof ApplicationFunction)
+        node = (ApplicationFunction)objNode;
+      if (node!=null && node.getFunctionId()!=null)
         executeFunction(node);
 
     } catch (Exception ex) {
@@ -350,8 +353,12 @@ public class TreeMenu extends JPanel {
   private void treeKeyPressed(KeyEvent e) {
     try {
       javax.swing.tree.TreePath selPath = menuTree.getPathForRow(menuTree.getSelectionRows()[0]);
-      ApplicationFunction node = (ApplicationFunction)(selPath.getPathComponent(selPath.getPathCount()-1));
-      executeFunction(node);
+      Object objNode = selPath.getPathComponent(selPath.getPathCount()-1);
+      ApplicationFunction node = null;
+      if (objNode!=null && objNode instanceof ApplicationFunction)
+        node = (ApplicationFunction)objNode;
+      if (node!=null)
+        executeFunction(node);
     } catch (Exception ex) {
       ex.printStackTrace();
     }

@@ -44,11 +44,14 @@ import org.openswing.swing.util.client.*;
  */
 public class TimeColumn extends Column {
 
-  /** possibile values: Resources.HH_MM or Resources.H_MM_AAA */
+  /** possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA */
   private String timeFormat = null;
 
   /** date changed listeners */
   private ArrayList dateListeners = new ArrayList();
+
+  /** dynamic settings used to reset cell renderer properties for each grid cell */
+  private DateColumnSettings dynamicSettings = null;
 
 
   public TimeColumn() {
@@ -91,7 +94,7 @@ public class TimeColumn extends Column {
 
 
   /**
-   * @return possibile values: Resources.HH_MM or Resources.H_MM_AAA
+   * @return possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA
    */
   public final String getTimeFormat() {
     return timeFormat;
@@ -100,10 +103,27 @@ public class TimeColumn extends Column {
 
   /**
    * Set the time format.
-   * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA
+   * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA
    */
   public final void setTimeFormat(String timeFormat) {
     this.timeFormat = timeFormat;
+  }
+
+
+  /**
+   * @return dynamic settings used to reset cell renderer properties for each grid row; default value = null (no dinamic settings)
+   */
+  public final DateColumnSettings getDynamicSettings() {
+    return dynamicSettings;
+  }
+
+
+  /**
+   * Set dynamic settings used to reset cell renderer properties for each grid row.
+   * @param dynamicSettings dynamic settings used to reset cell renderer properties for each grid row
+   */
+  public final void setDynamicSettings(DateColumnSettings dynamicSettings) {
+    this.dynamicSettings = dynamicSettings;
   }
 
 
@@ -117,9 +137,9 @@ public class TimeColumn extends Column {
       getTextAlignment(),
       '/',
       Resources.DMY,
-      getDateListeners(),
       true,
       getTimeFormat(),
+      getDynamicSettings(),
       getColumnName()
     );
   }
@@ -129,7 +149,7 @@ public class TimeColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new DateCellEditor(isColumnRequired(),Column.TYPE_TIME,Resources.DMY,null);
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_TIME,Resources.DMY,getDateListeners(),null);
   }
 
 

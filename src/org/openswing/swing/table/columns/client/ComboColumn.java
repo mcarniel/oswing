@@ -75,6 +75,12 @@ public class ComboColumn extends Column {
   /** component orientation */
   private ComponentOrientation orientation = ClientSettings.TEXT_ORIENTATION;
 
+  /** cell renderer */
+  private DomainTableCellRenderer renderer = null;
+
+  /** cell editor */
+  private DomainCellEditor editor = null;
+
 
   public ComboColumn() { }
 
@@ -101,6 +107,10 @@ public class ComboColumn extends Column {
    */
   public void setDomainId(String domainId) {
     this.domainId = domainId;
+    if (renderer!=null)
+      renderer.setDomain(getDomain());
+    if (editor!=null)
+      editor.setDomain(getDomain());
   }
 
 
@@ -119,6 +129,10 @@ public class ComboColumn extends Column {
    */
   public void setDomain(Domain domain) {
     this.domain = domain;
+    if (renderer!=null)
+      renderer.setDomain(domain);
+    if (editor!=null)
+      editor.setDomain(domain);
   }
 
 
@@ -279,19 +293,22 @@ public class ComboColumn extends Column {
     Domain domain = getDomain();
     if (domain==null)
       domain = ClientSettings.getInstance().getDomain( getDomainId() );
-    if (domain!=null)
-      return new DomainTableCellRenderer(
-        domain,
-        translateItemDescriptions,
-        tableContainer,
-        getTextAlignment(),
-        getLeftMargin(),
-        getRightMargin(),
-        getTopMargin(),
-        getBottomMargin(),
-        getTextOrientation(),
-        getColumnName()
-      );
+    if (domain!=null) {
+      if (renderer==null)
+        renderer = new DomainTableCellRenderer(
+            domain,
+            translateItemDescriptions,
+            tableContainer,
+            getTextAlignment(),
+            getLeftMargin(),
+            getRightMargin(),
+            getTopMargin(),
+            getBottomMargin(),
+            getTextOrientation(),
+            getColumnName()
+            );
+      return renderer;
+    }
     else {
       Logger.error(this.getClass().getName(),"getCellRenderer","The domainId '"+getDomainId()+"' for the column '"+getColumnName()+"' "+" doesn't exist.",null);
       return null;
@@ -311,14 +328,17 @@ public class ComboColumn extends Column {
     Domain domain = getDomain();
     if (domain==null)
       domain = ClientSettings.getInstance().getDomain( getDomainId() );
-    if (domain!=null)
-      return new DomainCellEditor(
-          domain,
-          translateItemDescriptions,
-          isColumnRequired(),
-          getTextOrientation(),
-          getItemListeners()
-      );
+    if (domain!=null) {
+      if (editor==null)
+        editor = new DomainCellEditor(
+            domain,
+            translateItemDescriptions,
+            isColumnRequired(),
+            getTextOrientation(),
+            getItemListeners()
+            );
+      return editor;
+    }
     else {
       Logger.error(this.getClass().getName(),"getCellEditor","The domainId '"+getDomainId()+"' for the column '"+getColumnName()+"' doesn't exist.",null);
       return null;

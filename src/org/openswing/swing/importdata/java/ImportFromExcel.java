@@ -61,19 +61,18 @@ public class ImportFromExcel {
         break;
       for(short j=0;j<cols;j++) {
         cell = row.getCell(j);
-        if (cell.getCellType()==cell.CELL_TYPE_NUMERIC) {
-          if (cell.getStringCellValue()==null || cell.getStringCellValue().equals(""))
-            rowobj[j] = null;
+        if (cell!=null) {
+          if (cell.getCellType()==cell.CELL_TYPE_NUMERIC) {
+              rowobj[j] = new Double(cell.getNumericCellValue());
+          }
           else
-            rowobj[j] = new Double(cell.getNumericCellValue());
+            try {
+              rowobj[j] = cell.getDateCellValue();
+            }
+            catch (Exception ex) {
+              rowobj[j] = cell.getStringCellValue();
+            }
         }
-        else
-          try {
-            rowobj[j] = cell.getDateCellValue();
-          }
-          catch (Exception ex) {
-            rowobj[j] = cell.getStringCellValue();
-          }
 
         if (rowobj[j]!=null)
           rowEmpty = false;

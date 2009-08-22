@@ -1113,7 +1113,7 @@ public class JPAUtils {
     		scrollableResults.getClass().getMethod("close", new Class[0]).invoke(scrollableResults, new Object[0]);
 	} catch(Throwable t) {
 	        list = query.getResultList();
-	        resultSetLength = list.size();
+	        rowCount = list.size();
 	}            
       }
       else {

@@ -1,4 +1,53 @@
 
+Release Notes 2.0.7
+-------------------
+
+Final release 2.0.7 available
+- updated CzechOnlyResourceFactory class, that contains polish translations for OpenSwing components
+- added HungarianOnlyResourceFactory class, that contains hungarian translations for OpenSwing components
+- now export operation is threaded
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.0.6
+-------------------
+
+Final release 2.0.6 available
+- added CzechOnlyResourceFactory class, that contains polish translations for OpenSwing components
+- fixed problem in LoginDialog when screen dpi is more than 96
+- fixed problem in importing data from xls file, when it contains numeric type cells
+- apply some changes to GridControl:
+  - fixed problem in GridControl when saving data: now the last editing cell is validated before saving data
+  - fixed problem on saving data on grid when the grid includes a ComboVOColumn having only one attribute mapped on it:
+    now changed row in grid is correctly recognized and saved
+  - improved ComboColumn: now it is possible to 
+  - fixed bug in ComboColumn when switching among grid's cells having combo and no value is changed in combo
+  - added support for DateChangeListener in DateColumn, DateTimeColumn and TimeColumn
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.0.5
+-------------------
+
+Final release 2.0.5 available
+Changes in grid control:
+- added "getCurrentSortedColumns" to GridControl
+- added "getCurrentSortedVersusColumns" to GridControl
+- changed addSortedColumn/removeSortedColumn in order to execute internal sorting if "orderWithLoadData" property is false and 
+  last method argument is set to false
+- added DateColumnSettings interface in order to customize date/time format for each cell in DateColumn, DateTimeColumn and TimeColumn  
+Added srcchayenne, srcejb3, srclnf folder to OpenSwing distribution.
+Changed translation in PolishOnlyResourceFactory.
+Fixed a problem on JPAUtils when fired an exception.
+Fixed problem in TreeMenu.
+Added HH_MM_SS and H_MM_SS_AAA to Resources class, in order to support seconds in DateTime and Time columns/control.
+Improved NumericControl in order to check for maxCharacters property in real time and not only when losting focus.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.0.4
 -------------------
 

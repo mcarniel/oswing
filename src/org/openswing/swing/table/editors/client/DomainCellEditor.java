@@ -49,45 +49,49 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
   private int selIndex = -1;
 
   /** combo-box inside the editable cell */
-  private JComboBox field = new JComboBox() {
+  private JComboBox field = getComboBox();
 
-    private KeyEvent oldEv = null;
 
-    public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
-                                        int condition, boolean pressed) {
-      if (e.getSource()!=null && e.getSource() instanceof org.openswing.swing.table.client.Grid) {
-        try {
-          if (oldEv==null || !e.equals(oldEv)) {
-            oldEv = e;
-            field.processKeyEvent(e);
-            oldEv = null;
+  public JComboBox getComboBox() {
+      return new JComboBox() {
+
+        private KeyEvent oldEv = null;
+
+        public boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
+          if (e.getSource()!=null && e.getSource() instanceof org.openswing.swing.table.client.Grid) {
+            try {
+              if (oldEv==null || !e.equals(oldEv)) {
+                oldEv = e;
+                field.processKeyEvent(e);
+                oldEv = null;
+              }
+            }
+            catch (Exception ex) {
+            }
           }
+          else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n') {
+            stopCellEditing();
+            try {
+              if (!table.hasFocus())
+                table.requestFocus();
+              if (table.getSelectedRow()!=-1)
+                table.setRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
+              table.setColumnSelectionInterval(table.getSelectedColumn() + 1, table.getSelectedColumn() + 1);
+            }
+            catch (Exception ex) {
+            }
+          }
+          return true;
         }
-        catch (Exception ex) {
-        }
+
+
+      public void setSelectedIndex(int i) {
+        super.setSelectedIndex(i);
+        selIndex = i;
       }
-      else if (e.getKeyChar()=='\t' || e.getKeyChar()=='\n') {
-        stopCellEditing();
-        try {
-          if (!table.hasFocus())
-            table.requestFocus();
-          if (table.getSelectedRow()!=-1)
-            table.setRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
-          table.setColumnSelectionInterval(table.getSelectedColumn() + 1, table.getSelectedColumn() + 1);
-        }
-        catch (Exception ex) {
-        }
-      }
-      return true;
-    }
 
-
-    public void setSelectedIndex(int i) {
-      super.setSelectedIndex(i);
-      selIndex = i;
-    }
-
-  };
+    };
+  }
 
   /** domain linked to the combo-box */
   private Domain domain = null;
@@ -104,6 +108,12 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
   /** define if description in combo items must be translated */
   private boolean translateItemDescriptions;
 
+  /** component orientation */
+  private ComponentOrientation compOrientation;
+
+  /** item listeners */
+  private ArrayList itemListeners = null;
+
 
   /**
    * Constructor.
@@ -116,6 +126,7 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
     this.domain = domain;
     this.translateItemDescriptions = translateItemDescriptions;
     this.required = required;
+    this.itemListeners = itemListeners;
     pairs = domain.getDomainPairList();
     DefaultComboBoxModel model = new DefaultComboBoxModel();
     for(int i=0;i<pairs.length;i++)
@@ -124,6 +135,7 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
       else
         model.addElement(pairs[i].getDescription());
 
+    this.compOrientation = orientation;
     if (orientation!=null)
       field.setComponentOrientation(orientation);
 
@@ -132,6 +144,39 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
       field.addItemListener((ItemListener)itemListeners.get(i));
     p.setOpaque(true);
     p.setLayout(new GridBagLayout());
+    p.add(field,      new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
+          ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
+  }
+
+
+  /**
+   * Method invoked by ComboColumn, when Domain is changed after grid is already showed.
+   * @param domain new Domain to set
+   */
+  public final void setDomain(Domain domain) {
+    this.domain = domain;
+
+    pairs = domain.getDomainPairList();
+    DefaultComboBoxModel model = new DefaultComboBoxModel();
+    for(int i=0;i<pairs.length;i++)
+      if (translateItemDescriptions)
+        model.addElement(ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()));
+      else
+        model.addElement(pairs[i].getDescription());
+
+    field = getComboBox();
+
+    if (compOrientation!=null)
+      field.setComponentOrientation(compOrientation);
+
+    field.setModel(model);
+    for(int i=0;i<itemListeners.size();i++)
+      field.addItemListener((ItemListener)itemListeners.get(i));
+
+    p = new JPanel();
+    p.setOpaque(true);
+    p.setLayout(new GridBagLayout());
+
     p.add(field,      new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0
           ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0));
   }
@@ -171,10 +216,11 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
   private final Component _prepareEditor(Object value) {
     DomainPair pair = domain.getDomainPair(value);
     if (pair!=null) {
-      if (translateItemDescriptions)
-        field.setSelectedItem(ClientSettings.getInstance().getResources().getResource(pair.getDescription()));
-      else
-        field.setSelectedItem(pair.getDescription());
+      for(int i=0;i<pairs.length;i++)
+          if (pair.getDescription().equals(pairs[i].getDescription())) {
+            field.setSelectedIndex(i);
+            break;
+          }
     }
     else
       field.setSelectedIndex(-1);

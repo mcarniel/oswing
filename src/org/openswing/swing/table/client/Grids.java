@@ -2805,6 +2805,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * @return <code>true</code> if saving operation was correctly completed, <code>false</code> otherwise
    */
   public final boolean save() {
+    if (grid.getCellEditor()!=null)
+      grid.getCellEditor().stopCellEditing();
+    if (lockedGrid!=null && lockedGrid.getCellEditor()!=null)
+      lockedGrid.getCellEditor().stopCellEditing();
+
     int previousMode; // current grid mode...
     Response response = null;
     if (getMode()!=Consts.READONLY) {
@@ -3935,7 +3940,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
-   * This method fetches and appends additional rows that satify specified criteria.
+   * This method fetches and appends additional rows that satisfy specified criteria.
    * @param attributeName attribute used to filter data
    * @param textToSearch text to search
    * @return first added row that satify specified criteria
@@ -3955,7 +3960,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       }
 
       FilterWhereClause[] filter = new FilterWhereClause[] {
-          new FilterWhereClause(attributeName,ClientSettings.LIKE,"%"+value+"%"),
+          new FilterWhereClause(attributeName,ClientSettings.LIKE,value),
           null
       };
       quickFilterValues.put(attributeName,filter);

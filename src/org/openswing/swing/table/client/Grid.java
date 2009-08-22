@@ -1278,7 +1278,7 @@ public class Grid extends JTable
   /**
    * Sort the list of value objects already loaded, according to current column sorting settings.
    */
-  private void internalSorting() {
+  public final void internalSorting() {
     Vector list = getVOListTableModel().getDataVector();
 /*
     final Collator collator = Collator.getInstance(grids.getDefaultLocale());

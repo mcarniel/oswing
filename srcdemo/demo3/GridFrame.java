@@ -269,6 +269,7 @@ public class GridFrame extends JFrame {
     colButton.setEditableOnEdit(true);
     colButton.setHeaderColumnName("button");
     colButton.setPreferredWidth(50);
+    colFormattedText.setColumnRequired(false);
     colFormattedText.setColumnFilterable(true);
     colFormattedText.setColumnName("formattedTextValue");
     colFormattedText.setColumnSortable(false);
@@ -358,7 +359,6 @@ public class GridFrame extends JFrame {
 
     colButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-
       }
     });
 

@@ -334,6 +334,13 @@ public class NumericControl extends BaseInputControl implements InputControl {
           return;
         else if (e.getKeyChar()<'0' || e.getKeyChar()>'9')
           e.consume();
+
+        if (numBox.getText()!=null &&
+            numBox.getText().length()>=maxCharacters) {
+          e.consume();
+        }
+
+
       }
 
       public void keyPressed(KeyEvent e) {

@@ -73,7 +73,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   /** possibile values: Consts.TYPE_DATE, Consts.TYPE_TIME, Consts.TYPE_DATE_TIME */
   private int dateType;
 
-  /** possibile values: Resources.HH_MM or Resources.H_MM_AAA */
+  /** possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA */
   private String timeFormat = null;
 
   /** date changed listeners */
@@ -151,7 +151,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    * @param dateFormat; possible values:  Resources.YMD, Resources.DMY, Resources.MDY, Resources.YDM
    * @param dateFormatSeparator yy MM dd separator; for example: '/' or '-'
    * @param showCenturyInDateFormat define if the year is in the format 'yy' or 'yyyy'
-   * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA
+   * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA
    */
   public DateControl(int dateType,int dateFormat,char dateFormatSeparator,boolean showCenturyInDateFormat,String timeFormat) {
     init(dateType,dateFormat,dateFormatSeparator,showCenturyInDateFormat,timeFormat);
@@ -297,14 +297,22 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
       if (dateType==Consts.TYPE_DATE_TIME) {
         if (timeFormat==Resources.HH_MM)
           value += "   :  ";
-        else
+        else if (timeFormat==Resources.H_MM_AAA)
           value += "   :     ";
+        else if (timeFormat==Resources.HH_MM_SS)
+          value += "   :  :  ";
+        else
+          value += "   :  :     ";
       }
       else if (dateType==Consts.TYPE_TIME) {
         if (timeFormat==Resources.HH_MM)
           value = "  :  ";
-        else
+        else if (timeFormat==Resources.H_MM_AAA)
           value = "  :     ";
+        else if (timeFormat==Resources.HH_MM_SS)
+          value += "  :  :  ";
+        else
+          value += "  :  :     ";
       }
 
       return value;
@@ -550,6 +558,16 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
           text.endsWith("  :  ") &&
           timeFormat.equals(Resources.H_MM_AAA)) {
         text = text.substring(0,9+(showCentury?2:0)) + "00:00 AM";
+      }
+      else if (dateType==Consts.TYPE_DATE_TIME &&
+          text.endsWith("  :  :  ") &&
+          timeFormat.equals(Resources.HH_MM_SS)) {
+        text = text.substring(0,9+(showCentury?2:0)) + "00:00:00";
+      }
+      else if (dateType==Consts.TYPE_DATE_TIME &&
+          text.endsWith("  :  :  ") &&
+          timeFormat.equals(Resources.H_MM_SS_AAA)) {
+        text = text.substring(0,9+(showCentury?2:0)) + "00:00:00 AM";
       }
 
       // check if the date is null...
@@ -823,7 +841,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 
 
   /**
-   * @return possibile values: Resources.HH_MM or Resources.H_MM_AAA
+   * @return possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA
    */
   public final String getTimeFormat() {
     return timeFormat;
@@ -832,7 +850,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 
   /**
    * Set the time format.
-   * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA
+   * @param timeFormat possibile values: Resources.HH_MM or Resources.H_MM_AAA or Resources.HH_MM_SS or Resources.H_MM_SS_AAA
    */
   public final void setTimeFormat(String timeFormat) {
     this.timeFormat = timeFormat;
