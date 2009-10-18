@@ -1,9 +1,48 @@
 
+
+Release Notes 2.1
+-----------------
+
+Final release 2.1 available
+- changed TreePanel behavior when selecting multiple nodes: now popup menu is showed in this case too
+- fixed problem in QueryUtil when using filtering grid with multiple values and is null operator
+- improved grid/form value object analysis: now multiple instances of the of the same class are managed
+- added "getLazyInitializedAttributes" to Form panel, in order to define attributes to skip on managing Form's value object
+- added HH_MM_SS_SSS and HH_MM_SS_SSS_AAA masks to Resources class, in order to support times expressed with milliseconds too
+- fixed problem with TextAreaColumn when setting maxCharacters property
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.0.9
+-------------------
+
+Final release 2.0.9 available
+- fixed problem with datetime/time columns when editing cells
+- fixed problem with FormattedTextColumn when editing cell
+- added setSortedColumn method to LoockController class, having an additional argument, used to specifythe sorting order
+- fixed bug in TreePanel, when using "setSelectionMode" mothod
+- fixed problem with QueryUtil when defining a query having a field name "xxxfrom"
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.0.8
+-------------------
+
+Final release 2.0.8 available
+- fixed bug on showing the number of pages in grid status panel
+- improved in MultiLineTextColumn the "maxCharacters" property
+- fixed problem on ComboBoxVOControl and ListVOControl: now quick search works fine
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.0.7
 -------------------
 
 Final release 2.0.7 available
-- updated CzechOnlyResourceFactory class, that contains polish translations for OpenSwing components
+- updated CzechOnlyResourceFactory class, that contains czech translations for OpenSwing components
 - added HungarianOnlyResourceFactory class, that contains hungarian translations for OpenSwing components
 - now export operation is threaded
 The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
