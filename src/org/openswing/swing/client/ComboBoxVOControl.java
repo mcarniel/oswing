@@ -17,6 +17,7 @@ import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.table.columns.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import java.text.SimpleDateFormat;
 
 
 /**
@@ -773,7 +774,31 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
    * @return the element at the specified index, converted in String format
    */
   public final String getValueAt(int index) {
-    return combo.getItemAt(index)==null?"":combo.getItemAt(index).toString();
+    if (combo.getItemAt(index)==null)
+      return "";
+
+    ValueObject vo = (ValueObject)combo.getItemAt(index);
+    Object val = null;
+    String valS = "";
+    SimpleDateFormat sdf = new SimpleDateFormat(ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE));
+    for(int i=0;i<colProperties.length;i++) {
+      if (colProperties[i].isColumnVisible()) {
+        try {
+          val = ( (Method) getters.get(colProperties[i].getColumnName())).invoke(vo, new Object[0]);
+          if (val != null) {
+            if (colProperties[i] instanceof DateColumn) {
+              valS += sdf.format( (java.util.Date) val)+" ";
+            }
+            else
+              valS += val.toString()+" ";
+          }
+          else
+            valS += " ";
+        }
+        catch (Exception ex) {}
+      }
+    }
+    return valS;
   }
 
 

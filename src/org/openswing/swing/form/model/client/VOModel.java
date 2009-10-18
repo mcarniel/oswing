@@ -116,6 +116,7 @@ public class VOModel {
    */
   private void analyzeClassFields(Hashtable vosAlreadyProcessed,String prefix,Method[] parentMethods,Class classType) {
     try {
+/*
       Integer num = (Integer)vosAlreadyProcessed.get(classType);
       if (num==null)
         num = new Integer(0);
@@ -123,6 +124,16 @@ public class VOModel {
       if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
         return;
       vosAlreadyProcessed.put(classType,num);
+*/
+
+      String hostProperty = new String(prefix.indexOf(".") > 0 ? prefix.substring(0, prefix.indexOf(".")) : "");
+      Integer num = (Integer)vosAlreadyProcessed.get(hostProperty+classType);
+      if (num==null)
+        num = new Integer(0);
+      num = new Integer(num.intValue()+1);
+      if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
+        return;
+      vosAlreadyProcessed.put(hostProperty+classType,num);
 
       info = Introspector.getBeanInfo(classType);
       // retrieve attribute properties...
@@ -191,7 +202,8 @@ public class VOModel {
 
         if (props[i].getReadMethod()!=null &&
             props[i].getReadMethod().getParameterTypes().length==0 &&
-            ValueObject.class.isAssignableFrom( props[i].getReadMethod().getReturnType() )
+            ValueObject.class.isAssignableFrom( props[i].getReadMethod().getReturnType() ) &&
+            !form.getLazyInitializedAttributes().contains(props[i].getName())
         ) {
           Method[] newparentMethods = new Method[parentMethods.length+1];
           System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
@@ -250,6 +262,10 @@ public class VOModel {
         Object obj = null;
         while(en.hasMoreElements()) {
           attrName = en.nextElement().toString();
+
+          if(form.getLazyInitializedAttributes().contains(attrName))
+            continue;
+
           readMethods = (Method[])voGetterMethods.get(attrName);
           if (readMethods != null) {
             try {

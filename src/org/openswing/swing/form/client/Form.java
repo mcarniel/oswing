@@ -153,8 +153,19 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   /** collection of buttons binded to grid (InsertButton, EditButton, etc) */
   private HashSet bindedButtons = new HashSet();
 
+  /** collection of attributes to not manage because they are related to lazy initialized inner objects */
+  private Set lazyInitializedAttributes = new HashSet();
+
 
   public Form() {}
+
+
+  /**
+   * @return collection of attributes to not manage because they are related to lazy initialized inner objects
+   */
+  public final Set getLazyInitializedAttributes() {
+    return lazyInitializedAttributes;
+  }
 
 
   /**

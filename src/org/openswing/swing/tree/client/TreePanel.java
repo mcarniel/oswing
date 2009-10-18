@@ -621,19 +621,45 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    */
   public final void treeRightClick(MouseEvent e, JTree tree) {
     try {
-      int selRow = tree.getRowForLocation(e.getX(), e.getY());
-      javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(),e.getY());
-      tree.setSelectionPath(selPath);
-      if (selPath != null) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) (selPath.getPathComponent(selPath.getPathCount() - 1));
-        if (treeController.rightClick(node) && popup.getComponentCount() > 0 &&
-            treePane.isEnabled()) {
-          // visualizzazione del menu' a pop-up associato al nodo dell'albero,
-          // SOLO se il metodo rightClick ha ritornato valore "true" e c'e almeno un elemento nel menu' a pop-up
-          popup.show(e.getComponent(), e.getX(), e.getY());
-        }
+      if (this.selectionMode!=TreeSelectionModel.SINGLE_TREE_SELECTION &&
+          tree.getSelectionRows().length>1) {
+        int selRow = tree.getRowForLocation(e.getX(), e.getY());
+//        javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(),e.getY());
+//        tree.setSelectionPath(selPath);
 
+        if (selRow!=-1 && popup.getComponentCount() > 0 && treePane.isEnabled()) {
+          TreePath[] selPaths = tree.getSelectionPaths();
+          DefaultMutableTreeNode node = null;
+          boolean ok = true;
+          for(int i=0;i<selPaths.length;i++) {
+            node = (DefaultMutableTreeNode) (selPaths[i].getPathComponent(selPaths[i].getPathCount() - 1));
+            ok = treeController.rightClick(node);
+            if (!ok)
+                break;
+          }
+          if (ok) {
+            // visualizzazione del menu' a pop-up associato al nodo dell'albero,
+            // SOLO se il metodo rightClick ha ritornato valore "true" e c'e almeno un elemento nel menu' a pop-up
+            popup.show(e.getComponent(), e.getX(), e.getY());
+          }
+        }
       }
+      else {
+        int selRow = tree.getRowForLocation(e.getX(), e.getY());
+        javax.swing.tree.TreePath selPath = tree.getPathForLocation(e.getX(),e.getY());
+        tree.setSelectionPath(selPath);
+        if (selPath != null) {
+          DefaultMutableTreeNode node = (DefaultMutableTreeNode) (selPath.getPathComponent(selPath.getPathCount() - 1));
+          if (treeController.rightClick(node) && popup.getComponentCount() > 0 &&
+              treePane.isEnabled()) {
+            // visualizzazione del menu' a pop-up associato al nodo dell'albero,
+            // SOLO se il metodo rightClick ha ritornato valore "true" e c'e almeno un elemento nel menu' a pop-up
+            popup.show(e.getComponent(), e.getX(), e.getY());
+          }
+
+        }
+      }
+
     }
     catch (Exception ex) {
       ex.printStackTrace();
@@ -1151,7 +1177,7 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
    * only one TreePath will remain selected. It is up to the particular
    * implementation to decide what TreePath remains selected.
    */
-  public final void setSelectionMode(int mode) {
+  public final void setSelectionMode(int selectionMode) {
     this.selectionMode = selectionMode;
     tree.getSelectionModel().setSelectionMode(selectionMode);
     tree.setRowHeight(0);

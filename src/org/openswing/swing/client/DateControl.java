@@ -178,7 +178,6 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
         calendar.getJCalendar().getDayChooser().setDecorationBordersVisible(true);
         calendar.getJCalendar().getDayChooser().setDayBordersVisible(true);
 
-
         this.setLayout(new GridBagLayout());
 //        if (Beans.isDesignTime())
 //          this.add(new JTextField(" __ /  __ / __ "), new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
@@ -301,6 +300,10 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
           value += "   :     ";
         else if (timeFormat==Resources.HH_MM_SS)
           value += "   :  :  ";
+        else if (timeFormat==Resources.HH_MM_SS_SSS)
+          value += "   :  :  ,   ";
+        else if (timeFormat==Resources.H_MM_SS_SSS_AAA)
+          value += "   :  :  ,      ";
         else
           value += "   :  :     ";
       }
@@ -311,6 +314,10 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
           value = "  :     ";
         else if (timeFormat==Resources.HH_MM_SS)
           value += "  :  :  ";
+        else if (timeFormat==Resources.HH_MM_SS_SSS)
+          value += "  :  :  ,   ";
+        else if (timeFormat==Resources.H_MM_SS_SSS_AAA)
+          value += "  :  :  ,      ";
         else
           value += "  :  :     ";
       }
@@ -568,6 +575,16 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
           text.endsWith("  :  :  ") &&
           timeFormat.equals(Resources.H_MM_SS_AAA)) {
         text = text.substring(0,9+(showCentury?2:0)) + "00:00:00 AM";
+      }
+      else if (dateType==Consts.TYPE_DATE_TIME &&
+          text.endsWith("  :  :  ") &&
+          timeFormat.equals(Resources.HH_MM_SS_SSS)) {
+        text = text.substring(0,9+(showCentury?2:0)) + "00:00:00,000";
+      }
+      else if (dateType==Consts.TYPE_DATE_TIME &&
+          text.endsWith("  :  :  ") &&
+          timeFormat.equals(Resources.H_MM_SS_SSS_AAA)) {
+        text = text.substring(0,9+(showCentury?2:0)) + "00:00:00,000 AM";
       }
 
       // check if the date is null...

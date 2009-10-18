@@ -94,6 +94,7 @@ public class VOListAdapter {
 
   private void analyzeClassFields(Hashtable vosAlreadyProcessed,String prefix,Method[] parentMethods,Class classType) {
     try {
+/*
       Integer num = (Integer)vosAlreadyProcessed.get(classType);
       if (num==null)
         num = new Integer(0);
@@ -101,6 +102,15 @@ public class VOListAdapter {
       if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
         return;
       vosAlreadyProcessed.put(classType,num);
+*/
+      String hostProperty = new String(prefix.indexOf(".") > 0 ? prefix.substring(0, prefix.indexOf(".")) : "");
+      Integer num = (Integer)vosAlreadyProcessed.get(hostProperty+classType);
+      if (num==null)
+        num = new Integer(0);
+      num = new Integer(num.intValue()+1);
+      if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
+        return;
+      vosAlreadyProcessed.put(hostProperty+classType,num);
 
       // retrieve all getter and setter methods defined in the specified value object...
       String attributeName = null;

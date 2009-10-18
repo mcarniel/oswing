@@ -351,6 +351,39 @@ public class QueryUtil {
               }
               else {
                 // (name op value1 OR name op value2 OR ...)
+                int i =0; // start index
+                boolean isExamineNull = false;
+                baseSQL += "(";
+                ArrayList inValues = (ArrayList)filterClauses[0].getValue();
+                if ( filterClauses[0].getOperator().equals(Consts.EQ) &&
+                     inValues.get(0).equals(Consts.IS_NULL)) {
+                  i =1;
+                  isExamineNull = true;
+                  baseSQL += "("+ attributesMapping.get(attributeName) + " IS NULL) OR (";
+                }
+                if ( filterClauses[0].getOperator().equals(Consts.NEQ) &&
+                     inValues.get(0).equals(Consts.IS_NULL)) {
+                  i =1;
+                  isExamineNull = true;
+                  baseSQL += "("+ attributesMapping.get(attributeName) + " IS NOT NULL) OR (";
+                }
+                for(int j=i;j<inValues.size();j++) {
+                  baseSQL +=
+                    attributesMapping.get(attributeName) +
+                    " " + filterClauses[0].getOperator() +
+                    " ?"+(isJPAsyntax?String.valueOf(num++):"")+" OR ";
+                    values.add(inValues.get(j));
+                }
+                baseSQL = baseSQL.substring(0,baseSQL.length()-3);
+                if (isExamineNull)
+                  baseSQL += ")";
+                baseSQL += ") AND ";
+              }
+            } else {
+
+/*
+              else {
+                // (name op value1 OR name op value2 OR ...)
                 baseSQL += "(";
                 ArrayList inValues = (ArrayList)filterClauses[0].getValue();
                 for(int j=0;j<inValues.size();j++) {
@@ -364,6 +397,7 @@ public class QueryUtil {
                 baseSQL += ") AND ";
               }
             } else {
+ */
               // name op value
               baseSQL +=
                   attributesMapping.get(attributeName) +
@@ -2040,7 +2074,7 @@ public class QueryUtil {
   */
  private static ArrayList getColumns(String sql) {
    ArrayList list = new ArrayList();
-   sql = sql.substring(sql.toLowerCase().indexOf("select")+7,sql.toLowerCase().indexOf("from"));
+   sql = sql.substring(sql.replace('\n',' ').replace('\r',' ').toLowerCase().indexOf("select ")+7,sql.replace('\n',' ').replace('\r',' ').toLowerCase().indexOf(" from "));
    StringTokenizer st = new StringTokenizer(sql,",");
    String token = null;
    while(st.hasMoreTokens()) {

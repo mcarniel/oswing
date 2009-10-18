@@ -9,6 +9,7 @@ import javax.swing.table.*;
 
 import org.openswing.swing.client.*;
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.table.columns.client.Column;
 
 
 /**
@@ -78,12 +79,14 @@ public class DateCellEditor extends AbstractCellEditor implements TableCellEdito
    * @param columnType column type; possible values: Column.TYPE_DATE, Column.TYPE_TIME, Column.TYPE_DATE_TIME
    * @param defaultDate optional default date to set in calendar when opening it and no date has been still set
    */
-  public DateCellEditor(boolean required,int columnType,int format,ArrayList dateListeners,Calendar defaultDate) {
+  public DateCellEditor(boolean required,int columnType,int format,String timeFormat,ArrayList dateListeners,Calendar defaultDate) {
     this.required = required;
     this.dateListeners = dateListeners;
     field.setDateType(columnType);
     field.setDefaultDate(defaultDate);
     field.setFormat(format);
+    if (columnType==Column.TYPE_TIME || columnType==Column.TYPE_DATE_TIME)
+      field.setTimeFormat(timeFormat);
 
     for(int i=0;i<dateListeners.size();i++)
       field.addDateChangedListener( (DateChangedListener)dateListeners.get(i) );

@@ -1164,13 +1164,40 @@ public class LookupController {
 
   /**
    * Define if a column is sorted when the lookup grid frame is opened.
+   * Current column will be sorted as the last one: in order to specify the sorting order
+   * for current column, use <code>setSortedColumn(String lookupAttributeName,String sortVersus,int sortingOrder)</code> method.
    * @param lookupAttributeName attribute name that identifies the column
    * @param sortVersus ascending/descending ordering versus; possible values: Consts.ASC_SORTED or Consts.DESC_SORTED
    */
   public final void setSortedColumn(String lookupAttributeName,String sortVersus) {
+    // calculate sortingOrder: current column will be sorted as the last one
+    int num = 0;
+    for(int i=0;i<colProperties.length;i++)
+      if (!colProperties[i].getSortVersus().equals(Consts.NO_SORTED)) {
+        num++;
+      }
+
     for(int i=0;i<colProperties.length;i++)
       if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
         colProperties[i].setSortVersus(sortVersus);
+        colProperties[i].setSortingOrder(num);
+        return;
+      }
+    Logger.error(this.getClass().getName(),"setSortedColumn","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);
+  }
+
+
+  /**
+   * Define if a column is sorted when the lookup grid frame is opened.
+   * @param lookupAttributeName attribute name that identifies the column
+   * @param sortVersus ascending/descending ordering versus; possible values: Consts.ASC_SORTED or Consts.DESC_SORTED
+   * @param sortingOrder sorting order (e.g. 0, 1, 2, ...)
+   */
+  public final void setSortedColumn(String lookupAttributeName,String sortVersus,int sortingOrder) {
+    for(int i=0;i<colProperties.length;i++)
+      if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
+        colProperties[i].setSortVersus(sortVersus);
+        colProperties[i].setSortingOrder(sortingOrder);
         return;
       }
     Logger.error(this.getClass().getName(),"setSortedColumn","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);

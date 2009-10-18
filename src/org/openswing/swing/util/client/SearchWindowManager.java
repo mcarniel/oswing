@@ -402,7 +402,10 @@ public class SearchWindowManager {
         return item.toUpperCase().startsWith(textToSearch);
       }
       try {
-        return Pattern.compile(item.toUpperCase(),Pattern.CASE_INSENSITIVE).matcher(item.toUpperCase()).find();
+        if (!textToSearch.startsWith("*"))
+          return Pattern.compile(".*"+textToSearch.toUpperCase(),Pattern.CASE_INSENSITIVE).matcher(item.toUpperCase()).find();
+        else
+          return Pattern.compile("."+textToSearch.toUpperCase(),Pattern.CASE_INSENSITIVE).matcher(item.toUpperCase()).find();
       }
       catch (PatternSyntaxException e) {
         return false;

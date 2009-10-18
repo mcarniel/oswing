@@ -93,11 +93,21 @@ public class MultiLineTextCellEditor extends AbstractCellEditor implements Table
 
     if (orientation!=null)
       field.setComponentOrientation(orientation);
-
-    field.addKeyListener(new KeyAdapter() {
+    field.setMaxCharacters(maxCharacters);
+    field.getTextArea().addKeyListener(new KeyAdapter() {
 
       public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode()==e.VK_TAB) {
+        if (field.getValue() != null &&
+            field.getValue().toString().length() >=
+            MultiLineTextCellEditor.this.maxCharacters &&
+            ! (e.getKeyCode() == e.VK_DELETE ||
+               e.getKeyCode() == e.VK_BACK_SPACE ||
+               e.getKeyCode() == e.VK_LEFT ||
+               e.getKeyCode() == e.VK_RIGHT)) {
+          e.consume();
+          return;
+        }
+        if (e.getKeyCode() == e.VK_TAB) {
           stopCellEditing();
           table.requestFocus();
           try {
@@ -108,6 +118,28 @@ public class MultiLineTextCellEditor extends AbstractCellEditor implements Table
         }
       }
 
+      public void keyReleased(KeyEvent e) {
+        if (field.getValue() != null &&
+            field.getValue().toString().length() >=
+            MultiLineTextCellEditor.this.maxCharacters &&
+            ! (e.getKeyCode() == e.VK_DELETE ||
+               e.getKeyCode() == e.VK_BACK_SPACE ||
+               e.getKeyCode() == e.VK_LEFT ||
+               e.getKeyCode() == e.VK_RIGHT)) {
+          e.consume();
+          return;
+        }
+      }
+
+      public void keyTyped(KeyEvent e) {
+        if (field.getValue() != null &&
+            field.getValue().toString().length() >=
+            MultiLineTextCellEditor.this.maxCharacters &&
+            ! (e.getKeyChar() == '\b')) {
+          e.consume();
+          return;
+        }
+      }
     });
 
   }

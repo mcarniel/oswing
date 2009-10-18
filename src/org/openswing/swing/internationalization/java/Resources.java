@@ -64,6 +64,12 @@ public class Resources implements Serializable {
   /** example 6:30:59 PM */
   public static final String H_MM_SS_AAA = "h:mm:ss aaa";
 
+  /** example 18:30:59,123 */
+  public static final String HH_MM_SS_SSS = "HH:mm:ss,SSS";
+
+  /** example 6:30:59,123 PM */
+  public static final String H_MM_SS_SSS_AAA = "h:mm:ss,SSS aaa";
+
   /** language identifier */
   private String languageId;
 
@@ -131,8 +137,10 @@ public class Resources implements Serializable {
     if (!timeFormat.equals(HH_MM) &&
         !timeFormat.equals(H_MM_AAA) &&
         !timeFormat.equals(HH_MM_SS) &&
-        !timeFormat.equals(H_MM_SS_AAA)) {
-      System.err.println("The time format specified '"+timeFormat+"' is not allowed.\nAllowable values are: '"+HH_MM+"' or '"+H_MM_AAA+"'"+"' or '"+HH_MM_SS+"'"+"' or '"+H_MM_SS_AAA+"'");
+        !timeFormat.equals(H_MM_SS_AAA) &&
+        !timeFormat.equals(HH_MM_SS_SSS) &&
+        !timeFormat.equals(H_MM_SS_SSS_AAA)) {
+      System.err.println("The time format specified '"+timeFormat+"' is not allowed.\nAllowable values are: '"+HH_MM+"' or '"+H_MM_AAA+"'"+"' or '"+HH_MM_SS+"'"+"' or '"+H_MM_SS_AAA+"' or '"+HH_MM_SS_SSS+"'"+"' or '"+H_MM_SS_SSS_AAA+"'");
       timeFormat = HH_MM;
     }
     this.timeFormat = timeFormat;

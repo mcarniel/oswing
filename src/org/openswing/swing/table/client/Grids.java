@@ -1862,7 +1862,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
                     blockSize = model.getRowCount();
                   String page = ClientSettings.getInstance().getResources().getResource("page")+" "+(getLastIndex()/blockSize+1);
                   if ( ((VOListResponse)answer).getTotalAmountOfRows()>0) {
-                    page += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+(((VOListResponse)answer).getTotalAmountOfRows()/blockSize);
+                    page += " "+ClientSettings.getInstance().getResources().getResource("of")+" "+((((VOListResponse)answer).getTotalAmountOfRows()%blockSize==0?0:1)+((VOListResponse)answer).getTotalAmountOfRows()/blockSize);
                     totalResultSetLength = ((VOListResponse)answer).getTotalAmountOfRows();
                   }
                   else {

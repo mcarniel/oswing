@@ -7,7 +7,10 @@ import javax.swing.table.*;
 
 import org.openswing.swing.util.client.*;
 import java.text.*;
-
+import java.lang.reflect.Proxy;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -58,8 +61,30 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
   /**
    * Constructor used for password fields.
    */
-  public FormattedTextCellEditor(JFormattedTextField field,boolean required) {
-    this.field = field;
+  public FormattedTextCellEditor(final JFormattedTextField _field,boolean required) {
+/*
+    try {
+      InvocationHandler handler = new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args) {
+          try {
+            System.out.println(method.getName()+": "+(args!=null && args.length>0?args[0]:null));
+            return method.invoke(_field, args);
+          }
+          catch (Throwable ex) {
+            return null;
+          }
+        }
+      };
+      Class proxyClass = Proxy.getProxyClass(JFormattedTextField.class.getClassLoader(), new Class[] {JFormattedTextField.class});
+      this.field = (JFormattedTextField) proxyClass.getConstructor(new Class[] {InvocationHandler.class}).newInstance(new Object[] {handler});
+    }
+    catch (Throwable ex) {
+      this.field = _field;
+    }
+*/
+    this.field = new JFormattedTextField( _field.getFormatter());
+
+    //    _field;
     this.required = required;
     field.addKeyListener(new KeyAdapter() {
 

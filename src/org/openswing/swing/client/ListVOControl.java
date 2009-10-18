@@ -31,6 +31,7 @@ import javax.swing.event.ListSelectionEvent;
 import java.beans.Introspector;
 import java.beans.BeanInfo;
 import java.beans.*;
+import java.text.SimpleDateFormat;
 
 
 /**
@@ -1268,7 +1269,32 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
    * @return the element at the specified index, converted in String format
    */
   public final String getValueAt(int index) {
-    return list.getModel().getElementAt(index)==null?"":list.getModel().getElementAt(index).toString();
+    if (model.get(index)==null)
+      return "";
+
+    ValueObject vo = (ValueObject)model.get(index);
+    Object val = null;
+    String valS = "";
+    SimpleDateFormat sdf = new SimpleDateFormat(ClientSettings.getInstance().getResources().getDateMask(Consts.TYPE_DATE));
+    for(int i=0;i<colProperties.length;i++) {
+      if (colProperties[i].isColumnVisible()) {
+        try {
+          val = ( (Method) getters.get(colProperties[i].getColumnName())).invoke(vo, new Object[0]);
+          if (val != null) {
+            if (colProperties[i] instanceof DateColumn) {
+              valS += sdf.format( (java.util.Date) val)+" ";
+            }
+            else
+              valS += val.toString()+" ";
+          }
+          else
+            valS += " ";
+        }
+        catch (Exception ex) {}
+      }
+    }
+    return valS;
+
   }
 
 
