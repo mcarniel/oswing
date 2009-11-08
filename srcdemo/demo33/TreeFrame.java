@@ -8,6 +8,7 @@ import java.awt.event.*;
 import org.openswing.swing.util.client.ClientSettings;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 
 /**

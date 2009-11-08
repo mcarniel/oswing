@@ -28,6 +28,7 @@ public class DateControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _linkLabel = new PropertyDescriptor("linkLabel", beanClass, "getLinkLabel", "setLinkLabel");
       PropertyDescriptor _required = new PropertyDescriptor("required", beanClass, "isRequired", "setRequired");
+      PropertyDescriptor _showCalendarButton = new PropertyDescriptor("showCalendarButton", beanClass, "isShowCalendarButton", "setShowCalendarButton");
       PropertyDescriptor _showCentury = new PropertyDescriptor("showCentury", beanClass, "isShowCentury", "setShowCentury");
       PropertyDescriptor _enabled = new PropertyDescriptor("enabled", beanClass, "isEnabled", "setEnabled");
       PropertyDescriptor _enabledOnInsert = new PropertyDescriptor("enabledOnInsert", beanClass, "isEnabledOnInsert", "setEnabledOnInsert");
@@ -40,6 +41,7 @@ public class DateControlBeanInfo extends SimpleBeanInfo {
         _canCopy,
         _linkLabel,
         _required,
+        _showCalendarButton,
         _showCentury,
         _enabled,
         _enabledOnInsert,

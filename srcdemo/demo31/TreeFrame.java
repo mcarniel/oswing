@@ -9,6 +9,7 @@ import org.openswing.swing.util.client.ClientSettings;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
 
 /**
@@ -37,6 +38,7 @@ public class TreeFrame extends JFrame {
       tree.setExpandAllNodes(true);
       tree.setIconAttributeName("iconImageName");
       tree.setTooltipAttributeName("tooltip");
+      //tree.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
       tree.addPopupMenuItem("rename node",'R',true,new ActionListener() {
 
         public void actionPerformed(ActionEvent e) {

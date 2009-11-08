@@ -1,5 +1,19 @@
 
 
+Release Notes 2.1.1
+-------------------
+
+Final release 2.1.1 available
+- fixed problem on quick filter panel and filter panel, when using combobox columns where domain is not defined using domain id
+- fixed problem on quick filter panel when selecting a date from the calendar popup window
+- added "vievFileMenu" to MDIFrame, in order to show/hide "File" menu in MDI frame menubar
+- updated CzechOnlyResourceFactory and HungarianOnlyResourceFactory classes
+- added "setShowCalendarButton" to DateControl, in order to show/hide calendar button
+- improved LoginDialog, when using multilanguage application and changing language before logging in
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.1
 -----------------
 

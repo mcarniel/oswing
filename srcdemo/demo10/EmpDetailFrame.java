@@ -127,6 +127,10 @@ public class EmpDetailFrame extends InternalFrame {
     controlSex.setRequired(true);
     controlCurrency.setCanCopy(true);
     controlCurrency.setDecimals(2);
+
+    colDay.setColumnFilterable(true);
+
+
     controlCurrency.setMaxValue(1000.0);
     controlCurrency.setMinValue(-1000.0);
     controlCurrency.setRequired(false);

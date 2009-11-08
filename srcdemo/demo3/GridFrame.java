@@ -197,7 +197,6 @@ public class GridFrame extends JFrame {
     grid.setSaveButton(saveButton);
 
 //    grid.setLockedColumns(2);
-
     grid.setLockedRowsOnTop(1);
 
     grid.setLockedRowsOnBottom(1);
@@ -333,6 +332,7 @@ public class GridFrame extends JFrame {
     colMultiLine.setEditableOnEdit(true);
     colMultiLine.setEditableOnInsert(true);
     colMultiLine.setPreferredWidth(150);
+    //colMultiLine.setMaxCharacters(3);
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);

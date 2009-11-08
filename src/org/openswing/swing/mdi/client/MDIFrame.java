@@ -251,7 +251,8 @@ public class MDIFrame extends JFrame implements BusyListener {
     menuFile.addSeparator();
     menuFile.add(menuFileExit);
     menuHelp.add(menuHelpAbout);
-    menuBar.add(menuFile);
+    if (client.viewFileMenu())
+      menuBar.add(menuFile);
 
     DefaultTreeModel functions = null;
     try {

@@ -160,6 +160,7 @@ public class DetailFrame extends JFrame {
     descrLookupControl.setEnabledOnEdit(false);
     controlDate.setCanCopy(true);
     controlDate.setRequired(false);
+
     copyButton.setText("copyButton1");
     controlCheck.setCanCopy(true);
     controlRadioButton1.setCanCopy(true);

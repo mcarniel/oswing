@@ -17,7 +17,14 @@ import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.FilterWhereClause;
 import javax.swing.text.DefaultFormatterFactory;
 import java.text.*;
-
+import javax.swing.event.AncestorListener;
+import javax.swing.event.AncestorEvent;
+import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JCalendar;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.event.PopupMenuEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -130,6 +137,68 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
       this.filterType=filterType;
       this.defaultQuickFilterCriteria = defaultQuickFilterCriteria;
       this.filter = filter;
+
+      this.addComponentListener(new ComponentListener() {
+      /**
+       * componentHidden
+       *
+       * @param e ComponentEvent
+       */
+      public void componentHidden(ComponentEvent e) {
+        new Thread().dumpStack();
+      }
+
+      /**
+       * componentMoved
+       *
+       * @param e ComponentEvent
+       */
+      public void componentMoved(ComponentEvent e) {
+      }
+
+      /**
+       * componentResized
+       *
+       * @param e ComponentEvent
+       */
+      public void componentResized(ComponentEvent e) {
+      }
+
+      /**
+       * componentShown
+       *
+       * @param e ComponentEvent
+       */
+      public void componentShown(ComponentEvent e) {
+      }
+    });
+
+      this.addAncestorListener(new AncestorListener() {
+      /**
+       * ancestorAdded
+       *
+       * @param event AncestorEvent
+       */
+      public void ancestorAdded(AncestorEvent event) {
+      }
+
+      /**
+       * ancestorMoved
+       *
+       * @param event AncestorEvent
+       */
+      public void ancestorMoved(AncestorEvent event) {
+      }
+
+      /**
+       * ancestorRemoved
+       *
+       * @param event AncestorEvent
+       */
+      public void ancestorRemoved(AncestorEvent event) {
+        new Thread().dumpStack();
+      }
+    });
 
       ApplicationEventQueue.getInstance().addKeyListener(this);
 
@@ -400,7 +469,91 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
         case Column.TYPE_TIME :
         {
           result=new DateControl();
+
           ((DateControl)result).setDateType(colProperties.getColumnType());
+          final DateControl res = ((DateControl)result);
+          final JDateChooser dc = (JDateChooser)result.getComponents()[0];
+          dc.getCalendarButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+/*
+              System.out.println("parentPopup.getLocationOnScreen().x="+parentPopup.getLocationOnScreen().x);
+              System.out.println("parentPopup.getLocationOnScreen().y="+parentPopup.getLocationOnScreen().y);
+
+              System.out.println("dc.getCalendarButton().getX()="+dc.getCalendarButton().getX());
+              System.out.println("dc.getCalendarButton().getY()="+dc.getCalendarButton().getY());
+
+              System.out.println("res.getLocationOnScreen().x="+res.getLocationOnScreen().x);
+              System.out.println("res.getLocationOnScreen().y="+res.getLocationOnScreen().y);
+*/
+              int x = res.getLocationOnScreen().x;
+              int y = res.getLocationOnScreen().y+res.getHeight();
+              Calendar calendar = Calendar.getInstance();
+              Date date = dc.getDate();
+              if (date != null) {
+                      calendar.setTime(date);
+              }
+              dc.getJCalendar().setCalendar(calendar);
+
+              final JWindow w = new JWindow(parentPopup.getGraphicsConfiguration());
+              w.getContentPane().add(dc.getJCalendar(),BorderLayout.CENTER);
+              w.setLocation(x,y);
+              w.setSize(dc.getJCalendar().getPreferredSize());
+              parentPopup.addPopupMenuListener(new PopupMenuListener() {
+
+                public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
+                public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                  w.setVisible(false);
+                  w.dispose();
+                }
+
+                public void popupMenuCanceled(PopupMenuEvent e) {
+                  w.setVisible(false);
+                  w.dispose();
+                }
+              });
+
+              w.addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
+                  if (e.getKeyCode()==e.VK_ESCAPE) {
+                    w.setVisible(false);
+                    w.dispose();
+                }
+
+                }
+              });
+
+              dc.getJCalendar().getDayChooser().addPropertyChangeListener(new PropertyChangeListener() {
+
+                public void propertyChange(PropertyChangeEvent evt) {
+                        if (evt.getPropertyName().equals("day")) {
+                                if (w.isVisible()) {
+                                        w.setVisible(false);
+                                        res.setDate(dc.getJCalendar().getCalendar().getTime());
+                                }
+                        } else if (evt.getPropertyName().equals("date")) {
+                          /*
+                                if (evt.getSource() == dateEditor) {
+                                        firePropertyChange("date", evt.getOldValue(), evt.getNewValue());
+                                } else */
+                                {
+                                        res.setDate((Date) evt.getNewValue());
+                                }
+                        }
+                }
+
+              });
+
+
+
+              w.setVisible(true);
+
+
+              throw new RuntimeException();
+            }
+          });
+
+
+
           if (initValue!=null) {
             Date c = (java.util.Date)initValue;
             ((DateControl)result).setDate(c);
@@ -704,9 +857,13 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
       this.filterType = filterType;
       this.initValue = initValue;
       this.colProperties = colProperties;
-      if (colProperties.getColumnType()==Column.TYPE_COMBO)
-        domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
-       else
+      if (colProperties.getColumnType()==Column.TYPE_COMBO) {
+        if (((ComboColumn)colProperties).getDomainId()!=null)
+          domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
+        else
+          domain = ((ComboColumn)colProperties).getDomain();
+      }
+      else
         domain=null;
 
       try {

@@ -646,5 +646,12 @@ public class ClientApplication implements MDIController,LoginController,DbConnec
   public void releaseConnection(Connection conn) {}
 
 
+  /**
+   * @return <code>true</code> if the MDI frame must show the "File" menu in the menubar of the frame, <code>false</code> to hide it
+   */
+  public boolean viewFileMenu() {
+    return true;
+  }
+
 
 }

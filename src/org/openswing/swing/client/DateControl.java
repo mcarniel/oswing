@@ -88,6 +88,9 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   /** default date to set into the calendar, when opening it for the first time; null means today */
   private Calendar defaultDate = null;
 
+  /** flag used to show/hide calendar button; default value: <code>true</code> */
+  private boolean showCalendarButton = true;
+
 
   public DateControl() {
     try {
@@ -1044,6 +1047,33 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    */
   public final void setDefaultDate(Calendar defaultDate) {
     this.defaultDate = defaultDate;
+  }
+
+
+  /**
+   * @return show/hide calendar button; default value: <code>true</code>
+   */
+  public final boolean isShowCalendarButton() {
+    return showCalendarButton;
+  }
+
+
+ /**
+  * Show/hide calendar button; default value: <code>true</code>
+  * @param showCalendarButton show/hide calendar button;
+  */
+ public final void setShowCalendarButton(boolean showCalendarButton) {
+    this.showCalendarButton = showCalendarButton;
+    try {
+      if (showCalendarButton) {
+        calendar.getCalendarButton().setVisible(showCalendarButton);
+      }
+      else {
+        calendar.getCalendarButton().setVisible(showCalendarButton);
+      }
+    }
+    catch (Exception ex) {
+    }
   }
 
 

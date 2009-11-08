@@ -541,6 +541,7 @@ public class LoginDialog extends JDialog implements ItemListener {
     loginButton.setText(ClientSettings.getInstance().getResources().getResource(loginButtonText));
     usernameLabel.setText(ClientSettings.getInstance().getResources().getResource(usernameTextLabel));
     passwdLabel.setText(ClientSettings.getInstance().getResources().getResource(passwordTextLabel));
+    storeAccountCheckBox.setText(ClientSettings.getInstance().getResources().getResource(storeAccount));
     try {
       loginButton.setMnemonic(ClientSettings.getInstance().getResources().
                               getResource(String.valueOf(loginButtonMnemonic)).

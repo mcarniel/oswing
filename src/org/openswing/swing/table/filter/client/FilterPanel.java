@@ -566,8 +566,11 @@ public class FilterPanel extends JPanel {
   private JComponent createValueComponent(Column colProperties) {
     JComponent result=null;
     if (colProperties.getColumnType()==Column.TYPE_COMBO) {
-      Domain domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
-      Vector couple = null;
+      Domain domain = null;
+      if (((ComboColumn)colProperties).getDomainId()!=null)
+        domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
+      else
+        domain = ((ComboColumn)colProperties).getDomain();
       DomainPair[] pairs = domain.getDomainPairList();
       Vector items = new Vector();
       items.add( "" );
@@ -740,8 +743,11 @@ public class FilterPanel extends JPanel {
       if (initValue==null)
         combo.setSelectedIndex(0);
       else {
-        Domain domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
-        Vector couple = null;
+        Domain domain = null;
+        if (((ComboColumn)colProperties).getDomainId()!=null)
+          domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
+        else
+          domain = ((ComboColumn)colProperties).getDomain();
         DomainPair[] pairs = domain.getDomainPairList();
         for(int i=0;i<pairs.length;i++)
           if (pairs[i].getCode().equals(initValue)) {
@@ -824,10 +830,12 @@ public class FilterPanel extends JPanel {
    */
   private Object getInternalValueComponent(JComponent result,Column colProperties) {
     if (colProperties.getColumnType()==Column.TYPE_COMBO) {
-      Domain domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
-      Vector couple = null;
+      Domain domain = null;
+      if (((ComboColumn)colProperties).getDomainId()!=null)
+        domain = ClientSettings.getInstance().getDomain(((ComboColumn)colProperties).getDomainId());
+      else
+        domain = ((ComboColumn)colProperties).getDomain();
       DomainPair[] pairs = domain.getDomainPairList();
-      Vector items = new Vector();
       result = (JComboBox)((JPanel)result).getComponent(0);
       for(int i=0;i<pairs.length;i++)
         if (ClientSettings.getInstance().getResources().getResource(pairs[i].getDescription()).equals(((JComboBox)result).getSelectedItem()))

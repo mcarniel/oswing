@@ -9,6 +9,7 @@ import org.openswing.swing.util.client.ClientSettings;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
 
 /**
@@ -35,6 +36,7 @@ public class TreeFrame extends JFrame {
       tree.setTreeDataLocator(controller);
       tree.setLeavesImageName("node.gif");
       tree.setExpandAllNodes(true);
+
       tree.addPopupMenuItem("rename node",'R',true,new ActionListener() {
 
         public void actionPerformed(ActionEvent e) {

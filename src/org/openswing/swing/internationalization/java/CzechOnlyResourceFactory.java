@@ -289,8 +289,8 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         resources = new Resources(
                 dictionary,
                 currencySymbol,
-                ' ',
                 ',',
+                ' ',
                 Resources.DMY,
                 true,
                 dateFormatSeparator,
