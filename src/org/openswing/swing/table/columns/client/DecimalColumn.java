@@ -40,6 +40,9 @@ import org.openswing.swing.util.client.ClientSettings;
  */
 public class DecimalColumn extends Column {
 
+  /** maximum number of digits */
+  private int maxCharacters = 255;
+
   /** maximum value */
   private double maxValue = Integer.MAX_VALUE;
 
@@ -275,6 +278,22 @@ public class DecimalColumn extends Column {
 
 
   /**
+       * Set maximum number of characters.
+       * @param maxCharacters maximum number of characters
+       */
+  public final void setMaxCharacters(int maxCharacters) {
+    this.maxCharacters = maxCharacters;
+  }
+
+  /**
+   * @return maximum number of digits
+   */
+  public final int getMaxCharacters() {
+    return maxCharacters;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -305,7 +324,8 @@ public class DecimalColumn extends Column {
         getMinValue(),
         getMaxValue(),
         getDynamicSettings(),
-        selectDataOnEdit
+        selectDataOnEdit,
+        maxCharacters
     );
   }
 

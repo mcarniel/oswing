@@ -54,7 +54,7 @@ public class JPAUtils {
       valueObjectAlias = valueObjectAlias.substring(valueObjectAlias.lastIndexOf(".")+1);
     String valueObjectName = valueObjectAlias; // e.g. "ZZZ"
 
-    baseSQL = baseSQL.replace('\t',' ').replace('\n',' ').replace('\r',' ')+" "; // e.g. " xxx.yyy.ZZZ " or " xxx.yyy.ZZZ alias " or " ZZZ " or " ZZZ alias " or " select ... from xxx.yyy.ZZZ alias where ..." or " select ... from xxx.yyy.ZZZ where ..." 
+    baseSQL = baseSQL.replace('\t',' ').replace('\n',' ').replace('\r',' ')+" "; // e.g. " xxx.yyy.ZZZ " or " xxx.yyy.ZZZ alias " or " ZZZ " or " ZZZ alias " or " select ... from xxx.yyy.ZZZ alias where ..." or " select ... from xxx.yyy.ZZZ where ..."
     int index = baseSQL.indexOf(" "+valueObjectName+" ");
     if (index==-1)
       index = baseSQL.indexOf(valueObjectName+" ");
@@ -686,7 +686,7 @@ public class JPAUtils {
          logger
     );
   }
-  
+
 
   /**
    * Read a block of records from the result set, by applying filtering and sorting conditions + query parameters.
@@ -1090,7 +1090,7 @@ public class JPAUtils {
     int action,
     int startIndex,
     int blockSize,
-    Query query 
+    Query query
   ) throws Exception {
 
     // read a block of records...
@@ -1102,25 +1102,52 @@ public class JPAUtils {
       // last block requested: the whole result set will be loaded, to determine the result set length
       List list = null;
       if (query.getClass().getName().equals("org.hibernate.ejb.QueryImpl")) {
-	// Query is implemented by Hibernate: 
-	// use Hibernate API to move cursor at the end of the result set...
-	try {
-    		Object hibernateQuery = query.getClass().getMethod("getHibernateQuery", new Class[0]).invoke(query, new Object[0]);
-    		Object scrollableResults = hibernateQuery.getClass().getMethod("scroll", new Class[0]).invoke(hibernateQuery, new Object[0]);
-    		scrollableResults.getClass().getMethod("last", new Class[0]).invoke(scrollableResults, new Object[0]);
-    		Integer num = (Integer)scrollableResults.getClass().getMethod("getRowNumber", new Class[0]).invoke(scrollableResults, new Object[0]);
-    		rowCount = num.intValue();
-    		scrollableResults.getClass().getMethod("close", new Class[0]).invoke(scrollableResults, new Object[0]);
-	} catch(Throwable t) {
-	        list = query.getResultList();
-	        rowCount = list.size();
-	}            
+		// Query is implemented by Hibernate:
+		// use Hibernate API to move cursor at the end of the result set...
+		try {
+			Object hibernateQuery = query.getClass().getMethod("getHibernateQuery", new Class[0]).invoke(query, new Object[0]);
+			Object scrollableResults = hibernateQuery.getClass().getMethod("scroll", new Class[0]).invoke(hibernateQuery, new Object[0]);
+			scrollableResults.getClass().getMethod("last", new Class[0]).invoke(scrollableResults, new Object[0]);
+			Integer num = (Integer)scrollableResults.getClass().getMethod("getRowNumber", new Class[0]).invoke(scrollableResults, new Object[0]);
+			rowCount = num.intValue();
+			scrollableResults.getClass().getMethod("close", new Class[0]).invoke(scrollableResults, new Object[0]);
+
+		 	startIndex = Math.max(rowCount-blockSize,0);
+			query.setFirstResult(startIndex);
+			query.setMaxResults(blockSize+1);
+			list = query.getResultList();
+            return new VOListResponse(list,false,rowCount);
+
+		} catch(Throwable t) {
+				list = query.getResultList();
+				rowCount = list.size();
+		}
       }
-      else {
+	  else if (query.getClass().getName().equals("org.eclipse.persistence.queries.ScrollableCursor")) {
+		// Query is implemented by Eclipse Link 1.2:
+		// use Eclipse Link 1.2 API to move cursor at the end of the result set...
+		try {
+			Object scrollableCursor = query.getClass().getMethod("getSingleResult", new Class[0]).invoke(query, new Object[0]);
+			scrollableCursor.getClass().getMethod("last", new Class[0]).invoke(scrollableCursor, new Object[0]);
+			Integer num = (Integer)scrollableCursor.getClass().getMethod("getPosition", new Class[0]).invoke(scrollableCursor, new Object[0]);
+			rowCount = num.intValue();
+
+		 	startIndex = Math.max(rowCount-blockSize,0);
+			query.setFirstResult(startIndex);
+			query.setMaxResults(blockSize+1);
+			list = query.getResultList();
+            return new VOListResponse(list,false,rowCount);
+
+		} catch(Throwable t) {
+			list = query.getResultList();
+			rowCount = list.size();
+		}
+	  }
+	  else {
 	      list = query.getResultList();
-      	      rowCount = list.size();
+      	  rowCount = list.size();
       }
-      
+
       resultSetLength = rowCount;
       action = GridParams.NEXT_BLOCK_ACTION;
       startIndex = Math.max(rowCount-blockSize,0);
@@ -1135,7 +1162,7 @@ public class JPAUtils {
       }
       if(startIndex<0)
         startIndex = 0;
-        
+
       query.setFirstResult(startIndex);
       query.setMaxResults(blockSize+1);
     }

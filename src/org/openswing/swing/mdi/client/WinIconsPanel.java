@@ -166,7 +166,8 @@ public class WinIconsPanel extends JPanel {
 
 
       this.add(btn,null);
-      x = x+len+20;
+      //x = x+len+20;
+      x = x+len;
       buttons.put(btn,frame);
       btn.setSelected(true);
       this.revalidate();
@@ -270,6 +271,7 @@ public class WinIconsPanel extends JPanel {
             WinIconsPanel.this.remove(btn);
             WinIconsPanel.this.revalidate();
             WinIconsPanel.this.repaint();
+            //x = x - btn.getWidth() - 20;
             x = x - btn.getWidth();
           }
           catch (Exception ex1) {

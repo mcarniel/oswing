@@ -40,6 +40,9 @@ import org.openswing.swing.util.client.ClientSettings;
  */
 public class IntegerColumn extends Column {
 
+  /** maximum number of digits */
+  private int maxCharacters = 255;
+
   /** maximum value */
   private int maxValue = Integer.MAX_VALUE;
 
@@ -243,6 +246,22 @@ public class IntegerColumn extends Column {
 
 
   /**
+       * Set maximum number of characters.
+       * @param maxCharacters maximum number of characters
+       */
+  public final void setMaxCharacters(int maxCharacters) {
+    this.maxCharacters = maxCharacters;
+  }
+
+  /**
+   * @return maximum number of digits
+   */
+  public final int getMaxCharacters() {
+    return maxCharacters;
+  }
+
+
+  /**
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
@@ -273,7 +292,8 @@ public class IntegerColumn extends Column {
         getMinValue(),
         getMaxValue(),
         getDynamicSettings(),
-        selectDataOnEdit
+        selectDataOnEdit,
+        maxCharacters
     );
 
   }

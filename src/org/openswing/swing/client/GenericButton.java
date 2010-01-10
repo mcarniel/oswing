@@ -74,6 +74,11 @@ public class GenericButton extends JButton {
 
   public GenericButton(ImageIcon imageIcon) {
     this();
+    init(imageIcon);
+  }
+
+
+  private void init(Icon imageIcon) {
     if (buttonBehavior==Consts.BUTTON_IMAGE_ONLY) {
       super.setIcon(imageIcon);
       setPreferredSize(new Dimension(32,32));
@@ -81,21 +86,21 @@ public class GenericButton extends JButton {
     else {
      boolean defaultButton = true;
       if (this instanceof InsertButton)
-        setText("Insert");
+        super.setText(ClientSettings.getInstance().getResources().getResource("Insert"));
       else if (this instanceof EditButton)
-        setText("Edit");
+        super.setText(ClientSettings.getInstance().getResources().getResource("Edit"));
       else if (this instanceof CopyButton)
-        setText("Copy");
+        super.setText(ClientSettings.getInstance().getResources().getResource("Copy"));
       else if (this instanceof DeleteButton)
-        setText("Delete");
+        super.setText(ClientSettings.getInstance().getResources().getResource("Delete"));
       else if (this instanceof ReloadButton)
-        setText("Reload");
+        super.setText(ClientSettings.getInstance().getResources().getResource("Reload"));
       else if (this instanceof SaveButton)
-        setText("Save");
+        super.setText(ClientSettings.getInstance().getResources().getResource("Save"));
       else if (this instanceof FilterButton)
-        setText("Filter");
+        super.setText(ClientSettings.getInstance().getResources().getResource("Filter"));
       else if (this instanceof ExportButton)
-        setText("Export");
+        super.setText(ClientSettings.getInstance().getResources().getResource("Export"));
       else
         defaultButton = false;
 
@@ -131,6 +136,7 @@ public class GenericButton extends JButton {
   public void setText(String t) {
     if (buttonBehavior!=Consts.BUTTON_IMAGE_ONLY)
       super.setText(ClientSettings.getInstance().getResources().getResource(t));
+    init(super.getIcon());
   }
 
 

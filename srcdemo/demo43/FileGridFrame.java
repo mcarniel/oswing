@@ -79,8 +79,9 @@ public class FileGridFrame extends JFrame {
     grid.setSaveButton(saveButton1);
     grid.setValueObjectClassName("demo43.FileVO");
     colUploadDate.setColumnName("uploadDate");
-//    colUploadDate.setEditableOnInsert(false);
-//    colUploadDate.setEditableOnEdit(false);
+//    colUploadDate.setTimeFormat(Resources.H_MM_AAA);
+    colUploadDate.setEditableOnInsert(false);
+    colUploadDate.setEditableOnEdit(false);
     colUploadDate.setEditableOnInsert(true);
     colUploadDate.setEditableOnEdit(true);
     colFile.setFileNameAttributeName("fileName");

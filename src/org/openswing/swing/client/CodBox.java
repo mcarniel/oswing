@@ -79,7 +79,7 @@ public class CodBox extends JTextField {
 
       public void keyTyped(KeyEvent e) {
         if (e.getKeyChar()=='\n' &&
-            !(ClientSettings.AS_TAB!=null && ClientSettings.AS_TAB.getKeyChar()=='n')) {
+            !(ClientSettings.AS_TAB!=null && ClientSettings.AS_TAB.getKeyChar()=='\n')) {
           if (isEnabled() && isEditable())
             // start validation when press ENTER button...
             startValidation();

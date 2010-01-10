@@ -51,6 +51,7 @@ public class DecimalColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _decimals = new PropertyDescriptor("decimals", beanClass, "getDecimals", "setDecimals");
       PropertyDescriptor _grouping = new PropertyDescriptor("grouping", beanClass, "isGrouping", "setGrouping");
       PropertyDescriptor _hideZeroDigits = new PropertyDescriptor("hideZeroDigits", beanClass, "isHideZeroDigits", "setHideZeroDigits");
+      PropertyDescriptor _maxCharacters = new PropertyDescriptor("maxCharacters", beanClass, "getMaxCharacters", "setMaxCharacters");
       PropertyDescriptor _maxValue = new PropertyDescriptor("maxValue", beanClass, "getMaxValue", "setMaxValue");
       PropertyDescriptor _minValue = new PropertyDescriptor("minValue", beanClass, "getMinValue", "setMinValue");
       PropertyDescriptor _selectDataOnEdit = new PropertyDescriptor("selectDataOnEdit", beanClass, "isSelectDataOnEdit", "setSelectDataOnEdit");
@@ -61,6 +62,7 @@ public class DecimalColumnBeanInfo extends SimpleBeanInfo {
               _grouping,
               _hideZeroDigits,
               _leftMargin,
+              _maxCharacters,
 	      _maxValue,
 	      _minValue,
               _rightMargin,

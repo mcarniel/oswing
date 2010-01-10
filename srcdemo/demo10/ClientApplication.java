@@ -392,10 +392,15 @@ public class ClientApplication implements MDIController,LoginController {
     DefaultMutableTreeNode root = new OpenSwingTreeNode();
     DefaultTreeModel model = new DefaultTreeModel(root);
     ApplicationFunction n1 = new ApplicationFunction("Administration",null);
+    n1.setShortCut(new Character('A'));
     ApplicationFunction n11 = new ApplicationFunction("Employees in grid+detail","getEmployees","men.gif","getEmployees");
+    n11.setShortCut(new Character('M'));
     ApplicationFunction n12 = new ApplicationFunction("Employees in editable grid","getEmployees2","men.gif","getEmployees2");
+    n12.setShortCut(new Character('G'));
     ApplicationFunction n13 = new ApplicationFunction("Departments","getDepts","appicon.gif","getDepts");
+    n13.setShortCut(new Character('D'));
     ApplicationFunction n14 = new ApplicationFunction("Tasks","getTasks","appicon.gif","getTasks");
+    n14.setShortCut(new Character('K'));
     n1.add(n11);
     n1.add(n12);
     n1.add(n13);

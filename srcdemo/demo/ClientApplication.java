@@ -13,6 +13,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.openswing.swing.mdi.java.ApplicationFunction;
 import org.openswing.swing.client.SplashScreen;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
+import java.awt.Event;
 
 
 /**
@@ -230,8 +231,13 @@ public class ClientApplication implements MDIController,LoginController {
     ApplicationFunction n1 = new ApplicationFunction("Folder1",null);
     ApplicationFunction n2 = new ApplicationFunction("Folder2",null);
     ApplicationFunction n3 = new ApplicationFunction("Folder3",null);
+
     ApplicationFunction n11 = new ApplicationFunction("Function1","F1",null,"getF1");
+    n11.setShortCut(new Character('1'));
+
     ApplicationFunction n21 = new ApplicationFunction("Function2","F2",null,"getF2");
+    n21.setAccelerator(KeyStroke.getKeyStroke('F',Event.CTRL_MASK));
+
     ApplicationFunction n22 = new ApplicationFunction("Function3","F3",null,"getF3");
     ApplicationFunction n31 = new ApplicationFunction("Folder31",null);
     ApplicationFunction n311 = new ApplicationFunction("Function4","F4",null,"getF4");
@@ -241,7 +247,8 @@ public class ClientApplication implements MDIController,LoginController {
     n2.add(n22);
     n3.add(n31);
     n31.add(n311);
-    n31.add(n312);
+//    n31.add(n312);
+    root.add(n312);
     root.add(n1);
     root.add(n2);
     root.add(n3);

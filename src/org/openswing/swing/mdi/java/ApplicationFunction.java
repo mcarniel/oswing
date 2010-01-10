@@ -1,6 +1,7 @@
 package org.openswing.swing.mdi.java;
 
 import javax.swing.tree.*;
+import javax.swing.KeyStroke;
 
 
 
@@ -56,6 +57,12 @@ public class ApplicationFunction extends DefaultMutableTreeNode {
 
   /** tooltip text associated to folder or function */
   private String tooltipText;
+
+  /** shortcut to use in order to select this function in the menu bar; if not setted, the shortcut is automatically defined by MDIFrame */
+  private Character shortCut;
+
+  /** accelerator to use in order to select this function in the menu bar; example for CTRL+X: <code>KeyStroke.getKeyStroke('X',Event.CTRL_MASK)</code> */
+  private KeyStroke accelerator;
 
 
   /**
@@ -199,6 +206,41 @@ public class ApplicationFunction extends DefaultMutableTreeNode {
    */
   public final String getTooltipText() {
     return tooltipText;
+  }
+
+
+  /**
+   * @return shortcut to use in order to select this function in the menu bar; if not setted, the shortcut is automatically defined by MDIFrame
+   */
+  public Character getShortCut() {
+    return shortCut;
+  }
+
+
+  /**
+   * Set the shortcut to use in order to select this function in the menu bar; if not setted, the shortcut is automatically defined by MDIFrame.
+   * @param shortCut shortcut to use in order to select this function in the menu bar
+   */
+  public final void setShortCut(Character shortCut) {
+    this.shortCut = shortCut;
+  }
+
+  /**
+   * @return accelerator to use in order to select this function in the menu bar
+   */
+  public final KeyStroke getAccelerator() {
+    return accelerator;
+  }
+
+
+  /**
+   * Set the accelerator to use in order to select this function in the menu bar.
+   * Example for CTRL+X:
+   * <code>KeyStroke.getKeyStroke('X',Event.CTRL_MASK)</code>
+   * @param accelerator accelerator to use in order to select this function in the menu bar
+   */
+  public final void setAccelerator(KeyStroke accelerator) {
+    this.accelerator = accelerator;
   }
 
 

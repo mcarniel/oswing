@@ -86,7 +86,8 @@ public class PercentageColumn extends DecimalColumn {
         getMinValue(),
         getMaxValue(),
         getDynamicSettings(),
-        isSelectDataOnEdit()
+        isSelectDataOnEdit(),
+        getMaxCharacters()
     );
   }
 

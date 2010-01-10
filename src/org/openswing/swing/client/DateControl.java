@@ -364,6 +364,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
     for(int i=0;i<dateListeners.size();i++)
       ((DateChangedListener)dateListeners.get(i)).dateChanged(oldDate,getDate());
 
+    maybeFireValueChangedEvent();
   }
 
 
@@ -636,7 +637,25 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
     else if ((dateType==Consts.TYPE_DATE_TIME || dateType==Consts.TYPE_TIME) &&
             timeFormat.equals(Resources.H_MM_AAA) &&
             date.getText().length()>i &&
-            (dateType==Consts.TYPE_DATE_TIME && i>5+9+(showCentury?2:0) || dateType==Consts.TYPE_TIME && i>5)) {
+            (dateType==Consts.TYPE_DATE_TIME && i>4+9+(showCentury?2:0) || dateType==Consts.TYPE_TIME && i>4)) {
+      if (e.getKeyChar()=='A' || e.getKeyChar()=='M' || e.getKeyChar()=='P')
+        // AM/PM...
+        setChar(i,e.getKeyChar());
+      return;
+    }
+    else if ((dateType==Consts.TYPE_DATE_TIME || dateType==Consts.TYPE_TIME) &&
+            timeFormat.equals(Resources.H_MM_SS_AAA) &&
+            date.getText().length()>i &&
+            (dateType==Consts.TYPE_DATE_TIME && i>7+9+(showCentury?2:0) || dateType==Consts.TYPE_TIME && i>7)) {
+      if (e.getKeyChar()=='A' || e.getKeyChar()=='M' || e.getKeyChar()=='P')
+        // AM/PM...
+        setChar(i,e.getKeyChar());
+      return;
+    }
+    else if ((dateType==Consts.TYPE_DATE_TIME || dateType==Consts.TYPE_TIME) &&
+            timeFormat.equals(Resources.H_MM_SS_SSS_AAA) &&
+            date.getText().length()>i &&
+            (dateType==Consts.TYPE_DATE_TIME && i>11+9+(showCentury?2:0) || dateType==Consts.TYPE_TIME && i>11)) {
       if (e.getKeyChar()=='A' || e.getKeyChar()=='M' || e.getKeyChar()=='P')
         // AM/PM...
         setChar(i,e.getKeyChar());
@@ -735,17 +754,94 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    * @param c current digit
    */
   private void setTimeDigits(int i,char c,int len) {
-    if (i<2+len) {
-      setChar(i,c);
+    if (timeFormat.equals(Resources.H_MM_AAA)) {
+      int delta = 0;
+      if (date.getText().charAt(len+2)==':' && Character.isDigit(c))
+        delta = 1;
+      else if (date.getText().charAt(len+1)==':' && Character.isDigit(c))
+        delta = 0;
+      else if (
+               (Character.isDigit(date.getText().charAt(len+2)) ||
+                date.getText().charAt(len+2)==' '))
+        delta = 1;
+      if (i<1+delta+len)
+        setChar(i,c);
+      else if (i>=2+delta+len && i<=3+delta+len)
+        setChar(i,c);
+      else if (i>=5+delta+len && i<=6+delta+len)
+        setChar(i,c);
     }
-    else if (i>=3+len && i<=4+len) {
-      setChar(i,c);
+    else if (timeFormat.equals(Resources.H_MM_SS_AAA)) {
+      int delta = 0;
+      if (date.getText().charAt(len+2)==':' && Character.isDigit(c))
+        delta = 1;
+      else if (date.getText().charAt(len+1)==':' && Character.isDigit(c))
+        delta = 0;
+      else if (
+               (Character.isDigit(date.getText().charAt(len+2)) ||
+                date.getText().charAt(len+2)==' '))
+        delta = 1;
+      if (i<1+delta+len)
+        setChar(i,c);
+      else if (i>=2+delta+len && i<=3+delta+len)
+        setChar(i,c);
+      else if (i>=5+delta+len && i<=6+delta+len)
+        setChar(i,c);
+      else if (i>=8+delta+len && i<=9+delta+len)
+        setChar(i,c);
     }
-    else if (i>=6+len && i<=7+len && timeFormat.equals(Resources.H_MM_AAA)) {
-      setChar(i,c);
+    else if (timeFormat.equals(Resources.H_MM_SS_SSS_AAA)) {
+      int delta = 0;
+      if (date.getText().charAt(len+2)==':' && Character.isDigit(c))
+        delta = 1;
+      else if (date.getText().charAt(len+1)==':' && Character.isDigit(c))
+        delta = 0;
+      else if (
+               (Character.isDigit(date.getText().charAt(len+2)) ||
+                date.getText().charAt(len+2)==' '))
+        delta = 1;
+      if (i<1+delta+len)
+        setChar(i,c);
+      else if (i>=2+len && i<=3+len)
+        setChar(i,c);
+      else if (i>=5+len && i<=6+len)
+        setChar(i,c);
+      else if (i>=8+len && i<=10+len)
+        setChar(i,c);
+      else if (i>=12+len && i<=13+len)
+        setChar(i,c);
     }
-    else if (date.getText().length()>i) {
-       date.setCaretPosition(i+1);
+    else if (timeFormat.equals(Resources.HH_MM)) {
+      if (i<2+len)
+        setChar(i,c);
+      else if (i>=3+len && i<=4+len)
+        setChar(i,c);
+    }
+    else if (timeFormat.equals(Resources.HH_MM_SS)) {
+      if (i<2+len)
+        setChar(i,c);
+      else if (i>=3+len && i<=4+len)
+        setChar(i,c);
+      else if (i>=6+len && i<=7+len)
+        setChar(i,c);
+    }
+    else if (timeFormat.equals(Resources.HH_MM_SS_SSS)) {
+      if (i<2+len)
+        setChar(i,c);
+      else if (i>=3+len && i<=4+len)
+        setChar(i,c);
+      else if (i>=6+len && i<=7+len)
+        setChar(i,c);
+      else if (i>=9+len && i<=11+len)
+        setChar(i,c);
+    }
+
+    try {
+      if (date.getText().length() > i) {
+        date.setCaretPosition(i + 1);
+      }
+    }
+    catch (Exception ex) {
     }
   }
 

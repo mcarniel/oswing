@@ -1,5 +1,45 @@
 
 
+
+Release Notes 2.1.4
+-------------------
+
+Final release 2.1.4 available
+- changed JPAUtils class:
+  - added support to EclipseLink1.2 scrolling feature, in order to speed up the retrieval of last block of data
+  - fixed problem with Hibernate EM for JPA 1.0 when scrolling grid to last block of data
+- improved date+time and time columns/controls: now it is possible to edit seconds/milliseconds too
+- improvements in MDI Frame: 
+  - now it is possible to define accelerator keys to bind to application menu, using setAccelerator method of ApplicationFunction
+  - now first level items in menubar can invoke functions
+- fixed problem in FormController.validateControl when selecting date in DateControl's calendar and focus was not within DateContro field
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.1.3
+-------------------
+
+Final release 2.1.3 available
+- lookup: fix problem on using AS_TAB property in lookup, when pressing ENTER button to validate
+- updated HungarianOnlyResourceFactory with some missing entries
+- fixed infinite loop problem on opening/closing internal frame multiple times
+- allowed column reordering with expandable rows for columns next to expandable column
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.1.2
+-------------------
+
+Final release 2.1.2 available
+- fixed problem with GenericButton when showing both icon and text
+- added "setShortCut" method to ApplicationFunction, in order to manually define the menu item shortcut
+- added "maxCharacters" property to all numeric type columns
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.1.1
 -------------------
 

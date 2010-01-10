@@ -68,9 +68,10 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
    * @param decimals number of decimals
    * @param required flag used to set mandatory property of the cell
    * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
+   * @param maxCharacters dynamic settings used to control the numbers of characteres when you are typing
    */
   public NumericCellEditor(int colType, int decimals, boolean required, double minValue, double maxValue,
-                           IntegerColumnSettings dynamicSettings,boolean selectDataOnEdit) {
+                           IntegerColumnSettings dynamicSettings,boolean selectDataOnEdit,int maxCharacters) {
     field = new NumericControl() {
 
       public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
@@ -88,6 +89,7 @@ public class NumericCellEditor extends AbstractCellEditor implements TableCellEd
     this.required = required;
     this.dynamicSettings = dynamicSettings;
     this.selectDataOnEdit = selectDataOnEdit;
+    field.setMaxCharacters(maxCharacters);
     field.setMinValue(minValue);
     field.setMaxValue(maxValue);
     field.addKeyListener(new KeyAdapter() {

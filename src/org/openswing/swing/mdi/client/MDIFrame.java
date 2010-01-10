@@ -13,6 +13,8 @@ import org.openswing.swing.mdi.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.client.OptionPane;
 import java.beans.Beans;
+import javax.swing.event.MenuListener;
+import javax.swing.event.MenuEvent;
 
 
 /**
@@ -280,22 +282,56 @@ public class MDIFrame extends JFrame implements BusyListener {
             if (ClientSettings.SHOW_TOOLTIP_IN_MENUBAR)
               menu.setToolTipText(function.getTooltipText());
             maybeAddTooltipToStatusBar(menu,function);
-            menu.addActionListener(new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                executeFunction(function);
-              }
+
+            ((JMenu)menu).addMenuListener(new MenuListener() {
+
+                  /**
+                   * Invoked when a menu is selected.
+                   *
+                   * @param e  a MenuEvent object
+                   */
+                  public void menuSelected(MenuEvent e) {
+                    if (function.getFunctionId()!=null)
+                      executeFunction(function);
+                  }
+
+                  /**
+                   * Invoked when the menu is deselected.
+                   *
+                   * @param e  a MenuEvent object
+                   */
+                  public void menuDeselected(MenuEvent e) {}
+
+                  /**
+                   * Invoked when the menu is canceled.
+                   *
+                   * @param e  a MenuEvent object
+                   */
+                  public void menuCanceled(MenuEvent e) {}
+
             });
           }
           int j=0;
           try {
-            while (j < function.toString().length() &&
-                   mnem.contains(function.toString().substring(j, j + 1))) {
-              j++;
+            if (function.getShortCut()!=null && !mnem.contains(function.getShortCut().toString())) {
+                mnem.add(function.getShortCut().toString());
+                menu.setMnemonic(function.getShortCut().charValue());
             }
-            if (j < function.toString().length()) {
-              mnem.add(function.toString().substring(j, j + 1));
-              menu.setMnemonic(function.toString().substring(j, j + 1).charAt(0));
+            else {
+              while (j < function.toString().length() &&
+                     mnem.contains(function.toString().substring(j, j + 1))) {
+                j++;
+              }
+              if (j < function.toString().length()) {
+                mnem.add(function.toString().substring(j, j + 1));
+                menu.setMnemonic(function.toString().substring(j, j + 1).charAt(0));
+              }
             }
+
+            if (function.getAccelerator()!=null) {
+                menu.setAccelerator(function.getAccelerator());
+            }
+
           }
           catch (Exception ex1) {
           }
@@ -477,17 +513,27 @@ public class MDIFrame extends JFrame implements BusyListener {
         }
       }
       int j=0;
-      try {
-        while (j < menu.getText().length() &&
-               (mnem.contains(menu.getText().substring(j, j + 1)) || !Character.isLetterOrDigit(menu.getText().charAt(j)))) {
-          j++;
+      if (function.getShortCut()!=null && !mnem.contains(function.getShortCut().toString())) {
+          mnem.add(function.getShortCut().toString());
+          menu.setMnemonic(function.getShortCut().charValue());
+      }
+      else {
+        try {
+          while (j < menu.getText().length() &&
+                 (mnem.contains(menu.getText().substring(j, j + 1)) || !Character.isLetterOrDigit(menu.getText().charAt(j)))) {
+            j++;
+          }
+          if (j < menu.getText().length()) {
+            mnem.add(menu.getText().substring(j, j + 1));
+            menu.setMnemonic(menu.getText().substring(j, j + 1).charAt(0));
+          }
         }
-        if (j < menu.getText().length()) {
-          mnem.add(menu.getText().substring(j, j + 1));
-          menu.setMnemonic(menu.getText().substring(j, j + 1).charAt(0));
+        catch (Exception ex1) {
         }
       }
-      catch (Exception ex1) {
+
+      if (function.getAccelerator()!=null) {
+          menu.setAccelerator(function.getAccelerator());
       }
 
       parentMenu.add(menu);

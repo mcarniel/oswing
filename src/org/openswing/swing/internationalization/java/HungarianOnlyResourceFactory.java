@@ -138,6 +138,8 @@ public class HungarianOnlyResourceFactory extends ResourcesFactory {
         // form...
         dictionary.setProperty("Confirm deliting data?", "Biztos t\u00F6r\u00F6lni akarja?");
         dictionary.setProperty("Error while saving: incorrect data.", "Hiba ment\u00E9s k\u00F6zben: inkorrekt adat.");
+        dictionary.setProperty("Error while validating data:","Hiba adatellen\u0151rz\u00E9s k\u00F6zben:");
+        dictionary.setProperty("Validation Error","Ellen\u0151rz\u00E9si hiba");
         dictionary.setProperty("Error on deleting:", "Hiba t\u00F6rl\u00E9s k\u00F6zben:");
         dictionary.setProperty("Error on Loading", "Hiba bet\u00F6lt\u00E9s k\u00F6zben");
         dictionary.setProperty("Error while loading data:", "Hiba bet\u00F6lt\u00E9s k\u00F6zben:");
@@ -344,4 +346,6 @@ public class HungarianOnlyResourceFactory extends ResourcesFactory {
     }
 }
 
- 	  	 
+
+
+

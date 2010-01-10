@@ -255,7 +255,7 @@ public class Grid extends JTable
       GridController gridController,
       boolean lockedGrid,
       boolean anchorLastColumn,
-      int expandableColumn,
+      final int expandableColumn,
       boolean singleExpandableRow,
       boolean overwriteRowWhenExpanding,
       ExpandableRowController expandableRowController,
@@ -315,7 +315,8 @@ public class Grid extends JTable
       checkColumnSpans();
       if (expandableRowController!=null) {
         setResizingAllowed(false);
-        setReorderingAllowed(false);
+        //setReorderingAllowed(false);
+        // see moveColumn callback method...
       }
 
       // storing of TableColumn objects to the purpouse of reuse them in setVisibleColumns method...
@@ -2117,6 +2118,9 @@ public class Grid extends JTable
    * @param reorderingAllowed flag used to set columns reordering
    */
   public final void setReorderingAllowed(boolean reorderingAllowed) {
+//    if (expandableRowController!=null)
+//      reorderingAllowed = false;
+
     this.reorderingAllowed = reorderingAllowed;
     if (this.getTableHeader()!=null)
       this.getTableHeader().setReorderingAllowed(reorderingAllowed);
@@ -2837,6 +2841,15 @@ public class Grid extends JTable
         *						are not in the valid range
         */
        public void moveColumn(int index, int newIndex) {
+         if (expandableRowController!=null) {
+           if (index<=modelAdapter.getFieldIndex(expandableColumnAttributeName) ||
+               newIndex<=modelAdapter.getFieldIndex(expandableColumnAttributeName))
+             return;
+
+           if (expandableRenderer.getCurrentExpandedRow()!=-1)
+             return;
+         }
+
          if (hasColSpan &&
             (gridType==TOP_GRID ||
              grids.getGridControl()!=null && grids.getGridControl().getTopTable()==null && gridType==MAIN_GRID ||

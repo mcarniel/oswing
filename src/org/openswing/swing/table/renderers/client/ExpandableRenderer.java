@@ -82,7 +82,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
   private MinusPanel expTreePanel = new MinusPanel();
 
   /** current expanded row; -1 if no row is currently expanded */
-  private int currentExpandedRow;
+  private int currentExpandedRow = -1;
 
 
   public ExpandableRenderer(Grid grid,Grids grids,int expandableColumn,VOListAdapter modelAdapter) {
@@ -147,6 +147,14 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
       }
     });
 
+  }
+
+
+  /**
+   * @return current expanded row; -1 if no row is currently expanded
+   */
+  public int getCurrentExpandedRow() {
+    return currentExpandedRow;
   }
 
 
