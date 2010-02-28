@@ -388,7 +388,7 @@ public class GridController {
   /**
    * Callback method invoked by grid when attempting to search for the specified text in additional rows
    * not yet loaded in grid: this method can be used to convert the text to search in the correct format,
-   * before grid executes the search and load additiona data.
+   * before grid executes the search and load additional data.
    * @param attributeName attribute name that identify the column used in search
    * @param value current filtering value, always axpressed as text
    * @return new value to use as filter condition

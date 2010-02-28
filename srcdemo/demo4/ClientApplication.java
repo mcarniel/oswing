@@ -11,6 +11,7 @@ import org.openswing.swing.internationalization.java.*;
 import javax.swing.UIManager;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
+import org.openswing.swing.util.java.Consts;
 
 
 /**

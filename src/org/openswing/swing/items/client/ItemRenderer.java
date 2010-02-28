@@ -130,6 +130,7 @@ public class ItemRenderer extends JPanel implements ListCellRenderer, Serializab
 
       if (vo!=null && getters!=null && colProperties!=null) {
         int x = 0;
+        Object obj = null;
         Object val = null;
         String valS = null;
         Color col = g.getColor();
@@ -137,7 +138,13 @@ public class ItemRenderer extends JPanel implements ListCellRenderer, Serializab
         for(int i=0;i<colProperties.length;i++) {
           if (colProperties[i].isColumnVisible()) {
             try {
-              val = ( (Method) getters.get(colProperties[i].getColumnName())).invoke(vo, new Object[0]);
+              if (colProperties[i].getColumnName().indexOf('.') > 0) {
+                  String hostProperty = colProperties[i].getColumnName().substring(0, colProperties[i].getColumnName().indexOf('.'));
+                  obj = vo.getClass().getMethod("get"+hostProperty.substring(0,1).toUpperCase()+hostProperty.substring(1), new Class[0]).invoke(vo, new Object[0]);
+              } else {
+                  obj = vo;
+              }
+              val = ( (Method) getters.get(colProperties[i].getColumnName())).invoke(obj, new Object[0]);
               if (val!=null) {
                 if (colProperties[i] instanceof DateColumn) {
                   valS = sdf.format((java.util.Date)val);
@@ -161,6 +168,7 @@ public class ItemRenderer extends JPanel implements ListCellRenderer, Serializab
               x += colProperties[i].getPreferredWidth() + 6;
             }
             catch (Exception ex) {
+                ex.printStackTrace();
             }
           }
         }

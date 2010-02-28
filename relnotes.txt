@@ -1,6 +1,44 @@
 
 
 
+Release Notes 2.1.7
+-------------------
+
+Final release 2.1.7 available
+- added support to short type attributes binded to NumericControl components
+- fixed the usage of USE_AS_TAB_IN_TEXTAREA global property to JTextArea/TextAreaControl
+- fixed problem with double click in grid's lookup, when lookup is a column of GridControl and GridControl has top or bottom locked rows
+- fixed problem with DateControl when date is manually setted 
+- added "showCustomErrorMessage" property to LookupController, in order to show a custom message when the code validation gave back an ErrorResponse.
+- added SHOW_CUSTOM_ERROR_MESSAGE_IN_LOOKUP global property to ClientSettings, in order to define the default value of "showCustomErrorMessage" property of LookupController.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.1.6
+-------------------
+
+Final release 2.1.6 available
+- added global property USE_AS_TAB_IN_TEXTAREA to ClientSettings, in order to define if TextAreaControl must listen for AS_TAB events
+- changed quick search in grid: now search pattern will be clean up when search window is hidden
+- fixed in JPAUtils the support to EclipseLink1.2 scrolling feature, in order to speed up the retrieval of last block of data
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.1.5
+-------------------
+
+Final release 2.1.5 available
+- fixed in JPAUtils the support to EclipseLink1.2 scrolling feature, in order to speed up the retrieval of last block of data
+- fixed runDemo17.bat file
+- fixed problem with unique toolbar in MDI frame
+- added support to inner objects in ComboBoxVOControl, thanks to Attila Szomor
+- added support for generic buttons authorizations, using buttonId property in GenericButton and new ButtonsAuthorizations method
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.1.4
 -------------------
 

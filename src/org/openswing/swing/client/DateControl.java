@@ -557,6 +557,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    * Invoked when a component loses the keyboard focus.
    */
   public void focusLost(FocusEvent e) {
+//    if (e.getSource().equals(date))
+//      return;
     Calendar oldCurrentDate = currentDate;
     try {
       String text = date.getText();

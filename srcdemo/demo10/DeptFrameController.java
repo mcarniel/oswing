@@ -8,6 +8,7 @@ import org.openswing.swing.message.send.java.FilterWhereClause;
 import org.openswing.swing.table.java.GridDataLocator;
 import org.openswing.swing.server.QueryUtil;
 import org.openswing.swing.message.send.java.GridParams;
+import javax.swing.SwingUtilities;
 
 
 /**
@@ -20,12 +21,12 @@ import org.openswing.swing.message.send.java.GridParams;
  */
 public class DeptFrameController extends GridController implements GridDataLocator {
 
-  private DeptGridFrame grid = null;
+  private DeptGridFrame gridFrame = null;
   private Connection conn = null;
 
   public DeptFrameController(Connection conn) {
     this.conn = conn;
-    grid = new DeptGridFrame(conn,this);
+    gridFrame = new DeptGridFrame(conn,this);
   }
 
 
@@ -296,6 +297,25 @@ public class DeptFrameController extends GridController implements GridDataLocat
 
   }
 
+
+  /**
+   * Callback method invoked when the data loading is completed.
+   * @param error <code>true</code> if data loading has terminated with errors, <code>false</code> otherwise
+   */
+  public void loadDataCompleted(boolean error) {
+    if (!error &&
+        gridFrame.getGrid().getVOListTableModel().getRowCount()>0 &&
+        gridFrame.getGrid().getCurrentSortedColumns().size()>0) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          String attrName = (String)gridFrame.getGrid().getCurrentSortedColumns().get(0);
+          int colIndex = gridFrame.getGrid().getTable().getGrid().getColumnIndex(attrName);
+          gridFrame.getGrid().getTable().getGrid().setColumnSelectionInterval(colIndex,colIndex);
+        }
+      });
+    }
+
+  }
 
 
 }

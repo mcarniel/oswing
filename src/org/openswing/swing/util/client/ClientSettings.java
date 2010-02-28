@@ -326,6 +326,9 @@ public class ClientSettings {
   /** define what a lookup has to do when an invalid code has been setted; possible values: LookupController.ON_INVALID_CODE_xxx; default value: LookupController.ON_INVALID_CODE_CLEAR_CODE */
   public static int ON_INVALID_CODE = LookupController.ON_INVALID_CODE_CLEAR_CODE;
 
+  /** define if, in case of a validation task which returns an ErrorResponse within a lookup, the error message must be showed instead of the standard behavior: do nothing and log error; default value: <code>false</code>, i.e. do not show a custom error message */
+  public static boolean SHOW_CUSTOM_ERROR_MESSAGE_IN_LOOKUP = false;
+
   /** define if showing the status panel on bottom of the lookup grid; default value: <code>false</code> */
   public static boolean VISIBLE_STATUS_PANEL = false;
 
@@ -484,6 +487,9 @@ public class ClientSettings {
 
   /** shortcut key used to fire a TAB key event, in order to move focus to next component; default value: null; it can be used, for instance, to define that the ENTER key move focus to next component */
   public static KeyStroke AS_TAB = null;
+
+  /** define if shortcut key used to fire a TAB key event must be used for TextAreaControl too; default value: <code>true</code> */
+  public static boolean USE_AS_TAB_IN_TEXTAREA = true;
 
 
   /**

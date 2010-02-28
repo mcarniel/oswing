@@ -85,6 +85,7 @@ public class DeptGridFrame extends InternalFrame {
     colDescription.setEditableOnEdit(true);
     colDescription.setEditableOnInsert(true);
     colDescription.setPreferredWidth(200);
+    colDescription.setSortVersus(org.openswing.swing.util.java.Consts.ASC_SORTED);
     insertButton.setText("insertButton1");
     editButton.setText("editButton1");
     saveButton.setText("saveButton1");
@@ -113,6 +114,10 @@ public class DeptGridFrame extends InternalFrame {
 
   }
 
+
+  public GridControl getGrid() {
+    return grid;
+  }
 
 }
 

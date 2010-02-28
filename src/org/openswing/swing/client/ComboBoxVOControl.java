@@ -234,13 +234,22 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
              }
          }
          else {
-           itemsMethodName = "get" + String.valueOf(Character.toUpperCase(itemsAttributeName.charAt(0))) + itemsAttributeName.substring(1);
-           itemsMethod = itemsVO.getClass().getMethod(itemsMethodName, new Class[0]);
+           Object obj;
+           if (itemsAttributeName.indexOf(".")>0) {
+               itemsMethodName = "get" + String.valueOf(Character.toUpperCase(itemsAttributeName.charAt(0))) + itemsAttributeName.substring(1,itemsAttributeName.indexOf("."));
+               itemsMethod = itemsVO.getClass().getMethod(itemsMethodName, new Class[0]);
+               obj = itemsMethod.invoke(itemsVO, new Object[0]);
+               itemsMethod = (Method)getters.get(itemsAttributeName);
+           } else {
+               itemsMethodName = "get" + String.valueOf(Character.toUpperCase(itemsAttributeName.charAt(0))) + itemsAttributeName.substring(1);
+               itemsMethod = itemsVO.getClass().getMethod(itemsMethodName, new Class[0]);
+               obj = itemsVO;
+           }
            if (!itemsMapper.setParentAttribute(
                  itemsParent,
                  itemsAttributeName,
                  itemsMethod.getReturnType(),
-                 itemsMethod.invoke(itemsVO, new Object[0])
+                 itemsMethod.invoke(obj, new Object[0])
            ))
              Logger.error(this.getClass().getName(),"updateParentModel","Error while setting items container value object.",null);
            else if (form!=null) {
@@ -350,6 +359,66 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
 
 
   /**
+   * Recursive method invoked by initItemsVO() method to analyze value object and retrieve all getter methods.
+   * @param vosAlreadyProcessed collection of inner v.o. already processed
+   * @param getterMethods list of getter methods already retrieved
+   * @param clazz class to analize in order to fetch its getter methods
+   */
+  private void analyzeVO(String prefix,Hashtable vosAlreadyProcessed,ArrayList attributes,ArrayList getterMethods,Class clazz) throws Throwable{
+    Integer num = (Integer)vosAlreadyProcessed.get(clazz);
+    if (num==null)
+      num = new Integer(0);
+    num = new Integer(num.intValue()+1);
+    if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
+      return;
+    vosAlreadyProcessed.put(clazz,num);
+    String attributeName = null;
+
+    Method[] methods = clazz.getMethods();
+    for(int i=0;i<methods.length;i++) {
+      if ((methods[i].getName().startsWith("get") ||
+           methods[i].getName().startsWith("is"))&&
+          methods[i].getParameterTypes().length==0 &&
+          ( methods[i].getReturnType().equals(String.class) ||
+            methods[i].getReturnType().equals(java.math.BigDecimal.class) ||
+            methods[i].getReturnType().equals(java.util.Date.class) ||
+            methods[i].getReturnType().equals(java.sql.Date.class) ||
+            methods[i].getReturnType().equals(java.sql.Timestamp.class) ||
+            methods[i].getReturnType().equals(Integer.class) ||
+            methods[i].getReturnType().equals(Long.class) ||
+            methods[i].getReturnType().equals(Double.class) ||
+            methods[i].getReturnType().equals(Float.class) ||
+            methods[i].getReturnType().equals(Short.class) ||
+            methods[i].getReturnType().equals(Integer.TYPE) ||
+            methods[i].getReturnType().equals(Long.TYPE) ||
+            methods[i].getReturnType().equals(Double.TYPE) ||
+            methods[i].getReturnType().equals(Float.TYPE) ||
+            methods[i].getReturnType().equals(Short.TYPE) ||
+            methods[i].getReturnType().equals(Boolean.class))
+        )
+      {
+        if (methods[i].getName().startsWith("get"))
+          attributeName = methods[i].getName().substring(3);
+        else
+          attributeName = methods[i].getName().substring(2);
+        if (attributeName.length()>1)
+          attributeName = attributeName.substring(0,1).toLowerCase()+attributeName.substring(1);
+        attributes.add(prefix+attributeName);
+        getterMethods.add(methods[i]);
+      }
+      else if (methods[i].getName().startsWith("get") &&
+               methods[i].getParameterTypes().length==0 &&
+               ValueObject.class.isAssignableFrom(methods[i].getReturnType())) {
+        attributeName = methods[i].getName().substring(3);
+        if (attributeName.length()>1)
+          attributeName = attributeName.substring(0,1).toLowerCase()+attributeName.substring(1);
+        analyzeVO(prefix+attributeName+".",vosAlreadyProcessed,attributes,getterMethods,methods[i].getReturnType());
+      }
+    }
+  }
+
+
+  /**
    * Method called by setComboValueObjectClassName:
    * - it creates an empty combo v.o
    * - it initializes combo column properties.
@@ -357,98 +426,48 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
    */
   private void initItemsVO(String itemsValueObjectClassName) {
     try {
-      this.itemsVO = (ValueObject) Class.forName(itemsValueObjectClassName).getConstructor(new Class[0]).newInstance(new Object[0]);
+      ArrayList attributeNames = new ArrayList();
+      ArrayList getterMethods = new ArrayList();
+      analyzeVO("",new Hashtable(),attributeNames,getterMethods,Class.forName(itemsValueObjectClassName));
 
-      Method[] methods = itemsVO.getClass().getMethods();
-      int count = 0;
-      for(int i=0;i<methods.length;i++) {
-        if (methods[i].getName().startsWith("get") &&
-            methods[i].getParameterTypes().length==0 &&
-            ( methods[i].getReturnType().equals(String.class) ||
-              methods[i].getReturnType().equals(java.math.BigDecimal.class) ||
-              methods[i].getReturnType().equals(java.util.Date.class) ||
-              methods[i].getReturnType().equals(java.sql.Date.class) ||
-              methods[i].getReturnType().equals(java.sql.Timestamp.class) ||
-              methods[i].getReturnType().equals(Integer.class) ||
-              methods[i].getReturnType().equals(Long.class) ||
-              methods[i].getReturnType().equals(Short.class) ||
-              methods[i].getReturnType().equals(Double.class) ||
-              methods[i].getReturnType().equals(Float.class) ||
-              methods[i].getReturnType().equals(Integer.TYPE) ||
-              methods[i].getReturnType().equals(Long.TYPE) ||
-              methods[i].getReturnType().equals(Short.TYPE) ||
-              methods[i].getReturnType().equals(Double.TYPE) ||
-              methods[i].getReturnType().equals(Float.TYPE) ||
-              methods[i].getReturnType().equals(Boolean.class))
-        )
-          count++;
-      }
-      String[] attributeNames = new String[count];
-      this.colProperties = new Column[count];
-      count = 0;
+      this.itemsVO = (ValueObject) Class.forName(itemsValueObjectClassName).getConstructor(new Class[0]).newInstance(new Object[0]);
+      this.colProperties = new Column[getterMethods.size()];
+
       Class colType = null;
-      for(int i=0;i<methods.length;i++) {
-        if (methods[i].getName().startsWith("get") &&
-            methods[i].getParameterTypes().length==0 &&
-            ( methods[i].getReturnType().equals(String.class) ||
-              methods[i].getReturnType().equals(java.math.BigDecimal.class) ||
-              methods[i].getReturnType().equals(java.util.Date.class) ||
-              methods[i].getReturnType().equals(java.sql.Date.class) ||
-              methods[i].getReturnType().equals(java.sql.Timestamp.class) ||
-              methods[i].getReturnType().equals(Integer.class) ||
-              methods[i].getReturnType().equals(Long.class) ||
-              methods[i].getReturnType().equals(Short.class) ||
-              methods[i].getReturnType().equals(Double.class) ||
-              methods[i].getReturnType().equals(Float.class) ||
-              methods[i].getReturnType().equals(Integer.TYPE) ||
-              methods[i].getReturnType().equals(Long.TYPE) ||
-              methods[i].getReturnType().equals(Short.TYPE) ||
-              methods[i].getReturnType().equals(Double.TYPE) ||
-              methods[i].getReturnType().equals(Float.TYPE) ||
-              methods[i].getReturnType().equals(Boolean.class))
-        ) {
-          attributeNames[count] = methods[i].getName().substring(3);
-          if (attributeNames[count].length()>1)
-            attributeNames[count] = attributeNames[count].substring(0,1).toLowerCase()+attributeNames[count].substring(1);
-          colType = methods[i].getReturnType();
+      for(int i=0;i<getterMethods.size();i++) {
+          colType = ((Method)getterMethods.get(i)).getReturnType();
           if (colType.equals(String.class))
-            colProperties[count] = new TextColumn();
+            colProperties[i] = new TextColumn();
           else if (colType.equals(Integer.class) || colType.equals(Long.class) || colType.equals(Short.class) ||
                    colType.equals(Integer.TYPE)  || colType.equals(Long.TYPE)  || colType.equals(Short.TYPE))
-            colProperties[count] = new IntegerColumn();
+            colProperties[i] = new IntegerColumn();
           else if (colType.equals(BigDecimal.class) ||
                    colType.equals(Double.class) || colType.equals(Float.class) ||
                    colType.equals(Double.TYPE)  || colType.equals(Float.TYPE))
-            colProperties[count] = new DecimalColumn();
+            colProperties[i] = new DecimalColumn();
           else if (colType.equals(Boolean.class))
-            colProperties[count] = new CheckBoxColumn();
+            colProperties[i] = new CheckBoxColumn();
           else if (colType.equals(Date.class))
-            colProperties[count] = new DateColumn();
+            colProperties[i] = new DateColumn();
           else if (colType.equals(java.sql.Date.class))
-            colProperties[count] = new DateColumn();
+            colProperties[i] = new DateColumn();
           else if (colType.equals(Timestamp.class))
-            colProperties[count] = new DateColumn();
+            colProperties[i] = new DateColumn();
 
-          colProperties[count].setColumnName(attributeNames[count]);
-          if (colProperties[count].getHeaderColumnName().equals("columnname"))
-            colProperties[count].setHeaderColumnName(String.valueOf(attributeNames[count].charAt(0)).toUpperCase()+attributeNames[count].substring(1));
-          colProperties[count].setColumnVisible(this.allColumnVisible);
-          colProperties[count].setPreferredWidth(this.allColumnPreferredWidth);
+          colProperties[i].setColumnName(((String)attributeNames.get(i)));
+          if (colProperties[i].getHeaderColumnName().equals("columnname"))
+            colProperties[i].setHeaderColumnName(String.valueOf(colProperties[i].getColumnName().charAt(0)).toUpperCase()+colProperties[i].getColumnName().substring(1));
+          colProperties[i].setColumnVisible(this.allColumnVisible);
+          colProperties[i].setPreferredWidth(this.allColumnPreferredWidth);
           getters.put(
-            colProperties[count].getColumnName(),
-            methods[i]
+            colProperties[i].getColumnName(),
+            getterMethods.get(i)
           );
-          count++;
-        }
       }
 
     }
-    catch (Exception ex) {
+    catch (Throwable ex) {
       ex.printStackTrace();
-      this.itemsVO = null;
-    }
-    catch (Error er) {
-      er.printStackTrace();
       this.itemsVO = null;
     }
   }
@@ -525,16 +544,27 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
    * @param code used to retrieve the corresponding item and to select that item in the combo
    */
   public final void setValue(Object code) {
-    if (code==null)
-      combo.setSelectedIndex(-1);
+    if (code==null) {
+      combo.setSelectedIndex( -1);
+      return;
+    }
     if (getFKAttributeName()==null)
       return;
     Object obj = null;
     try {
+      String fkAttributeName = getFKAttributeName();
       for (int i = 0; i < model.getSize(); i++) {
-        obj = ( (Method) getters.get(getFKAttributeName())).invoke(
-            model.getElementAt(i),
-            new Object[0]
+        obj = model.getElementAt(i);
+        Method fkMethod = (Method) getters.get(fkAttributeName);
+        if (fkAttributeName.indexOf(".")>0) {
+          String fkMethodName = "get" + String.valueOf(Character.toUpperCase(fkAttributeName.charAt(0))) + fkAttributeName.substring(1,fkAttributeName.indexOf("."));;
+          fkMethod = obj.getClass().getMethod(fkMethodName, new Class[0]);
+          obj = fkMethod.invoke(obj, new Object[0]);
+          fkMethod = (Method)getters.get(fkAttributeName);
+        }
+        obj = fkMethod.invoke(
+          obj,
+          new Object[0]
         );
         if (code.equals(obj)) {
           combo.setSelectedIndex(i);
@@ -543,6 +573,7 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
       }
     }
     catch (Throwable ex) {
+      ex.printStackTrace();
       combo.setSelectedIndex(-1);
     }
     combo.setSelectedIndex(-1);
@@ -554,12 +585,24 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
    */
   public final Object getValue() {
     try {
-      return ( (Method) getters.get(getFKAttributeName())).invoke(
-        model.getElementAt(combo.getSelectedIndex()),
+      Object obj = model.getElementAt(combo.getSelectedIndex());
+      String fkAttributeName = getFKAttributeName();
+      Method fkMethod = (Method) getters.get(fkAttributeName);
+      if (fkAttributeName.indexOf(".")>0) {
+          String fkMethodName = "get" + String.valueOf(Character.toUpperCase(fkAttributeName.charAt(0))) + fkAttributeName.substring(1,fkAttributeName.indexOf("."));;
+          fkMethod = obj.getClass().getMethod(fkMethodName, new Class[0]);
+          obj = fkMethod.invoke(obj, new Object[0]);
+          fkMethod = (Method)getters.get(fkAttributeName);
+      }
+      if (obj==null)
+        return null;
+      return fkMethod.invoke(
+        obj,
         new Object[0]
       );
     }
     catch (Throwable ex) {
+      ex.printStackTrace();
       return null;
     }
   }

@@ -465,8 +465,17 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    */
   public final boolean getCurrentValue(GenericButton button) {
     Boolean currentValue = (Boolean)currentValueButtons.get(button);
-    if (currentValue==null)
+    if (currentValue==null) {
+      if (button instanceof InsertButton)
+        return getMode()==Consts.READONLY;
+      else if (button instanceof EditButton)
+        return getMode()==Consts.READONLY;
+      else if (button instanceof CopyButton)
+        return getMode()==Consts.READONLY;
+      else if (button instanceof SaveButton)
+        return getMode()!=Consts.READONLY;
       return true;
+    }
     else
       return currentValue.booleanValue();
   }

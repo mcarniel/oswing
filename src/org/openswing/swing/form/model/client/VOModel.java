@@ -483,6 +483,12 @@ public class VOModel {
             else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Float.TYPE) &&
               value.getClass().equals(java.math.BigDecimal.class))
               value = new Float(((java.math.BigDecimal)value).floatValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Short.class) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Short(((java.math.BigDecimal)value).shortValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Short.TYPE) &&
+              value.getClass().equals(java.math.BigDecimal.class))
+              value = new Short(((java.math.BigDecimal)value).shortValue());
           }
 
           Object obj = getValueObject();

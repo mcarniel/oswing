@@ -139,12 +139,16 @@ public class EmpDetailFrame extends InternalFrame {
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     mainPanel.setBorder(titledBorder1);
+
     mainPanel.setInsertButton(insertButton);
     mainPanel.setCopyButton(copyButton);
     mainPanel.setEditButton(editButton);
     mainPanel.setReloadButton(reloadButton);
     mainPanel.setDeleteButton(deleteButton);
     mainPanel.setSaveButton(saveButton);
+
+//ClientSettings.MDI_TOOLBAR.bindForm(mainPanel);
+
     saveButton.setEnabled(false);
     controlLookup.setAttributeName("");
     controlLookup.setCanCopy(true);

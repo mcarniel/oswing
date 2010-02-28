@@ -74,6 +74,7 @@ public class SearchWindowManager {
 
         public void focusLost(FocusEvent e) {
           hideSearchWindow();
+          textToSearch = "";
         }
 
 
@@ -163,6 +164,7 @@ public class SearchWindowManager {
     else if (e.getKeyCode()==e.VK_ESCAPE) {
       if (searchWindow!=null) {
         hideSearchWindow();
+        textToSearch = "";
         e.consume();
       }
     }
@@ -224,6 +226,7 @@ public class SearchWindowManager {
       searchWindow.setVisible(false);
       searchWindow.dispose();
       searchWindow = null;
+      //textToSearch = "";
     }
   }
 

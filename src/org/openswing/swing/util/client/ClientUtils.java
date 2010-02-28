@@ -87,6 +87,8 @@ public class ClientUtils extends JApplet {
    * @return JFrame object which contains the graphic component
    */
   public static JFrame getParentFrame(JComponent comp) {
+    if (comp==null)
+      return null;
     Container parentFrame = comp.getParent();
     while(parentFrame!=null) {
       if (parentFrame instanceof JInternalFrame) {
@@ -702,7 +704,10 @@ public class ClientUtils extends JApplet {
    * @param c input control to whose add a KeyListener
    */
   public static void addTabListener(final JComponent c) {
-    if (ClientSettings.AS_TAB!=null) {
+    if (ClientSettings.AS_TAB!=null &&
+       (ClientSettings.USE_AS_TAB_IN_TEXTAREA ||
+       !(c instanceof org.openswing.swing.client.TextAreaControl || c instanceof javax.swing.JTextArea)
+       )) {
       c.addKeyListener(new KeyAdapter() {
 
         public void keyReleased(KeyEvent e) {

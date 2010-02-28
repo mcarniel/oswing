@@ -260,8 +260,8 @@ public class DetailFrame extends JFrame {
     controlCurrency.setAttributeName("currencyValue");
     controlNumeric.setAttributeName("numericValue");
     controlComboBox.setAttributeName("combo");
-    controlDate.setDateType(Consts.TYPE_DATE_TIME);
-    controlDate.setTimeFormat(Resources.H_MM_AAA);
+//    controlDate.setDateType(Consts.TYPE_DATE_TIME);
+//    controlDate.setTimeFormat(Resources.H_MM_AAA);
 
     Calendar cal = Calendar.getInstance();
     cal.set(cal.MONTH,1);
@@ -277,6 +277,7 @@ public class DetailFrame extends JFrame {
 
 
     LookupController lookupController = new DemoLookupController(conn);
+    //lookupController.setShowCustomErrorMessage(true);
     controlLookup.setLookupController(lookupController);
     lookupController.setOnInvalidCode(lookupController.ON_INVALID_CODE_RESTORE_LAST_VALID_CODE);
 //    lookupController.setOnInvalidCode(lookupController.ON_INVALID_CODE_RESTORE_FOCUS);

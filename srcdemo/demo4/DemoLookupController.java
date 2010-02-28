@@ -48,10 +48,12 @@ public class DemoLookupController extends LookupController {
             vo.setDescrLookupValue(rset.getString(2));
             list.add(vo);
           }
-          if (list.size() > 0)
-            return new VOListResponse(list, false, list.size());
-          else
-            return new ErrorResponse("Code not valid");
+
+          return new VOListResponse(list, false, list.size());
+//          if (list.size() > 0)
+//            return new VOListResponse(list, false, list.size());
+//          else
+//            return new ErrorResponse("Code not valid!!!!!!!!");
         }
         catch (SQLException ex) {
           ex.printStackTrace();

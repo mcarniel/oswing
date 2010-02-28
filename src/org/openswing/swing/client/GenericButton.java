@@ -55,6 +55,8 @@ public class GenericButton extends JButton {
   /** attribute name linked to the button (optional), used to bind this link to a Form's value object */
   public String attributeName = null;
 
+  /** optional button identifier; when setted, it is used to enable/disable button according to ButtonsAuthorizations content */
+  private String buttonId;
 
   public GenericButton() {
     super.addActionListener(new ActionListener() {
@@ -116,7 +118,7 @@ public class GenericButton extends JButton {
         w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Filter")));
       }
 
-      w += +this.getMargin().left+this.getMargin().right+5;
+      w += this.getMargin().left+this.getMargin().right+5;
       if (buttonBehavior==Consts.BUTTON_TEXT_ONLY) {
         setPreferredSize(new Dimension(w,32));
       }
@@ -230,6 +232,8 @@ public class GenericButton extends JButton {
         buttonAuthorized = ClientSettings.getInstance().getButtonsAuthorizations().isEditEnabled(functionId);
       else if (this instanceof DeleteButton)
         buttonAuthorized = ClientSettings.getInstance().getButtonsAuthorizations().isDeleteEnabled(functionId);
+      else if (buttonId!=null && !buttonId.equals(""))
+        buttonAuthorized = ClientSettings.getInstance().getButtonsAuthorizations().isEnabled(functionId,buttonId);
       if (!buttonAuthorized && enabled) {
         enabled = false;
         break;
@@ -305,6 +309,23 @@ public class GenericButton extends JButton {
    */
   public final String getAttributeName() {
     return attributeName;
+  }
+
+
+  /**
+   * @return optional button identifier; when setted, it is used to enable/disable button according to ButtonsAuthorizations content
+   */
+  public final String getButtonId() {
+    return buttonId;
+  }
+
+
+  /**
+   * Set button identifier; when setted, it is used to enable/disable button according to ButtonsAuthorizations content
+   * @param buttonId button identifier
+   */
+  public final void setButtonId(String buttonId) {
+    this.buttonId = buttonId;
   }
 
 

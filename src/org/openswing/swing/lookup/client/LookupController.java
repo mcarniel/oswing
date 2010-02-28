@@ -192,6 +192,9 @@ public class LookupController {
   /** flag used to specify if the status panel is visible; default value: <code>ClientSettings.VISIBLE_STATUS_PANEL</code> */
   private boolean visibleStatusPanel = ClientSettings.VISIBLE_STATUS_PANEL;
 
+  /** define if, in case of a validation task which returns an ErrorResponse, the error message must be showed instead of the standard behavior: do nothing and log error; default value: <code>false</code>, i.e. do not show a custom error message */
+  private boolean showCustomErrorMessage = ClientSettings.SHOW_CUSTOM_ERROR_MESSAGE_IN_LOOKUP;
+
 
   /**
    * Execute the code validation.
@@ -226,8 +229,12 @@ public class LookupController {
       try {
         // execute code validation...
         final Response r = lookupDataLocator.validateCode( code );
-        if (r==null || !(r instanceof VOListResponse || r instanceof ErrorResponse)) {
-          Logger.error(this.getClass().getName(),"validateCode","Error while validating lookup code: lookup data locator must always returns an instanceof VOListResponse.",null);
+        if (r==null) {
+          Logger.error(this.getClass().getName(),"validateCode","Error while validating lookup code: lookup data locator must always returns a Response object.",null);
+          return;
+        }
+        if (!(r instanceof VOListResponse || r instanceof ErrorResponse)) {
+          Logger.error(this.getClass().getName(),"validateCode","Error while validating lookup code: lookup data locator must always returns an instanceof VOListResponse or ErrorResponse.",null);
           return;
         }
 
@@ -266,6 +273,10 @@ public class LookupController {
               fireCodeValidatedEvent(false);
         }
         else {
+          String errorMessage = ClientSettings.getInstance().getResources().getResource("Code is not correct.");
+          if (r.isError() && r.getErrorMessage()!=null && showCustomErrorMessage)
+            errorMessage = r.getErrorMessage();
+
           // code was NOT correctly validated...
           if (onInvalidCode==ON_INVALID_CODE_CLEAR_CODE) {
             codeValid = true;
@@ -277,7 +288,7 @@ public class LookupController {
             fireCodeValidatedEvent(false);
             OptionPane.showMessageDialog(
                 ClientUtils.getParentFrame(parentComponent),
-                ClientSettings.getInstance().getResources().getResource("Code is not correct."),
+                errorMessage,
                 ClientSettings.getInstance().getResources().getResource("Code Validation"),
                 JOptionPane.ERROR_MESSAGE
             );
@@ -285,7 +296,7 @@ public class LookupController {
           else if (onInvalidCode==ON_INVALID_CODE_RESTORE_LAST_VALID_CODE) {
             OptionPane.showMessageDialog(
                 ClientUtils.getParentFrame(parentComponent),
-                ClientSettings.getInstance().getResources().getResource("Code is not correct."),
+                errorMessage,
                 ClientSettings.getInstance().getResources().getResource("Code Validation"),
                 JOptionPane.ERROR_MESSAGE
             );
@@ -299,7 +310,7 @@ public class LookupController {
               lastInvalidCode = code;
               OptionPane.showMessageDialog(
                 ClientUtils.getParentFrame(parentComponent),
-                ClientSettings.getInstance().getResources().getResource("Code is not correct."),
+                errorMessage,
                 ClientSettings.getInstance().getResources().getResource("Code Validation"),
                 JOptionPane.ERROR_MESSAGE
               );
@@ -1803,6 +1814,25 @@ public class LookupController {
    */
   public final boolean isVisibleStatusPanel() {
     return visibleStatusPanel;
+  }
+
+
+  /**
+   * @return define if, in case of a validation task which returns an ErrorResponse, the error message must be showed instead of the standard behavior: do nothing and log error
+   */
+  public final boolean isShowCustomErrorMessage() {
+    return showCustomErrorMessage;
+  }
+
+
+ /**
+  * Define if, in case of a validation task which returns an ErrorResponse,
+  * the error message must be showed instead of the standard behavior: do nothing and log error.
+  * Default value: <code>false</code>, i.e. do not show a custom error message
+  * @param showCustomErrorMessage <code>true</code> to show the error message in case of validation task which returns an ErrorResponse
+  */
+ public final void setShowCustomErrorMessage(boolean showCustomErrorMessage) {
+    this.showCustomErrorMessage = showCustomErrorMessage;
   }
 
 

@@ -1123,28 +1123,32 @@ public class JPAUtils {
 				rowCount = list.size();
 		}
       }
-	  else if (query.getClass().getName().equals("org.eclipse.persistence.queries.ScrollableCursor")) {
+//	  else if (query.getClass().getName().equals("org.eclipse.persistence.queries.ScrollableCursor")) {
+      else if (query.getClass().getName().equals("org.eclipse.persistence.internal.jpa.EJBQueryImpl")) {
 		// Query is implemented by Eclipse Link 1.2:
 		// use Eclipse Link 1.2 API to move cursor at the end of the result set...
 		try {
+	                query.setHint("eclipselink.cursor.scrollable", true);
 			Object scrollableCursor = query.getClass().getMethod("getSingleResult", new Class[0]).invoke(query, new Object[0]);
 			scrollableCursor.getClass().getMethod("last", new Class[0]).invoke(scrollableCursor, new Object[0]);
 			Integer num = (Integer)scrollableCursor.getClass().getMethod("getPosition", new Class[0]).invoke(scrollableCursor, new Object[0]);
 			rowCount = num.intValue();
+                        scrollableCursor.getClass().getMethod("close", new Class[0]).invoke(scrollableCursor, new Object[0]);
+			query.setHint("eclipselink.cursor.scrollable", false);
 
 		 	startIndex = Math.max(rowCount-blockSize,0);
 			query.setFirstResult(startIndex);
 			query.setMaxResults(blockSize+1);
 			list = query.getResultList();
-            return new VOListResponse(list,false,rowCount);
+            		return new VOListResponse(list,false,rowCount);
 
 		} catch(Throwable t) {
 			list = query.getResultList();
 			rowCount = list.size();
 		}
-	  }
-	  else {
-	      list = query.getResultList();
+      }
+      else {
+	  list = query.getResultList();
       	  rowCount = list.size();
       }
 

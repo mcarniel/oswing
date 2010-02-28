@@ -52,7 +52,6 @@ public class ToolBar extends JPanel {
   protected NavigatorBar navigatorBar = new NavigatorBar();
 
 
-
   public ToolBar() {
     setLayout(new FlowLayout(FlowLayout.LEFT));
   }
