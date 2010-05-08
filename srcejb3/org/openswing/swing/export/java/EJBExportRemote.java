@@ -1,4 +1,4 @@
-package org.openswing.swing.export.server;
+package org.openswing.swing.export.java;
 
 import org.openswing.swing.export.java.*;
 import org.openswing.swing.message.receive.java.*;

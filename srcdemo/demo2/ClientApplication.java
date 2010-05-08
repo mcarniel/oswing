@@ -55,6 +55,7 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.ALLOW_OR_OPERATOR = false;
     ClientSettings.INCLUDE_IN_OPERATOR = false;
     ClientSettings.SHOW_SCROLLBARS_IN_MDI = true;
+    //ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND = true;
 
     LoginDialog d = new LoginDialog(null,false,this);
   }

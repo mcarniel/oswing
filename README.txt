@@ -4,6 +4,7 @@ OpenSwing  Project
 1. Requirements
 ---------------
 The following files must be available to use OpenSwing framework:
+- commonos.jar 
 - clientos.jar 
 - serveros.jar 
 - jcalendar.jar
@@ -17,7 +18,7 @@ The following files must be available to use OpenSwing framework:
 
 Note: hsqldb.jar is only used in demos included with the OpenSwing distribution, so that it is not part of OpenSwing framework.
 
-Note: srcclientos.jar and srcserveros.jar files contain OpenSwing source files.
+Note: srccommonos.jar, srcclientos.jar and srcserveros.jar files contain OpenSwing source files.
 
 Note: to run the "demo17" sample you have to include in the classpath Hibernate libraries too (see runDemo17.bat/sh). "demo17" sample app has been tested with Hibernate 3.2.3
 
@@ -72,8 +73,9 @@ pub		build.xml file used to build OpenSwing distribution jar files
 ----------------------------
 
 OpenSwing is based on these files:
-- clientos.jar - contains client-side OpenSwing components
-- serveros.jar - contains server-side OpenSwing components 
+- commonos.jar - contains classed needed both in client and server side applications
+- clientos.jar - contains client-side OpenSwing components (together with commonos.jar)
+- serveros.jar - contains server-side OpenSwing components (together with commonos.jar) 
 - jcalendar.jar - an open source library (LGPL) for viewing a calendar, written by Kai Toedter
 - poi-2.0-RC2-20040102.jar - an open source library used to generate Excel (XLS) files
 - itext-1.4.8.jar - an open source library used to generate PDF or RTF files
@@ -94,7 +96,7 @@ IMPORTANT NOTE: in order to use QueryUtil class, an implementation of Servlet AP
 Note: hsqldb.jar is only used in demos included with the OpenSwing distribution, so that it is not part of OpenSwing framework.
 Note: OfficeLnFs_2.7.jar is only used for demo10 sample application, to show how to include the Office LnF in a OpenSwing based application.
       OfficeLnFs is an open source project available in http://officelnfs.sourceforge.net/ and distributed with a BSD-style license.
-Moreover, srcclientos.jar and srcserveros.jar files contains OpenSwing source files, that could be included in your development environment to debug OpenSwing classes.
+Moreover, srccommonos.jar, srcclientos.jar and srcserveros.jar files contains OpenSwing source files, that could be included in your development environment to debug OpenSwing classes.
 
 JDK 1.4 is required.
 I can be used with java 1.5 or 1.6 too.
@@ -198,8 +200,8 @@ Inside this Component Palette it is possible to include all OpenSwing components
 4. How to use the framework
 ---------------------------
 
-OpenSwing is composed of a client-side library and a serverside library. You can use only one of these
-files or use both libraries.
+OpenSwing is composed of three jars files: two of them must be used as client-side libraries and 
+two must be used as server-side library. You can use only one some of these files or use all of them.
 Please see on-line documentation to learn how to use this framework.
 
 

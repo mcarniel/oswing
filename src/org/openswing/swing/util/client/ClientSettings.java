@@ -86,6 +86,9 @@ public class ClientSettings {
   /** image name for closed padlock icon in tree menu */
   public static String LOCK_OFF = "lock_off.gif";
 
+  /** show "Window" menu items in the menubar of MDI Frame */
+  public static boolean SHOW_WINDOW_MENU = true;
+
   /** show root node in the tree menu of MDI Frame */
   public static boolean SHOW_TREE_MENU_ROOT = true;
 
@@ -158,8 +161,11 @@ public class ClientSettings {
   /** background color of grid selected row */
   public static Color GRID_SELECTION_BACKGROUND = new Color(185,219,243);
 
-  /** foreground color of grid selected row */
+  /** foreground color of grid selected row; this value will be ignored if <code>IGNORE_GRID_SELECTION_FOREGROUND</code> flag is set to true */
   public static Color GRID_SELECTION_FOREGROUND = Color.black;
+
+  /** if set to true, the GRID_SELECTUON_FOREGROUND setting will be ignored and the already cell's defined foreground color will be used instead */
+  public static boolean IGNORE_GRID_SELECTION_FOREGROUND = false;
 
   /** background color of grid cell */
   public static Color GRID_CELL_BACKGROUND = new Color(238,238,238);

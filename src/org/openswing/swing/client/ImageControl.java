@@ -254,7 +254,7 @@ public class ImageControl extends BaseInputControl implements InputControl {
       setImage((byte[])value);
     }
     catch (Exception ex) {
-      setImage(null);
+      setImage((Image)null);
       Logger.error(this.getClass().getName(),"setValue",ex.getMessage(),ex);
     }
   }
@@ -274,6 +274,15 @@ public class ImageControl extends BaseInputControl implements InputControl {
    * @param image image to set
    */
   public final void setImage(byte[] image) {
+    imagePanel.setImage(image);
+  }
+
+
+  /**
+   * Set the image from a byte[].
+   * @param image image to set
+   */
+  public final void setImage(Image image) {
     imagePanel.setImage(image);
   }
 

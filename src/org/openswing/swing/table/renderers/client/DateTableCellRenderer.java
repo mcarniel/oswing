@@ -123,6 +123,11 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
       ((JLabel)c).setForeground(table.getForeground());
     }
     if (hasFocus && table instanceof Grid) {
+      if (ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND)
+        c.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+      else
+        c.setForeground(table.getSelectionForeground());
+
 //      c.setBackground(((Grid)table).getActiveCellBackgroundColor());
 //      Color selColor = ((Grid)table).getActiveCellBackgroundColor();
       Color selColor = null;
@@ -151,7 +156,11 @@ public class DateTableCellRenderer extends DefaultTableCellRenderer {
       ));
       c.setBorder(BorderFactory.createLineBorder(table.getSelectionForeground()));
     } else if (isSelected && !hasFocus) {
-      c.setForeground(table.getSelectionForeground());
+      if (ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND)
+        c.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+      else
+        c.setForeground(table.getSelectionForeground());
+
 //      c.setBackground(table.getSelectionBackground());
       Color backColor = gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value);
 //      Color selColor = table.getSelectionBackground();

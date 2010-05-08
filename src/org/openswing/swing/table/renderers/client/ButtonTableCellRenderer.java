@@ -95,6 +95,11 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
       }
     }
     if (hasFocus && table instanceof Grid) {
+      if (ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND)
+        rend.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+      else
+        rend.setForeground(table.getSelectionForeground());
+
       Color selColor = null;
       try {
         selColor = new Color(
@@ -120,6 +125,11 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
       ));
 //      rend.setBorder(BorderFactory.createLineBorder(table.getSelectionForeground()));
     } else if (isSelected && !hasFocus) {
+      if (ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND)
+        rend.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+      else
+        rend.setForeground(table.getSelectionForeground());
+
       Color backColor = gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value);
       Color selColor = null;
       try {

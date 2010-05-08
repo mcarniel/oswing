@@ -121,6 +121,11 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
       rend.setText(pair.getDescription());
 
     if (hasFocus && table instanceof Grid) {
+      if (ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND)
+        rend.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+      else
+        rend.setForeground(table.getSelectionForeground());
+
 //      rend.setBackground(((Grid)table).getActiveCellBackgroundColor());
 //      Color selColor = ((Grid)table).getActiveCellBackgroundColor();
       Color selColor = null;
@@ -148,6 +153,11 @@ public class DomainTableCellRenderer extends DefaultTableCellRenderer {
       ));
       rend.setBorder(BorderFactory.createLineBorder(table.getSelectionForeground()));
     } else if (isSelected && !hasFocus) {
+      if (ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND)
+        rend.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+      else
+        rend.setForeground(table.getSelectionForeground());
+
       Color backColor = gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value);
 //      Color selColor = table.getSelectionBackground();
       Color selColor = null;

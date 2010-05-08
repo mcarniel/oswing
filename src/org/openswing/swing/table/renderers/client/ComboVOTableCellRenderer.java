@@ -184,6 +184,11 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
 
     JPanel c = (JPanel)rend.getListCellRendererComponent(new JList(),vo,i,false,false);
     if (hasFocus && table instanceof Grid) {
+      if (ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND)
+        c.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+      else
+        c.setForeground(table.getSelectionForeground());
+
 //      rend.setBackground(((Grid)table).getActiveCellBackgroundColor());
 //      Color selColor = ((Grid)table).getActiveCellBackgroundColor();
       Color selColor = null;
@@ -211,6 +216,11 @@ public class ComboVOTableCellRenderer extends DefaultTableCellRenderer {
       ));
       c.setBorder(BorderFactory.createLineBorder(table.getSelectionForeground()));
     } else if (isSelected && !hasFocus) {
+      if (ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND)
+        c.setForeground(gridController.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+      else
+        c.setForeground(table.getSelectionForeground());
+
       Color backColor = gridController.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value);
 //      Color selColor = table.getSelectionBackground();
       Color selColor = null;

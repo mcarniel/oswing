@@ -17,6 +17,7 @@
     <resources>
 <j2se version="1.4+"/> 
 <jar href="demo5client.jar" />
+<jar href="commonos.jar" />
 <jar href="clientos.jar" />
 <jar href="jcalendar.jar" />
 <jar href="jnlp.jar" />    

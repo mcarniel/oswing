@@ -1595,5 +1595,22 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   }
 
 
+  /**
+   * @return cursor to show on dragging
+   */
+  public final Cursor getDragCursor() {
+    return dragCursor;
+  }
+
+
+  /**
+   * Set the cursor to show on dragging.
+   * @param dragCursor cursor to show on dragging
+   */
+  public final void setDragCursor(Cursor dragCursor) {
+    this.dragCursor = dragCursor;
+  }
+
+
 }
 

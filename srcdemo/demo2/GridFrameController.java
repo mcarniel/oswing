@@ -7,6 +7,7 @@ import java.sql.*;
 import org.openswing.swing.message.send.java.FilterWhereClause;
 import org.openswing.swing.table.java.GridDataLocator;
 import org.openswing.swing.mdi.client.MDIFrame;
+import java.awt.Color;
 
 
 /**
@@ -248,9 +249,6 @@ public class GridFrameController extends GridController implements GridDataLocat
   public void dropOver (int row) {
     System.out.println("dropOver row"+row);
   }
-
-
-
 
 
 

@@ -72,6 +72,8 @@ public class ClientApplication {
         domains,
         auth
     );
+
+
     ClientSettings.VIEW_MANDATORY_SYMBOL = true;
     ClientSettings.FILTER_PANEL_ON_GRID = true;
     ClientSettings.VIEW_BACKGROUND_SEL_COLOR = true;

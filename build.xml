@@ -30,10 +30,10 @@
 		</javac>
 	</target>
 
-	<target name="allclasses" depends="client,server,allsrc"></target>
+	<target name="allclasses" depends="common,client,server,allsrc"></target>
 
 
-	<target name="allsrc" depends="srcclient,srcserver"></target>
+	<target name="allsrc" depends="srccommon,srcclient,srcserver"></target>
 
 
 	<target name="client" description="Compile the client jar" depends="compile-core">
@@ -43,6 +43,7 @@
 			<!-- Include only Openswing -->
 			<fileset dir="${build}/${classes}">
 				<exclude name="com/**"/>
+				<exclude name="**/java/**"/>
 				<exclude name="**/server/**"/>
 			</fileset>
 			
@@ -63,6 +64,25 @@
 		</copy>   -->
 	</target>
 
+    	<target name="common" description="Compile the common jar" depends="compile-core">
+		<echo>Creating commonos.jar...</echo>
+
+		<jar jarfile="${build}/jars/commonos.jar">
+			<!-- Include only Openswing -->
+			<fileset dir="${build}/${classes}">
+				<exclude name="com/**"/>
+				<exclude name="**/client/**"/>
+				<exclude name="**/server/**"/>
+			</fileset>
+		</jar>
+		
+		<copy todir="${lib}">
+			<fileset dir="${build}/${jars}">
+				<include name="commonos.jar" />
+			</fileset>
+		</copy>
+
+	</target>
 
 	<target name="server" description="Compile the server jar" depends="compile-core">
 		<echo>Creating serveros.jar...</echo>
@@ -70,6 +90,7 @@
 		<jar jarfile="${build}/${jars}/serveros.jar">
 			<fileset dir="${build}/${classes}">
 				<exclude name="com/**"/>
+				<exclude name="**/java/**"/>
 				<exclude name="**/client/**"/>
 			</fileset>
 		</jar>
@@ -91,30 +112,42 @@
 		<jar jarfile="${build}/${source-jars}/${client-source-jar-file}">
 			<fileset dir="${src}">
 				<exclude name="com/**"/>
+				<exclude name="**/java/**"/>
 				<exclude name="**/server/**"/>
 			</fileset>
 		</jar>
 	</target>
 
+	<target name="srccommon" description="Create source common jar" depends="init">
+		<jar jarfile="${build}/${source-jars}/${common-source-jar-file}">
+			<fileset dir="${src}">
+				<exclude name="com/**"/>
+				<exclude name="**/client/**"/>
+				<exclude name="**/server/**"/>
+			</fileset>
+		</jar>
+	</target>
 
 	<target name="srcserver" description="Create source server jar" depends="init">
 		<jar jarfile="${build}/${source-jars}/${server-source-jar-file}">
 			<fileset dir="${src}">
 				<exclude name="com/**"/>
+				<exclude name="**/java/**"/>
 				<exclude name="**/client/**"/>
 			</fileset>
 		</jar>
 	</target>
 
 
-	<!-- this target will invoke: client,server,srclient,srcserver -->
-	<target name="signlib" description="Sign all libraries" depends="srcclient, client, srcserver, server">
+	<!-- this target will invoke: common,client,server,srccommon,srclient,srcserver -->
+	<target name="signlib" description="Sign all libraries" depends="srcclient, client, srccommon, common, srcserver, server">
 		<copy todir="${build}/${signedlib}">
 			<fileset dir="${lib}">
 				<include name="hsqldb.jar" />
 				<include name="poi-2.0-RC2-20040102.jar" />
 				<include name="itext-1.4.8.jar" />
 				<include name="clientos.jar" />
+				<include name="commonos.jar" />
 				<include name="serveros.jar" />
 				<include name="pooler.jar" />
 				<include name="jcalendar.jar" />
@@ -130,6 +163,7 @@
 		<signjar jar="${build}/${signedlib}/poi-2.0-RC2-20040102.jar" alias="${alias}" storepass="${storepass}" keystore="${keystore}" />
 		<signjar jar="${build}/${signedlib}/itext-1.4.8.jar" alias="${alias}" storepass="${storepass}" keystore="${keystore}" />
 		<signjar jar="${build}/${signedlib}/clientos.jar" alias="${alias}" storepass="${storepass}" keystore="${keystore}" />
+		<signjar jar="${build}/${signedlib}/commonos.jar" alias="${alias}" storepass="${storepass}" keystore="${keystore}" />
 		<signjar jar="${build}/${signedlib}/serveros.jar" alias="${alias}" storepass="${storepass}" keystore="${keystore}" />
 		<signjar jar="${build}/${signedlib}/pooler.jar" alias="${alias}" storepass="${storepass}" keystore="${keystore}" />
 		<signjar jar="${build}/${signedlib}/jcalendar.jar" alias="${alias}" storepass="${storepass}" keystore="${keystore}" />
@@ -139,7 +173,7 @@
 	</target>
 
 
-	<!-- this target will invoke: client,server,srclient,srcserver,signlib,demo5,demo10,demo18 -->
+	<!-- this target will invoke: common,client,server,srclient,srcserver,signlib,demo5,demo10,demo18 -->
 	<target name="all" depends="signlib,demo5,demo10,demo18" />
 
 
@@ -169,6 +203,7 @@
 				<include name="poi-2.0-RC2-20040102.jar" />
 				<include name="itext-1.4.8.jar" />
 				<include name="clientos.jar" />
+				<include name="commonos.jar" />
 				<include name="serveros.jar" />
 				<include name="pooler.jar" />
 				<include name="jcalendar.jar" />
@@ -186,7 +221,7 @@
 			<fileset dir="${signedlib}">
 				<include name="clientos.jar" />
 				<include name="itext-1.4.8.jar" />
-				<include name="clientos.jar" />
+				<include name="commonos.jar" />
 				<include name="jcalendar.jar" />
 				<include name="jnlp.jar" />
 				<include name="hessian-3.1.5.jar" />
@@ -219,6 +254,7 @@
 		<mkdir dir="${tmp}" />
 		<copy todir="${webapps}/demo5/WEB-INF/lib">
 			<fileset dir="${signedlib}">
+                <include name="commonos.jar"/>
 				<include name="serveros.jar" />
 				<include name="hsqldb.jar" />
 				<include name="pooler.jar" />
@@ -271,6 +307,7 @@
 			<fileset dir="${signedlib}">
 				<include name="poi-2.0-RC2-20040102.jar" />
 				<include name="clientos.jar" />
+				<include name="commonos.jar" />
 				<include name="jcalendar.jar" />
 				<include name="jnlp.jar" />
 				<include name="hessian-3.1.5.jar" />
@@ -303,6 +340,7 @@
 		<mkdir dir="${tmp}" />
 		<copy todir="${webapps}/demo18/WEB-INF/lib">
 			<fileset dir="${signedlib}">
+                <include name="commonos.jar"/>
 				<include name="serveros.jar" />
 				<include name="hsqldb.jar" />
 				<include name="pooler.jar" />

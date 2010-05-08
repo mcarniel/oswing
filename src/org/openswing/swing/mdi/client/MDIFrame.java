@@ -345,7 +345,8 @@ public class MDIFrame extends JFrame implements BusyListener {
       Logger.error(this.getClass().getName(),"jbInit","Error while constructing the functions menu",ex);
     }
 
-    menuBar.add(menuWindow);
+    if (ClientSettings.SHOW_WINDOW_MENU)
+      menuBar.add(menuWindow);
     menuBar.add(menuHelp);
     this.setJMenuBar(menuBar);
 

@@ -129,6 +129,11 @@ public class ProgressBarTableCellRenderer extends DefaultTableCellRenderer {
           200
       ));
     } else if (isSelected && !hasFocus) {
+      if (ClientSettings.IGNORE_GRID_SELECTION_FOREGROUND)
+        rend.setForeground(gridContainer.getForegroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value));
+      else
+        rend.setForeground(table.getSelectionForeground());
+
 //      rend.setBackground(table.getSelectionBackground());
       Color backColor = gridContainer.getBackgroundColor(row,table.getModel().getColumnName(table.convertColumnIndexToModel(column)),value);
       Color selColor = null;

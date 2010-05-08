@@ -1191,9 +1191,43 @@ public class HibernateUtils {
     Iterator keys = filteredColumns.keySet().iterator();
     String attributeName = null;
     FilterWhereClause[] filterClauses = null;
+
+    int seqAlias = 0;
+    HashMap listAlias = new HashMap();
+    String aliasEntity = "";
+    String aliasString = "";
+    String aliasName = "";
+
     while (keys.hasNext()) {
       attributeName = keys.next().toString();
       filterClauses = (FilterWhereClause[]) filteredColumns.get(attributeName);
+
+      if (attributeName.indexOf(".")!=-1) {
+        while (attributeName.indexOf(".")!=-1) {
+          aliasString = seqAlias + "";
+          aliasEntity = attributeName.substring(0, attributeName.indexOf("."));
+          attributeName = attributeName.replaceAll(aliasEntity + ".", "");
+
+          if (listAlias.containsKey(aliasEntity)) {
+            aliasString = (String)listAlias.get(aliasEntity);
+          } else {
+            if (!aliasName.equals("")) {
+              aliasEntity = aliasName + "." + aliasEntity;
+            }
+            listAlias.put(aliasEntity, aliasString);
+            seqAlias++;
+            criteria.createAlias(aliasEntity, aliasString);
+          }
+          if (aliasName.equals("")) {
+            aliasName = aliasEntity;
+          } else {
+            aliasName = aliasEntity + "." + aliasName;
+          }
+        }
+        attributeName = aliasString + "." + attributeName;
+        aliasName = "";
+      }
+
       if (  filterClauses[0].getValue()!=null &&
           !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
         if (filterClauses[0].getValue() instanceof ArrayList) {
@@ -1371,9 +1405,43 @@ public class HibernateUtils {
     Iterator keys = filteredColumns.keySet().iterator();
     String attributeName = null;
     FilterWhereClause[] filterClauses = null;
+
+    int seqAlias = 0;
+    HashMap listAlias = new HashMap();
+    String aliasEntity = "";
+    String aliasString = "";
+    String aliasName = "";
+
     while (keys.hasNext()) {
       attributeName = keys.next().toString();
       filterClauses = (FilterWhereClause[]) filteredColumns.get(attributeName);
+
+      if (attributeName.indexOf(".")!=-1) {
+        while (attributeName.indexOf(".")!=-1) {
+          aliasString = seqAlias + "";
+          aliasEntity = attributeName.substring(0, attributeName.indexOf("."));
+          attributeName = attributeName.replaceAll(aliasEntity + ".", "");
+
+          if (listAlias.containsKey(aliasEntity)) {
+            aliasString = (String)listAlias.get(aliasEntity);
+          } else {
+            if (!aliasName.equals("")) {
+              aliasEntity = aliasName + "." + aliasEntity;
+            }
+            listAlias.put(aliasEntity, aliasString);
+            seqAlias++;
+            criteria.createAlias(aliasEntity, aliasString);
+          }
+          if (aliasName.equals("")) {
+            aliasName = aliasEntity;
+          } else {
+            aliasName = aliasEntity + "." + aliasName;
+          }
+        }
+        attributeName = aliasString + "." + attributeName;
+        aliasName = "";
+      }
+
       if (  filterClauses[0].getValue()!=null &&
           !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
         if (filterClauses[0].getValue() instanceof ArrayList) {

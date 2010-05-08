@@ -2042,7 +2042,8 @@ public class Grid extends JTable
     }
 
     try {
-      ensureRowIsVisible(getSelectedRow());
+      if (!controlDown)
+        ensureRowIsVisible(getSelectedRow());
     }
     catch (Exception ex) {
     }

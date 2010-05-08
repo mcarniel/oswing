@@ -1,6 +1,26 @@
 
 
 
+Release Notes 2.1.8
+-------------------
+
+Final release 2.1.8 available
+- changed build.xml file, in order to create a third distribution jar file: commonos.jar, which includes only **\java\*.class files
+- changed README.txt file, in order to support new commonos.jar file
+- changed bat/.sh demo files, in order to support new commonos.jar file
+- moved EJBExportRemote class to org.openswing.swing.export.java package
+- added new global property named SHOW_WINDOW_MENU to ClientSettings class, in order to hide "Window" menu item from the menubar of MDI frame
+- added new global property named IGNORE_GRID_SELECTION_FOREGROUND to ClientSettings class, in order to define 
+  if the selected row in grid must have the foreground color defined for the single cell or use a unique color for all cells, defined through GRID_SELECTION_FOREGROUND 
+- disabled autoscrolling in grid when control key is pressed
+- fixed problem with FormattedTextControl on swithing between detail and insert mode: now the text within the control is correctly cleared up
+- added setImage(Image img) method to ImageControl, in order to directly set on it the image
+- improved getAllFromCriteria and getBlockFromCriteria methods in HibernateUtils class (thanks to Vinicius Silva Marandola), in order to support inner entities search criteria
+- added "dragCursor" property to TreePanel, in order to customize drag icon+text
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.1.7
 -------------------
 
