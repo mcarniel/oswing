@@ -63,10 +63,10 @@ public class ExportOptions implements Serializable {
   private ArrayList componentsExportOptions = new ArrayList();
 
   /** export to PDF adapter */
-  private ExportToPDFAdapter exportToPDFAdapter = new ExportToPDFAdapter();
+  private ExportToPDFCallbacks exportToPDFAdapter = null;
 
   /** export to RTF adapter */
-  private ExportToRTFAdapter exportToRTFAdapter = new ExportToRTFAdapter();
+  private ExportToRTFCallbacks exportToRTFAdapter = null;
 
 
   /**
@@ -85,8 +85,8 @@ public class ExportOptions implements Serializable {
       String timeFormat,
       String dateTimeFormat,
       String exportType,
-      ExportToPDFAdapter exportToPDFAdapter,
-      ExportToRTFAdapter exportToRTFAdapter
+      ExportToPDFCallbacks exportToPDFAdapter,
+      ExportToRTFCallbacks exportToRTFAdapter
    ) {
     this.componentsExportOptions.add(gridOpts);
     this.dateFormat = dateFormat;
@@ -148,7 +148,7 @@ public class ExportOptions implements Serializable {
   /**
    * @return adapter for exporting to PDF format
    */
-  public final ExportToPDFAdapter getExportToPDFAdapter() {
+  public final ExportToPDFCallbacks getExportToPDFAdapter() {
     return exportToPDFAdapter;
   }
 
@@ -156,7 +156,7 @@ public class ExportOptions implements Serializable {
   /**
    * @return adapter for exporting to RTF format
    */
-  public final ExportToRTFAdapter getExportToRTFAdapter() {
+  public final ExportToRTFCallbacks getExportToRTFAdapter() {
     return exportToRTFAdapter;
   }
 

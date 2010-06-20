@@ -1,6 +1,37 @@
 
 
 
+Release Notes 2.2.1
+-------------------
+
+Final release 2.2.1 available
+- improved export to PDF/RTF formats: now it is possible to include a more recent version of iText 2.1.7 (for java 1.5/1.6 only);
+  changed org.openswing.swing.export.java classses, in order to support both old iText version (for java 1.4) and newer version.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.2
+-----------------
+
+Final release 2.2 available
+- changed a bit the GenericButton behavior on text alignment, when combined with ClientSettings.BUTTON_XXX_TEXT_POSITION global properties
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.1.9
+-------------------
+
+Final release 2.1.9 available
+- fixed problem with ButtonsAuthorizations.isEnabled method in combination with GenericButton permissions
+- fixed problem with ComboBoxControl when using it within the UI designer of an IDE
+- added two new global properties in ClientSettings class: BUTTON_HORIZONTAL_TEXT_POSITION and BUTTON_VERTICAL_TEXT_POSITION, in order to define the default text position for buttons
+- added new global property in ClientSettings class: COLUMN_HEADER_BORDER, used to customize the header border for all grids
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.1.8
 -------------------
 

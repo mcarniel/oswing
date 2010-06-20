@@ -1,6 +1,5 @@
 package org.openswing.swing.export.java;
 
-import com.lowagie.text.Font;
 import java.io.Serializable;
 
 
@@ -33,32 +32,27 @@ import java.io.Serializable;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ExportToRTFAdapter implements Serializable {
+public abstract class ExportToRTFCallbacks implements Serializable {
 
 
   /**
    * @return Font to set for the specified generic cell
    */
-  public Font getGenericComponentFont(int row,int col,Object value) {
-    return new Font(Font.HELVETICA);
-  }
+  public abstract Object getGenericComponentFont(int row,int col,Object value);
+
 
 
   /**
    * @return Font to set for the title
    */
-  public Font getFontTitle() {
-    return new Font(Font.HELVETICA);
-  }
+  public abstract Object getFontTitle();
 
 
   /**
    * @param attributeName attribute name that identify column header
    * @return Font to set for the specified column header
    */
-  public Font getHeaderFont(String attributeName) {
-    return new Font(Font.HELVETICA,Font.DEFAULTSIZE,Font.BOLD);
-  }
+  public abstract Object getHeaderFont(String attributeName);
 
 
   /**
@@ -107,9 +101,7 @@ public class ExportToRTFAdapter implements Serializable {
    * @param attributeName attribute name that identify current column
    * @return Font to set for the specified cell
    */
-  public Font getRowFont(String attributeName) {
-    return new Font(Font.HELVETICA);
-  }
+  public abstract Object getRowFont(String attributeName);
 
 
 

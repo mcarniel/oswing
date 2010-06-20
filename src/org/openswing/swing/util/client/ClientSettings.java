@@ -15,6 +15,9 @@ import org.openswing.swing.permissions.java.*;
 import org.openswing.swing.table.profiles.java.*;
 import org.openswing.swing.util.java.*;
 import org.openswing.swing.table.permissions.java.*;
+import javax.swing.border.Border;
+import javax.swing.border.BevelBorder;
+import org.openswing.swing.export.java.ExportToPDFCallbacks;
 
 
 /**
@@ -234,10 +237,10 @@ public class ClientSettings {
   public static int MAX_EXPORTABLE_ROWS = 10000;
 
   /** adapter used when exporting grid data in PDF format: it provides some overridable methods */
-  public static ExportToPDFAdapter EXPORT_TO_PDF_ADAPTER = new ExportToPDFAdapter();
+  public static ExportToPDFCallbacks EXPORT_TO_PDF_ADAPTER = new ExportToPDFCallbacks14Impl();
 
   /** adapter used when exporting grid data in RTF format: it provides some overridable methods */
-  public static ExportToRTFAdapter EXPORT_TO_RTF_ADAPTER = new ExportToRTFAdapter();
+  public static ExportToRTFCallbacks EXPORT_TO_RTF_ADAPTER = new ExportToRTFCallbacks14Impl();
 
   /** flag used to add a filter panel on top of the exported grid, in order to show filtering conditions; this pane is visibile only whether there is at least one filtering condition applied; default value: <code>false</code> */
   public static boolean SHOW_FILTERING_CONDITIONS_IN_EXPORT = false;
@@ -496,6 +499,15 @@ public class ClientSettings {
 
   /** define if shortcut key used to fire a TAB key event must be used for TextAreaControl too; default value: <code>true</code> */
   public static boolean USE_AS_TAB_IN_TEXTAREA = true;
+
+  /** define the default horizontal text position for buttons hinerited from GenericButton class; allowed values: <code>SwingConstants.RIGHT,SwingConstants.LEFT,SwingConstants.CENTER,SwingConstants.LEADING,SwingConstants.TRAILING (the default)</code> */
+  public static int BUTTON_HORIZONTAL_TEXT_POSITION = SwingConstants.CENTER;
+
+  /** define the default vertical text position for buttons hinerited from GenericButton class; allowed values: <code>SwingConstants.CENTER (the default),SwingConstants.TOP,SwingConstants.BOTTOM */
+  public static int BUTTON_VERTICAL_TEXT_POSITION = SwingConstants.BOTTOM;
+
+  /** column header border for all grids; default value: <code>new BevelBorder(BevelBorder.RAISED)</code> */
+  public static Border COLUMN_HEADER_BORDER = new BevelBorder(BevelBorder.RAISED);
 
 
   /**

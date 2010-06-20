@@ -58,7 +58,11 @@ public class GenericButton extends JButton {
   /** optional button identifier; when setted, it is used to enable/disable button according to ButtonsAuthorizations content */
   private String buttonId;
 
+
   public GenericButton() {
+    this.setHorizontalTextPosition(ClientSettings.BUTTON_HORIZONTAL_TEXT_POSITION);
+    this.setVerticalTextPosition(ClientSettings.BUTTON_VERTICAL_TEXT_POSITION);
+
     super.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (!executeAsThread)
@@ -118,18 +122,23 @@ public class GenericButton extends JButton {
         w = Math.max(w,this.getFontMetrics(this.getFont()).stringWidth(ClientSettings.getInstance().getResources().getResource("Filter")));
       }
 
-      w += this.getMargin().left+this.getMargin().right+5;
+      w += this.getMargin().left+this.getMargin().right+6;
       if (buttonBehavior==Consts.BUTTON_TEXT_ONLY) {
         setPreferredSize(new Dimension(w,32));
       }
       else {
-        setHorizontalTextPosition(CENTER);
-        setVerticalTextPosition(BOTTOM);
+//        setHorizontalTextPosition(CENTER);
+//        setVerticalTextPosition(BOTTOM);
         super.setIcon(imageIcon);
 
-        setPreferredSize(new Dimension(
-          w,
-          this.getFontMetrics(this.getFont()).getHeight()+this.getMargin().top+this.getMargin().bottom+32));
+        if (getHorizontalTextPosition() == SwingConstants.LEADING || getHorizontalTextPosition() == SwingConstants.TRAILING) {
+          setPreferredSize(new Dimension(w, 32));
+        } else if (getVerticalTextPosition() == SwingConstants.BOTTOM || getVerticalTextPosition() == SwingConstants.TOP) {
+          setPreferredSize(new Dimension(
+            w,
+            this.getFontMetrics(this.getFont()).getHeight() + this.getMargin().top + this.getMargin().bottom + 32)
+          );
+        }
       }
     }
   }

@@ -10,6 +10,8 @@ The following files must be available to use OpenSwing framework:
 - jcalendar.jar
 - poi-2.0-RC2-20040102.jar
 - itext-1.4.8.jar
+- itext-2.1.7.jar
+- itext-rtf-2.1.7.jar
 - jnlp.jar
 - jnlp-servlet.jar
 - log4j-1.2.7.jar
@@ -43,6 +45,12 @@ srchibernate    source files of OpenSwing framework specifically related to Hibe
 srcspring       source files of OpenSwing framework specifically related to Spring framework embedding; to compile these classes you have to include in web container classpath the Spring jars too (NOT provided in OpenSwing distribution)
 
 srchibernate    source files of OpenSwing framework specifically related to iBatis embedding; to compile these classes you have to include in classpath iBatis jars too (NOT provided in OpenSwing distribution)
+
+src14           source files of OpenSwing framework specifically related to export feature using old versions of iText for PDF/RTF export formats
+
+src15           source files of OpenSwing framework specifically related to export feature using recent versions of iText for PDF/RTF export formats; there versions requires java 1.5/1.6
+
+srcejb3         source files of OpenSwing framework specifically related to export feature in a 3 tier application based on EJB3 session beans embedding; to compile these classes you have to use Java 5 EE, such as  GlassFish A.S. (NOT provided in OpenSwing distribution)
 
 srcjpa          source files of OpenSwing framework specifically related to JPA/TopLink embedding; to compile these classes you have to use Java 5 EE and include in classpath an Entity Manager implementation, such as that included in GlassFish A.S. (NOT provided in OpenSwing distribution)
 
@@ -78,7 +86,9 @@ OpenSwing is based on these files:
 - serveros.jar - contains server-side OpenSwing components (together with commonos.jar) 
 - jcalendar.jar - an open source library (LGPL) for viewing a calendar, written by Kai Toedter
 - poi-2.0-RC2-20040102.jar - an open source library used to generate Excel (XLS) files
-- itext-1.4.8.jar - an open source library used to generate PDF or RTF files
+- itext-1.4.8.jar - an open source library used to generate PDF or RTF files using java 1.4 or above
+- itext-2.1.7.jar - an open source library used to generate PDF files using java 1.5 or above
+- itext-rtf-2.1.7.jar - an open source library used to generate RTF files using java 1.5 or above
 - jnlp.jar - JNLP API
 - jnlp-servlet.jar - JNLP Servlet
 - log4j-1.2.7.jar - LOG4J component

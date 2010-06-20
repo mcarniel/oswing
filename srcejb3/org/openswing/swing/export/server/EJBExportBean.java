@@ -100,13 +100,13 @@ public class EJBExportBean implements EJBExportRemote {
       }
       else if (opt.getExportType().equals(opt.PDF_FORMAT)) {
         // generate the PDF document...
-        doc = new ExportToPDF().getDocument(opt);
+        doc = ExportToPDFFactory.createExportToPDFDocument(opt);
         // generate and return the document identifier...
         docId = "doc"+System.currentTimeMillis()+".pdf";
       }
       else if (opt.getExportType().equals(opt.RTF_FORMAT)) {
         // generate the RTF document...
-        doc = new ExportToRTF().getDocument(opt);
+        doc = ExportToRTFFactory.createExportToRTFDocument(opt);
         // generate and return the document identifier...
         docId = "doc"+System.currentTimeMillis()+".rtf";
       }

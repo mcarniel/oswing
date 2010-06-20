@@ -135,7 +135,7 @@ public class ButtonsAuthorizations implements Serializable {
     if (functionId==null)
       // if no functionId is defined, then button is enabled
       return true;
-    GenericButtonAuthorization auth = (GenericButtonAuthorization)authorizations.get(functionId);
+    GenericButtonAuthorization auth = (GenericButtonAuthorization)genericButtonsAuthorizations.get(functionId);
     if (auth==null)
       // button is enabled if no authorization was found...
       return true;

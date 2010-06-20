@@ -8,6 +8,8 @@ import java.sql.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.table.profiles.client.FileGridProfileManager;
+import org.openswing.swing.client.GenericButton;
+import org.openswing.swing.util.java.Consts;
 
 
 /**

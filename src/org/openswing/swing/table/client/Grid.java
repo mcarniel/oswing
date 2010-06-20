@@ -90,9 +90,6 @@ public class Grid extends JTable
   /** scroll pane which contains the grid */
   private JScrollPane scrollPane = null;
 
-  /** column header border */
-  private static final Border columnHeaderBorder = new BevelBorder(BevelBorder.RAISED);
-
   /** asceding order versus icon */
   private Icon ascSort = new ImageIcon(ClientUtils.getImage(ClientSettings.SORT_DOWN));
 
@@ -1522,7 +1519,7 @@ public class Grid extends JTable
     public TableColumnHeaderRenderer(String attributeName,int headerTextHorizontalAlignment,int headerTextVerticalAlignment,Font headerFont,Color headerColor) {
       this.headerFont = headerFont;
       setOpaque(false);
-      setBorder(columnHeaderBorder);
+      setBorder(ClientSettings.COLUMN_HEADER_BORDER);
       setLayout(new GridBagLayout());
       l_text = new JLabel();
       if (headerHeight<l_text.getFontMetrics(headerFont!=null?headerFont:l_text.getFont()).getHeight()*2) {

@@ -44,10 +44,10 @@ import com.lowagie.text.rtf.*;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ExportToRTF {
+public class ExportToRTF15 {
 
 
-  public ExportToRTF() {
+  public ExportToRTF15() {
   }
 
 
@@ -115,7 +115,7 @@ public class ExportToRTF {
     SimpleDateFormat sdatf = new SimpleDateFormat(exportOptions.getDateTimeFormat());
     int[] headerwidths = new int[cols];
     for(int i=0;i<headerwidths.length;i++)
-      headerwidths[i] = (int)PageSize.A4.width()/cols;
+      headerwidths[i] = (int)PageSize.A4.getWidth()/cols;
 
     Table table = new Table(cols);
     table.setWidths(headerwidths);
@@ -133,14 +133,14 @@ public class ExportToRTF {
           if (obj instanceof Date ||
                    obj instanceof java.util.Date ||
                    obj instanceof java.sql.Timestamp) {
-            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),exportOptions.getExportToRTFAdapter().getGenericComponentFont(i,j,obj)));
+            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),(Font)(Font)exportOptions.getExportToRTFAdapter().getGenericComponentFont(i,j,obj)));
           }
           else {
-            table.addCell(new Phrase(obj.toString(),exportOptions.getExportToRTFAdapter().getGenericComponentFont(i,j,obj)));
+            table.addCell(new Phrase(obj.toString(),(Font)exportOptions.getExportToRTFAdapter().getGenericComponentFont(i,j,obj)));
           }
         }
         else {
-          table.addCell(new Phrase("",exportOptions.getExportToRTFAdapter().getGenericComponentFont(i,j,null)));
+          table.addCell(new Phrase("",(Font)exportOptions.getExportToRTFAdapter().getGenericComponentFont(i,j,null)));
         }
 
       }
@@ -200,7 +200,7 @@ public class ExportToRTF {
 
     Paragraph line = null;
     if (opt.getTitle()!=null && !opt.getTitle().equals("")) {
-      line = new Paragraph(opt.getTitle(),exportOptions.getExportToRTFAdapter().getFontTitle());
+      line = new Paragraph(opt.getTitle(),(Font)exportOptions.getExportToRTFAdapter().getFontTitle());
       line.setAlignment(Element.ALIGN_CENTER);
       document.add(line);
       document.add(new Paragraph(""));
@@ -226,7 +226,7 @@ public class ExportToRTF {
     for(int i=0;i<opt.getExportColumns().size();i++) {
       cell = new Phrase(
         opt.getExportColumns().get(i).toString(),
-        exportOptions.getExportToRTFAdapter().getHeaderFont(opt.getExportAttrColumns().get(i).toString())
+        (Font)exportOptions.getExportToRTFAdapter().getHeaderFont(opt.getExportAttrColumns().get(i).toString())
       );
       table.addCell(cell);
     }
@@ -414,24 +414,24 @@ public class ExportToRTF {
           type = ((Integer)opt.getColumnsType().get(opt.getExportAttrColumns().get(i))).intValue();
           if (type==opt.TYPE_DATE) {
 //                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(sdf.format((java.util.Date)obj),exportOptions.getExportToRTFAdapter().getRowFont(aName)));
+            table.addCell(new Phrase(sdf.format((java.util.Date)obj),(Font)exportOptions.getExportToRTFAdapter().getRowFont(aName)));
           }
           else if (type==opt.TYPE_DATE_TIME) {
 //                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),exportOptions.getExportToRTFAdapter().getRowFont(aName)));
+            table.addCell(new Phrase(sdatf.format((java.util.Date)obj),(Font)exportOptions.getExportToRTFAdapter().getRowFont(aName)));
           }
           else if (type==opt.TYPE_TIME) {
 //                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(new Phrase(stf.format((java.util.Date)obj),exportOptions.getExportToRTFAdapter().getRowFont(aName)));
+            table.addCell(new Phrase(stf.format((java.util.Date)obj),(Font)exportOptions.getExportToRTFAdapter().getRowFont(aName)));
           }
         }
         else {
 //              table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-          table.addCell(new Phrase(obj.toString(),exportOptions.getExportToRTFAdapter().getRowFont(aName)));
+          table.addCell(new Phrase(obj.toString(),(Font)exportOptions.getExportToRTFAdapter().getRowFont(aName)));
         }
       }
       else {
-        table.addCell(new Phrase("",exportOptions.getExportToRTFAdapter().getRowFont(aName)));
+        table.addCell(new Phrase("",(Font)exportOptions.getExportToRTFAdapter().getRowFont(aName)));
       }
     }
 

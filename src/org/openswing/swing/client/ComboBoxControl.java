@@ -242,11 +242,11 @@ public class ComboBoxControl extends BaseInputControl implements InputControl,Se
    * @since    JDK1.1
    */
   public final void addFocusListener(FocusListener l) {
-    try {
-      combo.addFocusListener(l);
-    }
-    catch (Exception ex) {
-    }
+     try {
+        if(combo != null) combo.addFocusListener(l);
+     }
+     catch (Exception ex) {
+     }
   }
 
 

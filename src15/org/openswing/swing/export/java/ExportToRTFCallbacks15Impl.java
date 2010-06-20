@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * <p>Title: OpenSwing Framework</p>
- * <p>Description: This class is used when exporting data in PDF format:
+ * <p>Description: This class is used when exporting data in RTF format:
  * it can be extended to override some methods.</p>
  * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
  *
@@ -33,13 +33,13 @@ import java.io.Serializable;
  * @author Mauro Carniel
  * @version 1.0
  */
-public class ExportToPDFAdapter implements Serializable {
+public class ExportToRTFCallbacks15Impl extends ExportToRTFCallbacks implements Serializable {
 
 
   /**
    * @return Font to set for the specified generic cell
    */
-  public Font getGenericComponentFont(int row,int col,Object value) {
+  public Object getGenericComponentFont(int row,int col,Object value) {
     return new Font(Font.HELVETICA);
   }
 
@@ -47,7 +47,7 @@ public class ExportToPDFAdapter implements Serializable {
   /**
    * @return Font to set for the title
    */
-  public Font getFontTitle() {
+  public Object getFontTitle() {
     return new Font(Font.HELVETICA);
   }
 
@@ -56,7 +56,7 @@ public class ExportToPDFAdapter implements Serializable {
    * @param attributeName attribute name that identify column header
    * @return Font to set for the specified column header
    */
-  public Font getHeaderFont(String attributeName) {
+  public Object getHeaderFont(String attributeName) {
     return new Font(Font.HELVETICA,Font.DEFAULTSIZE,Font.BOLD);
   }
 
@@ -107,7 +107,7 @@ public class ExportToPDFAdapter implements Serializable {
    * @param attributeName attribute name that identify current column
    * @return Font to set for the specified cell
    */
-  public Font getRowFont(String attributeName) {
+  public Object getRowFont(String attributeName) {
     return new Font(Font.HELVETICA);
   }
 
