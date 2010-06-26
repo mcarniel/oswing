@@ -18,7 +18,7 @@ public class TestVO extends ValueObjectImpl {
 
   private String stringValue;
   private Integer comboValue;
-  private BigDecimal numericValue;
+  private Float numericValue;
   private BigDecimal currencyValue;
 //  private Boolean checkValue;
   private String checkValue;
@@ -45,7 +45,7 @@ public class TestVO extends ValueObjectImpl {
   public Date getDateValue() {
     return dateValue;
   }
-  public BigDecimal getNumericValue() {
+  public Float getNumericValue() {
     return numericValue;
   }
   public Boolean getRadioButtonValue() {
@@ -60,7 +60,7 @@ public class TestVO extends ValueObjectImpl {
   public void setRadioButtonValue(Boolean radioButtonValue) {
     this.radioButtonValue = radioButtonValue;
   }
-  public void setNumericValue(BigDecimal numericValue) {
+  public void setNumericValue(Float numericValue) {
     this.numericValue = numericValue;
   }
   public void setDateValue(Date dateValue) {

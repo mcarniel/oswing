@@ -155,17 +155,17 @@ public class GridFrame extends JFrame {
     vo.setDateValue(new java.sql.Date(System.currentTimeMillis()));
     vo.setStringValue("Total currencies");
     BigDecimal tot = new BigDecimal(0);
-    BigDecimal tot2 = new BigDecimal(0);
+    float tot2 = 0;
     TestVO testVO = null;
     for(int i=0;i<grid.getVOListTableModel().getRowCount();i++) {
       testVO = (TestVO)grid.getVOListTableModel().getObjectForRow(i);
       if (testVO.getCurrencyValue()!=null)
         tot = tot.add(testVO.getCurrencyValue());
       if (testVO.getNumericValue()!=null)
-        tot2 = tot2.add(testVO.getNumericValue());
+        tot2 = tot2 + testVO.getNumericValue().floatValue();
     }
     vo.setCurrencyValue(tot);
-    vo.setNumericValue(tot2);
+    vo.setNumericValue(new Float(tot2));
     rows.add(vo);
 
     return rows;

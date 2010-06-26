@@ -1,6 +1,16 @@
 
 
 
+Release Notes 2.2.2
+-------------------
+
+Final release 2.2.2 available
+- fixed problem with validateCell method of editable grid, when using DecimalColumn binded to attributes having type Float, Double, etc.
+- fixed problem with nested components in grid, when hiding columns in outer grid
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.2.1
 -------------------
 

@@ -412,6 +412,54 @@ public class VOListTableModel extends AbstractTableModel {
 
 
   /**
+   * @param value object to convert
+   * @param column model column index
+   * @return converted value, according to attribute type binded to column (e.g. attribute type = Float and value = new BigDecimal(1.2) => returned value = new Float(1.2)
+   */
+  private Object convertObject(Object value,Object oldValue,int column) {
+    if (value==null)
+      return null;
+
+    if (value != null && value instanceof BigDecimal && oldValue != null &&
+        this.fieldAdapter.getFieldClass(column).equals(BigDecimal.class)) {
+      if (this.fieldAdapter.getFieldColumn(column) instanceof DecimalColumn &&
+          ( (DecimalColumn)this.fieldAdapter.getFieldColumn(column)).getDecimals() > 0)
+        value = new BigDecimal(value.toString()).setScale( ( (DecimalColumn)this.
+            fieldAdapter.getFieldColumn(column)).getDecimals(),
+            BigDecimal.ROUND_HALF_UP);
+      else
+        value = new BigDecimal(value.toString()).setScale( ( (BigDecimal)oldValue).scale(), BigDecimal.ROUND_HALF_UP);
+    }
+    else if (value != null && value instanceof BigDecimal &&
+             (this.fieldAdapter.getFieldClass(column).equals(Integer.class) ||
+              this.fieldAdapter.getFieldClass(column).equals(Integer.TYPE))) {
+      value = new Integer(value.toString());
+    }
+    else if (value != null && value instanceof BigDecimal &&
+             (this.fieldAdapter.getFieldClass(column).equals(Double.class) ||
+              this.fieldAdapter.getFieldClass(column).equals(Double.TYPE))) {
+      value = new Double(value.toString());
+    }
+    else if (value != null && value instanceof BigDecimal &&
+             (this.fieldAdapter.getFieldClass(column).equals(Long.class) ||
+              this.fieldAdapter.getFieldClass(column).equals(Long.TYPE))) {
+      value = new Long(value.toString());
+    }
+    else if (value != null && value instanceof BigDecimal &&
+             (this.fieldAdapter.getFieldClass(column).equals(Short.class) ||
+              this.fieldAdapter.getFieldClass(column).equals(Short.TYPE))) {
+      value = new Short(value.toString());
+    }
+    else if (value != null && value instanceof BigDecimal &&
+             (this.fieldAdapter.getFieldClass(column).equals(Float.class) ||
+              this.fieldAdapter.getFieldClass(column).equals(Float.TYPE))) {
+      value = new Float(value.toString());
+    }
+    return value;
+  }
+
+
+  /**
    * @param value balue just edited
    * @param row row index
    * @param column column index
@@ -427,43 +475,8 @@ public class VOListTableModel extends AbstractTableModel {
       }
 
       // maybe changed value should be converted...
-      if (value != null && value instanceof BigDecimal && oldValue != null &&
-          this.fieldAdapter.getFieldClass(column).equals(BigDecimal.class)) {
-        if (this.fieldAdapter.getFieldColumn(column) instanceof DecimalColumn &&
-            ( (DecimalColumn)this.fieldAdapter.getFieldColumn(column)).
-            getDecimals() > 0)
-          value = new BigDecimal(value.toString()).setScale( ( (DecimalColumn)this.
-              fieldAdapter.getFieldColumn(column)).getDecimals(),
-              BigDecimal.ROUND_HALF_UP);
-        else
-          value = new BigDecimal(value.toString()).setScale( ( (BigDecimal)
-              oldValue).scale(), BigDecimal.ROUND_HALF_UP);
-      }
-      else if (value != null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Integer.class) ||
-                this.fieldAdapter.getFieldClass(column).equals(Integer.TYPE))) {
-        value = new Integer(value.toString());
-      }
-      else if (value != null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Double.class) ||
-                this.fieldAdapter.getFieldClass(column).equals(Double.TYPE))) {
-        value = new Double(value.toString());
-      }
-      else if (value != null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Long.class) ||
-                this.fieldAdapter.getFieldClass(column).equals(Long.TYPE))) {
-        value = new Long(value.toString());
-      }
-      else if (value != null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Short.class) ||
-                this.fieldAdapter.getFieldClass(column).equals(Short.TYPE))) {
-        value = new Short(value.toString());
-      }
-      else if (value != null && value instanceof BigDecimal &&
-               (this.fieldAdapter.getFieldClass(column).equals(Float.class) ||
-                this.fieldAdapter.getFieldClass(column).equals(Float.TYPE))) {
-        value = new Float(value.toString());
-      }
+      value = convertObject(value,oldValue,column);
+
       if (oldValue == null && value != null ||
           oldValue != null && value == null ||
           oldValue != null && !oldValue.equals(value)) {
@@ -497,6 +510,10 @@ public class VOListTableModel extends AbstractTableModel {
 
     // retrieve previous cell value ...
     Object oldValue = getValueAt(row,column);
+
+    // maybe changed value should be converted...
+    value = convertObject(value,oldValue,column);
+
     if (isCellEditable(row,column)) {
       if (isValueChanged(value,row,column)) {
         // validate new value...

@@ -261,7 +261,7 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
   //        JPanel rendPanel = null;
           int w = 0;
           for(int i=expandableColumn;i<grid.getColumnModel().getColumnCount();i++) {
-            comp = modelAdapter.getCellRenderer(grid.convertColumnIndexToModel(i)).getTableCellRendererComponent(grid, grid.getValueAt(row,i), false, false, row, grid.convertColumnIndexToModel(i));
+            comp = modelAdapter.getCellRenderer(grid.convertColumnIndexToModel(i)).getTableCellRendererComponent(grid, grid.getValueAt(row,i), false, false, row, i);
             if (i==expandableColumn) {
               aux.add(expTreePanel);
               expTreePanel.setBackground(comp.getBackground());
