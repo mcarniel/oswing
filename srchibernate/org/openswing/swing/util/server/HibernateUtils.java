@@ -1322,8 +1322,11 @@ public class HibernateUtils {
       rowCount = 0;
 
       list = new ArrayList();
-      for(int i=startIndex;i<startIndex+blockSize;i++)
+      for(int i=startIndex;i<startIndex+blockSize;i++) {
+        if (i == resultSetLength)
+          break;
         list.add(tmp.get(i));
+      }
     } else {
       if (action==GridParams.PREVIOUS_BLOCK_ACTION) {
         action = GridParams.NEXT_BLOCK_ACTION;

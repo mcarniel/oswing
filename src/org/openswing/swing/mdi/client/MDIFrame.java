@@ -756,6 +756,16 @@ public class MDIFrame extends JFrame implements BusyListener {
         opt,
         opt[0]
     )==0)  {
+
+      JInternalFrame[] frames = desktopPane.getAllFrames();
+      for (int i = 0; i < frames.length; i++) {
+        if (frames[i] instanceof InternalFrame)
+          try {
+            ( (InternalFrame) frames[i]).closeFrame();
+          }
+          catch (Exception ex) {
+          }
+      }
       client.stopApplication();
     }
   }

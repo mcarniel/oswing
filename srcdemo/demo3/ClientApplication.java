@@ -10,6 +10,7 @@ import org.openswing.swing.internationalization.java.*;
 import org.openswing.swing.table.profiles.client.FileGridProfileManager;
 import org.openswing.swing.client.GenericButton;
 import org.openswing.swing.util.java.Consts;
+import javax.swing.SwingConstants;
 
 
 /**
@@ -73,6 +74,9 @@ public class ClientApplication {
     ClientSettings.INCLUDE_IN_OPERATOR = false;
     ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
     ClientSettings.SELECT_DATA_IN_EDITABLE_GRID = true;
+
+//    ClientSettings.BUTTON_BEHAVIOR=Consts.BUTTON_IMAGE_AND_TEXT;
+//    ClientSettings.BUTTON_HORIZONTAL_TEXT_POSITION=SwingConstants.LEADING;
 
     createConnection();
 

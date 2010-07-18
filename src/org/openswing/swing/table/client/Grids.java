@@ -1677,7 +1677,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       if (getCopyButton()!=null)
         getCopyButton().setEnabled(model.getRowCount()>0);
       if (getFilterButton()!=null)
-        getFilterButton().setEnabled(model.getRowCount()>0);
+//        getFilterButton().setEnabled(model.getRowCount()>0);
+        getFilterButton().setEnabled(true);
       this.gridController.afterReloadGrid();
 
       resetButtonsState();
@@ -1903,7 +1904,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             if (getEditButton()!=null)
               getEditButton().setEnabled(model.getRowCount()>0);
             if (getFilterButton()!=null)
-              getFilterButton().setEnabled(model.getRowCount()>0);
+//              getFilterButton().setEnabled(model.getRowCount()>0);
+              getFilterButton().setEnabled(true);
             setGenericButtonsEnabled(model.getRowCount()>0);
             if (getDeleteButton()!=null)
               getDeleteButton().setEnabled(model.getRowCount()>0);
@@ -1993,23 +1995,45 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
       int col = 0;
       if (lockedGrid!=null) {
-        while (col<lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(rowToSel,col))
-          col++;
-        if (col<lockedGrid.getColumnCount())
-          lockedGrid.setColumnSelectionInterval(col,col);
-        if (lockedGrid.getSelectedColumn()!=-1)
-          lockedGrid.editCellAt(rowToSel,lockedGrid.getSelectedColumn());
-        lockedGrid.requestFocus();
+        if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
+          while (col < lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(rowToSel, col))
+            col++;
+          if (col < lockedGrid.getColumnCount())
+            lockedGrid.setColumnSelectionInterval(col, col);
+          if (lockedGrid.getSelectedColumn() != -1)
+            lockedGrid.editCellAt(rowToSel, lockedGrid.getSelectedColumn());
+          lockedGrid.requestFocus();
+        }
+        else {
+          col = lockedGrid.getColumnCount()-1;
+          while (col>=0 && !grid.isCellEditable(grid.getSelectedRow(),col))
+            col--;
+          if (col>=0)
+            grid.setColumnSelectionInterval(col,col);
+          grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+          grid.requestFocus();
+        }
       }
 
       if (lockedGrid==null || col==lockedGrid.getColumnCount()) {
-        col = 0;
-        while (col<grid.getColumnCount() && !grid.isCellEditable(rowToSel,col))
-          col++;
-        if (col<grid.getColumnCount())
-          grid.setColumnSelectionInterval(col,col);
-        grid.editCellAt(rowToSel,grid.getSelectedColumn());
-        grid.requestFocus();
+        if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
+          col = 0;
+          while (col<grid.getColumnCount() && !grid.isCellEditable(rowToSel,col))
+            col++;
+          if (col<grid.getColumnCount())
+            grid.setColumnSelectionInterval(col,col);
+          grid.editCellAt(rowToSel,grid.getSelectedColumn());
+          grid.requestFocus();
+        }
+        else {
+          col = grid.getColumnCount()-1;
+          while (col>=0 && !grid.isCellEditable(grid.getSelectedRow(),col))
+            col--;
+          if (col>=0)
+            grid.setColumnSelectionInterval(col,col);
+          grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+          grid.requestFocus();
+        }
       }
 
     }
@@ -2587,23 +2611,44 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
         int col = 0;
         if (lockedGrid!=null) {
-          while (col<lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(lockedGrid.getSelectedRow(),col))
-            col++;
-          if (col<lockedGrid.getColumnCount())
-            lockedGrid.setColumnSelectionInterval(col,col);
-          if (lockedGrid.getSelectedColumn()!=-1)
-            lockedGrid.editCellAt(lockedGrid.getSelectedRow(),lockedGrid.getSelectedColumn());
-          lockedGrid.requestFocus();
-
+          if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
+            while (col<lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(lockedGrid.getSelectedRow(),col))
+              col++;
+            if (col<lockedGrid.getColumnCount())
+              lockedGrid.setColumnSelectionInterval(col,col);
+            if (lockedGrid.getSelectedColumn()!=-1)
+              lockedGrid.editCellAt(lockedGrid.getSelectedRow(),lockedGrid.getSelectedColumn());
+            lockedGrid.requestFocus();
+          }
+          else {
+            col = lockedGrid.getColumnCount()-1;
+            while (col>=0 && !grid.isCellEditable(grid.getSelectedRow(),col))
+              col--;
+            if (col>=0)
+              grid.setColumnSelectionInterval(col,col);
+            grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+            grid.requestFocus();
+          }
         }
         if (lockedGrid==null || col==lockedGrid.getColumnCount()) {
-          col = 0;
-          while (col<grid.getColumnCount() && !grid.isCellEditable(grid.getSelectedRow(),col))
-            col++;
-          if (col<grid.getColumnCount())
-            grid.setColumnSelectionInterval(col,col);
-          grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
-          grid.requestFocus();
+          if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
+            col = 0;
+            while (col<grid.getColumnCount() && !grid.isCellEditable(grid.getSelectedRow(),col))
+              col++;
+            if (col<grid.getColumnCount())
+              grid.setColumnSelectionInterval(col,col);
+            grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+            grid.requestFocus();
+          }
+          else {
+            col = grid.getColumnCount()-1;
+            while (col>=0 && !grid.isCellEditable(grid.getSelectedRow(),col))
+              col--;
+            if (col>=0)
+              grid.setColumnSelectionInterval(col,col);
+            grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+            grid.requestFocus();
+          }
         }
       }
       catch (Throwable ex) {
@@ -2670,23 +2715,45 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
       int col = 0;
       if (lockedGrid!=null) {
-        while (col<lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(lockedGrid.getSelectedRow(),col))
-          col++;
-        if (col<lockedGrid.getColumnCount())
-          lockedGrid.setColumnSelectionInterval(col,col);
-        if (lockedGrid.getSelectedColumn()!=-1)
-          lockedGrid.editCellAt(lockedGrid.getSelectedRow(),lockedGrid.getSelectedColumn());
-        lockedGrid.requestFocus();
-
+        if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
+          while (col<lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(lockedGrid.getSelectedRow(),col))
+            col++;
+          if (col<lockedGrid.getColumnCount())
+            lockedGrid.setColumnSelectionInterval(col,col);
+          if (lockedGrid.getSelectedColumn()!=-1)
+            lockedGrid.editCellAt(lockedGrid.getSelectedRow(),lockedGrid.getSelectedColumn());
+          lockedGrid.requestFocus();
+        }
+        else {
+          col = lockedGrid.getColumnCount()-1;
+          while (col>=0 && !lockedGrid.isCellEditable(lockedGrid.getSelectedRow(),col))
+            col--;
+          if (col>=0)
+            lockedGrid.setColumnSelectionInterval(col,col);
+          if (lockedGrid.getSelectedColumn()!=-1)
+            lockedGrid.editCellAt(lockedGrid.getSelectedRow(),lockedGrid.getSelectedColumn());
+          lockedGrid.requestFocus();
+        }
       }
       if (lockedGrid==null || col==lockedGrid.getColumnCount()) {
-        col = 0;
-        while (col<grid.getColumnCount() && !grid.isCellEditable(grid.getSelectedRow(),col))
-          col++;
-        if (col<grid.getColumnCount())
-          grid.setColumnSelectionInterval(col,col);
-        grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
-        grid.requestFocus();
+        if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
+          col = 0;
+          while (col<grid.getColumnCount() && !grid.isCellEditable(grid.getSelectedRow(),col))
+            col++;
+          if (col<grid.getColumnCount())
+            grid.setColumnSelectionInterval(col,col);
+          grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+          grid.requestFocus();
+        }
+        else {
+          col = grid.getColumnCount()-1;
+          while (col>=0 && !grid.isCellEditable(grid.getSelectedRow(),col))
+            col--;
+          if (col>=0)
+            grid.setColumnSelectionInterval(col,col);
+          grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+          grid.requestFocus();
+        }
       }
 
     }
@@ -2918,7 +2985,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           if (getImportButton()!=null)
             getImportButton().setEnabled(true);
           if (getFilterButton()!=null)
-            getFilterButton().setEnabled(model.getRowCount()>0);
+//            getFilterButton().setEnabled(model.getRowCount()>0);
+           getFilterButton().setEnabled(true);
 
             // +MC move here otherwise "afterInsertGrid" or "afterEditGrid" callback methods
             // are not able to change buttons states
@@ -2987,8 +3055,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         getCopyButton().setEnabled(false);
       if (getEditButton()!=null)
         getEditButton().setEnabled(false);
-      if (getFilterButton()!=null)
-        getFilterButton().setEnabled(false);
+      if (gridControl.isAutoLoadData()) {
+        if (getFilterButton()!=null)
+          getFilterButton().setEnabled(false);
+      }
       setGenericButtonsEnabled(false);
       if (getDeleteButton()!=null)
         getDeleteButton().setEnabled(false);

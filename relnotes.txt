@@ -1,6 +1,22 @@
 
 
 
+Release Notes 2.2.3
+-------------------
+
+Final release 2.2.3 available
+- fixed orientation issue with GenericButton when using horizontal text alignment
+- changed default behavior of FilterButton when autoLoadData in grid is set to false: now FilterButton remains enabled
+- fixed problem with FilterButton when user profile is enabled and no rows are showed in grid
+- added new global property FIRST_CELL_RECEIVE_FOCUS to ClientSettings: if set to false, a GridControl will set focus on the last cell 
+  (instead of the first cell) when grid mode is switched to INSERT or EDIT mode
+- fixed problem with HibernateUtils when loading last block of data and block size is greater than the total number of rows
+- added new global property STORE_INTERNAL_FRAME_PROFILE to ClientSettings: it allows to automatically set internal frame size and location previously setted by user
+- improved Form panel: now Character type is supported in the value object binded to Form panel
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.2.2
 -------------------
 

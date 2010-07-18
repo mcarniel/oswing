@@ -10,6 +10,8 @@ import java.awt.event.*;
 import org.openswing.swing.table.java.*;
 import java.awt.event.ActionEvent;
 import javax.swing.ListSelectionModel;
+import org.openswing.swing.util.java.Consts;
+import org.openswing.swing.util.client.ClientSettings;
 
 
 /**
@@ -76,6 +78,7 @@ public class GridFrame extends JFrame {
     grid.setHeaderHeight(40);
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
+
     grid.setMaxSortedColumns(1);
     grid.setCopyButton(copyButton);
     grid.setDeleteButton(deleteButton);
@@ -86,7 +89,7 @@ public class GridFrame extends JFrame {
     grid.setMaxNumberOfRowsOnInsert(50);
     grid.setAllowInsertInEdit(true);
     grid.setInsertButton(insertButton);
-    grid.setFilterButton(filterButton);
+    //grid.setFilterButton(filterButton);
     grid.setReloadButton(reloadButton);
     grid.setSaveButton(saveButton);
     grid.setValueObjectClassName("demo44.TestVO");

@@ -509,6 +509,12 @@ public class ClientSettings {
   /** column header border for all grids; default value: <code>new BevelBorder(BevelBorder.RAISED)</code> */
   public static Border COLUMN_HEADER_BORDER = new BevelBorder(BevelBorder.RAISED);
 
+  /** flag used in GridControl in order to set the focus in INSERT/EDIT mode: <code>true</code> the first cell will receive focus, <code>false</code> the last cell will receive focus; default value:  <code>true</code> the first cell will receive focus  */
+  public static boolean FIRST_CELL_RECEIVE_FOCUS = true;
+
+  /** flag used to enable the storing of frame locaiton and size to the local file system; default value: <code>false</code> */
+  public static boolean STORE_INTERNAL_FRAME_PROFILE = false;
+
 
   /**
    * Contains application settings.

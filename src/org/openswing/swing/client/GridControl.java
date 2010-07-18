@@ -2173,6 +2173,7 @@ public class GridControl extends JPanel {
 
   /**
    * @return std grid contained in this panel; it will be created only on run-time
+   * DO NOT USE THIS HOOK TO ACCESS TO INTERNAL JTABLE CLASS AND CHANGE SOME SETTINGS!
    */
   public final Grids getTable() {
     return table;

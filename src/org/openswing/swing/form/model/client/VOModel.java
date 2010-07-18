@@ -146,6 +146,7 @@ public class VOModel {
           if (!(ValueObject.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
                 Boolean.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
                 Number.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
+                Character.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
                 byte[].class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
                 String.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
                 java.util.Date.class.isAssignableFrom(props[i].getReadMethod().getReturnType()) ||
@@ -453,6 +454,9 @@ public class VOModel {
             if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(java.sql.Date.class) &&
               value.getClass().equals(java.util.Date.class))
               value = new java.sql.Date(((java.util.Date)value).getTime());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Character.class) &&
+              value.getClass().equals(String.class))
+              value = value.toString().length()==0?null:new Character(value.toString().charAt(0));
             else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(java.sql.Timestamp.class) &&
               value.getClass().equals(java.util.Date.class))
               value = new java.sql.Timestamp(((java.util.Date)value).getTime());

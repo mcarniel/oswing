@@ -132,7 +132,7 @@ public class GenericButton extends JButton {
         super.setIcon(imageIcon);
 
         if (getHorizontalTextPosition() == SwingConstants.LEADING || getHorizontalTextPosition() == SwingConstants.TRAILING) {
-          setPreferredSize(new Dimension(w, 32));
+          setPreferredSize(new Dimension(w+32, 32));
         } else if (getVerticalTextPosition() == SwingConstants.BOTTOM || getVerticalTextPosition() == SwingConstants.TOP) {
           setPreferredSize(new Dimension(
             w,

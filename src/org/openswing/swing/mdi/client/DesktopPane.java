@@ -345,7 +345,7 @@ public class DesktopPane extends JDesktopPane implements InternalFrameListener {
    * @param frame internal frame to add
    * @param maximum flag used to set that the internal frame will be maximized
    */
-  public final void add(InternalFrame frame,boolean maximum) {
+  public final void add(final InternalFrame frame,boolean maximum) {
     try {
       super.add(frame);
 
@@ -372,6 +372,9 @@ public class DesktopPane extends JDesktopPane implements InternalFrameListener {
             );
       }
 
+      if (ClientSettings.STORE_INTERNAL_FRAME_PROFILE)
+        loadState(frame);
+
       if (!frame.isVisible())
         frame.setVisible(true);
       if (!frame.isSelected())
@@ -379,6 +382,10 @@ public class DesktopPane extends JDesktopPane implements InternalFrameListener {
 
       frame.addInternalFrameListener(new InternalFrameAdapter() {
         public void internalFrameClosed(InternalFrameEvent e) {
+
+          if (ClientSettings.STORE_INTERNAL_FRAME_PROFILE)
+            saveState(frame);
+
           if (DesktopPane.this.getSelectedFrame()==null &&
               DesktopPane.this.getAllFrames().length>0) {
             JInternalFrame frame = DesktopPane.this.getAllFrames()[0];
@@ -558,6 +565,84 @@ public class DesktopPane extends JDesktopPane implements InternalFrameListener {
       }
   }
 
+
+  /**
+   * Store frame location and size to a local profile file.
+   */
+  private void saveState(InternalFrame frame) {
+      Dimension size = frame.getSize();
+      Point position = frame.getLocation();
+      String userHome = System.getProperty("user.home").replace('\\', '/');
+      if (!userHome.endsWith("/")) {
+          userHome += "/";
+      }
+      userHome += "profiles";
+      File dir = new File(userHome);
+      dir.mkdirs();
+      String[] str = System.getProperty("user.dir").split("\\\\");
+      String project = str[str.length - 1].trim();
+      String frameName = frame.getClass().getName().replace(' ', '_').replace('.', '_');
+      if (getName()!=null)
+        frameName += getName()+"_";
+      File f = new File(userHome + "/" + project.replace(' ', '_') + "_" + frameName + "_" + System.getProperty("user.name").replace(' ', '_') + ".ini");
+      if (f.exists())
+          f.delete();
+
+      PrintWriter pw = null;
+      try {
+          pw = new PrintWriter(new FileOutputStream(f));
+          pw.println(size.width);
+          pw.println(size.height);
+          pw.println(position.x);
+          pw.println(position.y);
+
+      } catch (Throwable ex) {
+      } finally {
+          try {
+              pw.close();
+          } catch (Exception ex1) {
+          }
+      }
+  }
+
+  /**
+   * Load frame location and size from a profile file and set them to this frame.
+   */
+  private void loadState(InternalFrame frame) {
+      String userHome = System.getProperty("user.home").replace('\\', '/');
+      if (!userHome.endsWith("/")) {
+          userHome += "/";
+      }
+      userHome += "profiles";
+      File dir = new File(userHome);
+      dir.mkdirs();
+      String[] str = System.getProperty("user.dir").split("\\\\");
+      String project = str[str.length - 1].trim();
+      String frameName = frame.getClass().getName().replace(' ', '_').replace('.', '_');
+      if (getName()!=null)
+        frameName += getName()+"_";
+      File f = new File(userHome + "/" + project.replace(' ', '_') + "_" + frameName + "_" + System.getProperty("user.name").replace(' ', '_') + ".ini");
+      if (!f.exists())
+          return;
+
+      BufferedReader br = null;
+      try {
+          br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+          int width = Integer.parseInt(br.readLine());
+          int height = Integer.parseInt(br.readLine());
+          int x = Integer.parseInt(br.readLine());
+          int y = Integer.parseInt(br.readLine());
+          frame.setSize(width,height);
+          frame.setLocation(x,y);
+
+      } catch (Throwable ex) {
+      } finally {
+          try {
+              br.close();
+          } catch (Exception ex1) {
+          }
+      }
+  }
 
 
 

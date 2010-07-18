@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 
+import java.io.*;
+
 import org.openswing.swing.client.*;
 import org.openswing.swing.form.client.*;
 import org.openswing.swing.logger.client.*;
