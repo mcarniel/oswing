@@ -53,6 +53,10 @@ public class WinIconsPanel extends JPanel {
   /** collection of frame title, number of frames with that title */
   private Hashtable buttonsNr = new Hashtable();
 
+  /* toggle button width */
+  private static final int len = 120;
+
+  /** current horizontal position when locating a new toggle button */
   private int x = 0;
 
   /** used to show a popup menu containing a "close frame" menu item */
@@ -98,6 +102,7 @@ public class WinIconsPanel extends JPanel {
     closeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
+          x = x-len;
           frameToClose.closeFrame();
           frameToClose = null;
         }
@@ -105,6 +110,10 @@ public class WinIconsPanel extends JPanel {
         }
       }
     });
+    closeMenu.setVisible(ClientSettings.SHOW_POPUP_MENU_CLOSE);
+    if(ClientSettings.ICON_MENU_WINDOW_CLOSE!=null)
+      closeMenu.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_MENU_WINDOW_CLOSE)));
+
     menu.add(iconMenu);
     iconMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -117,7 +126,9 @@ public class WinIconsPanel extends JPanel {
         frameToClose = null;
       }
     });
-
+    iconMenu.setVisible(ClientSettings.SHOW_ICON_POPUP_MENU_REDUCE_ICON);
+    if(ClientSettings.ICON_POPUP_MENU_REDUCE_ICON!=null)
+      iconMenu.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_POPUP_MENU_REDUCE_ICON)));
   }
 
 
@@ -142,7 +153,6 @@ public class WinIconsPanel extends JPanel {
       btn.setToolTipText(frame.getTitle());
 //      int len = btn.getFontMetrics(btn.getFont()).stringWidth(btn.getText());
 //      btn.setMinimumSize(new Dimension(len+20,24));
-      int len = 120;
       btn.setMinimumSize(new Dimension(len,24));
       btn.setMaximumSize(new Dimension(len,24));
       btn.setPreferredSize(new Dimension(len,24));

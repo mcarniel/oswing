@@ -570,6 +570,15 @@ public class DesktopPane extends JDesktopPane implements InternalFrameListener {
    * Store frame location and size to a local profile file.
    */
   private void saveState(InternalFrame frame) {
+
+      if (frame.isMaximum()) {
+        try {
+          frame.setMaximum(false);
+        }
+        catch (PropertyVetoException ex) {
+        }
+      }
+
       Dimension size = frame.getSize();
       Point position = frame.getLocation();
       String userHome = System.getProperty("user.home").replace('\\', '/');

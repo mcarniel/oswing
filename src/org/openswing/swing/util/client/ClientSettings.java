@@ -515,6 +515,81 @@ public class ClientSettings {
   /** flag used to enable the storing of frame locaiton and size to the local file system; default value: <code>false</code> */
   public static boolean STORE_INTERNAL_FRAME_PROFILE = false;
 
+  /** flag used to set visible for menu item related to tile horizontally in Window Menu; default value: <code>true</code> */
+  public static boolean SHOW_MENU_WINDOW_TILE_H = true;
+
+  /** flag used to set visible for menu item related to tile vertically in Window Menu; default value: <code>true</code> */
+  public static boolean SHOW_MENU_WINDOW_TILE_V = true;
+
+  /** flag used to set visible for menu item related to closing all opened windows in Window Menu; default value: <code>true</code> */
+  public static boolean SHOW_MENU_WINDOW_CLOSE_ALL = true;
+
+  /** flag used to set visible for menu item related to switch between opened windows in Window Menu; default value: <code>true</code> */
+  public static boolean SHOW_MENU_WINDOW_SWITCH = true;
+
+  /** flag used to set visible for menu item related to window minimization in Window Menu; default value: <code>true</code> */
+  public static boolean SHOW_MENU_WINDOW_MINIMIZE = true;
+
+  /** flag used to set visible for menu item related to all windows minimization in Window Menu; default value: <code>true</code> */
+  public static boolean SHOW_MENU_WINDOW_MINIMIZE_ALL = true;
+
+  /** flag used to set visible for menu item related to cascade windows in Window Menu; default value: <code>true</code> */
+  public static boolean SHOW_MENU_WINDOW_CASCADE = true;
+
+  /** flag used to set visible for menu item related to close windows in Window Menu; default value: <code>true</code> */
+  public static boolean SHOW_MENU_WINDOW_CLOSE = true;
+
+  /** flag used to set visible for menu item to reduce Window to icon in Window Panel; default value: <code>true</code> */
+  public static boolean SHOW_ICON_POPUP_MENU_REDUCE_ICON = true;
+
+  /** flag used to set visible for menu item to close Window in popup menu; default value: <code>true</code> */
+  public static boolean SHOW_POPUP_MENU_CLOSE = true;
+
+  /** image name of menu item related to tile horizontally in Window Menu; default value: <code>null</code> */
+  public static String ICON_MENU_WINDOW_TILE_H = null;
+
+  /** image name of menu item related to tile vertically in Window Menu; default value: <code>null</code> */
+  public static String ICON_MENU_WINDOW_TILE_V = null;
+
+  /** image name of menu item related to closing all opened windows in Window Menu; default value: <code>null</code> */
+  public static String ICON_MENU_WINDOW_CLOSE_ALL = null;
+
+  /** image name of menu item related to switch between opened windows in Window Menu; default value: <code>null</code> */
+  public static String ICON_MENU_WINDOW_SWITCH = null;
+
+  /** image name of menu item related to window minimization in Window Menu; default value: <code>null</code> */
+  public static String ICON_MENU_WINDOW_MINIMIZE = null;
+
+  /** image name of menu item related to all windows minimization in Window Menu; default value: <code>null</code> */
+  public static String ICON_MENU_WINDOW_MINIMIZE_ALL = null;
+
+  /** image name of menu item related to cascade windows in Window Menu; default value: <code>null</code> */
+  public static String ICON_MENU_WINDOW_CASCADE = null;
+
+  /** image name of menu item related to close windows in Window Menu; default value: <code>null</code> */
+  public static String ICON_MENU_WINDOW_CLOSE = null;
+
+  /** image name of menu item to close file in File Menu; default value: <code>null</code> */
+  public static String ICON_MENU_FILE_EXIT = null;
+
+  /** image name of menu item to change user in File Menu; default value: <code>null</code> */
+  public static String ICON_MENU_FILE_CHANGE_USER = null;
+
+  /** image name of menu item to change language in File Menu; default value: <code>null</code> */
+  public static String ICON_MENU_FILE_CHANGE_LANGUAGE = null;
+
+  /** image name of menu item to About in Help Menu; default value: <code>null</code> */
+  public static String ICON_MENU_HELP_ABOUT = null;
+
+  /** image name of menu item to Reduce Window to Icon in Window Icon Panel; default value: <code>null</code> */
+  public static String ICON_POPUP_MENU_REDUCE_ICON = null;
+
+  /** image name of frame that is disable in "Window" menu item; default value: <code>empty.gif</code> */
+  public static String ICON_DISABLE_FRAME = "empty.gif";
+
+  /** image name of frame that is enable in "Window" menu item; default value: <code>ok.gif</code> */
+  public static String ICON_ENABLE_FRAME = "ok.gif";
+
 
   /**
    * Contains application settings.

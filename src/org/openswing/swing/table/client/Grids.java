@@ -3055,7 +3055,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         getCopyButton().setEnabled(false);
       if (getEditButton()!=null)
         getEditButton().setEnabled(false);
-      if (gridControl.isAutoLoadData()) {
+      if (gridControl!=null && gridControl.isAutoLoadData()) {
         if (getFilterButton()!=null)
           getFilterButton().setEnabled(false);
       }

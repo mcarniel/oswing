@@ -230,6 +230,7 @@ ResourcesFactory {
     dictionary.setProperty("windowmnemonic","W");
     dictionary.setProperty("Close All","Fermer tout");
     dictionary.setProperty("closeallmnemonic","A");
+    dictionary.setProperty("closemnemonic","F");
     dictionary.setProperty("Press ENTER to find function","Appuyer sur ENTRER pour touver la fonction");
     dictionary.setProperty("Find Function","Trouver Fonction");
     dictionary.setProperty("Operation in progress...","Opération en cours...");
@@ -252,6 +253,7 @@ ResourcesFactory {
     dictionary.setProperty("minimizemnemonic","M");
     dictionary.setProperty("minimize all","Minimiser tout");
     dictionary.setProperty("minimizeallmnemonic","A");
+    dictionary.setProperty("selected frame","fenêtre sélectionnée");
 
     // server...
     dictionary.setProperty("Client request not supported","Requête cliente non supportée");

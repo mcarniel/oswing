@@ -218,6 +218,12 @@ public class Grid extends JTable
   /** flag used to allow the columns sorting in edit mode too; default value: <code>false</code>; note that this setting is used only when <code>orderWithLoadData</code> property is set to <code>false</code> */
   private boolean allowColumnsSortingInEdit = false;
 
+  /** store the last selection row index */
+  private int oldSelectedRow = -1;
+
+  /** store the last selection column index */
+  private int oldSelectedColumn = -1;
+
 
   /**
    * Costructor called by GridControl: programmer never called directly this class.
@@ -1894,6 +1900,52 @@ public class Grid extends JTable
    */
   public final VOListTableModel getVOListTableModel() {
     return model;
+  }
+
+
+  /**
+   * Updates the selection models of the table, depending on the state of the
+   * two flags: <code>toggle</code> and <code>extend</code>. All changes
+   * to the selection that are the result of keyboard or mouse events received
+   * by the UI are channeled through this method so that the behavior may be
+   * overridden by a subclass.
+   * <p>
+   * This implementation uses the following conventions:
+   * <ul>
+   * <li> <code>toggle</code>: <em>false</em>, <code>extend</code>: <em>false</em>.
+   *      Clear the previous selection and ensure the new cell is selected.
+   * <li> <code>toggle</code>: <em>false</em>, <code>extend</code>: <em>true</em>.
+   *      Extend the previous selection to include the specified cell.
+   * <li> <code>toggle</code>: <em>true</em>, <code>extend</code>: <em>false</em>.
+   *      If the specified cell is selected, deselect it. If it is not selected, select it.
+   * <li> <code>toggle</code>: <em>true</em>, <code>extend</code>: <em>true</em>.
+   *      Leave the selection state as it is, but move the anchor index to the specified location.
+   * </ul>
+   * @param  rowIndex   affects the selection at <code>row</code>
+   * @param  columnIndex  affects the selection at <code>column</code>
+   * @param  toggle  see description above
+   * @param  extend  if true, extend the current selection
+   *
+   */
+  public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
+    super.changeSelection(rowIndex, columnIndex, toggle,  extend);
+    if ((oldSelectedColumn==-1 || oldSelectedColumn!=columnIndex) &&
+        oldSelectedRow==-1 || oldSelectedRow==rowIndex) {
+      oldSelectedRow = rowIndex;
+      oldSelectedColumn = columnIndex;
+      if (model!=null && getMode()==Consts.READONLY) {
+        // fire cell selected event...
+        if (columnIndex!=-1)
+          columnIndex = this.convertColumnIndexToModel(columnIndex);
+        else
+          columnIndex = 0;
+        gridController.selectedCell(
+            this.getSelectedRow(), columnIndex,
+            model.getColumnName(columnIndex),
+            model.getObjectForRow(this.getSelectedRow())
+        );
+      }
+    }
   }
 
 

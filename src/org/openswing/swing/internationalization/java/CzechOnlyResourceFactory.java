@@ -195,6 +195,7 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("windowmnemonic", "W");
         dictionary.setProperty("Close All", "Zav\u0159\u00EDt v\u0161e");
         dictionary.setProperty("closeallmnemonic", "A");
+        dictionary.setProperty("closemnemonic", "Z");
         dictionary.setProperty("Press ENTER to find function", "Pro nalezen\u00ED funkce stiskn\u011Bte ENTER");
         dictionary.setProperty("Find Function", "Nal\u00E9zt funkci");
         dictionary.setProperty("Operation in progress...", "Operace prob\u00EDh\u00E1...");
@@ -219,6 +220,7 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("minimizemnemonic", "M");
         dictionary.setProperty("minimize all", "Minimalizovat v\u0161e");
         dictionary.setProperty("minimizeallmnemonic", "A");
+        dictionary.setProperty("selected frame","vybran\u00FD okno");
 
         // server...
         dictionary.setProperty("Client request not supported", "\u017D\u00E1dost klienta nen\u00ED podporov\u00E1na");

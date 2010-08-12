@@ -45,8 +45,8 @@ public class TaskGridFrame extends InternalFrame {
       setSize(500,300);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
-      MDIFrame.add(this);
       setTitle(ClientSettings.getInstance().getResources().getResource("tasks"));
+      MDIFrame.add(this);
 
     }
     catch(Exception e) {

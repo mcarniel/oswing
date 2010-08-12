@@ -20,8 +20,13 @@ public class TestVO extends ValueObjectImpl {
   private String description;
   private java.math.BigDecimal qty;
   private java.math.BigDecimal price;
+  private String iconName;
+
+
   public TestVO() {
   }
+
+
   public String getItemCode() {
     return itemCode;
   }
@@ -45,6 +50,12 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setPrice(java.math.BigDecimal price) {
     this.price = price;
+  }
+  public void setIconName(String iconName) {
+    this.iconName = iconName;
+  }
+  public String getIconName() {
+    return iconName;
   }
 
 

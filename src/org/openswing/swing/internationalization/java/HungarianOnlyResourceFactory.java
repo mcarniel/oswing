@@ -204,6 +204,7 @@ public class HungarianOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("windowmnemonic", "W");
         dictionary.setProperty("Close All", "Bez\u00E1r mindent");
         dictionary.setProperty("closeallmnemonic", "A");
+        dictionary.setProperty("closemnemonic","A");
         dictionary.setProperty("Press ENTER to find function", "ENTER a funkci\u00F3 keres\u00E9shez");
         dictionary.setProperty("Find Function", "Funkci\u00F3 keres\u00E9s");
         dictionary.setProperty("Operation in progress...", "Oper\u00E1ci\u00F3 v\u00E9grehajt\u00E1s alatt...");
@@ -228,6 +229,7 @@ public class HungarianOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("minimizemnemonic", "M");
         dictionary.setProperty("minimize all", "Mind kis m\u00E9retre");
         dictionary.setProperty("minimizeallmnemonic", "A");
+        dictionary.setProperty("selected frame","kijel\u00F6lt ablak");
 
         // server...
         dictionary.setProperty("Client request not supported", "A k\u00E9r\u00E9s kiszolg\u00E1l\u00E1sa nem megval\u00F3s\u00EDtott");

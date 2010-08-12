@@ -1,3 +1,27 @@
+Release Notes 2.2.4
+-------------------
+
+Final release 2.2.4 available
+- lookup:
+  - fixed problem with maxCharacters and columns properties of lookup control
+  - added "showErrorMessage" property to LookupController, in order to hide the error message when validating an incorrect code
+- other input controls:
+  - improved behavior of FormattedTextControl when losting focus and the field is empty or set to the empty default mask
+- grid:
+  - GridController.selectedCell callback is invoked now also when selecting another column of the same row
+  - fixed bug introduced with past version of OpenSwing with lookup grid frames
+- MDI frame:
+  - fixed problem with "win icons panel" at the bottom of the MDI environment when adding more windows and removing all of them
+  - fixed a problem with maximized internal frames when closing them and ClientSettings.STORE_INTERNAL_FRAME_PROFILE is set to true
+  - fixed problem when double clicking within an empty are of the tree menu
+  - improved "uniqueInstance" property of internal frames: when trying to open an already not selected unique instance of a frame, now it receive the focus
+  - improved SwithDialog (thanks to Marandola) by showing the current selected frame in the list of opened frames
+  - added global properties to ClientSettings (thanks to Marandola), in order to customize the "Window" menu items and "File" menu items and "win icons panels" buttons (icons and visibility)
+  - added new menu item named "close window" to "Window" menu (thanks to Marandola), in order to close current selected window
+- TreeGridPanel:
+  - added "iconAttributeName" optional attribute, in order to customize the icon to show for each tree node
+  - added "backgroundColor" optional attribute, in order to set the background color for this component
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
 
 
 

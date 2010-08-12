@@ -1,3 +1,3 @@
 set HIBERNATE_HOME=F:\Java\Programmi\iBatis
 
-java -cp ".;%HIBERNATE_HOME%/lib/*;%HIBERNATE_HOME%/lib/*;../build/itext-1.4.8.jar;../build/commonos.jar;../build/clientos.jar;../build/jnlp.jar;../build/jcalendar.jar;../build/log4j-1.2.7.jar;../build/poi-2.0-RC2-20040102.jar;../build/pooler.jar;../build/serveros.jar;../build/jnlp-servlet.jar;../build/hsqldb.jar" demo19.ClientApplication
+java -cp ".;%HIBERNATE_HOME%/lib/*;%HIBERNATE_HOME%/lib/*;../build/itext-1.4.8.jar;../build/itext-2.1.7.jar;../build/iText-rtf-2.1.7.jar;../build/commonos.jar;../build/clientos.jar;../build/jnlp.jar;../build/jcalendar.jar;../build/log4j-1.2.7.jar;../build/poi-2.0-RC2-20040102.jar;../build/pooler.jar;../build/serveros.jar;../build/jnlp-servlet.jar;../build/hsqldb.jar" demo19.ClientApplication

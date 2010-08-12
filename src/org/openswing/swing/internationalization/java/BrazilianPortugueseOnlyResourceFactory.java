@@ -179,6 +179,7 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       dictionary.setProperty("windowmnemonic", "J");
       dictionary.setProperty("Close All", "Fechar todas as janelas");
       dictionary.setProperty("closeallmnemonic", "C");
+      dictionary.setProperty("closemnemonic", "C");
       dictionary.setProperty("Press ENTER to find function", "Tecle ENTER para localizar função");
       dictionary.setProperty("Find Function", "Localiza função");
       dictionary.setProperty("Operation in progress...", "Processamento em curso...");
@@ -202,6 +203,8 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       dictionary.setProperty("minimizeallmnemonic", "T");
       dictionary.setProperty("change background","Change background");
       dictionary.setProperty("reset background","Reset background");
+      dictionary.setProperty("selected frame","janela selecionada");
+
       // server...
       dictionary.setProperty("Client request not supported", "Requisição não suportada");
       dictionary.setProperty("User disconnected", "Usuário desconectado");

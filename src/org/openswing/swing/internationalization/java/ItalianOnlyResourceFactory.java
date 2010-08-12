@@ -195,6 +195,7 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("windowmnemonic","F");
     dictionary.setProperty("Close All","Chiudi tutte le finestre");
     dictionary.setProperty("closeallmnemonic","C");
+    dictionary.setProperty("closemnemonic","C");
     dictionary.setProperty("Press ENTER to find function","Premere INVIO per trovare una funzione");
     dictionary.setProperty("Find Function","Trova funzione");
     dictionary.setProperty("Operation in progress...","Elaborazione in corso...");
@@ -219,6 +220,7 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("minimizemnemonic","R");
     dictionary.setProperty("minimize all","Riduci ad icona tutte le finestre");
     dictionary.setProperty("minimizeallmnemonic","T");
+    dictionary.setProperty("selected frame","Finestra selezionata");
 
     // server...
     dictionary.setProperty("Client request not supported","Richiesta del client non supportata");

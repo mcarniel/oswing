@@ -198,6 +198,7 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("windowmnemonic", "W");
         dictionary.setProperty("Close All", "Zamknij wszystkie");
         dictionary.setProperty("closeallmnemonic", "A");
+        dictionary.setProperty("closemnemonic","Z");
         dictionary.setProperty("Press ENTER to find function", "Naci\u015bnij ENTER by znale\u017a\u0107 funkcj\u0119");
         dictionary.setProperty("Find Function", "Znajd\u017a Funkcj\u0119");
         dictionary.setProperty("Operation in progress...", "Operacja w toku...");
@@ -222,6 +223,7 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("minimizemnemonic", "M");
         dictionary.setProperty("minimize all", "Minimalizuj wszystkie");
         dictionary.setProperty("minimizeallmnemonic", "A");
+        dictionary.setProperty("selected frame","wybrana okna");
 
         // server...
         dictionary.setProperty("Client request not supported", "\u017b\u0105dania do klienta nie s\u0105 obs\u0142ugiwane");

@@ -208,6 +208,7 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("windowmnemonic","W");
     dictionary.setProperty("Close All","Lukk Alt");
     dictionary.setProperty("closeallmnemonic","A");
+    dictionary.setProperty("closemnemonic","L");
     dictionary.setProperty("Press ENTER to find function","Trykk ENTER for å finne funksjon");
     dictionary.setProperty("Find Function","Finn Funksjon");
     dictionary.setProperty("Operation in progress...","Operasjon under utførelse...");
@@ -232,6 +233,7 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("minimizemnemonic","M");
     dictionary.setProperty("minimize all","Minimer alle");
     dictionary.setProperty("minimizeallmnemonic","A");
+    dictionary.setProperty("selected frame","valgt vindu");
 
     // server...
     dictionary.setProperty("Client request not supported","Klient forespørsel ikke tillatt");

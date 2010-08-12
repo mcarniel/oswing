@@ -74,7 +74,7 @@ public abstract class TreeDataLocator {
   /**
    * @return attribute name of the v.o. contained in UserObject that is used as node name
    */
-  public final String getNodeNameAttribute() {
+  public String getNodeNameAttribute() {
     return nodeNameAttribute;
   }
 
@@ -83,7 +83,7 @@ public abstract class TreeDataLocator {
    * Set the attribute name of the v.o. contained in UserObject that is used as node name.
    * @param nodeNameAttribute attribute name of the v.o. contained in UserObject that is used as node name
    */
-  public final void setNodeNameAttribute(String nodeNameAttribute) {
+  public void setNodeNameAttribute(String nodeNameAttribute) {
     this.nodeNameAttribute = nodeNameAttribute;
   }
 

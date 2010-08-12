@@ -332,14 +332,15 @@ public class TreeMenu extends JPanel {
    */
   private void treeDoubleClick(MouseEvent e) {
     try {
-      int selRow = menuTree.getRowForLocation(e.getX(), e.getY());
       javax.swing.tree.TreePath selPath = menuTree.getPathForLocation(e.getX(), e.getY());
-      Object objNode = selPath.getPathComponent(selPath.getPathCount()-1);
-      ApplicationFunction node = null;
-      if (objNode!=null && objNode instanceof ApplicationFunction)
-        node = (ApplicationFunction)objNode;
-      if (node!=null && node.getFunctionId()!=null)
-        executeFunction(node);
+      if (selPath!=null) {
+        Object objNode = selPath.getPathComponent(selPath.getPathCount()-1);
+        ApplicationFunction node = null;
+        if (objNode!=null && objNode instanceof ApplicationFunction)
+          node = (ApplicationFunction)objNode;
+        if (node!=null && node.getFunctionId()!=null)
+          executeFunction(node);
+      }
 
     } catch (Exception ex) {
       ex.printStackTrace();

@@ -2290,7 +2290,7 @@ public class QueryUtil {
              ex
          );
        }
-      return new ErrorResponse(ex.getMessage());
+       return new ErrorResponse(ex.getMessage());
      }
      finally {
        try {

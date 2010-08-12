@@ -87,7 +87,11 @@ public class SwitchDialog extends JDialog {
     DefaultListModel model = new DefaultListModel();
     for(int i=0;i<winList.size();i++) {
       f = (JInternalFrame)winList.get(i);
-      model.addElement(f.getTitle());
+      if(f.isSelected()){
+        model.addElement(f.getTitle()+" ("+ClientSettings.getInstance().getResources().getResource("selected frame")+")");
+      }else{
+        model.addElement(f.getTitle());
+      }
       frames.add(f);
     }
     list.setModel(model);

@@ -23,6 +23,8 @@ import org.openswing.swing.table.profiles.client.FileGridProfileManager;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
 import org.openswing.swing.util.java.Consts;
 import org.openswing.swing.lookup.client.LookupController;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 //import org.openswing.swing.kbs.client.FileKBSStorageManager;
 
 
@@ -172,10 +174,13 @@ public class ClientApplication implements MDIController,LoginController {
     ClientSettings.GRID_PROFILE_MANAGER = new FileGridProfileManager();
     ClientSettings.LOOKUP_FRAME_CONTENT = LookupController.GRID_AND_FILTER_FRAME;
 
+    ClientSettings.STORE_INTERNAL_FRAME_PROFILE = true;
+
 //    ClientSettings.KB_STORAGE_MANAGER = new FileKBSStorageManager();
 
 
     MDIFrame mdi = new MDIFrame(this);
+
 
 //    com.pagosoft.plaf.PlafOptions.setAsLookAndFeel();
 //    com.pagosoft.plaf.PlafOptions.updateAllUIs();
@@ -567,7 +572,7 @@ public class ClientApplication implements MDIController,LoginController {
    * @return <code>true</code> if the MDI frame must show the "File" menu in the menubar of the frame, <code>false</code> to hide it
    */
   public boolean viewFileMenu() {
-    return false;
+    return true;
   }
 
 

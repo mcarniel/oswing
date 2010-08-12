@@ -195,6 +195,7 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("windowmnemonic","W");
     dictionary.setProperty("Close All","Cerrar Todo");
     dictionary.setProperty("closeallmnemonic","A");
+    dictionary.setProperty("closemnemonic","C");
     dictionary.setProperty("Press ENTER to find function","Pulsa ENTER para buscar la función");
     dictionary.setProperty("Find Function","Buscar Función");
     dictionary.setProperty("Operation in progress...","Operación en progreso...");
@@ -219,6 +220,7 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("minimizemnemonic","M");
     dictionary.setProperty("minimize all","Minimizar todo");
     dictionary.setProperty("minimizeallmnemonic","A");
+    dictionary.setProperty("selected frame","ventana seleccionada");
 
     // server...
     dictionary.setProperty("Client request not supported","La petición del cliente no está sportada");

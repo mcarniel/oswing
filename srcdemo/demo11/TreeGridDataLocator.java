@@ -41,6 +41,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo.setItemCode("C1");
     vo.setPrice(new BigDecimal(110));
     vo.setQty(new BigDecimal(1));
+    vo.setIconName("folder.gif");
     DefaultMutableTreeNode root = new OpenSwingTreeNode(vo);
     DefaultTreeModel model = new DefaultTreeModel(root);
 
@@ -49,6 +50,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo.setItemCode("L1");
     vo.setPrice(new BigDecimal(10));
     vo.setQty(new BigDecimal(4));
+    vo.setIconName("appicon.gif");
     DefaultMutableTreeNode node1 = new OpenSwingTreeNode(vo);
     root.add(node1);
 
@@ -62,6 +64,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
 
     vo = new TestVO();
     vo.setDescription("Seat");
+    vo.setIconName("folder.gif");
     vo.setItemCode("S1");
     vo.setPrice(new BigDecimal(50));
     vo.setQty(new BigDecimal(1));
@@ -71,6 +74,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo = new TestVO();
     vo.setDescription("Pillow");
     vo.setItemCode("P1");
+    vo.setIconName("appicon.gif");
     vo.setPrice(new BigDecimal(40));
     vo.setQty(new BigDecimal(1));
     DefaultMutableTreeNode node31 = new OpenSwingTreeNode(vo);
@@ -81,6 +85,7 @@ public class TreeGridDataLocator extends TreeDataLocator {
     vo.setItemCode("W1");
     vo.setPrice(new BigDecimal(10));
     vo.setQty(new BigDecimal(1));
+    vo.setIconName("cd.gif");
     DefaultMutableTreeNode node32 = new OpenSwingTreeNode(vo);
     node3.add(node32);
 

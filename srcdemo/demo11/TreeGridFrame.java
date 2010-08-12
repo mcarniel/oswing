@@ -36,6 +36,8 @@ public class TreeGridFrame extends JFrame {
       treePanel.addGridColumn("description",200);
       treePanel.addGridColumn("qty",40);
       treePanel.addGridColumn("price",80);
+      treePanel.setIconAttributeName("iconName");
+      treePanel.setBackground(Color.orange);
       setVisible(true);
 
     }

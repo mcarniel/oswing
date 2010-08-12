@@ -105,6 +105,12 @@ public class TreeGridPanel extends JPanel {
   /** define if root node must be automatically expanded when "expandAllNodes" property is set to <code>false</code>; default value: <code>true</code> */
   private boolean expandRoot = true;
 
+  /** optional attribute name that identifies the name of the image to show as tree node */
+  private String iconAttributeName;
+
+  /** background color for this component */
+  private Color backgroundColor = null;
+
 
   /**
    * Constructor.
@@ -262,6 +268,9 @@ public class TreeGridPanel extends JPanel {
    * Fill in the tree.
    */
   private void createTree() {
+    if (iconAttributeName!=null && !iconAttributeName.equals(""))
+      tree.setIconAttributeName(iconAttributeName);
+
     Response response = treeDataLocator.getTreeModel(tree.getTree());
     if (response.isError())
       treeRoot = new OpenSwingTreeNode();
@@ -281,6 +290,13 @@ public class TreeGridPanel extends JPanel {
     TreeSelectionListener[] l3 = tree.getTree().getTreeSelectionListeners();
 
     tree = new TreeGrid(new TreeGridModel(treeRoot),gridColumns.get(0).toString(),gridColumns,gridColumnSizes,gridColumnAlignments,folderIconName,leavesImageName,(Format)columnFormatters.get(0),rootVisible);
+    if (backgroundColor!=null) {
+      tree.setBackground(backgroundColor);
+      treePane.setBackground(backgroundColor);
+      treePane.getViewport().setBackground(backgroundColor);
+    }
+    if (iconAttributeName!=null && !iconAttributeName.equals(""))
+      tree.setIconAttributeName(iconAttributeName);
     tree.getTree().setShowsRootHandles(true);
 
     for(int i=0;i<l1.length;i++)
@@ -516,6 +532,38 @@ public class TreeGridPanel extends JPanel {
 
 
   /**
+   * Sets the background color of this component.
+   *
+   * @param bg the desired background <code>Color</code>
+   * @see java.awt.Component#getBackground
+   *
+   * @beaninfo
+   *    preferred: true
+   *        bound: true
+   *    attribute: visualUpdate true
+   *  description: The background color of the component.
+   */
+  public final void setBackground(Color backgroundColor) {
+    this.backgroundColor = backgroundColor;
+    if (tree!=null)
+      tree.setBackground(backgroundColor);
+    if (treePane!=null) {
+      treePane.setBackground(backgroundColor);
+      treePane.getViewport().setBackground(backgroundColor);
+    }
+  }
+
+
+  /**
+   * @return background color of this component
+   */
+  public final Color getBackground() {
+    return this.backgroundColor;
+  }
+
+
+
+  /**
    * @return define if tree will be filled on viewing this panel
    */
   public final boolean isLoadWhenVisibile() {
@@ -546,6 +594,22 @@ public class TreeGridPanel extends JPanel {
    */
   public final void setExpandAllNodes(boolean expandAllNodes) {
     this.expandAllNodes = expandAllNodes;
+  }
+
+
+  /**
+   * @return optional attribute name that identifies the name of the image to show as tree node
+   */
+  public final String getIconAttributeName() {
+    return iconAttributeName;
+  }
+
+
+  /**
+   * Optional attribute name that identifies the name of the image to show as tree node.
+   */
+  public final void setIconAttributeName(String iconAttributeName) {
+    this.iconAttributeName = iconAttributeName;
   }
 
 

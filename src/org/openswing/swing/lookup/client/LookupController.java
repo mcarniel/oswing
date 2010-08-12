@@ -195,6 +195,9 @@ public class LookupController {
   /** define if, in case of a validation task which returns an ErrorResponse, the error message must be showed instead of the standard behavior: do nothing and log error; default value: <code>false</code>, i.e. do not show a custom error message */
   private boolean showCustomErrorMessage = ClientSettings.SHOW_CUSTOM_ERROR_MESSAGE_IN_LOOKUP;
 
+  /** define if, in case of a validation task which returns an ErrorResponse, the error message must be showed or not; default value: <code>true</code> */
+  private boolean showErrorMessage = true;
+
 
   /**
    * Execute the code validation.
@@ -286,20 +289,22 @@ public class LookupController {
             fireCodeChangedEvent(lookupParent.getValueObject());
 
             fireCodeValidatedEvent(false);
-            OptionPane.showMessageDialog(
-                ClientUtils.getParentFrame(parentComponent),
-                errorMessage,
-                ClientSettings.getInstance().getResources().getResource("Code Validation"),
-                JOptionPane.ERROR_MESSAGE
-            );
+            if (showErrorMessage)
+              OptionPane.showMessageDialog(
+                  ClientUtils.getParentFrame(parentComponent),
+                  errorMessage,
+                  ClientSettings.getInstance().getResources().getResource("Code Validation"),
+                  JOptionPane.ERROR_MESSAGE
+              );
           }
           else if (onInvalidCode==ON_INVALID_CODE_RESTORE_LAST_VALID_CODE) {
-            OptionPane.showMessageDialog(
-                ClientUtils.getParentFrame(parentComponent),
-                errorMessage,
-                ClientSettings.getInstance().getResources().getResource("Code Validation"),
-                JOptionPane.ERROR_MESSAGE
-            );
+            if (showErrorMessage)
+              OptionPane.showMessageDialog(
+                  ClientUtils.getParentFrame(parentComponent),
+                  errorMessage,
+                  ClientSettings.getInstance().getResources().getResource("Code Validation"),
+                  JOptionPane.ERROR_MESSAGE
+              );
             if (!lastValidCode.equals(code))
               validateCode(parentComponent,lastValidCode,lookupParent);
             else
@@ -308,12 +313,13 @@ public class LookupController {
           else if (onInvalidCode==ON_INVALID_CODE_RESTORE_FOCUS) {
             if (!lastInvalidCode.equals(code)) {
               lastInvalidCode = code;
-              OptionPane.showMessageDialog(
-                ClientUtils.getParentFrame(parentComponent),
-                errorMessage,
-                ClientSettings.getInstance().getResources().getResource("Code Validation"),
-                JOptionPane.ERROR_MESSAGE
-              );
+              if (showErrorMessage)
+                OptionPane.showMessageDialog(
+                  ClientUtils.getParentFrame(parentComponent),
+                  errorMessage,
+                  ClientSettings.getInstance().getResources().getResource("Code Validation"),
+                  JOptionPane.ERROR_MESSAGE
+                );
             }
             codeValid = false;
             throw new RestoreFocusOnInvalidCodeException();
@@ -628,7 +634,7 @@ public class LookupController {
       ex.printStackTrace();
     }
     try {
-      TreeController container = new TreeController() {
+      final TreeController container = new TreeController() {
 
         public void leftClick(DefaultMutableTreeNode node) {}
 
@@ -647,7 +653,7 @@ public class LookupController {
 
       };
 
-      TreePanel treePanel = new TreePanel();
+     final TreePanel treePanel = new TreePanel();
       treePanel.setTreeController(container);
       treePanel.setTreeDataLocator(lookupDataLocator);
 
@@ -736,7 +742,7 @@ public class LookupController {
       );
       lookupGridController.init(this,lookupParent,table.getVOListTableModel(),table);
 
-      TreeController treeContainer = new TreeController() {
+      final TreeController treeContainer = new TreeController() {
 
         public void leftClick(DefaultMutableTreeNode node) {
           // if the user select a tree node,
@@ -749,9 +755,70 @@ public class LookupController {
         public void doubleClick(DefaultMutableTreeNode node) { }
       };
 
-      TreePanel treePanel = new TreePanel();
+      final TreePanel treePanel = new TreePanel();
       treePanel.setTreeController(treeContainer);
-      treePanel.setTreeDataLocator(lookupDataLocator);
+      treePanel.setTreeDataLocator(new TreeDataLocator() {
+
+        /**
+         * Method called by the TreePanel to fill the tree.
+         * @return a VOReponse containing a DefaultTreeModel object
+         */
+        public Response getTreeModel(JTree tree) {
+          return lookupDataLocator.getTreeModel(tree);
+        }
+
+
+        /**
+         * @return parameters used to retrieve children nodes
+         */
+        public Map getTreeNodeParams() {
+          return lookupDataLocator.getTreeNodeParams();
+        }
+
+
+        /**
+         * Set the parameters used to retrieve children nodes.
+         * @param treeNodeParams parameters used to retrieve children nodes
+         */
+        public void setTreeNodeParams(Map treeNodeParams) {
+          lookupDataLocator.setTreeNodeParams(treeNodeParams);
+        }
+
+
+        /**
+         * @return attribute name of the v.o. contained in UserObject that is used as node name
+         */
+        public String getNodeNameAttribute() {
+          return lookupDataLocator.getNodeNameAttribute();
+        }
+
+
+        /**
+         * Set the attribute name of the v.o. contained in UserObject that is used as node name.
+         * @param nodeNameAttribute attribute name of the v.o. contained in UserObject that is used as node name
+         */
+        public void setNodeNameAttribute(String nodeNameAttribute) {
+          lookupDataLocator.setNodeNameAttribute(nodeNameAttribute);
+        }
+
+
+        /**
+         * Callback method invoked when the data loading is completed.
+         * @param error <code>true</code> if data loading has terminated with errors, <code>false</code> otherwise
+         */
+        public void loadDataCompleted(boolean error) {
+          lookupDataLocator.loadDataCompleted(error);
+
+          if (treePanel.getTree().getRowCount()>0)
+            treePanel.getTree().setSelectionRow(0);
+          if (treePanel.getTree().getSelectionPath()!=null)
+            treeContainer.leftClick((DefaultMutableTreeNode)treePanel.getTree().getSelectionPath().getLastPathComponent());
+        }
+
+      });
+
+//      treePanel.setTreeDataLocator(lookupDataLocator);
+
 
       // create the lookup tree grid frame...
       lookupFrame = new LookupTreeGridFrame(parentFrame,frameTitle,treePanel,table, statusPanel);
@@ -1833,6 +1900,23 @@ public class LookupController {
   */
  public final void setShowCustomErrorMessage(boolean showCustomErrorMessage) {
     this.showCustomErrorMessage = showCustomErrorMessage;
+  }
+
+
+  /**
+   * @return <code>true</code> if the error message must be showed in case of a validation task which returns an ErrorResponse
+   */
+  public final boolean isShowErrorMessage() {
+    return showErrorMessage;
+  }
+
+
+  /**
+   * Define if, in case of a validation task which returns an ErrorResponse, the error message must be showed or not.
+   * Default value: <code>true</code>
+   */
+  public final void setShowErrorMessage(boolean showErrorMessage) {
+    this.showErrorMessage = showErrorMessage;
   }
 
 

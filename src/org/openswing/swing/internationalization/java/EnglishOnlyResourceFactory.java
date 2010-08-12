@@ -208,6 +208,7 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("windowmnemonic","W");
     dictionary.setProperty("Close All","Close All");
     dictionary.setProperty("closeallmnemonic","A");
+    dictionary.setProperty("closemnemonic","C");
     dictionary.setProperty("Press ENTER to find function","Press ENTER to find function");
     dictionary.setProperty("Find Function","Find Function");
     dictionary.setProperty("Operation in progress...","Operation in progress...");
@@ -232,6 +233,7 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("minimizemnemonic","M");
     dictionary.setProperty("minimize all","Minimize all");
     dictionary.setProperty("minimizeallmnemonic","A");
+    dictionary.setProperty("selected frame","selected frame");
 
     // server...
     dictionary.setProperty("Client request not supported","Client request not supported");

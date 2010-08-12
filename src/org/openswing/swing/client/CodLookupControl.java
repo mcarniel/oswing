@@ -106,13 +106,7 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    */
   public CodLookupControl() {
     codBox.setContainer(this);
-    codBox.setColumns(10);
-
-    StringBuffer s = new StringBuffer(getMaxCharacters()); for(int i=0;i<getMaxCharacters();i++) s.append("0");
-    setMinimumSize(new Dimension(
-      getFontMetrics(getFont()).stringWidth(s.toString())+lookupButton.getPreferredSize().width,
-      getPreferredSize().height
-    ));
+    setColumns(10);
 
     lookupButton.setText(null);
     lookupButton.setPreferredSize(new Dimension(21, codBox.getPreferredSize().height));
@@ -214,13 +208,6 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    */
   public final void setMaxCharacters(int maxCharacters) {
     this.codBox.setMaxCharacters(maxCharacters);
-
-    StringBuffer s = new StringBuffer(getMaxCharacters()); for(int i=0;i<getMaxCharacters();i++) s.append("0");
-    setMinimumSize(new Dimension(
-      getFontMetrics(getFont()).stringWidth(s.toString())+lookupButton.getPreferredSize().width,
-      getPreferredSize().height
-    ));
-
   }
 
 
@@ -238,6 +225,8 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    */
   public final void setCodBoxVisible(boolean codBoxVisible) {
     this.codBox.setVisible(codBoxVisible);
+    if (!codBoxVisible)
+      setColumns(0);
   }
 
 
@@ -255,6 +244,19 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    */
   public final void setColumns(int columns) {
     this.codBox.setColumns(columns);
+
+    StringBuffer s = new StringBuffer(columns); for(int i=0;i<columns;i++) s.append("W");
+    int w =
+        getFontMetrics(getFont()).stringWidth(s.toString())+
+        lookupButton.getPreferredSize().width+
+        buttonSeparator.getPreferredSize().width+10;
+    if (controllerMethodName!=null)
+      w += plusButton.getPreferredSize().width;
+
+    int h = new JButton("A").getPreferredSize().height;
+
+    setMinimumSize(new Dimension(w,h));
+    setPreferredSize(new Dimension(w,h));
   }
 
 
@@ -606,7 +608,7 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    * @return attribute name in the parent value object related to lookup code
    */
   public Object getLookupCodeParentValue() {
-    if (validationController.getForm()!=null)
+    if (validationController.getForm()!=null && validationController.getForm().getVOModel()!=null && getAttributeName()!=null)
       return validationController.getForm().getVOModel().getValue(getAttributeName());
     return "";
   }

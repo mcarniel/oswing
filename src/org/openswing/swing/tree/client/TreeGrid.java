@@ -60,6 +60,9 @@ public class TreeGrid extends JTable {
     /** attribute names to used to show grid columns */
     private ArrayList gridColumns = new ArrayList();
 
+    /** optional attribute name that identifies the name of the image to show as tree node */
+    private String iconAttributeName;
+
 
     public TreeGrid(TreeTableModel treeTableModel,String attributeName,ArrayList gridColumns,ArrayList gridColumnSizes,Hashtable gridColumnAlignments,String folderIconName,String leavesImageName,Format formatter,boolean rootVisible) {
       super();
@@ -159,6 +162,22 @@ public class TreeGrid extends JTable {
      */
     public JTree getTree() {
         return tree;
+    }
+
+
+    /**
+     * @return optional attribute name that identifies the name of the image to show as tree node
+     */
+    public final String getIconAttributeName() {
+      return iconAttributeName;
+    }
+
+
+    /**
+     * Optional attribute name that identifies the name of the image to show as tree node.
+     */
+    public final void setIconAttributeName(String iconAttributeName) {
+      this.iconAttributeName = iconAttributeName;
     }
 
 
@@ -294,22 +313,39 @@ public class TreeGrid extends JTable {
                                                     boolean leaf,
                                                     int row,
                                                     boolean hasFocus) {
+        ValueObject vo = null;
         try {
           super.getTreeCellRendererComponent(tree, value, sel,expanded, leaf, row,hasFocus);
-          if (leaf)
-            setIcon(leafIcon);
-          else
-            setIcon(folderIcon);
+
+          DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+          vo = (ValueObject) node.getUserObject();
+
+          if (vo!=null && iconAttributeName!=null) {
+            Method getter = vo.getClass().getMethod("get"+iconAttributeName.substring(0,1).toUpperCase()+iconAttributeName.substring(1),new Class[0]);
+            value = getter.invoke(vo,new Object[0]);
+            if (value!=null) {
+              setIcon(new ImageIcon(ClientUtils.getImage(value.toString())));
+            }
+            else {
+              if (leaf)
+                setIcon(leafIcon);
+              else
+                setIcon(folderIcon);
+            }
+          }
+          else {
+            if (leaf)
+              setIcon(leafIcon);
+            else
+              setIcon(folderIcon);
+          }
 
         } catch (Exception ex) {
           ex.printStackTrace();
         }
         JLabel l = (JLabel)this;
-//    setBounds(0,0,350,l.getHeight());
 
         try {
-          DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-          ValueObject vo = (ValueObject) node.getUserObject();
           if (vo!=null) {
 
             Method getter = vo.getClass().getMethod("get"+attributeName.substring(0,1).toUpperCase()+attributeName.substring(1),new Class[0]);

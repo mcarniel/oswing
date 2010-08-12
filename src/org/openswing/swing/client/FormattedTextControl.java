@@ -89,7 +89,12 @@ public class FormattedTextControl extends BaseInputControl implements InputContr
 
         public void focusLost(FocusEvent e) {
           if (textBox.isEnabled() && textBox.isEditable()) {
-            setText(textBox.getText());
+            if (textBox.getText()!=null && textBox.getText().length()>0) {
+              setText(textBox.getText());
+              setText(textBox.getText());
+            }
+            else
+              setText(textBox.getText());
           }
         }
 

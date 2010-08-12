@@ -104,11 +104,13 @@ public class CodBox extends JTextField {
       }
     });
 
-    StringBuffer s = new StringBuffer(getMaxCharacters()); for(int i=0;i<getMaxCharacters();i++) s.append("0");
-    setMinimumSize(new Dimension(
-      getFontMetrics(getFont()).stringWidth(s.toString()),
-      getPreferredSize().height
-    ));
+
+    StringBuffer s = new StringBuffer(getColumns()); for(int i=0;i<getColumns();i++) s.append("W");
+    int w = getFontMetrics(getFont()).stringWidth(s.toString())+10;
+    int h = getPreferredSize().height;
+    setMinimumSize(new Dimension(w,h));
+    setPreferredSize(new Dimension(w,h));
+
 
     if (ClientSettings.FORCE_FOCUS_ON_LOOKUP_CONTROL)
       // disable transfer focus management: in this way TAB event will be listened...
@@ -192,12 +194,6 @@ public class CodBox extends JTextField {
    */
   public final void setMaxCharacters(int maxCharacters) {
     this.maxCharacters = maxCharacters;
-
-    StringBuffer s = new StringBuffer(getMaxCharacters()); for(int i=0;i<getMaxCharacters();i++) s.append("0");
-    setMinimumSize(new Dimension(
-      getFontMetrics(getFont()).stringWidth(s.toString()),
-      getPreferredSize().height
-    ));
   }
 
 

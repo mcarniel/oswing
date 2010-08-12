@@ -225,6 +225,8 @@ public class MDIFrame extends JFrame implements BusyListener {
         menuFileChangeUser_actionPerformed(e);
       }
     });
+    if(ClientSettings.ICON_MENU_FILE_CHANGE_USER!=null)
+      this.menuFileChangeUser.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_MENU_FILE_CHANGE_USER)));
 
     menuFileChangeLanguage.setText(ClientSettings.getInstance().getResources().getResource("change language"));
     menuFileChangeLanguage.setMnemonic(ClientSettings.getInstance().getResources().getResource("changelanguagemnemonic").charAt(0));
@@ -234,6 +236,8 @@ public class MDIFrame extends JFrame implements BusyListener {
         menuFileChangeLanguage_actionPerformed(e);
       }
     });
+    if(ClientSettings.ICON_MENU_FILE_CHANGE_LANGUAGE!=null)
+      this.menuFileChangeLanguage.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_MENU_FILE_CHANGE_LANGUAGE)));
 
 
     menuHelp.setText(ClientSettings.getInstance().getResources().getResource("help"));
@@ -246,6 +250,9 @@ public class MDIFrame extends JFrame implements BusyListener {
         menuHelpAbout_actionPerformed(e);
       }
     });
+    if(ClientSettings.ICON_MENU_HELP_ABOUT!=null)
+      this.menuHelpAbout.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_MENU_HELP_ABOUT)));
+
     if (client.viewLoginInMenuBar())
       menuFile.add(menuFileChangeUser);
     if (client.viewChangeLanguageInMenuBar() && client.getLanguages().size()>1)
@@ -702,8 +709,20 @@ public class MDIFrame extends JFrame implements BusyListener {
    */
   public static final void add(InternalFrame frame,boolean maximum) {
     if (frame.isUniqueInstance()) {
-      if (MDIFrame.getInstance().isUniqueInstanceAlreadyOpened(frame))
+
+      if (MDIFrame.getInstance().isUniqueInstanceAlreadyOpened(frame)){
+        for (int i = 0;i<desktopPane.getComponents().length;i++) {
+          if (frame.getClass().equals(desktopPane.getComponent(i).getClass())) {
+            try {
+              ((InternalFrame)desktopPane.getComponent(i)).setSelected(true);
+              return;
+            }
+            catch (Exception ex) {
+            }
+          }
+        }
         return;
+      }
       else
         MDIFrame.getInstance().uniqueInstances.add(frame.getClass());
     }
