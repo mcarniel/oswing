@@ -1,8 +1,6 @@
 package org.openswing.swing.lookup.client;
 
-
 import java.util.*;
-
 import org.openswing.swing.message.receive.java.*;
 
 
