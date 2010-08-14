@@ -1,7 +1,6 @@
 package org.openswing.swing.mdi.client;
 
 import java.util.*;
-
 import javax.swing.*;
 import javax.swing.tree.*;
 
