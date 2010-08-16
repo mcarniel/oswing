@@ -440,7 +440,12 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
                 obj = ClientUtils.getPropertyDescriptor(obj.getClass(),aux.substring(0,aux.indexOf("."))).getReadMethod().invoke(obj,new Object[0]);
                 aux = aux.substring(aux.indexOf(".")+1);
               }
-              newValue = ClientUtils.getPropertyDescriptor(obj.getClass(),aux).getReadMethod().invoke(obj,new Object[0]);
+              if (obj==null)
+                newValue = null;
+              else if (ClientUtils.getPropertyDescriptor(obj.getClass(),aux)==null)
+                newValue = null;
+              else
+                newValue = ClientUtils.getPropertyDescriptor(obj.getClass(),aux).getReadMethod().invoke(obj,new Object[0]);
             }
             else
               newValue = null;
