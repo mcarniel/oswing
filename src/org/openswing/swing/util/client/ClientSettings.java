@@ -663,7 +663,7 @@ public class ClientSettings {
    */
   public static final ClientSettings getInstance() {
     if (instance==null) {
-      System.err.println("You must set ClientSettings object");
+      //System.err.println("You must set ClientSettings object");
       instance = new ClientSettings(new EnglishOnlyResourceFactory("E",new Properties(),true),new Hashtable());
     }
     return instance;

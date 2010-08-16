@@ -330,7 +330,8 @@ public class WindowMenu extends JMenu {
     this.menuWindowMinimize.setEnabled(internalFrames.size()>0);
     this.menuWindowMinimizeAll.setEnabled(internalFrames.size()>0);
     this.menuWindowClose.setEnabled(internalFrames.size()>0);
-    MDIFrame.getInstance().windowClosed(frame);
+    if (MDIFrame.getInstance()!=null)
+      MDIFrame.getInstance().windowClosed(frame);
 
     System.gc();
   }
