@@ -115,6 +115,7 @@ public class UserRolesFrame extends InternalFrame {
     colUsername.setTrimText(true);
     colUsername.setUpperCase(true);
     colDescription.setColumnName("description");
+    colDescription.setColumnRequired(false);
     colDescription.setEditableOnEdit(true);
     colDescription.setEditableOnInsert(true);
     colDescription.setPreferredWidth(350);
