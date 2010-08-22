@@ -11,6 +11,7 @@ import org.openswing.swing.logger.server.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.message.send.java.*;
 import org.openswing.swing.util.java.*;
+import java.io.BufferedInputStream;
 
 
 /**
@@ -1946,6 +1947,40 @@ public class QueryUtil {
             value = rset.getObject(i+1);
 
           try {
+            if (setterMethods[i].getParameterTypes()[0].equals(byte[].class) &&
+                value!=null &&
+                value instanceof Blob){
+              Blob b = (Blob)value;
+              BufferedInputStream in = null;
+              try {
+                in = new BufferedInputStream(b.getBinaryStream());
+                byte[] bb = new byte[10000];
+                byte[] bytes = new byte[0];
+                byte[] aux = null;
+                int len = 0;
+                while((len=in.read(bb))>0) {
+                  aux = new byte[bytes.length+len];
+                  System.arraycopy(bytes,0,aux,0,bytes.length);
+                  System.arraycopy(bb,0,aux,bytes.length,len);
+                  bytes = aux;
+                }
+                value = bytes;
+              }
+              catch (Exception ex7) {
+                ex7.printStackTrace();
+                value = null;
+              }
+              finally {
+                try {
+                  if (in != null) {
+                    in.close();
+                  }
+                }
+                catch (Exception ex8) {
+                }
+              }
+
+            }
             setterMethods[i].invoke(currentVO, new Object[] {value});
           }
           catch (IllegalArgumentException ex5) {
@@ -2977,7 +3012,7 @@ public class QueryUtil {
 
 
   /**
-   * This method can be used to convert a single record Object[]to a ValueObject.
+   * This method can be used to convert a single record Object[] to a ValueObject.
    * @param attributes list of attribute names of the specified value object, exactly one for each fields is the select clause (i.e. one for each elements of Object[])
    * @param valueObjectClass value object class to use to generate the result
    * @param row Object[], related to the record already read
