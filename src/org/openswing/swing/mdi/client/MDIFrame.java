@@ -13,6 +13,7 @@ import org.openswing.swing.mdi.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.client.OptionPane;
 import java.beans.Beans;
+import java.beans.PropertyVetoException;
 import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 
@@ -216,6 +217,8 @@ public class MDIFrame extends JFrame implements BusyListener {
         menuFileExit_actionPerformed(e);
       }
     });
+    if(ClientSettings.ICON_MENU_FILE_EXIT!=null)
+     this.menuFileExit.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_MENU_FILE_EXIT)));
 
     menuFileChangeUser.setText(ClientSettings.getInstance().getResources().getResource("change user"));
     menuFileChangeUser.setMnemonic(ClientSettings.getInstance().getResources().getResource("changeusermnemonic").charAt(0));
@@ -712,9 +715,9 @@ public class MDIFrame extends JFrame implements BusyListener {
 
       if (MDIFrame.getInstance().isUniqueInstanceAlreadyOpened(frame)){
         for (int i = 0;i<desktopPane.getComponents().length;i++) {
-          if (frame.getClass().equals(desktopPane.getComponent(i).getClass())) {
-            try {
-              ((InternalFrame)desktopPane.getComponent(i)).setSelected(true);
+         if (frame.getClass().equals(desktopPane.getComponent(i).getClass())) {
+           try {
+             ((InternalFrame)desktopPane.getComponent(i)).setSelected(true);
               return;
             }
             catch (Exception ex) {

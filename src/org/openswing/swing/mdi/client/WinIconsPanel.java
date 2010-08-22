@@ -5,6 +5,9 @@ import java.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -150,6 +153,11 @@ public class WinIconsPanel extends JPanel {
       }
 
       final JToggleButton btn = new JToggleButton((n.intValue()>1?" ["+n.intValue()+"] ":"")+frame.getTitle());
+
+      if (ClientSettings.ICON_ENABLE_FRAME!=null)
+          btn.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_ENABLE_FRAME)));
+      btn.setHorizontalAlignment(SwingConstants.LEFT);
+
       btn.setToolTipText(frame.getTitle());
 //      int len = btn.getFontMetrics(btn.getFont()).stringWidth(btn.getText());
 //      btn.setMinimumSize(new Dimension(len+20,24));
@@ -183,7 +191,29 @@ public class WinIconsPanel extends JPanel {
       this.revalidate();
       this.repaint();
 
+      btn.addMouseMotionListener(new MouseMotionAdapter() {
+      public void mouseMoved(MouseEvent e) {
+          if (e.getX()<25) {
+            if (ClientSettings.ICON_CLOSE_FRAME_SELECTED!=null)
+              btn.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_CLOSE_FRAME_SELECTED)));
+          } else {
+            if (ClientSettings.ICON_CLOSE_FRAME!=null)
+              btn.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_CLOSE_FRAME)));
+          }
+        }
+      });
+
       btn.addMouseListener(new MouseAdapter() {
+        public void mouseExited(MouseEvent e) {
+          if (frame.isSelected()) {
+            if (ClientSettings.ICON_ENABLE_FRAME!=null)
+              btn.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_ENABLE_FRAME)));
+          } else {
+            if(!btn.isSelected())
+              if(ClientSettings.ICON_DISABLE_FRAME!=null)
+                btn.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_DISABLE_FRAME)));
+          }
+        }
 
         public void mouseClicked(MouseEvent e) {
           if (SwingUtilities.isRightMouseButton(e)) {
@@ -198,11 +228,18 @@ public class WinIconsPanel extends JPanel {
             iconMenu.setVisible( frameToClose.isIconifiable() );
 
             menu.show(btn,e.getX(),e.getY());
+          }else{
+            if(e.getX() < 25){
+              frameToClose = (InternalFrame)buttons.get(btn);
+              try {
+                frameToClose.closeFrame();
+              } catch (PropertyVetoException ex) {
+            } }
           }
         }
 
         public void mouseEntered(MouseEvent e) {
-          if (SwingUtilities.isLeftMouseButton(e)) {
+           if (SwingUtilities.isLeftMouseButton(e)) {
             btn.setSelected(true);
             InternalFrame f = (InternalFrame)buttons.get(btn);
 
@@ -290,10 +327,15 @@ public class WinIconsPanel extends JPanel {
 
         public void internalFrameActivated(InternalFrameEvent e) {
           btn.setSelected(true);
+          if (ClientSettings.ICON_ENABLE_FRAME!=null)
+            btn.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_ENABLE_FRAME)));
         }
 
         public void internalFrameDeactivated(InternalFrameEvent e) {
           btn.setSelected(false);
+          if(!btn.isFocusOwner())
+           if(ClientSettings.ICON_DISABLE_FRAME!=null)
+             btn.setIcon(new ImageIcon(ClientUtils.getImage(ClientSettings.ICON_DISABLE_FRAME)));
         }
 
       });
