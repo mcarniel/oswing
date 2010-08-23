@@ -2731,6 +2731,10 @@ public class QueryUtil {
             else
               oldObj = booleanFalseValue;
           }
+          else if (newObj instanceof byte[]) {
+            // do not compare the BLOB field...
+            continue;
+          }
 
           where += field+"=? and ";
           whereValues.add(oldObj);
