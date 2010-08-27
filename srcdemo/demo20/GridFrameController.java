@@ -152,7 +152,7 @@ public class GridFrameController extends GridController implements GridDataLocat
         vo = (TestVO)persistentObjects.get(i);
         stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
         stmt.setString(5,vo.getComboValue());
-        stmt.setBigDecimal(20,vo.getCurrencyValue());
+        //stmt.setBigDecimal(20,vo.getCurrencyValue());
         stmt.setDate(4,vo.getDateValue());
         stmt.setBigDecimal(2,vo.getNumericValue());
         stmt.setObject(7,vo.getRadioButtonValue()==null || !vo.getRadioButtonValue().booleanValue() ? "N":"Y");

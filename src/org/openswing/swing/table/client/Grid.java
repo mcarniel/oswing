@@ -1930,7 +1930,7 @@ public class Grid extends JTable
   public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
     super.changeSelection(rowIndex, columnIndex, toggle,  extend);
     if ((oldSelectedColumn==-1 || oldSelectedColumn!=columnIndex) &&
-        oldSelectedRow==-1 || oldSelectedRow==rowIndex) {
+        (oldSelectedRow==-1 || oldSelectedRow==rowIndex)) {
       oldSelectedRow = rowIndex;
       oldSelectedColumn = columnIndex;
       if (model!=null && getMode()==Consts.READONLY) {
@@ -2049,6 +2049,9 @@ public class Grid extends JTable
           model.getColumnName(columnIndex),
           model.getObjectForRow(this.getSelectedRow())
       );
+      oldSelectedRow = this.getSelectedRow();
+      oldSelectedColumn = columnIndex;
+
       // update navigation toolbar state...
       if (getMode()==Consts.READONLY && (grids.getNavBar()!=null)) {
         if (grids.getstartIndex()==0 &&
@@ -4175,12 +4178,20 @@ public class Grid extends JTable
                e.getModifiers()+e.getModifiersEx()==ClientSettings.INSERT_BUTTON_KEY.getModifiers() &&
                Grid.this.grids.getInsertButton()!=null &&
                Grid.this.grids.getInsertButton().isEnabled())
-        Grid.this.grids.insert();
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            Grid.this.grids.insert();
+          }
+        });
       else if (e.getKeyCode()==ClientSettings.EDIT_BUTTON_KEY.getKeyCode() &&
                e.getModifiers()+e.getModifiersEx()==ClientSettings.EDIT_BUTTON_KEY.getModifiers() &&
                Grid.this.grids.getEditButton()!=null &&
                Grid.this.grids.getEditButton().isEnabled())
-        Grid.this.grids.edit();
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            Grid.this.grids.edit();
+          }
+        });
       else if (e.getKeyCode()==ClientSettings.DELETE_BUTTON_KEY.getKeyCode() &&
                e.getModifiers()+e.getModifiersEx()==ClientSettings.DELETE_BUTTON_KEY.getModifiers() &&
                Grid.this.grids.getDeleteButton()!=null &&

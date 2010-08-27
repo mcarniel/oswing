@@ -91,6 +91,9 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
   /** flag used to show/hide calendar button; default value: <code>true</code> */
   private boolean showCalendarButton = true;
 
+  /** define how the date control must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it; default value: <code>ClientSettings.DATE_COMPONENT_STRICT_USAGE</code> */
+  private boolean strictUsage = ClientSettings.DATE_COMPONENT_STRICT_USAGE;
+
 
   public DateControl() {
     try {
@@ -609,6 +612,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
     }
     catch (Exception ex) {
       currentDate = oldCurrentDate;
+      setDate(currentDate==null?null:currentDate.getTime());
     }
     if (currentDate==null)
       date.setText("");
@@ -1172,6 +1176,26 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
     }
     catch (Exception ex) {
     }
+  }
+
+
+  /**
+   * @return define how the date control must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it
+   */
+  public final boolean isStrictUsage() {
+    return strictUsage;
+  }
+
+
+  /**
+   * define how the date control must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it.
+   * Default value: <code>ClientSettings.DATE_COMPONENT_STRICT_USAGE</code>
+   * @param strictUsage define how the date control must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it
+   */
+  public final void setStrictUsage(boolean strictUsage) {
+    this.strictUsage = strictUsage;
+    if (sdf!=null)
+      sdf.setLenient(!strictUsage);
   }
 
 

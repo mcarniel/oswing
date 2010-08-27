@@ -113,7 +113,7 @@ public class DetailFrame extends JFrame {
     controlComboBox.setDomainId("ORDERSTATE");
     controlFormattedText.setAttributeName("formattedTextValue");
     controlFormattedText.setToolTipText("formattedTextValue");
-
+    controlDate.setStrictUsage(true);
 
     MaskFormatter mask = new MaskFormatter("####/##.##.##");
 //    MaskFormatter mask = new MaskFormatter("###-##-####");

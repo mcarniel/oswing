@@ -2022,6 +2022,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             col++;
           if (col<grid.getColumnCount())
             grid.setColumnSelectionInterval(col,col);
+          grid.requestFocus();
+          if (grid.getEditingRow()==rowToSel && grid.getEditingColumn()==grid.getSelectedColumn())
+            grid.stopCellEditing();
           grid.editCellAt(rowToSel,grid.getSelectedColumn());
           grid.requestFocus();
         }
@@ -2031,6 +2034,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             col--;
           if (col>=0)
             grid.setColumnSelectionInterval(col,col);
+          if (grid.getEditingRow()==rowToSel && grid.getEditingColumn()==grid.getSelectedColumn())
+            grid.stopCellEditing();
           grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
           grid.requestFocus();
         }

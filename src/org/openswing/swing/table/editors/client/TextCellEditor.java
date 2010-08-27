@@ -206,6 +206,7 @@ public class TextCellEditor extends AbstractCellEditor implements TableCellEdito
         passwdField.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_REQUIRED_CELL_BORDER));
 //      field.setBorder(new CompoundBorder(new RequiredBorder(),field.getBorder()));
       }
+
       return passwdField;
     }
   }

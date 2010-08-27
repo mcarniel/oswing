@@ -596,6 +596,9 @@ public class ClientSettings {
   /** image name for button in WinIconPanel, when mouse is not over the button; default value: <code>iconclose.gif</code>*/
   public static String ICON_CLOSE_FRAME = "iconclose.gif";
 
+  /** define how a date control/column must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it; default value: <code>false</code>, i.e. try to correct the date */
+  public static boolean DATE_COMPONENT_STRICT_USAGE;
+
 
   /**
    * Contains application settings.

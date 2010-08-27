@@ -33,6 +33,7 @@ public class DateControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _enabled = new PropertyDescriptor("enabled", beanClass, "isEnabled", "setEnabled");
       PropertyDescriptor _enabledOnInsert = new PropertyDescriptor("enabledOnInsert", beanClass, "isEnabledOnInsert", "setEnabledOnInsert");
       PropertyDescriptor _enabledOnEdit = new PropertyDescriptor("enabledOnEdit", beanClass, "isEnabledOnEdit", "setEnabledOnEdit");
+      PropertyDescriptor _strictUsage = new PropertyDescriptor("strictUsage", beanClass, "isStrictUsage", "setStrictUsage");
       PropertyDescriptor _textAlignment = new PropertyDescriptor("textAlignment", beanClass, "getTextAlignment", "setTextAlignment");
       _textAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextHorizontalAlignmentEditor.class);
       PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
@@ -47,6 +48,7 @@ public class DateControlBeanInfo extends SimpleBeanInfo {
         _enabledOnInsert,
         _enabledOnEdit,
         _font,
+        _strictUsage,
         _textAlignment,
         _toolTipText,
       };

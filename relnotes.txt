@@ -1,3 +1,31 @@
+
+Release Notes 2.2.6
+-------------------
+
+Final release 2.2.6 available
+- fixed a problem with QueryUtil.updateTable, when updating table having also a BLOB type field
+- fixed a problem with GridController.selectedCell when changing row
+- fixed problem with FormattedTextColumn
+- changed NorwegianOnlyResourceFactory class with an updated version
+- added "strictUsage" property to date control/columns, in order to force validation of inputed text and clean up/restore previous correct date, when the text is incorrect
+- added DATE_COMPONENT_STRICT_USAGE global property to ClientSettings, in order to define the default value of "strictUsage" property to date control/columns
+- changed "getConnection" method in DataSourceConnection class, by surrounding code with try-catch within the method, in order to support Tomcat7/GlassFish 3 A.S.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+
+Release Notes 2.2.5
+-------------------
+
+Final release 2.2.5 available
+- fixed a problem with QueryUtil.getQuery, when reading a BLOB type field
+- added demo50, in order to test BLOB field reading/writing to Oracle db
+- improvements in "windows icon panel" of MDI frame (thanks to Marandola)
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.2.4
 -------------------
 

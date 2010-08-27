@@ -453,7 +453,7 @@ public class FormattedTextColumn extends Column {
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
     return new FormattedTextTableCellRenderer(
         tableContainer,
-        getTextBox(),
+        new JFormattedTextField(), // create another formatter box, otherwise all renderers and the one cell editor will share the same instance
         leftMargin,
         rightMargin,
         topMargin,
@@ -470,8 +470,17 @@ public class FormattedTextColumn extends Column {
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
     return new FormattedTextCellEditor(
       getTextBox(),
-      isColumnRequired()
+      isColumnRequired(),
+      this
     );
+  }
+
+
+  /**
+   * Method invoked by FormattedTextCellEditor, when pressing a key.
+   */
+  public final void forwardKeyEvent(KeyEvent e) {
+    textBox.processKeyEvent(e);
   }
 
 

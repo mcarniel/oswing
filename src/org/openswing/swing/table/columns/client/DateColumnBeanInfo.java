@@ -44,10 +44,13 @@ public class DateColumnBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _columnName = new PropertyDescriptor("columnName", beanClass, "getColumnName", "setColumnName");
       _columnName.setPropertyEditorClass(org.openswing.swing.client.DateAttributeNameEditor.class);
+      PropertyDescriptor _strictUsage = new PropertyDescriptor("strictUsage", beanClass, "isStrictUsage", "setStrictUsage");
+
 //      PropertyDescriptor _formatType = new PropertyDescriptor("formatType", beanClass, "getFormatType", "setFormatType");
 //      _formatType.setPropertyEditorClass(FormatTypeEditor.class);
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
           _columnName,
+          _strictUsage,
 //          _formatType
       };
       return pds;

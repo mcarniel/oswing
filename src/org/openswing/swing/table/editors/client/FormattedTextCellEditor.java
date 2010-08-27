@@ -11,6 +11,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.*;
+import org.openswing.swing.table.columns.client.FormattedTextColumn;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -61,7 +62,7 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
   /**
    * Constructor used for password fields.
    */
-  public FormattedTextCellEditor(final JFormattedTextField _field,boolean required) {
+  public FormattedTextCellEditor(final JFormattedTextField _field,boolean required,final FormattedTextColumn column) {
 /*
     try {
       InvocationHandler handler = new InvocationHandler() {
@@ -82,9 +83,8 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
       this.field = _field;
     }
 */
-    this.field = new JFormattedTextField( _field.getFormatter());
-
-    //    _field;
+    //this.field = new JFormattedTextField( _field.getFormatter());
+    this.field = _field;
     this.required = required;
     field.addKeyListener(new KeyAdapter() {
 
@@ -97,6 +97,39 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
           }
           catch (Exception ex) {
           }
+        }
+        else
+        if (e.getKeyCode()==e.VK_UP) {
+          stopCellEditing();
+          //table.requestFocus();
+          try {
+            e.consume();
+//            if (table.getSelectedRow()>0)
+//              table.setRowSelectionInterval(table.getSelectedRow()-1,table.getSelectedRow()-1);
+            table.editCellAt(table.getSelectedRow(),table.getSelectedColumn());
+          }
+          catch (Exception ex) {
+          }
+        }
+        else if (e.getKeyCode()==e.VK_DOWN) {
+          stopCellEditing();
+          //table.requestFocus();
+          try {
+            e.consume();
+//            if (table.getSelectedRow()<table.getRowCount())
+//              table.setRowSelectionInterval(table.getSelectedRow()+1,table.getSelectedRow()+1);
+            table.editCellAt(table.getSelectedRow(),table.getSelectedColumn());
+          }
+          catch (Exception ex) {
+          }
+        }
+        else if (e.getKeyCode()==e.VK_ENTER) {
+          stopCellEditing();
+          table.requestFocus();
+        }
+        else if (e.getKeyCode()==e.VK_F2) {
+          stopCellEditing();
+          table.editCellAt(table.getSelectedRow(),table.getSelectedColumn());
         }
       }
 
@@ -114,6 +147,7 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
   }
 
 
+
   /**
    * Perform the validation.
    */
@@ -123,7 +157,8 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
       field.setValue(field.getFormatter().stringToValue(field.getText()));
     }
     catch (ParseException ex) {
-      ok = false;
+//      ok = false;
+      field.setValue(null);
     }
     if (field.getText()!=null && field.getValue()==null)
       ok = false;
@@ -149,6 +184,11 @@ public class FormattedTextCellEditor extends AbstractCellEditor implements Table
     this.row = row;
     this.col = column;
 
+//    try {
+//      field.commitEdit();
+//    }
+//    catch (ParseException ex) {
+//    }
     field.setValue(value);
     if (required) {
       field.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_REQUIRED_CELL_BORDER));

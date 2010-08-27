@@ -362,5 +362,16 @@ public class GridFrameController extends GridController implements GridDataLocat
     return grid.isFieldEditable(row,attributeName);
   }
 
+  /**
+   * Callback method invoked when a grid cell is selected.
+   * @param rowNumber selected row index
+   * @param columnIndex column index related to the column currently selected
+   * @param attributedName attribute name related to the column currently selected
+   * @param persistentObject v.o. related to the selected row
+   */
+  public void selectedCell(int rowNumber, int columnIndex, String attributedName, ValueObject persistentObject) {
+    System.out.println("Selected cell: ("+rowNumber+","+columnIndex+")");
+  }
+
 
 }

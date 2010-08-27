@@ -72,8 +72,8 @@ public class DataSourceConnection implements ConnectionSource {
    */
   public Connection getConnection(ServletContext context) throws Exception {
     Connection conn = dataSource.getConnection();
-    try { conn.setTransactionIsolation(java.sql.Connection.TRANSACTION_READ_COMMITTED); } catch (Exception ex) {}
-    conn.setAutoCommit(false);
+    try { conn.setTransactionIsolation(java.sql.Connection.TRANSACTION_READ_COMMITTED); } catch (Throwable ex) {}
+    try { conn.setAutoCommit(false); } catch (Throwable ex1) { }
     return conn;
   }
 
@@ -85,7 +85,11 @@ public class DataSourceConnection implements ConnectionSource {
    */
   public void releaseConnection(Connection conn,ServletContext context) {
     try {
-      conn.rollback();
+      try {
+        conn.rollback();
+      }
+      catch (Exception ex1) {
+      }
       conn.close();
     }
     catch (SQLException ex) {

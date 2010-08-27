@@ -42,15 +42,18 @@ public class DateTimeColumnBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     PropertyDescriptor _columnName = null;
+    PropertyDescriptor _strictUsage = null;
     try {
       _columnName = new PropertyDescriptor("columnName", beanClass,
                                            "getColumnName", "setColumnName");
+      _strictUsage = new PropertyDescriptor("strictUsage", beanClass, "isStrictUsage", "setStrictUsage");
     }
     catch (IntrospectionException ex) {
     }
     _columnName.setPropertyEditorClass(org.openswing.swing.client.DateAttributeNameEditor.class);
     PropertyDescriptor[] pds = new PropertyDescriptor[] {
-        _columnName
+        _columnName,
+        _strictUsage
     };
     return pds;
   }

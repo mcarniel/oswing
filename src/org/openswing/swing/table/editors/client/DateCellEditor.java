@@ -79,12 +79,13 @@ public class DateCellEditor extends AbstractCellEditor implements TableCellEdito
    * @param columnType column type; possible values: Column.TYPE_DATE, Column.TYPE_TIME, Column.TYPE_DATE_TIME
    * @param defaultDate optional default date to set in calendar when opening it and no date has been still set
    */
-  public DateCellEditor(boolean required,int columnType,int format,String timeFormat,ArrayList dateListeners,Calendar defaultDate) {
+  public DateCellEditor(boolean required,int columnType,int format,String timeFormat,ArrayList dateListeners,Calendar defaultDate, boolean strictUsage) {
     this.required = required;
     this.dateListeners = dateListeners;
     field.setDateType(columnType);
     field.setDefaultDate(defaultDate);
     field.setFormat(format);
+    field.setStrictUsage(strictUsage);
     if (columnType==Column.TYPE_TIME || columnType==Column.TYPE_DATE_TIME)
       field.setTimeFormat(timeFormat);
 

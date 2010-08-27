@@ -85,7 +85,7 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Error while saving","Feil under lagring");
     dictionary.setProperty("Saving Error","Lagrings Feil");
     dictionary.setProperty("A mandatory column is empty.","En obligatorisk kolonne er tom");
-    dictionary.setProperty("Value not valid","Verdi ikke gyldig");
+    dictionary.setProperty("Value not valid","Verdi er ikke gyldig");
     dictionary.setProperty("sorting conditions","Sorterings betingelser");
     dictionary.setProperty("filtering conditions","Filtrerings betingelser");
     dictionary.setProperty("filtering and sorting settings","Filtrering and sorterings innstillinger");
@@ -99,7 +99,7 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("exportmnemonic","X");
     dictionary.setProperty("column","Kolonne");
     dictionary.setProperty("sel.","Velg");
-    dictionary.setProperty("you must select at least one column","Du må velge minst en kolonne ");
+    dictionary.setProperty("you must select at least one column","Du må velge minst en kolonne");
     dictionary.setProperty("columns to export","Kolonner for eksport");
     dictionary.setProperty("export type","Eksport format");
 
@@ -128,11 +128,11 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
 
     // copy/cut/paste
     dictionary.setProperty("copy","Kopier");
-    dictionary.setProperty("copymnemonic","C");
+    dictionary.setProperty("copymnemonic","K");
     dictionary.setProperty("cut","Kutt");
     dictionary.setProperty("cutmnemonic","U");
     dictionary.setProperty("paste","Lim inn");
-    dictionary.setProperty("pastemnemonic","P");
+    dictionary.setProperty("pastemnemonic","L");
 
     // lookup...
     dictionary.setProperty("Code is not correct.","Kode er ikke korrekt.");
@@ -178,24 +178,24 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("file","File");
     dictionary.setProperty("exit","Avslutt");
     dictionary.setProperty("filemnemonic","F");
-    dictionary.setProperty("exitmnemonic","E");
+    dictionary.setProperty("exitmnemonic","A");
     dictionary.setProperty("change user","Endre Bruker");
     dictionary.setProperty("changeusermnemonic","U");
-    dictionary.setProperty("changelanguagemnemonic","L");
+    dictionary.setProperty("changelanguagemnemonic","S");
     dictionary.setProperty("help","Hjelp");
     dictionary.setProperty("about","Om");
     dictionary.setProperty("helpmnemonic","H");
-    dictionary.setProperty("aboutmnemonic","A");
-    dictionary.setProperty("are you sure to quit application?","Er du sikker på å avslutte program");
+    dictionary.setProperty("aboutmnemonic","O");
+    dictionary.setProperty("are you sure to quit application?","Er du sikker på å avslutte program?");
     dictionary.setProperty("quit application","Avslutt program");
-    dictionary.setProperty("forcegcmnemonic","F");
+    dictionary.setProperty("forcegcmnemonic","T");
     dictionary.setProperty("Force GC","Tving GC");
     dictionary.setProperty("Java Heap","Java Minne");
     dictionary.setProperty("used","brukt");
     dictionary.setProperty("allocated","allokert");
     dictionary.setProperty("change language","Endre Språk");
-    dictionary.setProperty("changemnemonic","L");
-    dictionary.setProperty("cancelmnemonic","C");
+    dictionary.setProperty("changemnemonic","S");
+    dictionary.setProperty("cancelmnemonic","A");
     dictionary.setProperty("cancel","Avbryt");
     dictionary.setProperty("yes","Ja");
     dictionary.setProperty("no","Nei");
@@ -205,15 +205,15 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("infoPanel","Info");
     dictionary.setProperty("imageButton","Om");
     dictionary.setProperty("Window","Vindu");
-    dictionary.setProperty("windowmnemonic","W");
+    dictionary.setProperty("windowmnemonic","V");
     dictionary.setProperty("Close All","Lukk Alt");
     dictionary.setProperty("closeallmnemonic","A");
-    dictionary.setProperty("closemnemonic","L");
+    dictionary.setProperty("closemnemonic","A");
     dictionary.setProperty("Press ENTER to find function","Trykk ENTER for å finne funksjon");
     dictionary.setProperty("Find Function","Finn Funksjon");
     dictionary.setProperty("Operation in progress...","Operasjon under utførelse...");
     dictionary.setProperty("close window","Lukk Vindu");
-    dictionary.setProperty("reduce to icon","Redduser til ikon");
+    dictionary.setProperty("reduce to icon","Reduser til ikon");
     dictionary.setProperty("save changes?", "Lagre endringer?");
     dictionary.setProperty("confirm window closing","Bekreft stenging av vindu");
     dictionary.setProperty("change background","Endre bakgrunn");
@@ -233,7 +233,6 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("minimizemnemonic","M");
     dictionary.setProperty("minimize all","Minimer alle");
     dictionary.setProperty("minimizeallmnemonic","A");
-    dictionary.setProperty("selected frame","valgt vindu");
 
     // server...
     dictionary.setProperty("Client request not supported","Klient forespørsel ikke tillatt");
@@ -255,7 +254,7 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("close","Lukk");
     dictionary.setProperty("tip of the day","Dagens tips");
     dictionary.setProperty("select tip","Velg tip");
-    dictionary.setProperty("tip name","Tip navn");
+    dictionary.setProperty("tip name","Tips navn");
     dictionary.setProperty("tips list","Tips list");
 
     // progress panel...
@@ -306,7 +305,7 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
       currencySymbol,
       '.',
       ',',
-      Resources.YMD,
+      Resources.DMY,
       true,
       dateFormatSeparator,
       "HH:mm",

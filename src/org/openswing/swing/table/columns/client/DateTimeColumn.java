@@ -71,6 +71,9 @@ public class DateTimeColumn extends Column {
   /** dynamic settings used to reset cell renderer properties for each grid cell */
   private DateColumnSettings dynamicSettings = null;
 
+  /** define how the date control must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it; default value: <code>ClientSettings.DATE_COMPONENT_STRICT_USAGE</code> */
+  private boolean strictUsage = ClientSettings.DATE_COMPONENT_STRICT_USAGE;
+
 
   public DateTimeColumn() {
     setTextAlignment(SwingConstants.CENTER);
@@ -238,6 +241,24 @@ public class DateTimeColumn extends Column {
 
 
   /**
+   * @return define how the date control must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it
+   */
+  public final boolean isStrictUsage() {
+    return strictUsage;
+  }
+
+
+  /**
+   * define how the date control must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it.
+   * Default value: <code>ClientSettings.DATE_COMPONENT_STRICT_USAGE</code>
+   * @param strictUsage define how the date control must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it
+   */
+  public final void setStrictUsage(boolean strictUsage) {
+    this.strictUsage = strictUsage;
+  }
+
+
+  /**
    * @return dynamic settings used to reset cell renderer properties for each grid row; default value = null (no dinamic settings)
    */
   public final DateColumnSettings getDynamicSettings() {
@@ -276,7 +297,7 @@ public class DateTimeColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE_TIME,getFormat(),timeFormat,getDateListeners(),defaultDate);
+    return new DateCellEditor(isColumnRequired(),Column.TYPE_DATE_TIME,getFormat(),timeFormat,getDateListeners(),defaultDate,strictUsage);
   }
 
 
