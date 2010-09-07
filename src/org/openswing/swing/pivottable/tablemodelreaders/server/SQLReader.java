@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.openswing.swing.pivottable.java.InputFilter;
 import java.sql.*;
 import java.util.Map;
+import org.openswing.swing.logger.server.*;
 
 
 /**
@@ -141,6 +142,7 @@ public class SQLReader implements Reader {
       return true;
     }
     catch (Exception ex) {
+      Logger.error(null,this.getClass().getName(),"initializeScrolling",ex.getMessage(),ex);
       return false;
     }
   }

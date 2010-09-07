@@ -3281,7 +3281,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   public int getSelectedRow() {
-    return grid.getSelectedRow();
+    return grid==null?-1:grid.getSelectedRow();
   }
 
 

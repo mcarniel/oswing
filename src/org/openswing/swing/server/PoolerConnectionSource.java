@@ -108,7 +108,7 @@ public class PoolerConnectionSource implements ConnectionSource {
         props.setProperty("logLevel","1");
       props.setProperty("autoCommit", "false");
       if (props.getProperty("maxCount")==null || props.getProperty("maxCount").equals(""))
-        props.setProperty("maxCount","5");
+        props.setProperty("maxCount","50");
       if (props.getProperty("minCount")==null || props.getProperty("minCount").equals(""))
         props.setProperty("minCount","1");
       if (props.getProperty("loginTimeout")==null || props.getProperty("loginTimeout").equals(""))

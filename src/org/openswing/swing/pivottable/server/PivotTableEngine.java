@@ -54,6 +54,9 @@ public class PivotTableEngine {
    * @return VOResponse that contains a PivotTableModel generated starting from PivotTableParameters; ErrorResponse in case of errors on analyzing data
    */
   public final Response getPivotTableModel(PivotTableParameters pars) {
+    if (!reader.initializeScrolling(pars.getInputFilter()))
+      return new ErrorResponse("Error on reading data on input.");
+
     HashSet cols = new HashSet();
     for(int i=0;i<reader.getColumnCount();i++)
       cols.add(reader.getColumnName(i));
@@ -111,8 +114,6 @@ public class PivotTableEngine {
     PivotTableModel model = new PivotTableModel(hroot,vroot);
 
     // read all data in input...
-    if (!reader.initializeScrolling(pars.getInputFilter()))
-      return new ErrorResponse("Error on reading data on input.");
 //    StringBuffer hpath = new StringBuffer();
     GenericNodeKey hpath = null;
     RowGenericNode hnode = null;
