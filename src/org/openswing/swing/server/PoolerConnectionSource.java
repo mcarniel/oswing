@@ -124,6 +124,11 @@ public class PoolerConnectionSource implements ConnectionSource {
       return true;
     }
     catch (FileNotFoundException ex) {
+      try {
+        if ("true".equals(servlet.getInitParameter("suppressInitPoolerError")))
+          return false;
+      }
+      catch (Exception exx) {}
       ex.printStackTrace();
       servlet.getServletContext().log("Error while creating connection pooler: file not found in\n"+new File("pooler.ini").getAbsolutePath(),ex);
       return false;

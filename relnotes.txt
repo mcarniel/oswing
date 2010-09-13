@@ -1,4 +1,14 @@
 
+Release Notes 2.2.7
+-------------------
+
+Final release 2.2.7 available
+- added another constructor to LoginDialog, in order to manually set the window size; useful when using OpenSwing with no "system" Look and feels
+- added "cleanUp" method to GridControl and Form panel, in order to clean up the row/form content in INSERT/EDIT modes
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.2.6
 -------------------
 

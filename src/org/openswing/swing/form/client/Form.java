@@ -2089,6 +2089,51 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
 
   /**
+   * Clean up fields content.
+   * Note: this method can be invoked only in INSERT/EDIT modes.
+   */
+  public final void cleanUp() {
+    cleanUp(true);
+  }
+
+
+  /**
+   * Clean up fields content, for each field or editable only fields.
+   * Note: this method can be invoked only in INSERT/EDIT modes.
+   * @param cleanUpAlsoNotEditableFields define if all fields must be clean up
+   */
+  public final void cleanUp(boolean cleanUpAlsoNotEditableFields) {
+    if (getMode()!=Consts.INSERT && getMode()!=Consts.EDIT) {
+      Logger.error(this.getClass().getName(), "cleanUp", "You are not allowed to clean up fields in READONLY mode.", null);
+    }
+    else {
+      Enumeration en = bindings.keys();
+      String attrName = null;
+      ArrayList list = null;
+      InputControl comp = null;
+      while(en.hasMoreElements()) {
+        attrName = en.nextElement().toString();
+        list = (ArrayList)bindings.get(attrName);
+        if (list!=null) {
+          for(int i=0;i<list.size();i++) {
+            comp = (InputControl)list.get(i);
+            try {
+              if (cleanUpAlsoNotEditableFields ||
+                  getMode()==Consts.INSERT && comp.isEnabledOnInsert() ||
+                  getMode()==Consts.EDIT && comp.isEnabledOnEdit())
+              comp.setValue(null);
+            }
+            catch (Exception ex) {
+              Logger.error(this.getClass().getName(), "cleanUp", "Error on setting value to the input control having the attribute name '"+comp.getAttributeName()+"'",ex);
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  /**
    * Create a binding between the specified input control and this data model
    * @param comp input control
    * @throws Exception if an error occours

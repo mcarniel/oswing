@@ -23,6 +23,7 @@ import org.openswing.swing.util.java.*;
 import org.openswing.swing.export.java.GridExportOptions;
 import org.openswing.swing.table.permissions.java.GridPermissions;
 import org.openswing.swing.table.client.OrderPolicy;
+import org.openswing.swing.message.receive.java.ValueObject;
 
 
 /**
@@ -376,6 +377,10 @@ public class GridControl extends JPanel {
       Component[] c = (Component[]) components.toArray(new Component[components.size()]);
       columnProperties = new Column[c.length];
       for (int i = 0; i < c.length; i++) {
+        if (!(c[i] instanceof Column)) {
+          Logger.error(this.getClass().getName(), "commitColumnContainer", "You are not allowed to add a '"+c.getClass().getName()+"' class to grid control: only Column type components are accepted.", null);
+          return;
+        }
         columnProperties[i] = (Column) c[i];
         if (columnProperties[i].getListFilter()!=null)
           listFilters.put(columnProperties[i].getColumnName(),columnProperties[i].getListFilter());
@@ -1792,6 +1797,28 @@ public class GridControl extends JPanel {
 
 
   /**
+   * Clean up cells content for the specified row.
+   * Note: this method can be invoked only in INSERT/EDIT modes.
+   */
+  public final void cleanUp(int row) {
+    cleanUp(row,true);
+  }
+
+
+  /**
+   * Clean up cells content for the specified row, for each field or editable only cells.
+   * Note: this method can be invoked only in INSERT/EDIT modes.
+   * @param cleanUpAlsoNotEditableCells define if all cells must be clean up
+   */
+  public final void cleanUp(int row,boolean cleanUpAlsoNotEditableCells) {
+    if (table==null)
+      Logger.error(this.getClass().getName(), "cleanUp", "You are not allowed to invoke this method before showing grid.", null);
+    else
+      table.cleanUp(row,cleanUpAlsoNotEditableCells);
+  }
+
+
+  /**
    * @return number of locked columns, i.e. columns anchored to the left side of the grid
    */
   public final int getLockedColumns() {
@@ -1818,6 +1845,13 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * Returns the indices of all selected rows.
+   *
+   * @return an array of integers containing the indices of all selected rows,
+   *         or an empty array if no row is selected
+   * @see #getSelectedRow
+   */
   public int[] getSelectedRows() {
     if (table==null)
       return new int[0];
@@ -1826,11 +1860,38 @@ public class GridControl extends JPanel {
   }
 
 
+  /**
+   * Returns the index of the first selected row, -1 if no row is selected.
+   * @return the index of the first selected row
+   */
   public int getSelectedRow() {
     if (table==null)
       return -1;
     else
       return table.getSelectedRow();
+  }
+
+
+  /**
+   * Returns the index of the first selected column,
+   * -1 if no column is selected.
+   * @return the index of the first selected column
+   */
+  public int getSelectedColumn() {
+    if (table==null)
+      return -1;
+    else
+      return table.getSelectedColumn();
+  }
+
+
+  /**
+   * @return <code>true</code> if current editing cell is in valid state, <code>false</code> otherwise
+   */
+  public final boolean stopCellEditing() {
+    if (table!=null)
+      return table.getGrid().stopCellEditing();
+    return false;
   }
 
 

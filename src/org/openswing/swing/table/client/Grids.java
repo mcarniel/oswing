@@ -3275,6 +3275,13 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   }
 
 
+  /**
+   * Returns the indices of all selected rows.
+   *
+   * @return an array of integers containing the indices of all selected rows,
+   *         or an empty array if no row is selected
+   * @see #getSelectedRow
+   */
   public int[] getSelectedRows() {
     return grid.getSelectedRows();
   }
@@ -3282,6 +3289,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
   public int getSelectedRow() {
     return grid==null?-1:grid.getSelectedRow();
+  }
+
+
+  public int getSelectedColumn() {
+    return grid==null?-1:grid.getSelectedColumn();
   }
 
 
@@ -3776,6 +3788,28 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       return ((CheckBoxColumn)colProps[columnIndex]).isEnableInReadOnlyMode();
     return false;
   }
+
+
+  /**
+   * Clean up cells content for the specified row, for each field or editable only cells.
+   * Note: this method can be invoked only in INSERT/EDIT modes.
+   * @param cleanUpAlsoNotEditableCells define if all cells must be clean up
+   */
+  public final void cleanUp(int row,boolean cleanUpAlsoNotEditableCells) {
+    if (getMode()!=Consts.INSERT && getMode()!=Consts.EDIT) {
+      Logger.error(this.getClass().getName(), "cleanUp", "You are not allowed to clean up fields in READONLY mode.", null);
+    }
+    else {
+      for(int i=0;i<colProps.length;i++) {
+        if (cleanUpAlsoNotEditableCells ||
+            getMode()==Consts.INSERT && colProps[i].isEditableOnInsert() ||
+            getMode()==Consts.EDIT && colProps[i].isEditableOnEdit())
+          model.setField(row,colProps[i].getColumnName(),null);
+      }
+    }
+  }
+
+
 
 
 
