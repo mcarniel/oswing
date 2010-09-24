@@ -236,13 +236,14 @@ public class DbGridPermissionsManager extends GridPermissionsManager {
    * Store in grid permissions defaults table.
    * @param functionId identifier (functionId) associated to the grid
    * @param columnAttributes list of attribute names, that identify columns
+   * @param headerColumnNames list of keys for columns, that will be translated
    * @param columnsVisibility define which columns are visible
    * @param columnEditableInInsert define which columns are editable on insert; used to correctly define GridPermissions content: a column will be marked as NOT editable if currently editable but NOT the inverse
    * @param columnEditableInEdit define which columns are editable on edit; used to correctly define GridPermissions content: a column will be marked as NOT editable if currently editable but NOT the inverse
    * @param columnsMandatory define which columns are required on insert/edit mode; used to correctly define GridPermissions content: a column will be marked as required if currently not required but NOT the inverse
    * @throws Throwable throwed if storing operation does not correctly accomplished
    */
-  public void storeGridPermissionsDefaults(String functionId,String[] columnAttributes,boolean[] columnsVisibility,boolean[] columnEditableInInsert,boolean[] columnsEditableInEdit,boolean[] columnsMandatory) throws Throwable {
+  public void storeGridPermissionsDefaults(String functionId,String[] columnAttributes,String[] headerColumnNames,boolean[] columnsVisibility,boolean[] columnEditableInInsert,boolean[] columnsEditableInEdit,boolean[] columnsMandatory) throws Throwable {
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rset = null;
@@ -251,11 +252,13 @@ public class DbGridPermissionsManager extends GridPermissionsManager {
 
       String sql =
           "update "+dbPermissionsDescriptor.getGridPermissionsDefaultsTableName()+" set "+
-          dbPermissionsDescriptor.getColumnsAttributeFieldNameInDefaultsTableName()+"=? and "+
-          dbPermissionsDescriptor.getColumnsMandatoryFieldNameInDefaultsTableName()+"=? and "+
-          dbPermissionsDescriptor.getColumnsVisibilityFieldNameInDefaultsTableName()+"=? and "+
-          dbPermissionsDescriptor.getEditableColumnsInEditFieldNameInDefaultsTableName()+"=? and "+
-          dbPermissionsDescriptor.getEditableColumnsInInsertFieldNameInDefaultsTableName()+"=? where "+
+          dbPermissionsDescriptor.getColumnsAttributeFieldNameInDefaultsTableName()+"=?, "+
+          dbPermissionsDescriptor.getColumnsMandatoryFieldNameInDefaultsTableName()+"=?, "+
+          dbPermissionsDescriptor.getColumnsVisibilityFieldNameInDefaultsTableName()+"=?, "+
+          dbPermissionsDescriptor.getEditableColumnsInEditFieldNameInDefaultsTableName()+"=?, "+
+          dbPermissionsDescriptor.getEditableColumnsInInsertFieldNameInDefaultsTableName()+"=?, "+
+          dbPermissionsDescriptor.getColumnsHeaderFieldNameInGridPermissionsTable()+"=? "+
+          " where "+
           dbPermissionsDescriptor.getFunctionIdFieldNameInDefaultsTableName()+"=? ";
       for(int i=0;i<dbPermissionsDescriptor.getOtherFieldNamesInDefaultsTableName().length;i++)
         sql += " and "+dbPermissionsDescriptor.getOtherFieldNamesInDefaultsTableName()[i]+"=? ";
@@ -292,9 +295,15 @@ public class DbGridPermissionsManager extends GridPermissionsManager {
       aux = aux.substring(0,aux.length()-1);
       pstmt.setString(5,aux);
 
-      pstmt.setString(6,functionId);
+      aux = "";
+      for(int i=0;i<columnAttributes.length;i++)
+        aux += headerColumnNames[i]+",";
+      aux = aux.substring(0,aux.length()-1);
+      pstmt.setString(6,aux);
+
+      pstmt.setString(7,functionId);
       for(int i=0;i<dbPermissionsDescriptor.getOtherFieldValuesInDefaultsTableName().length;i++)
-        pstmt.setObject(i+7,dbPermissionsDescriptor.getOtherFieldValuesInDefaultsTableName()[i]);
+        pstmt.setObject(i+8,dbPermissionsDescriptor.getOtherFieldValuesInDefaultsTableName()[i]);
 
       int num = pstmt.executeUpdate();
       if (num==0) {
@@ -305,10 +314,11 @@ public class DbGridPermissionsManager extends GridPermissionsManager {
           dbPermissionsDescriptor.getColumnsVisibilityFieldNameInDefaultsTableName()+","+
           dbPermissionsDescriptor.getEditableColumnsInEditFieldNameInDefaultsTableName()+","+
           dbPermissionsDescriptor.getEditableColumnsInInsertFieldNameInDefaultsTableName()+","+
+           dbPermissionsDescriptor.getColumnsHeaderFieldNameInGridPermissionsTable()+","+
           dbPermissionsDescriptor.getFunctionIdFieldNameInDefaultsTableName();
         for(int i=0;i<dbPermissionsDescriptor.getOtherFieldNamesInDefaultsTableName().length;i++)
           sql += ","+dbPermissionsDescriptor.getOtherFieldNamesInDefaultsTableName()[i];
-        sql += ") values(?,?,?,?,?,?";
+        sql += ") values(?,?,?,?,?,?,?";
         for(int i=0;i<dbPermissionsDescriptor.getOtherFieldNamesInDefaultsTableName().length;i++)
           sql += ",?";
         sql += ")";
@@ -345,9 +355,15 @@ public class DbGridPermissionsManager extends GridPermissionsManager {
         aux = aux.substring(0,aux.length()-1);
         pstmt.setString(5,aux);
 
-        pstmt.setString(6,functionId);
+        aux = "";
+        for(int i=0;i<columnAttributes.length;i++)
+          aux += headerColumnNames[i]+",";
+        aux = aux.substring(0,aux.length()-1);
+        pstmt.setString(6,aux);
+
+        pstmt.setString(7,functionId);
         for(int i=0;i<dbPermissionsDescriptor.getOtherFieldValuesInDefaultsTableName().length;i++)
-          pstmt.setObject(i+7,dbPermissionsDescriptor.getOtherFieldValuesInDefaultsTableName()[i]);
+          pstmt.setObject(i+8,dbPermissionsDescriptor.getOtherFieldValuesInDefaultsTableName()[i]);
 
         pstmt.execute();
       }

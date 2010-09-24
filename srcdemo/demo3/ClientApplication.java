@@ -54,6 +54,8 @@ public class ClientApplication {
     props.setProperty("formattedTextValue","Formatted Text");
     props.setProperty("intValue","Integer Value");
     props.setProperty("multiLineTextValue","Multi Line Text Value");
+    props.setProperty("year","Year");
+    props.setProperty("spinnerValue","Spinner Value");
     props.setProperty("...","...");
     ClientSettings clientSettings = new ClientSettings(
         new EnglishOnlyResourceFactory("£",props,true),
@@ -99,7 +101,7 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,FORMATTED_TEXT NUMERIC(12),DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO NUMERIC(1),CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,INT_VALUE NUMERIC(6),ML_TEXT VARCHAR,PRIMARY KEY(TEXT))");
+        stmt = conn.prepareStatement("create table DEMO3(TEXT VARCHAR,FORMATTED_TEXT NUMERIC(12),DECNUM DECIMAL(10,2),CURRNUM DECIMAL(10,2),THEDATE DATE,COMBO NUMERIC(1),CHECK_BOX CHAR(1),RADIO CHAR(1),CODE VARCHAR,INT_VALUE NUMERIC(6),ML_TEXT VARCHAR,YEAR NUMERIC,PRIMARY KEY(TEXT))");
         stmt.execute();
         stmt.close();
 
@@ -108,12 +110,12 @@ public class ClientApplication {
 
         for(int i=1;i<900;i++) {
           stmt.close();
-          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',"+((i+1)%9)+"23224444,"+12+i+0.33+","+1234+i+0.560+",?,3,'Y','Y','A"+i+"',"+i+",'ABC"+i+"\nDEF"+i+"')");
+          stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+i+"',"+((i+1)%9)+"23224444,"+12+i+0.33+","+1234+i+0.560+",?,3,'Y','Y','A"+i+"',"+i+",'ABC"+i+"\nDEF"+i+"',2010)");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }
 
-        stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+0+"',"+((0+1)%9)+"23224444,"+12+","+1234+0+0.560+",?,3,'Y','Y','A"+0+"',"+0+",'ABC"+0+"\nDEF"+0+"')");
+        stmt = conn.prepareStatement("insert into DEMO3 values('ABC"+0+"',"+((0+1)%9)+"23224444,"+12+","+1234+0+0.560+",?,3,'Y','Y','A"+0+"',"+0+",'ABC"+0+"\nDEF"+0+"',2010)");
         stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()));
         stmt.execute();
 

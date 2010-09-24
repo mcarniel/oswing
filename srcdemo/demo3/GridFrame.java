@@ -52,6 +52,8 @@ public class GridFrame extends JFrame {
   IntegerColumn colInt = new IntegerColumn();
   MultiLineTextColumn colMultiLine = new MultiLineTextColumn();
   FilterButton filterButton = new FilterButton();
+  SpinnerNumberColumn colSpinnerNumber = new SpinnerNumberColumn();
+  SpinnerListColumn colSpinnerList = new SpinnerListColumn();
 
 
   public GridFrame(Connection conn,GridFrameController controller) {
@@ -333,6 +335,16 @@ public class GridFrame extends JFrame {
     colMultiLine.setEditableOnInsert(true);
     colMultiLine.setPreferredWidth(150);
     //colMultiLine.setMaxCharacters(3);
+    colSpinnerNumber.setColumnName("year");
+    colSpinnerNumber.setInitialValue(new Double(2010.0));
+    colSpinnerNumber.setMinValue(new Double(2010.0));
+    colSpinnerNumber.setMaxValue(new Double(2015.0));
+    colSpinnerNumber.setEditableOnEdit(true);
+    colSpinnerList.setColumnName("comboValue");
+    colSpinnerList.setDomainId("ORDERSTATE");
+    colSpinnerList.setAdditionalHeaderColumnName("");
+    colSpinnerList.setEditableOnEdit(true);
+    colSpinnerList.setHeaderColumnName("spinnerValue");
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
@@ -348,7 +360,9 @@ public class GridFrame extends JFrame {
     grid.getColumnContainer().add(colDecimal, null);
     grid.getColumnContainer().add(colMultiLine, null);
     grid.getColumnContainer().add(colInt, null);
+    grid.getColumnContainer().add(colSpinnerNumber, null);
     grid.getColumnContainer().add(colCurrency, null);
+    grid.getColumnContainer().add(colSpinnerList, null);
     grid.getColumnContainer().add(colFormattedText, null);
     grid.getColumnContainer().add(colDate, null);
     grid.getColumnContainer().add(colCombo, null);

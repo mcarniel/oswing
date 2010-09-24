@@ -88,13 +88,14 @@ public abstract class GridPermissionsManager {
    * Store in grid permissions defaults table.
    * @param functionId identifier (functionId) associated to the grid
    * @param columnAttributes list of attribute names, that identify columns
+   * @param headerColumnNames list of keys for columns, that will be translated
    * @param columnsVisibility define which columns are visible
    * @param columnEditableInInsert define which columns are editable on insert; used to correctly define GridPermissions content: a column will be marked as NOT editable if currently editable but NOT the inverse
    * @param columnEditableInEdit define which columns are editable on edit; used to correctly define GridPermissions content: a column will be marked as NOT editable if currently editable but NOT the inverse
    * @param columnsMandatory define which columns are required on insert/edit mode; used to correctly define GridPermissions content: a column will be marked as required if currently not required but NOT the inverse
    * @throws Throwable throwed if storing operation does not correctly accomplished
    */
-  public abstract void storeGridPermissionsDefaults(String functionId,String[] columnAttributes,boolean[] columnsVisibility,boolean[] columnEditableInInsert,boolean[] columnsEditableInEdit,boolean[] columnsMandatory) throws Throwable;
+  public abstract void storeGridPermissionsDefaults(String functionId,String[] columnAttributes,String[] headerColumnNames,boolean[] columnsVisibility,boolean[] columnEditableInInsert,boolean[] columnsEditableInEdit,boolean[] columnsMandatory) throws Throwable;
 
 
   /**

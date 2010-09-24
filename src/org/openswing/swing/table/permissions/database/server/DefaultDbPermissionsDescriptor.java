@@ -57,6 +57,7 @@ public class DefaultDbPermissionsDescriptor implements DbPermissionsDescriptor {
   private static final String EDIT_COLS_IN_INS = "EDIT_COLS_IN_INS";
   private static final String REQUIRED_COLS = "REQUIRED_COLS";
   private static final String COLS_VIS = "COLS_VIS";
+  private static final String COLS_NAME = "COLS_NAME";
   private static final Hashtable EMPTY = new Hashtable();
 
 
@@ -121,6 +122,14 @@ public class DefaultDbPermissionsDescriptor implements DbPermissionsDescriptor {
    */
   public String getColumnsVisibilityFieldNameInGridPermissionsTable() {
     return COLS_VIS;
+  }
+
+
+  /**
+   * @return database field name related to the "header column attribute"
+   */
+  public String getColumnsHeaderFieldNameInGridPermissionsTable() {
+    return COLS_NAME;
   }
 
 

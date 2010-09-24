@@ -417,12 +417,14 @@ public class GridControl extends JPanel {
       if (ClientSettings.getInstance().GRID_PERMISSION_MANAGER!=null && functionId!=null) {
         try {
           String[] columnsAttribute = new String[columnProperties.length];
+          String[] headerColumnsName = new String[columnProperties.length];
           boolean[] columnsVisibility = new boolean[columnProperties.length];
           boolean[] columnsEditableInIns = new boolean[columnProperties.length];
           boolean[] columnsEditableInEdit = new boolean[columnProperties.length];
           boolean[] columnsMandatory = new boolean[columnProperties.length];
           for(int i=0;i<columnProperties.length;i++) {
             columnsAttribute[i] = columnProperties[i].getColumnName();
+            headerColumnsName[i] = columnProperties[i].getHeaderColumnName();
             columnsVisibility[i] = columnProperties[i].isColumnVisible();
             columnsEditableInIns[i] = columnProperties[i].isEditableOnInsert();
             columnsEditableInEdit[i] = columnProperties[i].isEditableOnEdit();
@@ -442,7 +444,7 @@ public class GridControl extends JPanel {
             ClientSettings.getInstance().GRID_PERMISSION_MANAGER.storeGridDigest(functionId,currentDigest);
             ClientSettings.getInstance().GRID_PERMISSION_MANAGER.deleteAllGridPermissionsPerFunctionId(functionId);
             ClientSettings.getInstance().GRID_PERMISSION_MANAGER.storeGridPermissionsDefaults(
-              functionId,columnsAttribute,columnsVisibility,columnsEditableInIns,columnsEditableInEdit,columnsMandatory
+              functionId,columnsAttribute,headerColumnsName,columnsVisibility,columnsEditableInIns,columnsEditableInEdit,columnsMandatory
             );
             ClientSettings.getInstance().getLastGridPermissionsDigests().put(functionId,currentDigest);
             ClientSettings.getInstance().getGridPermissions().remove(functionId);

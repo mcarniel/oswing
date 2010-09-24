@@ -3474,10 +3474,12 @@ public class Grid extends JTable
     // add visible columns only...
     int index;
     for(int i=0;i<map.size();i++) {
-      index = ((Integer)map.get(new Integer(i))).intValue();
-      if (colProps[index].isColumnVisible()) {
-        this.addColumn(tableColumnModel[index]);
-        tableColumnModel[index].setPreferredWidth(profile.getColumnsWidth()[index]);
+      if (map.get(new Integer(i))!=null) {
+        index = ((Integer)map.get(new Integer(i))).intValue();
+        if (colProps[index].isColumnVisible()) {
+          this.addColumn(tableColumnModel[index]);
+          tableColumnModel[index].setPreferredWidth(profile.getColumnsWidth()[index]);
+        }
       }
     }
   }

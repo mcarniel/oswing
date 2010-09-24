@@ -149,6 +149,8 @@ public class Column extends JPanel {
   public static final int TYPE_COMBO_VO = 17;
   public static final int TYPE_FILE = 18;
   public static final int TYPE_LINK = 19;
+  public static final int TYPE_SPINNER_NUMBER = 20;
+  public static final int TYPE_SPINNER_LIST = 21;
 
 
   public Column() {

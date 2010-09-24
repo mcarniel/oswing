@@ -498,7 +498,7 @@ public class QueryUtil {
     }
     catch (Throwable ex) {
       Logger.error(
-          userSessionPars.getUsername(),
+          userSessionPars!=null?userSessionPars.getUsername():null,
           "org.openswing.swing.server.QueryUtil",
           "getSql",
           "Error while composing the SQL:\n"+ex.getMessage(),
@@ -603,7 +603,7 @@ public class QueryUtil {
     }
     catch (Throwable ex) {
       Logger.error(
-          userSessionPars.getUsername(),
+          userSessionPars!=null?userSessionPars.getUsername():null,
           "org.openswing.swing.server.QueryUtil",
           "getSql",
           "Error while composing the SQL:\n"+ex.getMessage(),
@@ -1987,7 +1987,7 @@ public class QueryUtil {
             try {
               if (value!=null && !value.getClass().getName().equals(parType.getName()))
                 Logger.error(
-                    userSessionPars.getUsername(),
+                    userSessionPars!=null?userSessionPars.getUsername():null,
                     "org.openswing.swing.server.QueryUtil",
                     "getQuery",
                     "Error while executing the SQL:\n"+
@@ -2047,7 +2047,7 @@ public class QueryUtil {
       }
       if (logQuery)
         Logger.debug(
-            userSessionPars.getUsername(),
+            userSessionPars!=null?userSessionPars.getUsername():null,
             "org.openswing.swing.server.QueryUtil",
             "getQuery",
             "Execute SQL:\n"+
@@ -2072,7 +2072,7 @@ public class QueryUtil {
     } catch (Throwable ex) {
       try {
        Logger.error(
-           userSessionPars.getUsername(),
+           userSessionPars!=null?userSessionPars.getUsername():null,
            "org.openswing.swing.server.QueryUtil",
            "getQuery",
            "Error while executing the SQL:\n"+
@@ -2083,7 +2083,7 @@ public class QueryUtil {
        );
       } catch (Exception exx) {
         Logger.error(
-            userSessionPars.getUsername(),
+            userSessionPars!=null?userSessionPars.getUsername():null,
             "org.openswing.swing.server.QueryUtil",
             "getQuery",
             "Error while executing the SQL:\n"+ex.getMessage(),
@@ -2292,7 +2292,7 @@ public class QueryUtil {
 
        if (logSQL)
          Logger.debug(
-             userSessionPars.getUsername(),
+             userSessionPars!=null?userSessionPars.getUsername():null,
              "org.openswing.swing.server.QueryUtil",
              "insertTable",
              "Execute SQL:\n"+
@@ -2306,7 +2306,7 @@ public class QueryUtil {
      } catch (Throwable ex) {
        try {
          Logger.error(
-             userSessionPars.getUsername(),
+             userSessionPars!=null?userSessionPars.getUsername():null,
              "org.openswing.swing.server.QueryUtil",
              "insertTable",
              "Error while executing the SQL:\n"+
@@ -2318,7 +2318,7 @@ public class QueryUtil {
        }
        catch (Exception exx) {
          Logger.error(
-             userSessionPars.getUsername(),
+             userSessionPars!=null?userSessionPars.getUsername():null,
              "org.openswing.swing.server.QueryUtil",
              "insertTable",
              "Error while executing the SQL:\n"+ex.getMessage(),
@@ -2526,7 +2526,7 @@ public class QueryUtil {
 
         if (logSQL)
           Logger.debug(
-              userSessionPars.getUsername(),
+              userSessionPars!=null?userSessionPars.getUsername():null,
               "org.openswing.swing.server.QueryUtil",
               "insertTable",
               "Execute SQL:\n"+
@@ -2541,7 +2541,7 @@ public class QueryUtil {
     } catch (Throwable ex) {
       try {
         Logger.error(
-            userSessionPars.getUsername(),
+            userSessionPars!=null?userSessionPars.getUsername():null,
             "org.openswing.swing.server.QueryUtil",
             "insertTable",
             "Error while executing the SQL:\n"+
@@ -2559,7 +2559,7 @@ public class QueryUtil {
         catch (Exception ex1) {
         }
         Logger.error(
-            userSessionPars.getUsername(),
+            userSessionPars!=null?userSessionPars.getUsername():null,
             "org.openswing.swing.server.QueryUtil",
             "insertTable",
             "Error while executing the SQL:\n"+ex.getMessage(),
@@ -2796,7 +2796,7 @@ public class QueryUtil {
 
       if (logSQL)
         Logger.debug(
-            userSessionPars.getUsername(),
+            userSessionPars!=null?userSessionPars.getUsername():null,
             "org.openswing.swing.server.QueryUtil",
             "updateTable",
             "Execute SQL:\n"+
@@ -2821,7 +2821,7 @@ public class QueryUtil {
     } catch (Throwable ex) {
       try {
         Logger.error(
-            userSessionPars.getUsername(),
+            userSessionPars!=null?userSessionPars.getUsername():null,
             "org.openswing.swing.server.QueryUtil",
             "updateTable",
             "Error while executing the SQL:\n"+
@@ -2833,7 +2833,7 @@ public class QueryUtil {
       }
       catch (Exception exx) {
         Logger.error(
-            userSessionPars.getUsername(),
+            userSessionPars!=null?userSessionPars.getUsername():null,
             "org.openswing.swing.server.QueryUtil",
             "updateTable",
             "Error while executing the SQL:\n"+ex.getMessage(),

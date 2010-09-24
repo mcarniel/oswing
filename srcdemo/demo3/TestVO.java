@@ -30,6 +30,7 @@ public class TestVO extends ValueObjectImpl {
   private Integer intValue;
   private String multiLineTextValue;
   private java.math.BigDecimal formattedTextValue;
+  private Integer year;
 
 
   public TestVO() {
@@ -121,6 +122,12 @@ public class TestVO extends ValueObjectImpl {
   }
   public void setMultiLineTextValue(String multiLineTextValue) {
     this.multiLineTextValue = multiLineTextValue;
+  }
+  public Integer getYear() {
+    return year;
+  }
+  public void setYear(Integer year) {
+    this.year = year;
   }
 
 

@@ -80,6 +80,8 @@ public class Controller extends HttpServlet {
   /** receiver class used in combination with "ClientUtils.getData" method to comunicate with a remote client via HTTP; default value: "DefaultObjectReceiver" */
   private ObjectReceiver objectReceiver = new DefaultObjectReceiver();
 
+  private ControllerCallbacks controllerCallbacksObj = null;
+
 
   /**
    * Initialize global variables.
@@ -165,7 +167,6 @@ public class Controller extends HttpServlet {
     }
 
     // initialize the controller callbacks class (object derived by ControllerCallbacks), if it is defined in web.xml by "controllerCallbacks" parameter...
-    ControllerCallbacks controllerCallbacksObj = null;
     try {
       String controllerCallbacks = super.getInitParameter("controllerCallbacks");
       if (controllerCallbacks != null) {
@@ -499,6 +500,13 @@ public class Controller extends HttpServlet {
       msg = factory.getResources(((UserSessionParameters)userSessions.get(command.getSessionId())).getLanguageId()).getResource(msg);
     }
     return new ErrorResponse( msg + ": '" + command.getMethodName() + "'" );
+  }
+
+
+  public void destroy() {
+    if (controllerCallbacksObj != null)
+      controllerCallbacksObj.destroy(super.getServletContext());
+    super.destroy();
   }
 
 

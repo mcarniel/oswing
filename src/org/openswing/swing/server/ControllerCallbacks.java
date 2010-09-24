@@ -42,6 +42,11 @@ public class ControllerCallbacks {
   public void afterInit(ServletContext context) {}
 
 
+  /**
+   * Method called by the destroy method of Controller class, as last instruction.
+   */
+  public void destroy(ServletContext context) {}
+
 
 
 }

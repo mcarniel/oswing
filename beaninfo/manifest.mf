@@ -115,6 +115,12 @@ Java-Bean: True
 Name: org/openswing/swing/table/columns/client/ImageColumn.class
 Java-Bean: True
 
+Name: org/openswing/swing/table/columns/client/SpinnerNumberColumn.class
+Java-Bean: True
+
+Name: org/openswing/swing/table/columns/client/SpinnerListColumn.class
+Java-Bean: True
+
 Name: org/openswing/swing/tree/client/TreePanel.class
 Java-Bean: True
 
@@ -191,4 +197,10 @@ Name: org/openswing/swing/client/LinkButton.class
 Java-Bean: True
 
 Name: org/openswing/swing/lookup/client/LookupController.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/SpinnerListControl.class
+Java-Bean: True
+
+Name: org/openswing/swing/client/SpinnerNumberControl.class
 Java-Bean: True

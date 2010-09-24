@@ -79,6 +79,12 @@ public interface DbPermissionsDescriptor {
 
 
   /**
+   * @return database field name related to the "header column attribute"
+   */
+  public String getColumnsHeaderFieldNameInGridPermissionsTable();
+
+
+  /**
    * @return database field name related to the "columnsVisibility" attribute of GridPermissions
    */
   public String getColumnsVisibilityFieldNameInGridPermissionsTable();

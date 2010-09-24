@@ -72,6 +72,8 @@ public class DetailFrame extends JFrame {
   LabelControl labelLink = new LabelControl();
   TextControl controlURI = new TextControl();
   TextControl controlLinkLabel = new TextControl();
+  SpinnerListControl controlListSpinner = new SpinnerListControl();
+  SpinnerNumberControl controlNumSpinner = new SpinnerNumberControl();
 
 
   public DetailFrame(Connection conn,DetailFrameController dataController) {
@@ -111,6 +113,8 @@ public class DetailFrame extends JFrame {
     labelCombo.setText("combobox");
     controlComboBox.setCanCopy(true);
     controlComboBox.setDomainId("ORDERSTATE");
+
+
     controlFormattedText.setAttributeName("formattedTextValue");
     controlFormattedText.setToolTipText("formattedTextValue");
     controlDate.setStrictUsage(true);
@@ -187,11 +191,18 @@ public class DetailFrame extends JFrame {
     dynamicLinkButton.setTooltipAttributeName("tooltipURI");
     mainPanel.addLinkButton(dynamicLinkButton);
 
+    controlListSpinner.setDomainId("ORDERSTATE");
+
     buttonPressMe.setButtonBehavior(Consts.BUTTON_TEXT_ONLY);
     buttonPressMe.setAttributeName("stringValue");
     labelLink.setText("uri");
     controlURI.setAttributeName("uri");
     controlLinkLabel.setAttributeName("linkLabel");
+    controlListSpinner.setAttributeName("combo");
+    controlNumSpinner.setAttributeName("year");
+    controlNumSpinner.setInitialValue(new Double(2010.0));
+    controlNumSpinner.setMaxValue(new Double(2015.0));
+    controlNumSpinner.setMinValue(new Double(2010.0));
     this.getContentPane().add(buttonsPanel,  BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(copyButton, null);
@@ -201,55 +212,59 @@ public class DetailFrame extends JFrame {
     buttonsPanel.add(deleteButton, null);
     buttonsPanel.add(navigatorBar, null);
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);
-    mainPanel.add(controlDate,                  new GridBagConstraints(2, 0, 3, 1, 0.0, 0.0
+    mainPanel.add(controlDate,                     new GridBagConstraints(1, 0, 5, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 120, 0));
-    mainPanel.add(labelCheckBox,              new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
+    mainPanel.add(labelCheckBox,                 new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlCheck,               new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0
+    mainPanel.add(controlCheck,                  new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelDate,           new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+    mainPanel.add(labelDate,              new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlComboBox,              new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0
+    mainPanel.add(controlComboBox,                 new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(labelCombo,                new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
+    mainPanel.add(labelCombo,                   new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlCurrency,               new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0
+    mainPanel.add(controlCurrency,                  new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 80, 0));
-    mainPanel.add(controlNumeric,              new GridBagConstraints(2, 4, 2, 1, 0.0, 0.0
+    mainPanel.add(controlNumeric,                 new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 80, 0));
-    mainPanel.add(labelRadioButton,              new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0
+    mainPanel.add(labelRadioButton,                 new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlRadioButton1,            new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0
+    mainPanel.add(controlRadioButton1,               new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(controlText,              new GridBagConstraints(2, 6, 3, 1, 1.0, 0.0
+    mainPanel.add(controlText,                 new GridBagConstraints(1, 6, 5, 1, 1.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 5), 0, 0));
-    mainPanel.add(controlLookup,                    new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0
+    mainPanel.add(controlLookup,                       new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
-    mainPanel.add(descrLookupControl,             new GridBagConstraints(2, 8, 3, 1, 1.0, 0.0
+    mainPanel.add(descrLookupControl,                new GridBagConstraints(1, 8, 5, 1, 1.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 0, 5), 0, 0));
-    mainPanel.add(controlRadioButton2,         new GridBagConstraints(3, 5, 2, 1, 0.0, 0.0
-            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    mainPanel.add(controlFormattedText,          new GridBagConstraints(4, 4, 1, 1, 0.0, 0.0
-            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 150, 0));
-    mainPanel.add(listControl1,         new GridBagConstraints(4, 1, 1, 3, 1.0, 1.0
+    mainPanel.add(controlFormattedText,              new GridBagConstraints(3, 4, 3, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 150, 0));
+    mainPanel.add(listControl1,            new GridBagConstraints(3, 1, 3, 3, 1.0, 1.0
             ,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlPasswd,          new GridBagConstraints(2, 7, 3, 1, 1.0, 0.0
+    mainPanel.add(controlPasswd,             new GridBagConstraints(1, 7, 5, 1, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 
-    mainPanel.add(buttonPressMe,                new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0
+    mainPanel.add(buttonPressMe,                   new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0
             ,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 0, 0), 0, 0));
-    mainPanel.add(labelLink,       new GridBagConstraints(0, 11, 1, 1, 0.0, 0.0
+    mainPanel.add(labelLink,          new GridBagConstraints(0, 11, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlLinkLabel,     new GridBagConstraints(2, 11, 2, 1, 0.0, 0.0
+    mainPanel.add(controlLinkLabel,        new GridBagConstraints(1, 11, 2, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(linkButton1,    new GridBagConstraints(3, 10, 1, 1, 0.0, 0.0
+    mainPanel.add(linkButton1,       new GridBagConstraints(2, 10, 1, 1, 0.0, 0.0
             ,GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(dynamicLinkButton,    new GridBagConstraints(4, 10, 1, 1, 0.0, 0.0
+    mainPanel.add(dynamicLinkButton,       new GridBagConstraints(3, 10, 3, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlURI,      new GridBagConstraints(4, 11, 1, 1, 0.0, 0.0
+    mainPanel.add(controlURI,         new GridBagConstraints(3, 11, 3, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlTA,            new GridBagConstraints(0, 9, 5, 1, 1.0, 1.0
+    mainPanel.add(controlTA,               new GridBagConstraints(0, 9, 6, 1, 1.0, 1.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+    mainPanel.add(controlRadioButton2,    new GridBagConstraints(2, 5, 2, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    mainPanel.add(controlListSpinner,     new GridBagConstraints(4, 5, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 0, 5, 0), 0, 0));
+    mainPanel.add(controlNumSpinner,  new GridBagConstraints(5, 5, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
     controlText.setAttributeName("stringValue");
     controlText.setRequired(true);
