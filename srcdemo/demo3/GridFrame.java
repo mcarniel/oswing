@@ -198,7 +198,7 @@ public class GridFrame extends JFrame {
     grid.setRowHeight(40);
     grid.setSaveButton(saveButton);
 
-//    grid.setLockedColumns(2);
+    grid.setLockedColumns(2);
     grid.setLockedRowsOnTop(1);
 
     grid.setLockedRowsOnBottom(1);

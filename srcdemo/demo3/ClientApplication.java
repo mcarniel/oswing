@@ -11,6 +11,8 @@ import org.openswing.swing.table.profiles.client.FileGridProfileManager;
 import org.openswing.swing.client.GenericButton;
 import org.openswing.swing.util.java.Consts;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import java.awt.Color;
 
 
 /**
@@ -30,6 +32,29 @@ public class ClientApplication {
 
 
   public ClientApplication() {
+
+//    try {
+//      ClientSettings.LOOK_AND_FEEL_CLASS_NAME = "com.jtattoo.plaf.aluminium.AluminiumLookAndFeel"; // "com.jtattoo.plaf.aero.McWinLookAndFeel";
+//      Properties props = new Properties();
+//      props.put("backgroundColor", "238 238 238");
+//      props.put("logoString", "JAllInOne");
+//      String color = "220 220 220";
+//      props.put("disabledBackgroundColor", color);
+//      props.put("systemTextFont", "Verdana PLAIN 11");
+//      props.put("controlTextFont", "Verdana PLAIN 11");
+//      props.put("menuTextFont", "Verdana PLAIN 11");
+//      props.put("userTextFont", "Verdana PLAIN 11");
+//      props.put("subTextFont", "Verdana PLAIN 11");
+//      Class.forName(ClientSettings.LOOK_AND_FEEL_CLASS_NAME).getMethod(
+//          "setCurrentTheme", new Class[] {Properties.class}).invoke(null,
+//          new Object[] {props});
+//      UIManager.setLookAndFeel(ClientSettings.LOOK_AND_FEEL_CLASS_NAME);
+//
+//    }
+//    catch (Throwable ex1) {
+//      ex1.printStackTrace();
+//    }
+
 
     Hashtable domains = new Hashtable();
     Properties props = new Properties();

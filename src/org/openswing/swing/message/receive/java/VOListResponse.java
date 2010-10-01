@@ -34,6 +34,12 @@ import java.util.*;
  */
 public class VOListResponse extends Response {
 
+  /** error flag */
+  private boolean error;
+
+  /** erro message */
+  private String errorMessage;
+
   /** list of value objects */
   private List rows = null;
 
@@ -45,6 +51,13 @@ public class VOListResponse extends Response {
 
   /** total amount of rows; usually not filled */
   private int totalAmountOfRows = -1;
+
+
+  public VOListResponse() {
+     this.rows = new ArrayList();
+     this.moreRows = false;
+     this.resultSetLength = 0;
+   }
 
 
   /**
@@ -63,7 +76,7 @@ public class VOListResponse extends Response {
    * @return <code>true</code> if an error occours, <code>false</code> otherwise
    */
   public final boolean isError() {
-    return false;
+    return error;
   }
 
 
@@ -71,7 +84,7 @@ public class VOListResponse extends Response {
    * @return error message
    */
   public final String getErrorMessage() {
-    return null;
+    return errorMessage;
   }
 
 
@@ -113,6 +126,21 @@ public class VOListResponse extends Response {
    */
   public final void setTotalAmountOfRows(int totalAmountOfRows) {
     this.totalAmountOfRows = totalAmountOfRows;
+  }
+  public void setRows(List rows) {
+    this.rows = rows;
+  }
+  public void setResultSetLength(int resultSetLength) {
+    this.resultSetLength = resultSetLength;
+  }
+  public void setMoreRows(boolean moreRows) {
+    this.moreRows = moreRows;
+  }
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
+  public void setError(boolean error) {
+    this.error = error;
   }
 
 

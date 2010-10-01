@@ -87,4 +87,12 @@ public class ConnectionManager {
   }
 
 
+  /**
+   * Method called by the server controller (class Controller).
+   */
+  public static void destroyConnectionSource() {
+    connectionSource = null;
+  }
+
+
 }

@@ -3461,10 +3461,11 @@ public class Grid extends JTable
       aux.put(attrs[i],new Integer(i-fromColIndex));
     Hashtable map = new Hashtable();
     for(int i=fromColIndex;i<toColIndex;i++) {
-      map.put(
-        aux.get(colProps[i].getColumnName()),
-        new Integer(i)
-      );
+      if (aux.get(colProps[i].getColumnName())!=null)
+        map.put(
+          aux.get(colProps[i].getColumnName()),
+          new Integer(i)
+        );
     }
     // remove all columns...
     TableColumnModel colsModel = this.getColumnModel();

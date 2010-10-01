@@ -311,7 +311,11 @@ public class GridControl extends JPanel {
   /** flag used to allow the columns sorting in edit mode too; default value: <code>false</code>; note that this setting is used only when <code>orderWithLoadData</code> property is set to <code>false</code> */
   private boolean allowColumnsSortingInEdit = false;
 
+  /** flag used to allow the columns permission; default value:  <code>true</code> */
+  private boolean allowColumnsPermission = true;
 
+  /** flag used to allow the columns profile; default value:  <code>true</code> */
+  private boolean allowColumnsProfile = true;
 
 
   /**
@@ -414,7 +418,10 @@ public class GridControl extends JPanel {
       }
 
       // apply grid permissions, if defined...
-      if (ClientSettings.getInstance().GRID_PERMISSION_MANAGER!=null && functionId!=null) {
+      if (ClientSettings.getInstance().GRID_PERMISSION_MANAGER!=null &&
+          functionId!=null &&
+          !functionId.trim().equals("") &&
+          allowColumnsPermission) {
         try {
           String[] columnsAttribute = new String[columnProperties.length];
           String[] headerColumnsName = new String[columnProperties.length];
@@ -458,7 +465,10 @@ public class GridControl extends JPanel {
 
       }
 
-      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null) {
+      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null &&
+          functionId!=null &&
+          !functionId.trim().equals("") &&
+          allowColumnsProfile) {
         try {
           // compare current and last digests...
           String lastDigest = (String)ClientSettings.getInstance().getLastUserGridDigests().get(functionId);
@@ -765,7 +775,10 @@ public class GridControl extends JPanel {
           profile = null;
         }
       } // end if on GRID_PROFILE_MANAGER usage
-      else if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId==null)
+      else if ( ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null &&
+                functionId!=null &&
+                !functionId.trim().equals("") &&
+                allowColumnsProfile)
         Logger.warn(this.getClass().getName(), "commitColumnContainer", "Grid profile not enabled because no 'functionId' property setted on GridControl");
 
       table.setReorderingAllowed(reorderingAllowed);
@@ -1255,7 +1268,11 @@ public class GridControl extends JPanel {
         table.getLockedGrid().setOrderWithLoadData(orderWithLoadData,orderPolicy);
 
       // apply the profile (e.g. reorder column properties, etc)...
-      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null && profile!=null)
+    if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null &&
+        functionId!=null &&
+        !functionId.trim().equals("") &&
+        allowColumnsProfile &&
+        profile!=null)
         applyProfile(columnProperties,profile,false);
 
 
@@ -2986,7 +3003,10 @@ public class GridControl extends JPanel {
       if (table==null)
         return;
 
-      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null && functionId!=null)
+      if (ClientSettings.getInstance().GRID_PROFILE_MANAGER!=null &&
+          functionId!=null &&
+          !functionId.trim().equals("") &&
+          allowColumnsProfile)
         maybeStoreProfile(columnProperties);
 
       table.finalize();
@@ -3431,6 +3451,18 @@ public class GridControl extends JPanel {
    */
   public final void setAnchorLockedColumnsToLeft(boolean anchorLockedColumnsToLeft) {
     this.anchorLockedColumnsToLeft = anchorLockedColumnsToLeft;
+  }
+  public boolean isAllowColumnsPermission() {
+    return allowColumnsPermission;
+  }
+  public boolean isAllowColumnsProfile() {
+    return allowColumnsProfile;
+  }
+  public void setAllowColumnsPermission(boolean allowColumnsPermission) {
+    this.allowColumnsPermission = allowColumnsPermission;
+  }
+  public void setAllowColumnsProfile(boolean allowColumnsProfile) {
+    this.allowColumnsProfile = allowColumnsProfile;
   }
 
 

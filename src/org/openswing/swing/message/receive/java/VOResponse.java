@@ -33,6 +33,12 @@ package org.openswing.swing.message.receive.java;
  */
 public class VOResponse extends Response {
 
+  /** error flag */
+  private boolean error;
+
+  /** erro message */
+  private String errorMessage;
+
   /** object */
   private Object vo = null;
 
@@ -59,6 +65,15 @@ public class VOResponse extends Response {
   public final Object getVo() {
     return vo;
   }
+  public void setError(boolean error) {
+    this.error = error;
+  }
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
+  public void setVo(Object vo) {
+    this.vo = vo;
+  }
 
 
   /**
@@ -68,5 +83,12 @@ public class VOResponse extends Response {
   public VOResponse(Object vo) {
     this.vo = vo;
   }
+
+
+  /**
+   * Costructor.
+   * @param vo generic (Serializable) object
+   */
+  public VOResponse() { }
 
 }
