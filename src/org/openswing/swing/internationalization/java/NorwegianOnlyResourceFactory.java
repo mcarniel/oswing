@@ -285,6 +285,8 @@ public class NorwegianOnlyResourceFactory extends ResourcesFactory {
     // drag...
     dictionary.setProperty("drag","Dra");
 
+    dictionary.setProperty("Caps lock pressed","Caps lock trykkes");
+
     // pivot table...
     dictionary.setProperty("pivot table settings","Pivot tabell innstillinger");
     dictionary.setProperty("row fields","Rad felter");

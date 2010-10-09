@@ -88,7 +88,7 @@ public class EmpGridFrame2 extends InternalFrame {
 
   private void jbInit() throws Exception {
     splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-    splitPane.setDividerLocation(270);
+    splitPane.setDividerLocation(300);
 
     titledBorder3 = new TitledBorder("");
     buttonsPanel.setLayout(flowLayout1);
@@ -99,7 +99,7 @@ public class EmpGridFrame2 extends InternalFrame {
     grid.setFilterButton(filterButton1);
     grid.setFunctionId("getEmployees2");
     grid.setInsertButton(insertButton);
-    grid.setNavBar(navigatorBar1);
+//    grid.setNavBar(navigatorBar1);
     grid.setReloadButton(reloadButton);
     grid.setSaveButton(saveButton1);
     grid.setValueObjectClassName("demo10.EmpVO");
@@ -213,7 +213,7 @@ public class EmpGridFrame2 extends InternalFrame {
 
 //    grid.setAnchorLastColumn(true);
     grid.setLockedColumns(2);
-    grid.setAnchorLockedColumnsToLeft(false);
+//    grid.setAnchorLockedColumnsToLeft(false);
 
   }
 

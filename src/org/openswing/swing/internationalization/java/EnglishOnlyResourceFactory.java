@@ -139,6 +139,8 @@ public class EnglishOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("Code Validation","Code Validation");
     dictionary.setProperty("Code Selection","Code Selection");
 
+    dictionary.setProperty("Caps lock pressed","Caps lock pressed");
+
     // form...
     dictionary.setProperty("Confirm deliting data?","Confirm deliting data?");
     dictionary.setProperty("Error while saving: incorrect data.","Error while saving: incorrect data.");

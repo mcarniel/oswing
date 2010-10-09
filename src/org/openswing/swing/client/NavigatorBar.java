@@ -6,7 +6,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
 
 
@@ -308,8 +307,6 @@ public class NavigatorBar extends JPanel {
       resultSetController.lastRow(this);
     }
   }
-
-
 
   /**
    * Method called by grid component each time a row is selected.

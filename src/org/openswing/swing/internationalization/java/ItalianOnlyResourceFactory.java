@@ -273,6 +273,8 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     // drag...
     dictionary.setProperty("drag","Drag");
 
+    dictionary.setProperty("Caps lock pressed","Fissa maiuscole attivo");
+
     // pivot table...
     dictionary.setProperty("pivot table settings","Impostazione tabella Pivot");
     dictionary.setProperty("row fields","Campi riga");

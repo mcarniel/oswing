@@ -291,6 +291,14 @@ public class Resources implements Serializable {
   }
 
 
+  /**
+   * @return dictionary containing the translations
+   */
+  public final Properties getDictionary() {
+    return dictionary;
+  }
+
+
 
 
 }

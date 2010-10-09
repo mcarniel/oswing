@@ -60,6 +60,15 @@ public class VOListResponse extends Response {
    }
 
 
+   public VOListResponse(String errorMessage) {
+      this.rows = new ArrayList();
+      this.moreRows = false;
+      this.resultSetLength = 0;
+      this.errorMessage = errorMessage;
+      this.error = true;
+    }
+
+
   /**
    * @param rows list of value objects
    * @param moreRows there are other rows in result set not yet loaded
@@ -127,18 +136,28 @@ public class VOListResponse extends Response {
   public final void setTotalAmountOfRows(int totalAmountOfRows) {
     this.totalAmountOfRows = totalAmountOfRows;
   }
+
+
   public void setRows(List rows) {
     this.rows = rows;
   }
+
+
   public void setResultSetLength(int resultSetLength) {
     this.resultSetLength = resultSetLength;
   }
+
+
   public void setMoreRows(boolean moreRows) {
     this.moreRows = moreRows;
   }
+
+
   public void setErrorMessage(String errorMessage) {
     this.errorMessage = errorMessage;
   }
+
+
   public void setError(boolean error) {
     this.error = error;
   }

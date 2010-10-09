@@ -244,6 +244,9 @@ public class BrazilianPortugueseOnlyResourceFactory extends ResourcesFactory {
       // search box
       dictionary.setProperty("search", "Pesquisa");
       dictionary.setProperty("not found", "Não localizado");
+
+      dictionary.setProperty("Caps lock pressed","Caps lock pressionada");
+
       // drag...
       dictionary.setProperty("drag", "Drag");
       resources = new Resources(dictionary, "R$", ',', '.', Resources.DMY, true, '/', "HH:mm", "PT_BR", showResourceNotFoundWarning);

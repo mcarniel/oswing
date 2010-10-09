@@ -47,7 +47,7 @@ public class VOResponse extends Response {
    * @return <code>true</code> if an error occours, <code>false</code> otherwise
    */
   public final boolean isError() {
-    return false;
+    return error;
   }
 
 
@@ -55,7 +55,7 @@ public class VOResponse extends Response {
    * @return error message
    */
   public final String getErrorMessage() {
-    return null;
+    return errorMessage;
   }
 
 
@@ -65,12 +65,18 @@ public class VOResponse extends Response {
   public final Object getVo() {
     return vo;
   }
+
+
   public void setError(boolean error) {
     this.error = error;
   }
+
+
   public void setErrorMessage(String errorMessage) {
     this.errorMessage = errorMessage;
   }
+
+
   public void setVo(Object vo) {
     this.vo = vo;
   }

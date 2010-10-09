@@ -306,6 +306,8 @@ ResourcesFactory {
     // drag...
     dictionary.setProperty("drag","Glisser");
 
+    dictionary.setProperty("Caps lock pressed","De verrouillage des majuscules enfoncée");
+
     // pivot table...
     dictionary.setProperty("pivot table settings","Paramétrage du tableau croisé");
     dictionary.setProperty("row fields","Champs en Lignes");

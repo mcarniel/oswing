@@ -489,16 +489,41 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (lockedColumns>0) {
       lockedGrid.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       lockedGrid.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      JViewport viewport = new JViewport();
-      viewport.setView(lockedGrid);
-      viewport.setPreferredSize(lockedGrid.getPreferredSize());
-      if (anchorLockedColumnsToLeft)
-        scroll.setRowHeaderView(viewport);
+//      final JViewport viewport = new JViewport();
+//      viewport.setView(lockedGrid);
+//      viewport.setPreferredSize(lockedGrid.getPreferredSize());
+//      if (anchorLockedColumnsToLeft)
+//        scroll.setRowHeaderView(viewport);
+
+      final JScrollPane lockedscroll = new JScrollPane(lockedGrid);
+      lockedscroll.setBorder(BorderFactory.createEmptyBorder());
+      lockedscroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          lockedscroll.getVerticalScrollBar().hide();
+          scroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+              listenEvent = false;
+              lockedscroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getValue());
+              listenEvent = true;
+            }
+          });
+          lockedscroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+              if (listenEvent)
+                scroll.getVerticalScrollBar().setValue(lockedscroll.getVerticalScrollBar().getValue());
+            }
+          });
+          lockedscroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        }
+      });
+
+
       if (lockedGrid.getTableHeader()!=null) {
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new GridLayout(lockedGrid.hasColSpan()?2:1,1));
 
-        if (lockedGrid.hasColSpan()&&
+        if (lockedGrid.hasColSpan() &&
            (gridType==Grid.MAIN_GRID && gridControl==null ||
             gridType==Grid.MAIN_GRID && gridControl!=null && gridControl.getTopTable()==null ||
             gridType==Grid.TOP_GRID)) {
@@ -552,41 +577,39 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
         headerPanel.add(lockedGrid.getTableHeader());
-        if (anchorLockedColumnsToLeft)
-          scroll.setCorner(JScrollPane.UPPER_LEFT_CORNER, headerPanel);
-        else {
-          final JScrollPane lockedscroll = new JScrollPane(lockedGrid);
-          lockedscroll.setBorder(BorderFactory.createEmptyBorder());
+//        if (anchorLockedColumnsToLeft) {
+//          scroll.setCorner(JScrollPane.UPPER_LEFT_CORNER, headerPanel);
 
-          lockedscroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-          this.add(lockedscroll,  new GridBagConstraints(2, 1, 1, 1, 0.0, 1.0
-                  ,GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, new Insets(1, 0, scroll.getHorizontalScrollBar().getPreferredSize().height, 0), lockedGrid.getPreferredSize().width, 0));
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              lockedscroll.getVerticalScrollBar().hide();
-              scroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-                public void adjustmentValueChanged(AdjustmentEvent e) {
-                  listenEvent = false;
-                  lockedscroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getValue());
-                  listenEvent = true;
-                }
-              });
-              lockedscroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-                public void adjustmentValueChanged(AdjustmentEvent e) {
-                  if (listenEvent)
-                    scroll.getVerticalScrollBar().setValue(lockedscroll.getVerticalScrollBar().getValue());
-                }
-              });
-              scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-            }
-          });
-        }
+//          scroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+//            public void adjustmentValueChanged(AdjustmentEvent e) {
+//              listenEvent = false;
+//              ((JScrollPane)viewport.getParent().getParent()).getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getValue());
+//              listenEvent = true;
+//            }
+//          });
+//          ((JScrollPane)viewport.getParent().getParent()).getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+//            public void adjustmentValueChanged(AdjustmentEvent e) {
+//              if (listenEvent)
+//                scroll.getVerticalScrollBar().setValue(((JScrollPane)viewport.getParent().getParent()).getVerticalScrollBar().getValue());
+//            }
+//          });
+
+//        }
+//        else {
+
+//        this.add(headerPanel,  new GridBagConstraints(anchorLockedColumnsToLeft?0:2, 0, 1, 1, 0.0, 0.0
+//                ,GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, new Insets(1, 0, scroll.getHorizontalScrollBar().getPreferredSize().height, 0), lockedGrid.getPreferredSize().width, 0));
+        this.add(lockedscroll,  new GridBagConstraints(anchorLockedColumnsToLeft?0:2, 1, 1, 1, 0.0, 1.0
+                ,GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, new Insets(0, 0, scroll.getHorizontalScrollBar().getPreferredSize().height, 0), lockedGrid.getPreferredSize().width-4, 0));
+
       }
-      this.add(scroll,  new GridBagConstraints(0, 1, 1, 1, 0.0, 1.0
-              ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    }
+      else
+        this.add(lockedscroll,  new GridBagConstraints(anchorLockedColumnsToLeft?0:2, 1, 1, 1, 0.0, 1.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, new Insets(0, 0, scroll.getHorizontalScrollBar().getPreferredSize().height, 0), lockedGrid.getPreferredSize().width-4, 0));
+    } // end if on lockedColumns>0
+
     this.add(scroll,   new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0
-            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(anchorLockedColumnsToLeft?0:1, 0, 0, 0), 0, 0));
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
   }
 
@@ -826,9 +849,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         grid.ensureRowIsVisible(rowToSel);
 
         if (lockedGrid!=null) {
-          lockedGrid.setRowSelectionInterval(rowToSel,rowToSel);
-          lockedGrid.setColumnSelectionInterval(0,0);
-          lockedGrid.ensureRowIsVisible(rowToSel);
+//          lockedGrid.setRowSelectionInterval(rowToSel,rowToSel);
+//          lockedGrid.setColumnSelectionInterval(0,0);
+//          lockedGrid.ensureRowIsVisible(rowToSel);
           lockedGrid.editCellAt(rowToSel,0);
           lockedGrid.requestFocus();
         }
@@ -1229,8 +1252,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           grid.setRowSelectionInterval(0,0);
           grid.ensureRowIsVisible(grid.getSelectedRow());
           if (lockedGrid!=null) {
-            lockedGrid.setRowSelectionInterval(0,0);
-            lockedGrid.ensureRowIsVisible(grid.getSelectedRow());
+//            lockedGrid.setRowSelectionInterval(0,0);
+//            lockedGrid.ensureRowIsVisible(grid.getSelectedRow());
           }
 
           if ((getNavBar()!=null) && (lastIndex==model.getRowCount()-1))
@@ -1313,8 +1336,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             errorOnLoad = ! loadData(GridParams.NEXT_BLOCK_ACTION);
             if (model.getRowCount()>0) {
               grid.setRowSelectionInterval(0,0);
-              if (lockedGrid!=null)
-                lockedGrid.setRowSelectionInterval(0,0);
+//              if (lockedGrid!=null)
+//                lockedGrid.setRowSelectionInterval(0,0);
             }
             afterNextRow();
             if (getReloadButton()!=null)
@@ -1340,8 +1363,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       }
     } else {
       grid.setRowSelectionInterval(grid.getSelectedRow()+1,grid.getSelectedRow()+1);
-      if (lockedGrid!=null)
-        lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow(),lockedGrid.getSelectedRow());
+//      if (lockedGrid!=null)
+//        lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow(),lockedGrid.getSelectedRow());
       afterNextRow();
 
       // fire events related to navigator button pressed...
@@ -1359,9 +1382,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    */
   private void afterNextRow() {
     grid.ensureRowIsVisible(grid.getSelectedRow());
-    if (lockedGrid!=null) {
-      lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
-    }
+//    if (lockedGrid!=null) {
+//      lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
+//    }
     if (getNavBar()!=null) {
       if (grid.getSelectedRow() != -1 && !moreRows &&
           grid.getSelectedRow() == model.getRowCount() - 1)
@@ -1445,16 +1468,16 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           errorOnLoad = !loadData(GridParams.PREVIOUS_BLOCK_ACTION);
           grid.revalidate();
           grid.repaint();
-          if (lockedGrid!=null) {
-            lockedGrid.revalidate();
-            lockedGrid.repaint();
-          }
+//          if (lockedGrid!=null) {
+//            lockedGrid.revalidate();
+//            lockedGrid.repaint();
+//          }
           SwingUtilities.invokeLater(new Runnable(){
             public void run() {
               grid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
-              if (lockedGrid!=null) {
-                lockedGrid.setRowSelectionInterval(model.getRowCount(),model.getRowCount());
-              }
+//              if (lockedGrid!=null) {
+//                lockedGrid.setRowSelectionInterval(model.getRowCount(),model.getRowCount());
+//              }
               // fire events related to navigator button pressed...
               if (navBar!=null && e!=null) {
                 navBar.fireButtonPressedEvent(e.getActionCommand());
@@ -1481,8 +1504,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     } else {
       if (grid.getSelectedRow()>0) {
         grid.setRowSelectionInterval(grid.getSelectedRow() - 1, grid.getSelectedRow() - 1);
-        if (lockedGrid!=null)
-          lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow(), lockedGrid.getSelectedRow());
+//        if (lockedGrid!=null)
+//          lockedGrid.setRowSelectionInterval(lockedGrid.getSelectedRow(), lockedGrid.getSelectedRow());
       }
       afterPreviousRow();
 
@@ -1501,8 +1524,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    */
   private void afterPreviousRow() {
     grid.ensureRowIsVisible(grid.getSelectedRow());
-    if (lockedGrid!=null)
-      lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
+//    if (lockedGrid!=null)
+//      lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
     if (getNavBar()!=null) {
       if (grid.getSelectedRow() == 0 &&
           lastIndex + 1 <= model.getRowCount())
@@ -1578,12 +1601,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             grid.repaint();
             grid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
             grid.ensureRowIsVisible(grid.getSelectedRow());
-            if (lockedGrid!=null) {
-              lockedGrid.revalidate();
-              lockedGrid.repaint();
-              lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
-              lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
-            }
+//            if (lockedGrid!=null) {
+//              lockedGrid.revalidate();
+//              lockedGrid.repaint();
+//              lockedGrid.setRowSelectionInterval(model.getRowCount()-1,model.getRowCount()-1);
+//              lockedGrid.ensureRowIsVisible(lockedGrid.getSelectedRow());
+//            }
 
             // fire events related to navigator button pressed...
             if (navBar!=null) {
@@ -1986,10 +2009,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
       grid.setRowSelectionInterval(rowToSel,rowToSel);
       grid.setColumnSelectionInterval(0,0);
-      if (lockedGrid!=null) {
-        lockedGrid.setRowSelectionInterval(rowToSel,rowToSel);
-        lockedGrid.setColumnSelectionInterval(0,0);
-      }
+//      if (lockedGrid!=null) {
+//        lockedGrid.setRowSelectionInterval(rowToSel,rowToSel);
+//        lockedGrid.setColumnSelectionInterval(0,0);
+//      }
 
       resetButtonsState();
 
@@ -2607,10 +2630,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         // set focus on the first (new) row...
         grid.setRowSelectionInterval(0, 0);
         grid.setColumnSelectionInterval(0, 0);
-        if (lockedGrid!=null) {
-          lockedGrid.setRowSelectionInterval(0, 0);
-          lockedGrid.setColumnSelectionInterval(0, 0);
-        }
+//        if (lockedGrid!=null) {
+//          lockedGrid.setRowSelectionInterval(0, 0);
+//          lockedGrid.setColumnSelectionInterval(0, 0);
+//        }
 
         resetButtonsState();
 
@@ -2703,12 +2726,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       if (getVOListTableModel().getRowCount()>0) {
         if (grid.getSelectedRow()==-1) {
           grid.setRowSelectionInterval(0, 0);
-          if (lockedGrid!=null)
-            lockedGrid.setRowSelectionInterval(0, 0);
+//          if (lockedGrid!=null)
+//            lockedGrid.setRowSelectionInterval(0, 0);
         }
         grid.setColumnSelectionInterval(0,0);
-        if (lockedGrid!=null)
-          lockedGrid.setColumnSelectionInterval(0, 0);
+//        if (lockedGrid!=null)
+//          lockedGrid.setColumnSelectionInterval(0, 0);
       }
 
       resetButtonsState();
@@ -2850,9 +2873,9 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           grid.ensureRowIsVisible(row);
 
           if (getLockedGrid()!=null) {
-            getLockedGrid().setRowSelectionInterval(row,row);
-            getLockedGrid().setColumnSelectionInterval(0,0);
-            getLockedGrid().ensureRowIsVisible(row);
+//            getLockedGrid().setRowSelectionInterval(row,row);
+//            getLockedGrid().setColumnSelectionInterval(0,0);
+//            getLockedGrid().ensureRowIsVisible(row);
             getLockedGrid().editCellAt(row,0);
             getLockedGrid().requestFocus();
           }
@@ -3258,8 +3281,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     grid.ensureRowIsVisible(startRow);
     if (lockedGrid!=null) {
 //      lockedGrid.setRowSelectionInterval(0,0);
-      lockedGrid.setRowSelectionInterval(startRow,endRow);
-      lockedGrid.ensureRowIsVisible(startRow);
+//      lockedGrid.setRowSelectionInterval(startRow,endRow);
+//      lockedGrid.ensureRowIsVisible(startRow);
     }
 
     onLoop = false;
@@ -3900,11 +3923,11 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             if (selectedRowBeforeReloading==-1)
               return;
             grid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
-            if (lockedGrid!=null)
-              lockedGrid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
+//            if (lockedGrid!=null)
+//              lockedGrid.setRowSelectionInterval(selectedRowBeforeReloading,selectedRowBeforeReloading);
             grid.ensureRowIsVisible(selectedRowBeforeReloading);
-            if (lockedGrid!=null)
-              lockedGrid.ensureRowIsVisible(selectedRowBeforeReloading);
+//            if (lockedGrid!=null)
+//              lockedGrid.ensureRowIsVisible(selectedRowBeforeReloading);
 
 
             // fire loading data completed event...

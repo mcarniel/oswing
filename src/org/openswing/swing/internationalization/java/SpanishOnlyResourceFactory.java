@@ -273,6 +273,8 @@ public class SpanishOnlyResourceFactory extends ResourcesFactory {
     // drag...
     dictionary.setProperty("drag","Arrastrar");
 
+    dictionary.setProperty("Caps lock pressed","Bloqueo de mayúsculas presionada");
+
     // pivot table...
     dictionary.setProperty("pivot table settings","Pivot table settings");
     dictionary.setProperty("row fields","Row fields");

@@ -1,3 +1,15 @@
+
+Release Notes 2.2.9
+-------------------
+
+Final release 2.2.9 available
+- added a warning message to LoginDialog, when caps lock is pressed
+- change a bit the XXXResponse classes, by adding setError/setErrorMessage methods
+- fixed problem on rendering rowz in a grid having locked columns when using vertical scrollbar
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.2.8
 -------------------
 

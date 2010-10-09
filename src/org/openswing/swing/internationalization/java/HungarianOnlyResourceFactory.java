@@ -296,6 +296,8 @@ public class HungarianOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("expand all", "Felfedi mind");
         dictionary.setProperty("collapse all", "Elrejti mind");
 
+        dictionary.setProperty("Caps lock pressed","Caps lock nyomva");
+
         // LoginDialog
         dictionary.setProperty("Logon", "Bejelentkez\u00E9s");
         dictionary.setProperty("Login", "Bel\u00E9p\u00E9s");

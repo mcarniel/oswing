@@ -273,6 +273,8 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         // drag...
         dictionary.setProperty("drag", "T\u00E1hnout");
 
+        dictionary.setProperty("Caps lock pressed","Caps lock lisovan\u00E9");
+
         // pivot table...
         dictionary.setProperty("pivot table settings", "Nastaven\u00ED pivotn\u00ED tabulky");
         dictionary.setProperty("row fields", "Pole \u0159\u00E1dk\u016F");

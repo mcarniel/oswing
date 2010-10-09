@@ -11,6 +11,7 @@ import org.openswing.swing.client.*;
 import org.openswing.swing.permissions.java.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.domains.java.Domain;
+import javax.swing.border.Border;
 
 
 /**
@@ -116,6 +117,9 @@ public class LoginDialog extends JDialog implements ItemListener {
 
   /** window size; if not specified, the size is automatically setted by this class */
   private Dimension size = null;
+  JPanel warnPanel = new JPanel();
+  JLabel warnLabel = new JLabel();
+  BorderLayout borderLayout1 = new BorderLayout();
 
 
   static {
@@ -418,15 +422,15 @@ public class LoginDialog extends JDialog implements ItemListener {
     }
     else if (Toolkit.getDefaultToolkit().getScreenResolution() == 96) {
         width = 380;
-        height = 180;
+        height = 190;
         halfWidth = 190;
-        halfHeight = 90;
+        halfHeight = 95;
         lineHeight = 20;
     } else {
         width = 476;
-        height = 226;
+        height = 240;
         halfWidth = 238;
-        halfHeight = 113;
+        halfHeight = 120;
         lineHeight = 25;
     }
 
@@ -449,6 +453,32 @@ public class LoginDialog extends JDialog implements ItemListener {
 
       if (storeAccount!=null && appId!=null)
         loadAccount();
+
+      if (java.awt.Toolkit.getDefaultToolkit().getLockingKeyState(java.awt.event.KeyEvent.VK_CAPS_LOCK)) {
+        usernameTF.setToolTipText("Caps lock pressed");
+        passwdTF.setToolTipText("Caps lock pressed");
+        warnLabel.setText("Caps lock pressed");
+      }
+      KeyAdapter ka = new KeyAdapter() {
+
+        public void keyPressed(KeyEvent e) {
+          if (java.awt.Toolkit.getDefaultToolkit().getLockingKeyState(java.awt.event.KeyEvent.VK_CAPS_LOCK)) {
+            usernameTF.setToolTipText("Caps lock pressed");
+            passwdTF.setToolTipText("Caps lock pressed");
+            warnLabel.setText("Caps lock pressed");
+          }
+          else {
+            usernameTF.setToolTipText("");
+            passwdTF.setToolTipText("");
+            warnLabel.setText(" ");
+          }
+        }
+
+      };
+      this.addKeyListener(ka);
+      usernameTF.addKeyListener(ka);
+      passwdTF.addKeyListener(ka);
+
 
       setVisible(true);
     }
@@ -545,6 +575,8 @@ public class LoginDialog extends JDialog implements ItemListener {
     mainPanel.setLayout(gridBagLayout1);
     this.getContentPane().setLayout(gridBagLayout2);
     usernameLabel.setText(usernameTextLabel);
+    warnPanel.setPreferredSize(new Dimension(100,usernameTF.getPreferredSize().height));
+    warnPanel.setMinimumSize(new Dimension(100,usernameTF.getPreferredSize().height));
     passwdLabel.setText(passwordTextLabel);
     usernameTF.setColumns(15);
     usernameTF.setMinimumSize(new Dimension(usernameTF.getFontMetrics(usernameTF.getFont()).stringWidth("               "),usernameTF.getHeight()));
@@ -562,6 +594,9 @@ public class LoginDialog extends JDialog implements ItemListener {
     this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     this.addWindowListener(new LoginDialog_this_windowAdapter(this));
     storeAccountCheckBox.setText(storeAccount);
+    warnLabel.setText(" ");
+    warnPanel.setLayout(borderLayout1);
+    warnPanel.setBorder(BorderFactory.createLoweredBevelBorder());
     getContentPane().add(mainPanel,          new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0
             ,GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
     controlsPanel.setLayout(gridBagLayout3);
@@ -582,6 +617,9 @@ public class LoginDialog extends JDialog implements ItemListener {
             ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 0, 5, 5), 0, 0));
     buttonsPanel.add(loginButton, null);
     buttonsPanel.add(exitButton, null);
+    this.getContentPane().add(warnPanel,     new GridBagConstraints(1, 2, 1, 1, 1.0, 1.0
+            ,GridBagConstraints.SOUTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+    warnPanel.add(warnLabel, BorderLayout.CENTER);
 
     if (supportedLanguageIds!=null) {
       Domain domain = new Domain("LanguageSelectionInLoginDialogDomain");

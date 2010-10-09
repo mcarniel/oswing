@@ -1021,6 +1021,19 @@ public class Grid extends JTable
     // grid repainting is needed to ensure that all cell borders are correctly repaints after scrolling grid
     vScrollbar.addAdjustmentListener(new AdjustmentListener() {
       public void adjustmentValueChanged(AdjustmentEvent e) {
+//        if (grids.getLockedGrid()!=null) {
+//            SwingUtilities.invokeLater(new Runnable() {
+//
+//              public void run() {
+//                try {
+//                  ensureRowIsVisible(getSelectedRow());
+//                }
+//                catch (Exception ex) {
+//                }
+//              }
+//
+//            });
+//        }
         repaint();
       }
     });
@@ -2094,7 +2107,7 @@ public class Grid extends JTable
     }
 
     try {
-      if (!controlDown)
+      if (!controlDown && !lockedGrid)
         ensureRowIsVisible(getSelectedRow());
     }
     catch (Exception ex) {
@@ -2191,13 +2204,27 @@ public class Grid extends JTable
   }
 
 
+  public void setRowSelectionInterval(int index0, int index1) {
+    super.setRowSelectionInterval(index0, index1);
+    if (!lockedGrid && grids.getLockedGrid()!=null)
+      grids.getLockedGrid().setRowSelectionInterval(index0, index1);
+  }
+
+
+
   /**
    * This method override the super class method, to fix a bug.
    * @param selRow selected row
    */
-  public final void ensureRowIsVisible(int selRow) {
+  public final void ensureRowIsVisible(final int selRow) {
+//    System.out.println(lockedGrid+" "+selRow);
     java.awt.Rectangle r = getCellRect(this.getSelectedRow(),this.getSelectedColumn()==-1?0:this.getSelectedColumn(), true);
     scrollRectToVisible(r);
+    if (!lockedGrid && grids.getLockedGrid()!=null) {
+        grids.getLockedGrid().ensureRowIsVisible(selRow);
+//        grids.getLockedGrid().revalidate();
+//        grids.getLockedGrid().repaint();
+    }
   }
 
 
@@ -3889,7 +3916,7 @@ public class Grid extends JTable
 
 
   protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
-					int condition, boolean pressed) {
+                                        int condition, boolean pressed) {
     if (grids.getCurrentNestedComponent()!=null) {
       Component source = (Component)e.getSource();
 
