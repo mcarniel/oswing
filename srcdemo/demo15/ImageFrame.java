@@ -47,7 +47,7 @@ public class ImageFrame extends JFrame {
   public ImageFrame(FormController dataController) {
       try {
         mainPanel.setFormController(dataController);
-        setSize(590,440);
+        setSize(750,550);
         jbInit();
 
         controlImage.addActionListener(new ActionListener() {
@@ -94,18 +94,19 @@ public class ImageFrame extends JFrame {
     controlImageName.setRequired(true);
     controlImageName.setEnabledOnInsert(false);
     controlImageName.setEnabledOnEdit(false);
+//    controlImage.setAutoResize(true);
     controlImage.setAttributeName("image");
     controlImage.setRequired(true);
     this.getContentPane().add(buttonsPanel,  BorderLayout.NORTH);
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);
-    mainPanel.add(labelImageName,  new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+    mainPanel.add(labelImageName,    new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
     buttonsPanel.add(editButton1, null);
     buttonsPanel.add(saveButton1, null);
     buttonsPanel.add(reloadButton1, null);
-    mainPanel.add(controlImageName,   new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
+    mainPanel.add(controlImageName,     new GridBagConstraints(2, 0, 1, 1, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlImage,   new GridBagConstraints(0, 1, 2, 1, 1.0, 1.0
+    mainPanel.add(controlImage,          new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
   }
 

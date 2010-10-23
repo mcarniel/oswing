@@ -44,8 +44,11 @@ import org.openswing.swing.table.renderers.client.*;
  */
 public class FormattedTextColumn extends Column {
 
-  /** formatted text field */
-  private FormattedTextBox textBox = new FormattedTextBox();
+  /** formatted text field for cell editor */
+  private FormattedTextBox editorTextBox = new FormattedTextBox();
+
+  /** formatted text field for cell renderer */
+  private FormattedTextBox renderTextBox = new FormattedTextBox();
 
   /** formatter controller */
   private FormatterController controller;
@@ -82,8 +85,8 @@ public class FormattedTextColumn extends Column {
    */
   public final void commitEdit() throws ParseException {
     try {
-      if (textBox != null) {
-        textBox.commitEdit();
+      if (editorTextBox != null) {
+        editorTextBox.commitEdit();
       }
     }
     catch (Exception ex) {
@@ -96,8 +99,8 @@ public class FormattedTextColumn extends Column {
    */
   public final Action[] getActions() {
     try {
-      if (textBox != null) {
-        return textBox.getActions();
+      if (editorTextBox != null) {
+        return editorTextBox.getActions();
       }
       return new Action[0];
     }
@@ -112,8 +115,8 @@ public class FormattedTextColumn extends Column {
    */
   public final int getFocusLostBehavior() {
     try {
-      if (textBox != null) {
-        return textBox.getFocusLostBehavior();
+      if (editorTextBox != null) {
+        return editorTextBox.getFocusLostBehavior();
       }
       else {
         return JFormattedTextField.COMMIT_OR_REVERT;
@@ -130,8 +133,8 @@ public class FormattedTextColumn extends Column {
    */
   public final JFormattedTextField.AbstractFormatter getFormatter() {
     try {
-      if (textBox != null) {
-        return textBox.getFormatter();
+      if (editorTextBox != null) {
+        return editorTextBox.getFormatter();
       }
       else {
         return null;
@@ -148,8 +151,8 @@ public class FormattedTextColumn extends Column {
    */
   public final JFormattedTextField.AbstractFormatterFactory getFormatterFactory() {
     try {
-      if (textBox != null) {
-        return textBox.getFormatterFactory();
+      if (editorTextBox != null) {
+        return editorTextBox.getFormatterFactory();
       }
       return null;
     }
@@ -164,7 +167,7 @@ public class FormattedTextColumn extends Column {
 //   */
 //  public final String getUIClassID() {
 //    try {
-//      return textBox.getUIClassID();
+//      return editorTextBox.getUIClassID();
 //    }
 //    catch (Exception ex) {
 //      return null;
@@ -177,8 +180,8 @@ public class FormattedTextColumn extends Column {
    */
   public final void invalidEdit() {
     try {
-      if (textBox != null) {
-        textBox.invalidEdit();
+      if (editorTextBox != null) {
+        editorTextBox.invalidEdit();
       }
     }
     catch (Exception ex) {
@@ -191,8 +194,8 @@ public class FormattedTextColumn extends Column {
    */
   public final boolean isEditValid() {
     try {
-      if (textBox != null) {
-        return textBox.isEditValid();
+      if (editorTextBox != null) {
+        return editorTextBox.isEditValid();
       }
       return false;
     }
@@ -208,8 +211,8 @@ public class FormattedTextColumn extends Column {
    */
   public final void setDocument(Document doc) {
     try {
-      if (textBox != null) {
-        textBox.setDocument(doc);
+      if (editorTextBox != null) {
+        editorTextBox.setDocument(doc);
       }
     }
     catch (Exception ex) {
@@ -223,8 +226,8 @@ public class FormattedTextColumn extends Column {
    */
   public void setFocusLostBehavior(int behavior) {
     try {
-      if (textBox != null) {
-        textBox.setFocusLostBehavior(behavior);
+      if (editorTextBox != null) {
+        editorTextBox.setFocusLostBehavior(behavior);
       }
     }
     catch (Exception ex) {
@@ -238,8 +241,9 @@ public class FormattedTextColumn extends Column {
    */
   public final void setFormatter(JFormattedTextField.AbstractFormatter format) {
     try {
-      if (textBox != null) {
-        textBox.setFormatter(format);
+      if (editorTextBox != null) {
+        editorTextBox.setFormatter(format);
+        renderTextBox.setFormatter(format);
       }
     }
     catch (Exception ex) {
@@ -253,8 +257,9 @@ public class FormattedTextColumn extends Column {
    */
   public final void setFormatterFactory(JFormattedTextField.AbstractFormatterFactory tf) {
     try {
-      if (textBox != null) {
-        textBox.setFormatterFactory(tf);
+      if (editorTextBox != null) {
+        editorTextBox.setFormatterFactory(tf);
+        renderTextBox.setFormatterFactory(tf);
       }
     }
     catch (Exception ex) {
@@ -268,8 +273,8 @@ public class FormattedTextColumn extends Column {
    */
   public final void setInputVerifier(InputVerifier verifier) {
     try {
-      if (textBox != null) {
-        textBox.setInputVerifier(verifier);
+      if (editorTextBox != null) {
+        editorTextBox.setInputVerifier(verifier);
       }
     }
     catch (Exception ex) {
@@ -299,7 +304,7 @@ public class FormattedTextColumn extends Column {
    * NOTE: you do NOT have to use this method; it should be used only by cell renderer/editor
    */
   public final FormattedTextBox getTextBox() {
-    return textBox;
+    return editorTextBox;
   }
 
 
@@ -453,7 +458,7 @@ public class FormattedTextColumn extends Column {
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
     return new FormattedTextTableCellRenderer(
         tableContainer,
-        new JFormattedTextField(), // create another formatter box, otherwise all renderers and the one cell editor will share the same instance
+        renderTextBox, // create another formatter box, otherwise all renderers and the one cell editor will share the same instance
         leftMargin,
         rightMargin,
         topMargin,
@@ -480,7 +485,7 @@ public class FormattedTextColumn extends Column {
    * Method invoked by FormattedTextCellEditor, when pressing a key.
    */
   public final void forwardKeyEvent(KeyEvent e) {
-    textBox.processKeyEvent(e);
+    editorTextBox.processKeyEvent(e);
   }
 
 

@@ -52,7 +52,7 @@ public class ImageControl extends BaseInputControl implements InputControl {
   private boolean showButton = true;
 
   /** flag used to define if the image panel could auto-resize or it must autosize to width x height */
-  private boolean autoResize = true;
+  private boolean autoResize = false;
 
   /** image panel width */
   private int imageWidth = 0;
@@ -201,6 +201,10 @@ public class ImageControl extends BaseInputControl implements InputControl {
     imagePanel.setMinimumSize(new Dimension(imageWidth,imageHeight));
     imagePanel.setMaximumSize(new Dimension(imageWidth,imageHeight));
     imagePanel.setPreferredSize(new Dimension(imageWidth,imageHeight));
+
+    setMinimumSize(new Dimension(imageWidth,imageHeight));
+    setMaximumSize(new Dimension(imageWidth,imageHeight));
+    setPreferredSize(new Dimension(imageWidth,imageHeight));
   }
 
 
@@ -252,6 +256,11 @@ public class ImageControl extends BaseInputControl implements InputControl {
   public final void setValue(Object value) {
     try {
       setImage((byte[])value);
+      if (autoResize) {
+        imageWidth = imagePanel.getImageWidth();
+        imageHeight = imagePanel.getImageHeight();
+        forceImageDimensions();
+      }
     }
     catch (Exception ex) {
       setImage((Image)null);
@@ -275,6 +284,11 @@ public class ImageControl extends BaseInputControl implements InputControl {
    */
   public final void setImage(byte[] image) {
     imagePanel.setImage(image);
+    if (autoResize) {
+      imageWidth = imagePanel.getImageWidth();
+      imageHeight = imagePanel.getImageHeight();
+      forceImageDimensions();
+    }
   }
 
 
@@ -284,6 +298,11 @@ public class ImageControl extends BaseInputControl implements InputControl {
    */
   public final void setImage(Image image) {
     imagePanel.setImage(image);
+    if (autoResize) {
+      imageWidth = imagePanel.getImageWidth();
+      imageHeight = imagePanel.getImageHeight();
+      forceImageDimensions();
+    }
   }
 
 
@@ -446,6 +465,12 @@ public class ImageControl extends BaseInputControl implements InputControl {
       if (icon.getIconWidth()>getWidth())
         icon = new ImageIcon(icon.getImage().getScaledInstance(getWidth(),-1,Image.SCALE_DEFAULT));
       setIcon(icon);
+
+      if (autoResize) {
+        imageWidth = icon.getIconWidth();
+        imageHeight = icon.getIconHeight();
+        forceImageDimensions();
+      }
       repaint();
     }
 

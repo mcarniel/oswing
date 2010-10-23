@@ -492,13 +492,21 @@ public class DbGridProfileManager extends GridProfileManager {
 
           if (filter[0].getOperator().equals(Consts.IN) || filter[0].getValue() instanceof ArrayList) {
             ArrayList values = (ArrayList)filter[0].getValue();
+            if (values.size()>0)
+              if (values.get(0) instanceof Date)
+                aux += "D,";
+              else if (values.get(0) instanceof Number)
+                aux += "N,";
+              else
+                aux += "T,";
+
             for(int j=0;j<values.size();j++)
               if (values.get(j) instanceof Date)
-                aux += "D,"+sdf.format( values.get(j) )+"\t";
-              else if (filter[0].getValue() instanceof Number)
-                aux += "N,"+values.get(j)+"\t";
+                aux += sdf.format( values.get(j) )+"\t";
+              else if (values.get(j) instanceof Number)
+                aux += values.get(j)+"\t";
               else
-                aux += "T,"+values.get(j)+"\t";
+                aux += values.get(j)+"\t";
           }
           else {
             if (filter[0].getValue() instanceof Date)
@@ -515,13 +523,21 @@ public class DbGridProfileManager extends GridProfileManager {
           if (filter[1].getValue()!=null) {
             if (filter[1].getOperator().equals(Consts.IN) || filter[1].getValue() instanceof ArrayList) {
               ArrayList values = (ArrayList)filter[1].getValue();
+              if (values.size()>0)
+                if (values.get(0) instanceof Date)
+                  aux += "D,";
+                else if (values.get(0) instanceof Number)
+                  aux += "N,";
+                else
+                  aux += "T,";
+
               for(int j=0;j<values.size();j++)
                 if (values.get(j) instanceof Date)
-                  aux += "D,"+sdf.format( values.get(j) )+"\t";
-                else if (filter[1].getValue() instanceof Number)
-                  aux += "N,"+values.get(j)+"\t";
+                  aux += sdf.format( values.get(j) )+"\t";
+                else if (values.get(j) instanceof Number)
+                  aux += values.get(j)+"\t";
                 else
-                  aux += "T,"+values.get(j)+"\t";
+                  aux += values.get(j)+"\t";
             }
             else {
               if (filter[1].getValue() instanceof Date)

@@ -149,71 +149,20 @@ public class ButtonsAuthorizations implements Serializable {
   }
 
 
-  /**
-   * <p>Description: Inner class used to store authorizations for a single functionId and insert, edit, delete buttons.</p>
-   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
-   * <p> </p>
-   * @author Mauro Carniel
-   * @version 1.0
-   */
-  class ButtonAuthorization implements Serializable {
-
-    private boolean isInsertEnabled; // copy = insert...
-    private boolean isEditEnabled;
-    private boolean isDeleteEnabled;
-
-
-    public ButtonAuthorization(boolean isInsertEnabled,boolean isEditEnabled,boolean isDeleteEnabled) {
-      this.isInsertEnabled = isInsertEnabled;
-      this.isEditEnabled = isEditEnabled;
-      this.isDeleteEnabled = isDeleteEnabled;
-    }
-
-
-    public final boolean isInsertEnabled() {
-      return isInsertEnabled;
-    }
-
-    public final boolean isEditEnabled() {
-      return isEditEnabled;
-    }
-
-    public final boolean isDeleteEnabled() {
-      return isDeleteEnabled;
-    }
-
+  public Hashtable getAuthorizations() {
+    return authorizations;
+  }
+  public Hashtable getGenericButtonsAuthorizations() {
+    return genericButtonsAuthorizations;
+  }
+  public void setAuthorizations(Hashtable authorizations) {
+    this.authorizations = authorizations;
+  }
+  public void setGenericButtonsAuthorizations(Hashtable genericButtonsAuthorizations) {
+    this.genericButtonsAuthorizations = genericButtonsAuthorizations;
   }
 
 
-  /**
-   * <p>Description: Inner class used to store authorizations for a single functionId and generic buttons.</p>
-   * <p>Copyright: Copyright (C) 2006 Mauro Carniel</p>
-   * <p> </p>
-   * @author Mauro Carniel
-   * @version 1.0
-   */
-  class GenericButtonAuthorization implements Serializable {
-
-    private HashMap otherButtons = new HashMap(); // collection of pairs <button id,abilitation>
-
-    public GenericButtonAuthorization(String buttonId,boolean isEnabled) {
-      this.otherButtons.put(buttonId,new Boolean(isEnabled));
-    }
-
-
-    public void addGenericButtonAuthorization(String buttonId,boolean isEnabled) {
-      Boolean b = isEnabled(buttonId);
-      if (b==null)
-        this.otherButtons.put(buttonId,new Boolean(isEnabled));
-      else
-        this.otherButtons.put(buttonId,new Boolean(isEnabled || b.booleanValue()));
-    }
-
-    public final Boolean isEnabled(String buttonId) {
-      return (Boolean) otherButtons.get(buttonId);
-    }
-
-  }
 
 
 }

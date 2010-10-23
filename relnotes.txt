@@ -1,4 +1,24 @@
 
+Release Notes 2.3.1
+-------------------
+
+Final release 2.3.1 available
+- fixed bug on rendering TextFormattedColumns
+- fixed problem on using autoResize property in ImageControl
+- fixed problem on saving grid profile (on file and db) when using the IN operator with multiple values
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
+Release Notes 2.3
+-----------------
+
+Final release 2.3 available
+- set translations with caps lock message in LoginDialog
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.2.9
 -------------------
 

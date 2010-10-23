@@ -51,6 +51,9 @@ public class LookupValidationParams implements Serializable {
   }
 
 
+  public LookupValidationParams() {}
+
+
   /**
    * @return parameters used to validate code (optionals)
    */
@@ -64,6 +67,14 @@ public class LookupValidationParams implements Serializable {
    */
   public final String getCode() {
     return code;
+  }
+
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+  public void setLookupValidationParameters(Map lookupValidationParameters) {
+    this.lookupValidationParameters = lookupValidationParameters;
   }
 
 }

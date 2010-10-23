@@ -35,7 +35,9 @@ public class DeptGridFrame extends InternalFrame {
   SaveButton saveButton = new SaveButton();
   CopyButton copyButton = new CopyButton();
   ExportButton exportButton = new ExportButton();
+  FilterButton filterButton = new FilterButton();
   TextColumn colAddress = new TextColumn();
+
 
   public DeptGridFrame(Connection conn,DeptFrameController controller) {
     this.conn = conn;
@@ -71,6 +73,7 @@ public class DeptGridFrame extends InternalFrame {
     grid.setInsertButton(insertButton);
     grid.setReloadButton(reloadButton);
     grid.setSaveButton(saveButton);
+    grid.setFilterButton(filterButton);
     grid.setValueObjectClassName("demo10.DeptVO");
     colDeptCode.setColumnFilterable(true);
     colDeptCode.setColumnName("deptCode");
@@ -105,6 +108,7 @@ public class DeptGridFrame extends InternalFrame {
     buttonsPanel.add(editButton, null);
     buttonsPanel.add(reloadButton, null);
     buttonsPanel.add(saveButton, null);
+    buttonsPanel.add(filterButton, null);
     buttonsPanel.add(exportButton, null);
     buttonsPanel.add(deleteButton, null);
     grid.getColumnContainer().add(colDeptCode, null);

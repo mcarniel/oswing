@@ -277,8 +277,8 @@ public class GridFrame extends JFrame {
     colFormattedText.setEditableOnEdit(true);
     colFormattedText.setEditableOnInsert(true);
 
-//    MaskFormatter mask = new MaskFormatter("###-##-####");
-//    mask.setValidCharacters("0123456789");
+//    MaskFormatter formatter = new MaskFormatter("###-##-####");
+//    formatter.setValidCharacters("0123456789-");
 
     JFormattedTextField.AbstractFormatter formatter = new JFormattedTextField.AbstractFormatter() {
 

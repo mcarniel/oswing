@@ -120,6 +120,7 @@ public class LoginDialog extends JDialog implements ItemListener {
   JPanel warnPanel = new JPanel();
   JLabel warnLabel = new JLabel();
   BorderLayout borderLayout1 = new BorderLayout();
+  private String capsLockMessage = "Caps lock pressed";
 
 
   static {
@@ -454,31 +455,34 @@ public class LoginDialog extends JDialog implements ItemListener {
       if (storeAccount!=null && appId!=null)
         loadAccount();
 
-      if (java.awt.Toolkit.getDefaultToolkit().getLockingKeyState(java.awt.event.KeyEvent.VK_CAPS_LOCK)) {
-        usernameTF.setToolTipText("Caps lock pressed");
-        passwdTF.setToolTipText("Caps lock pressed");
-        warnLabel.setText("Caps lock pressed");
-      }
-      KeyAdapter ka = new KeyAdapter() {
-
-        public void keyPressed(KeyEvent e) {
-          if (java.awt.Toolkit.getDefaultToolkit().getLockingKeyState(java.awt.event.KeyEvent.VK_CAPS_LOCK)) {
-            usernameTF.setToolTipText("Caps lock pressed");
-            passwdTF.setToolTipText("Caps lock pressed");
-            warnLabel.setText("Caps lock pressed");
-          }
-          else {
-            usernameTF.setToolTipText("");
-            passwdTF.setToolTipText("");
-            warnLabel.setText(" ");
-          }
+      try {
+        if (java.awt.Toolkit.getDefaultToolkit().getLockingKeyState(java.awt.event.KeyEvent.VK_CAPS_LOCK)) {
+          usernameTF.setToolTipText(capsLockMessage);
+          passwdTF.setToolTipText(capsLockMessage);
+          warnLabel.setText(capsLockMessage);
         }
+        KeyAdapter ka = new KeyAdapter() {
 
-      };
-      this.addKeyListener(ka);
-      usernameTF.addKeyListener(ka);
-      passwdTF.addKeyListener(ka);
+          public void keyPressed(KeyEvent e) {
+            if (java.awt.Toolkit.getDefaultToolkit().getLockingKeyState(java.awt.event.KeyEvent.VK_CAPS_LOCK)) {
+              usernameTF.setToolTipText(capsLockMessage);
+              passwdTF.setToolTipText(capsLockMessage);
+              warnLabel.setText(capsLockMessage);
+            }
+            else {
+              usernameTF.setToolTipText("");
+              passwdTF.setToolTipText("");
+              warnLabel.setText(" ");
+            }
+          }
 
+        };
+        this.addKeyListener(ka);
+        usernameTF.addKeyListener(ka);
+        passwdTF.addKeyListener(ka);
+      }
+      catch (Throwable t) {
+      }
 
       setVisible(true);
     }
@@ -655,20 +659,32 @@ public class LoginDialog extends JDialog implements ItemListener {
     passwdLabel.setText(ClientSettings.getInstance().getResources().getResource(passwordTextLabel));
     storeAccountCheckBox.setText(ClientSettings.getInstance().getResources().getResource(storeAccount));
     try {
-      loginButton.setMnemonic(ClientSettings.getInstance().getResources().
-                              getResource(String.valueOf(loginButtonMnemonic)).
-                              charAt(0));
+      loginButton.setMnemonic(ClientSettings.getInstance().getResources().getResource(String.valueOf(loginButtonMnemonic)).charAt(0));
     }
     catch (Exception ex) {
     }
     exitButton.setText(ClientSettings.getInstance().getResources().getResource(exitButtonText));
     try {
-      exitButton.setMnemonic(ClientSettings.getInstance().getResources().
-                             getResource(String.valueOf(exitButtonMnemonic)).
-                             charAt(0));
+      exitButton.setMnemonic(ClientSettings.getInstance().getResources().getResource(String.valueOf(exitButtonMnemonic)).charAt(0));
     }
     catch (Exception ex1) {
     }
+    capsLockMessage = ClientSettings.getInstance().getResources().getResource("Caps lock pressed");
+    try {
+      if (java.awt.Toolkit.getDefaultToolkit().getLockingKeyState(java.awt.event.KeyEvent.VK_CAPS_LOCK)) {
+        usernameTF.setToolTipText(capsLockMessage);
+        passwdTF.setToolTipText(capsLockMessage);
+        warnLabel.setText(capsLockMessage);
+      }
+      else {
+        usernameTF.setToolTipText("");
+        passwdTF.setToolTipText("");
+        warnLabel.setText(" ");
+      }
+    }
+    catch (Throwable t) {
+    }
+
 
   }
 
