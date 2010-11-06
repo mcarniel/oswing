@@ -52,9 +52,10 @@ public class ButtonsAuthorizations implements Serializable {
   public final void addButtonAuthorization(String functionId,boolean isInsertEnabled,boolean isEditEnabled,boolean isDeleteEnabled) {
     ButtonAuthorization ba = (ButtonAuthorization)authorizations.get(functionId);
     if (ba==null)
-      authorizations.put(functionId,new ButtonAuthorization(isInsertEnabled,isEditEnabled,isDeleteEnabled));
+      authorizations.put(functionId,new ButtonAuthorization(functionId,isInsertEnabled,isEditEnabled,isDeleteEnabled));
     else
       authorizations.put(functionId,new ButtonAuthorization(
+          functionId,
           ba.isInsertEnabled() || isInsertEnabled,
           ba.isEditEnabled() || isEditEnabled,
           ba.isDeleteEnabled() || isDeleteEnabled

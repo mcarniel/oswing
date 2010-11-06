@@ -158,9 +158,77 @@ public class GridParams implements Serializable {
    * @return filteredColumns; collection of pairs: attributeName, FilterWhereClause[2]
    */
   public final Map getFilteredColumns() {
+
+    // workaround used to avoid the serialization of this content by JAXB...
+    Thread t = null;
+    try {
+      t = Thread.currentThread();
+      StackTraceElement[] ste = (StackTraceElement[])Thread.class.getMethod("getStackTrace",new Class[0]).invoke(t,new Object[0]);
+      StackTraceElement s = null;
+      for(int i=0;i<ste.length;i++)
+              if (ste[i].getClassName().indexOf("XMLSerializer")!=-1)
+                              return new HashMap();
+    }
+    catch (Throwable ex) {
+    }
+
+
     return filteredColumns;
   }
+  public void setStartPos(int startPos) {
+    this.startPos = startPos;
+  }
+  public void setOtherGridParams(Map otherGridParams) {
+    this.otherGridParams = otherGridParams;
+  }
+  public void setFilteredColumns(Map filteredColumns) {
+    this.filteredColumns = filteredColumns;
+  }
+  public void setAction(int action) {
+    this.action = action;
+  }
 
+
+  /**
+   * Delegate method for getFilteredColumns().
+   */
+  public final FilterWhereClause[] getFilters() {
+    if (filteredColumns==null)
+      return new FilterWhereClause[0];
+    ArrayList filters = new ArrayList();
+    Iterator it = filteredColumns.keySet().iterator();
+    String attr = null;
+    FilterWhereClause[] ff = null;
+    while(it.hasNext()) {
+      attr = it.next().toString();
+      ff = (FilterWhereClause[])filteredColumns.get(attr);
+      filters.add(ff[0]);
+      if (ff[1]!=null)
+        filters.add(ff[1]);
+    }
+    return (FilterWhereClause[])filters.toArray(new FilterWhereClause[filters.size()]);
+  }
+
+
+
+  /**
+   * Delegate method for getFilteredColumns().
+   */
+  public final void setFilters(FilterWhereClause[] filters) {
+    if (filteredColumns==null)
+      filteredColumns = new HashMap();
+
+    FilterWhereClause[] ff = null;
+    for(int i=0;i<filters.length;i++) {
+      ff = (FilterWhereClause[])filteredColumns.get(filters[i].getAttributeName());
+      if (ff==null) {
+        ff = new FilterWhereClause[] {filters[i],null};
+        filteredColumns.put(filters[i].getAttributeName(),ff);
+      }
+      else
+        ff[1] = filters[i];
+    }
+  }
 
 
 }

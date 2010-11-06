@@ -15,6 +15,11 @@ import org.openswing.swing.lookup.client.LookupDataLocator;
 import org.openswing.swing.internationalization.java.Resources;
 import org.openswing.swing.domains.java.Domain;
 import java.math.BigDecimal;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.File;
+import java.io.*;
+import java.io.*;
 
 
 /**
@@ -69,7 +74,7 @@ public class DetailFrameController extends FormController {
       stmt = conn.createStatement();
       ResultSet rset = stmt.executeQuery(
         "select DEMO4.TEXT,DEMO4.DECNUM,DEMO4.CURRNUM,DEMO4.THEDATE,DEMO4.COMBO,DEMO4.CHECK_BOX,DEMO4.RADIO,DEMO4.CODE,"+
-        "DEMO4_LOOKUP.DESCRCODE,DEMO4.TA,DEMO4.FORMATTED_TEXT,DEMO4.URI,DEMO4.LINK_LABEL,DEMO4.YEAR "+
+        "DEMO4_LOOKUP.DESCRCODE,DEMO4.TA,DEMO4.FORMATTED_TEXT,DEMO4.URI,DEMO4.LINK_LABEL,DEMO4.YEAR,DEMO4.FILENAME "+
         "from DEMO4,DEMO4_LOOKUP where TEXT='"+pk+"' and DEMO4.CODE=DEMO4_LOOKUP.CODE");
       if (rset.next()) {
         DetailTestVO vo = new DetailTestVO();
@@ -100,7 +105,23 @@ public class DetailFrameController extends FormController {
         vo.setUri(rset.getString(12));
         vo.setLinkLabel(rset.getString(13));
         vo.setYear(rset.getBigDecimal(14));
+        vo.setFilename(rset.getString(15));
         vo.setTooltipURI(vo.getUri());
+
+        try {
+          if (vo.getFilename() != null) {
+            File f = new File(vo.getFilename());
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
+            byte[] bytes = new byte[ (int) f.length()];
+            in.read(bytes);
+            in.close();
+            vo.setFile(bytes);
+          }
+        }
+        catch (Exception ex) {
+          ex.printStackTrace();
+        }
+
 
         stmt.close();
         stmt = conn.createStatement();
@@ -141,7 +162,7 @@ public class DetailFrameController extends FormController {
   public Response insertRecord(ValueObject newPersistentObject) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("insert into DEMO4(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,TA,FORMATTED_TEXT,URI,LINK_LABEL,YEAR) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+      stmt = conn.prepareStatement("insert into DEMO4(TEXT,DECNUM,CURRNUM,THEDATE,COMBO,CHECK_BOX,RADIO,CODE,TA,FORMATTED_TEXT,URI,LINK_LABEL,YEAR,FILENAME) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
       DetailTestVO vo = (DetailTestVO)newPersistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
       stmt.setString(5,vo.getCombo().getCode());
@@ -156,8 +177,24 @@ public class DetailFrameController extends FormController {
       stmt.setString(11,vo.getUri());
       stmt.setString(12,vo.getLinkLabel());
       stmt.setBigDecimal(13,vo.getYear());
+      stmt.setString(14,vo.getFilename());
       stmt.execute();
       pk = vo.getStringValue();
+
+
+      try {
+        if (vo.getFilename() != null && vo.getFile()!=null) {
+          File f = new File(vo.getFilename());
+          BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+          out.write(vo.getFile());
+          out.close();
+        }
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+      }
+
+
 
       if (vo.getListValues()!=null) {
         stmt.close();
@@ -198,7 +235,7 @@ public class DetailFrameController extends FormController {
   public Response updateRecord(ValueObject oldPersistentObject,ValueObject persistentObject) throws Exception {
     PreparedStatement stmt = null;
     try {
-      stmt = conn.prepareStatement("update DEMO4 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,TA=?,FORMATTED_TEXT=?,URI=?,LINK_LABEL=?,YEAR=? where TEXT=?");
+      stmt = conn.prepareStatement("update DEMO4 set TEXT=?,DECNUM=?,CURRNUM=?,THEDATE=?,COMBO=?,CHECK_BOX=?,RADIO=?,CODE=?,TA=?,FORMATTED_TEXT=?,URI=?,LINK_LABEL=?,YEAR=?,FILENAME=? where TEXT=?");
       DetailTestVO vo = (DetailTestVO)persistentObject;
       DetailTestVO oldVO = (DetailTestVO)oldPersistentObject;
       stmt.setObject(6,vo.getCheckValue()==null || !vo.getCheckValue().booleanValue() ? "N":"Y");
@@ -214,7 +251,8 @@ public class DetailFrameController extends FormController {
       stmt.setString(11,vo.getUri());
       stmt.setString(12,vo.getLinkLabel());
       stmt.setBigDecimal(13,vo.getYear());
-      stmt.setString(14,oldVO.getStringValue());
+      stmt.setString(14,vo.getFilename());
+      stmt.setString(15,oldVO.getStringValue());
       stmt.execute();
 
       stmt.close();
@@ -231,6 +269,18 @@ public class DetailFrameController extends FormController {
           stmt.setString(2,vo.getListValues().get(i).toString());
           stmt.execute();
         }
+      }
+
+      try {
+        if (vo.getFilename() != null && vo.getFile()!=null) {
+          File f = new File(vo.getFilename());
+          BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+          out.write(vo.getFile());
+          out.close();
+        }
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
       }
 
 

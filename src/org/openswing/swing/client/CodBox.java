@@ -91,6 +91,11 @@ public class CodBox extends JTextField {
         else if ((getSelectedText()==null || getSelectedText().length()==0) &&
                  (getText().length()>=maxCharacters))
           e.consume();
+        else if (getText()!=null &&
+                 getSelectedText()!=null &&
+                 getText().length()-getSelectedText().length()>=maxCharacters)
+          e.consume();
+
       }
     });
     this.addFocusListener(new FocusAdapter() {

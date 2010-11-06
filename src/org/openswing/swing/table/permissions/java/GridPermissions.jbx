@@ -5,7 +5,6 @@ columnsEditabilityInInsert,boolean[],false,false, , ,true,<default>
 columnsMandatory,boolean[],false,false,columnsMandatory,columnsMandatory,true,<default>
 columnsVisibility,boolean[],false,false, , ,true,<default>
 functionId,String,false,false, , ,true,<default>
-id,Object,false,false, , ,false,<default>
 username,String,false,false, , ,true,<default>
 [IconNames]
 

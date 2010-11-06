@@ -1650,10 +1650,13 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       // view confirmation dialog...
       boolean ok = true;
       if (gridControl!=null && gridControl.isShowWarnMessageBeforeReloading())
-        ok = OptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
-                                      ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
-                                      ClientSettings.getInstance().getResources().getResource("Attention"),
-                                      JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION;
+        ok = OptionPane.showConfirmDialog(
+          this,
+          ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
+          ClientSettings.getInstance().getResources().getResource("Attention"),
+          JOptionPane.YES_NO_OPTION
+        )==JOptionPane.YES_OPTION;
+
       if (ok)
         executeReload();
     } else if (getMode()==Consts.READONLY) {
@@ -1816,7 +1819,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               moreRows = false;
               if (answer!=null)
                 OptionPane.showMessageDialog(
-                    ClientUtils.getParentFrame(Grids.this),
+                    Grids.this,
                     ClientSettings.getInstance().getResources().getResource("Error while loading data")+":\n"+answer.getErrorMessage(),
                     ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
                     JOptionPane.ERROR_MESSAGE
@@ -1948,7 +1951,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       SwingUtilities.invokeLater(new Runnable(){
         public void run() {
           OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(Grids.this),
+              Grids.this,
               ClientSettings.getInstance().getResources().getResource("Error while loading data"),
               ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
               JOptionPane.ERROR_MESSAGE
@@ -2272,7 +2275,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         gridExportOptions.getOtherGridParams().remove("LOAD_ALL");
         if (response.isError()) {
           OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
               ClientSettings.getInstance().getResources().getResource("Error"),
               JOptionPane.WARNING_MESSAGE
@@ -2301,7 +2304,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         Response response = (Response)obj.getClass().getMethod("export",new Class[]{ExportOptions.class}).invoke(obj,new Object[]{opt});
         if (response.isError()) {
           OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
               ClientSettings.getInstance().getResources().getResource("Error"),
               JOptionPane.WARNING_MESSAGE
@@ -2438,7 +2441,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       catch (Exception ex2) {
         Logger.error(this.getClass().getName(), "import", "Error while importing data:\n"+ex2.getMessage(), ex2);
         OptionPane.showMessageDialog(
-          ClientUtils.getParentFrame(this),
+          this,
           ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+ex2.getMessage(),
           "Error",
           JOptionPane.ERROR_MESSAGE
@@ -2466,7 +2469,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         Logger.error(this.getClass().getName(), "import",
                      "Error while importing data:\n" + ex.getMessage(), ex);
         OptionPane.showMessageDialog(
-          ClientUtils.getParentFrame(this),
+          this,
           ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+ex.getMessage(),
           "Error",
           JOptionPane.ERROR_MESSAGE
@@ -2513,7 +2516,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             result = gridController.insertRecords(singleIndex,singleVO);
             if (result.isError()) {
               OptionPane.showMessageDialog(
-                ClientUtils.getParentFrame(this),
+                this,
                 ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+result.getErrorMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE
@@ -2526,7 +2529,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           }
           lastIndex = lastIndex+rowNumbers.length;
           OptionPane.showMessageDialog(
-            ClientUtils.getParentFrame(this),
+            this,
             ClientSettings.getInstance().getResources().getResource("import completed"),
             "import",
             JOptionPane.INFORMATION_MESSAGE
@@ -2536,7 +2539,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           Response result = gridController.insertRecords(rowNumbers,vos);
           if (result.isError()) {
             OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+result.getErrorMessage(),
               "Error",
               JOptionPane.ERROR_MESSAGE
@@ -2547,7 +2550,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           else {
             lastIndex = lastIndex+rowNumbers.length;
             OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource("import completed"),
               "import",
               JOptionPane.INFORMATION_MESSAGE
@@ -2559,7 +2562,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         Logger.error(this.getClass().getName(), "import",
                      "Error while importing data:\n" + ex.getMessage(), ex);
         OptionPane.showMessageDialog(
-          ClientUtils.getParentFrame(this),
+          this,
           ClientSettings.getInstance().getResources().getResource("Error while importing data")+":\n"+ex.getMessage(),
           "Error",
           JOptionPane.ERROR_MESSAGE
@@ -2803,7 +2806,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       }
       else if (
           OptionPane.showConfirmDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource("Delete Rows?"),
               ClientSettings.getInstance().getResources().getResource("Delete Confirmation"),
               JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION) {
@@ -2828,7 +2831,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           } else {
             // mostra il messaggio di errore di cancellazione non riuscita...
             OptionPane.showMessageDialog(
-                ClientUtils.getParentFrame(this),
+                this,
                 ClientSettings.getInstance().getResources().getResource("Error while deleting rows.")+"\n"+
                 ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
                 ClientSettings.getInstance().getResources().getResource("Deleting Error"),
@@ -2842,7 +2845,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
           // mostra il messaggio di errore di salvataggio non riuscito...
           OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource("Error while deleting rows.")+"\n"+ex.getMessage(),
               ClientSettings.getInstance().getResources().getResource("Deleting Error"),
               JOptionPane.ERROR_MESSAGE
@@ -3036,7 +3039,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         } else {
           // saving operation throws an error: it will be viewed on a dialog...
           OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource("Error while saving")+":\n"+ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
               ClientSettings.getInstance().getResources().getResource("Saving Error"),
               JOptionPane.ERROR_MESSAGE
@@ -3046,7 +3049,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       catch (Exception ex) {
         Logger.error(this.getClass().getName(), "save", "Error while saving.", ex);
         OptionPane.showMessageDialog(
-            ClientUtils.getParentFrame(this),
+            this,
             ClientSettings.getInstance().getResources().getResource("Error while saving")+":\n"+ex.getMessage(),
             ClientSettings.getInstance().getResources().getResource("Saving Error"),
             JOptionPane.ERROR_MESSAGE
@@ -3222,7 +3225,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               return false;
             else if (this.colProps[j].isColumnRequired())
               if ((model.getValueAt(rows[i], j)==null) || (model.getValueAt(rows[i], j).toString().equals(""))) {
-                OptionPane.showMessageDialog(ClientUtils.getParentFrame(this),
+                OptionPane.showMessageDialog(this,
                                               ClientSettings.getInstance().getResources().getResource("A mandatory column is empty.")+": "+ClientSettings.getInstance().getResources().getResource(this.colProps[j].getHeaderColumnName()),
                                               ClientSettings.getInstance().getResources().getResource("Value not valid"),
                                               JOptionPane.ERROR_MESSAGE);

@@ -70,7 +70,7 @@ public class TreeServerDataLocator extends TreeDataLocator {
     Response response = ClientUtils.getData(serverMethodName,super.getTreeNodeParams());
     if (response.isError()) {
       OptionPane.showMessageDialog(
-          ClientUtils.getParentFrame(tree),
+          tree,
           response.getErrorMessage(),
           ClientSettings.getInstance().getResources().getResource("Error"),
           JOptionPane.WARNING_MESSAGE

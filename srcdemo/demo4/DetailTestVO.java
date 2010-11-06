@@ -14,8 +14,9 @@ public class DetailTestVO extends TestVO{
 
 
   private ArrayList listValues;
-
   private BigDecimal year;
+  private byte[] file;
+  private String filename;
 
 
   public DetailTestVO() {
@@ -33,6 +34,18 @@ public class DetailTestVO extends TestVO{
   }
   public void setYear(BigDecimal year) {
     this.year = year;
+  }
+  public byte[] getFile() {
+    return file;
+  }
+  public void setFile(byte[] file) {
+    this.file = file;
+  }
+  public String getFilename() {
+    return filename;
+  }
+  public void setFilename(String filename) {
+    this.filename = filename;
   }
 
 

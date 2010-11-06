@@ -74,6 +74,7 @@ public class DetailFrame extends JFrame {
   TextControl controlLinkLabel = new TextControl();
   SpinnerListControl controlListSpinner = new SpinnerListControl();
   SpinnerNumberControl controlNumSpinner = new SpinnerNumberControl();
+  FileControl controlFile = new FileControl();
 
 
   public DetailFrame(Connection conn,DetailFrameController dataController) {
@@ -203,6 +204,8 @@ public class DetailFrame extends JFrame {
     controlNumSpinner.setInitialValue(new Double(2010.0));
     controlNumSpinner.setMaxValue(new Double(2015.0));
     controlNumSpinner.setMinValue(new Double(2010.0));
+    controlFile.setAttributeName("file");
+    controlFile.setFileNameAttributeName("filename");
     this.getContentPane().add(buttonsPanel,  BorderLayout.NORTH);
     buttonsPanel.add(insertButton, null);
     buttonsPanel.add(copyButton, null);
@@ -265,6 +268,8 @@ public class DetailFrame extends JFrame {
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 0, 5, 0), 0, 0));
     mainPanel.add(controlNumSpinner,  new GridBagConstraints(5, 5, 1, 1, 0.0, 0.0
             ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    mainPanel.add(controlFile,    new GridBagConstraints(0, 10, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 
     controlText.setAttributeName("stringValue");
     controlText.setRequired(true);

@@ -584,7 +584,7 @@ public class GridControl extends JPanel {
             public void actionPerformed(ActionEvent e) {
 
               String desc = OptionPane.showInputDialog(
-                ClientUtils.getParentFrame(GridControl.this),
+                GridControl.this,
                 "profile description",
                 "create new grid profile",
                 JOptionPane.QUESTION_MESSAGE
@@ -3463,6 +3463,41 @@ public class GridControl extends JPanel {
   }
   public void setAllowColumnsProfile(boolean allowColumnsProfile) {
     this.allowColumnsProfile = allowColumnsProfile;
+  }
+
+
+  /**
+   * Find (starting from the first row) in grid the specified value within the column identified by
+   * the specified attribute name.
+   * @param attributeName attribute used to identify the column where restricting the search
+   * @param value value to search
+   * @return row index having the specified value or -1 in case of search without a result
+   */
+  public final int findNextValue(String attributeName,Object value) {
+    return findNextValue(attributeName,value,0);
+  }
+
+
+  /**
+   * Find in grid the specified value within the column identified by the specified attribute name.
+   * @param attributeName attribute used to identify the column where restricting the search
+   * @param value value to search
+   * @param startingFromRow row index in grid to use to start the search
+   * @return row index having the specified value or -1 in case of search without a result
+   */
+  public final int findNextValue(String attributeName,Object value,int startingFromRow) {
+    if (startingFromRow>table.getVOListTableModel().getRowCount())
+      return -1;
+    int col = table.getVOListTableModel().findColumn(attributeName);
+    Object obj = null;
+    for(int i=startingFromRow;i<table.getVOListTableModel().getRowCount();i++) {
+      obj = table.getVOListTableModel().getValueAt(i, col);
+      if (obj==null && value==null)
+        return i;
+      else if (obj!=null && obj.toString().equalsIgnoreCase(value.toString()))
+        return i;
+    }
+    return -1;
   }
 
 

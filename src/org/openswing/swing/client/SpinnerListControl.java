@@ -153,8 +153,13 @@ public class SpinnerListControl extends BaseInputControl implements InputControl
    * @param code used to retrieve the corresponding item and to select that item in the spinner
    */
   public final void setValue(Object code) {
-    if (code==null)
-      spinner.setValue(null);
+    try {
+      if (code == null) {
+        spinner.setValue(null);
+      }
+    }
+    catch (Exception ex) {
+    }
     if (domain==null)
       return;
     DomainPair pair = domain.getDomainPair(code);

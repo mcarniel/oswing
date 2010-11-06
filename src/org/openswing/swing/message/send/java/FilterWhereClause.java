@@ -44,6 +44,9 @@ public class FilterWhereClause implements Serializable {
   private Object value;
 
 
+  public FilterWhereClause() {}
+
+
   /**
    * @param attributeName attribute name
    * @param operator operator; possible values: =, is null, is not null, <, >, <=, >=
@@ -88,6 +91,15 @@ public class FilterWhereClause implements Serializable {
            operator.equals(o2.getOperator()) &&
            (value==null && o2.getValue()==null || value!=null && value.equals(o2.getValue()));
 
+  }
+  public void setAttributeName(String attributeName) {
+    this.attributeName = attributeName;
+  }
+  public void setOperator(String operator) {
+    this.operator = operator;
+  }
+  public void setValue(Object value) {
+    this.value = value;
   }
 
 

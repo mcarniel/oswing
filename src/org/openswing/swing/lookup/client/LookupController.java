@@ -276,6 +276,10 @@ public class LookupController {
               fireCodeValidatedEvent(false);
         }
         else {
+          Component parentComp = ClientUtils.getParentInternalFrame(parentComponent);
+          if (parentComp==null)
+            parentComp = ClientUtils.getParentFrame(parentComponent);
+
           String errorMessage = ClientSettings.getInstance().getResources().getResource("Code is not correct.");
           if (r.isError() && r.getErrorMessage()!=null && showCustomErrorMessage)
             errorMessage = r.getErrorMessage();
@@ -291,7 +295,7 @@ public class LookupController {
             fireCodeValidatedEvent(false);
             if (showErrorMessage)
               OptionPane.showMessageDialog(
-                  ClientUtils.getParentFrame(parentComponent),
+                  parentComp,
                   errorMessage,
                   ClientSettings.getInstance().getResources().getResource("Code Validation"),
                   JOptionPane.ERROR_MESSAGE
@@ -300,7 +304,7 @@ public class LookupController {
           else if (onInvalidCode==ON_INVALID_CODE_RESTORE_LAST_VALID_CODE) {
             if (showErrorMessage)
               OptionPane.showMessageDialog(
-                  ClientUtils.getParentFrame(parentComponent),
+                  parentComp,
                   errorMessage,
                   ClientSettings.getInstance().getResources().getResource("Code Validation"),
                   JOptionPane.ERROR_MESSAGE
@@ -315,7 +319,7 @@ public class LookupController {
               lastInvalidCode = code;
               if (showErrorMessage)
                 OptionPane.showMessageDialog(
-                  ClientUtils.getParentFrame(parentComponent),
+                  parentComp,
                   errorMessage,
                   ClientSettings.getInstance().getResources().getResource("Code Validation"),
                   JOptionPane.ERROR_MESSAGE
@@ -598,6 +602,7 @@ public class LookupController {
       lookupFrame = new LookupGridFrame(parentFrame,frameTitle, table, statusPanel);
       lookupFrame.setSize(framePreferredSize);
       table.reload();
+
       ClientUtils.centerDialog(parentFrame,lookupFrame);
       lookupFrame.setVisible(true);
 

@@ -499,7 +499,9 @@ public class CurrencyControl extends BaseInputControl implements InputControl {
             e.getKeyCode()==e.VK_DELETE ||
             e.getKeyCode()==e.VK_BACK_SPACE ||
             e.getKeyCode()==e.VK_LEFT ||
-            e.getKeyCode()==e.VK_RIGHT)
+            e.getKeyCode()==e.VK_ESCAPE ||
+            e.getKeyCode()==e.VK_RIGHT ||
+            e.isAltDown())
           return;
         e.consume();
       }

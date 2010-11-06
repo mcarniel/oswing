@@ -9,6 +9,7 @@ import java.sql.*;
 import java.awt.event.*;
 import org.openswing.swing.table.java.*;
 import org.openswing.swing.mdi.client.InternalFrame;
+import javax.swing.AbstractAction;
 
 
 /**
@@ -44,6 +45,7 @@ public class EmpGridFrame extends InternalFrame {
       grid.setController(controller);
       grid.setGridDataLocator(controller);
       setTitle("Employees");
+
     }
     catch(Exception e) {
       e.printStackTrace();

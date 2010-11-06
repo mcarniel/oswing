@@ -336,7 +336,13 @@ public class NumericControl extends BaseInputControl implements InputControl {
           e.consume();
 
         if (numBox.getText()!=null &&
+            numBox.getSelectedText()==null &&
             numBox.getText().length()>=maxCharacters) {
+          e.consume();
+        }
+        else if (numBox.getText()!=null &&
+                 numBox.getSelectedText()!=null &&
+                 numBox.getText().length()-numBox.getSelectedText().length()>=maxCharacters) {
           e.consume();
         }
 
@@ -348,8 +354,10 @@ public class NumericControl extends BaseInputControl implements InputControl {
             e.getKeyCode()==e.VK_TAB ||
             e.getKeyCode()==e.VK_DELETE ||
             e.getKeyCode()==e.VK_BACK_SPACE ||
+            e.getKeyCode()==e.VK_ESCAPE ||
             e.getKeyCode()==e.VK_LEFT ||
-            e.getKeyCode()==e.VK_RIGHT)
+            e.getKeyCode()==e.VK_RIGHT ||
+            e.isAltDown())
           return;
         e.consume();
       }

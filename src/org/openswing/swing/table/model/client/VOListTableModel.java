@@ -90,6 +90,16 @@ public class VOListTableModel extends AbstractTableModel {
    * @param column index of the column
    * @return name of the attribute that corresponds to the given column
    */
+  public final int findColumn(String attrName) {
+    return fieldAdapter.getFieldIndex(attrName);
+  }
+
+
+
+  /**
+   * @param column index of the column
+   * @return name of the attribute that corresponds to the given column
+   */
   public final String getColumnName(int column) {
     return(fieldAdapter.getFieldName(column));
   }

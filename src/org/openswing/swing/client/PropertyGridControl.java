@@ -536,7 +536,7 @@ public class PropertyGridControl extends JScrollPane implements DataController {
 
     if (getMode()!=Consts.READONLY) {
       // view confirmation dialog...
-      if (JOptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
+      if (JOptionPane.showConfirmDialog(this,
                                     ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
                                     ClientSettings.getInstance().getResources().getResource("Attention"),
                                     JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION) {
@@ -654,7 +654,7 @@ public class PropertyGridControl extends JScrollPane implements DataController {
         // all changed rows are validated...
         for (int i=0; i<rows.length; i++) {
           if (model.isRequired(i) && model.getValueAt(i,1)==null) {
-            JOptionPane.showMessageDialog(ClientUtils.getParentFrame(this),
+            JOptionPane.showMessageDialog(this,
                                           ClientSettings.getInstance().getResources().getResource("A mandatory column is empty."),
                                           ClientSettings.getInstance().getResources().getResource("Value not valid"),
                                           JOptionPane.ERROR_MESSAGE);
@@ -724,7 +724,7 @@ public class PropertyGridControl extends JScrollPane implements DataController {
         } else {
           // saving operation throws an error: it will be viewed on a dialog...
           JOptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource("Error while saving"),
               ClientSettings.getInstance().getResources().getResource("Saving Error"),
               JOptionPane.ERROR_MESSAGE
@@ -734,7 +734,7 @@ public class PropertyGridControl extends JScrollPane implements DataController {
       catch (Exception ex) {
         Logger.error(this.getClass().getName(), "save", "Error while saving.", ex);
         JOptionPane.showMessageDialog(
-            ClientUtils.getParentFrame(this),
+            this,
             ClientSettings.getInstance().getResources().getResource("Error while saving")+":\n"+ex.getMessage(),
             ClientSettings.getInstance().getResources().getResource("Saving Error"),
             JOptionPane.ERROR_MESSAGE

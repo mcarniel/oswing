@@ -208,7 +208,7 @@ public class GanttControl extends JPanel {
                     GanttWorkingHours whVO = getWhVO(table2.getSelectedRow(),table2.getSelectedColumn());
                     if (whVO==null || whVO.getMorningStartHour()==null || whVO.getAfternoonStartHour()==null) {
                       OptionPane.showMessageDialog(
-                          ClientUtils.getParentFrame(GanttControl.this),
+                          GanttControl.this,
                           ClientSettings.getInstance().getResources().getResource("no working hours defined for this day"),
                           ClientSettings.getInstance().getResources().getResource("Attention"),
                           JOptionPane.ERROR_MESSAGE
@@ -496,7 +496,7 @@ public class GanttControl extends JPanel {
     Response res = ganttDataLocator.loadData(ganttParameters);
     if (res.isError()) {
       OptionPane.showMessageDialog(
-          ClientUtils.getParentFrame(this),
+          this,
           ClientSettings.getInstance().getResources().getResource("Error while loading data")+":\n"+ClientSettings.getInstance().getResources().getResource(res.getErrorMessage()),
           ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
           JOptionPane.ERROR_MESSAGE

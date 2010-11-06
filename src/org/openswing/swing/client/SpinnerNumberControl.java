@@ -120,7 +120,11 @@ public class SpinnerNumberControl extends BaseInputControl implements InputContr
    * @param code used to retrieve the corresponding item and to select that item in the spinner
    */
   public final void setValue(Object code) {
-    spinner.setValue(code);
+    try {
+      spinner.setValue(code);
+    }
+    catch (Exception ex) {
+    }
   }
 
 

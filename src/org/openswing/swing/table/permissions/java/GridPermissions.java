@@ -58,6 +58,9 @@ public class GridPermissions implements Serializable,Cloneable {
   private boolean[] columnsMandatory;
 
 
+  public GridPermissions() {}
+
+
   /**
    * Constructor.
    * @param functionId identifier (functionId) associated to the grid
@@ -167,5 +170,8 @@ public class GridPermissions implements Serializable,Cloneable {
   }
   public void setColumnsMandatory(boolean[] columnsMandatory) {
     this.columnsMandatory = columnsMandatory;
+  }
+  public void setUsername(String username) {
+    this.username = username;
   }
 }

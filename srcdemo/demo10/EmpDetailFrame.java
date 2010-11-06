@@ -18,6 +18,9 @@ import org.openswing.swing.internationalization.java.Resources;
 import org.openswing.swing.mdi.client.InternalFrame;
 import javax.swing.border.*;
 import org.openswing.swing.table.columns.client.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.beans.*;
 
 
 /**
@@ -101,6 +104,24 @@ public class EmpDetailFrame extends InternalFrame {
 
       setSize(590,600);
       setMinimumSize(new Dimension(590,600));
+
+
+      KeyStroke esc = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+      Action actionESC = new AbstractAction() {
+
+        public void actionPerformed(ActionEvent e) {
+          try {
+            closeFrame();
+          }
+          catch (PropertyVetoException ex) {
+          }
+        }
+
+      };
+      this.getInputMap().put(esc,"esc");
+      this.getActionMap().put("esc",actionESC);
+//      mainPanel.getActionMap().mapActionForKeyStroke(esc,actionESC);
+
 
     }
     catch(Exception e) {

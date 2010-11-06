@@ -77,11 +77,20 @@ public class TextAreaControl extends BaseInputControl implements InputControl {
 
       public final void keyTyped(KeyEvent e) {
         if (textArea.getText()!=null &&
+            textArea.getSelectedText()==null &&
             textArea.getText().length()>=maxCharacters &&
             e.getKeyChar()!='\b') {
           textArea.setText(textArea.getText().substring(0,maxCharacters));
           e.consume();
         }
+        else if (textArea.getText()!=null &&
+                 textArea.getSelectedText()!=null &&
+                 e.getKeyChar()!='\b' &&
+                 textArea.getText().length()-textArea.getSelectedText().length()>=maxCharacters) {
+          textArea.setText(textArea.getText().substring(0,maxCharacters));
+          e.consume();
+        }
+
       }
 
       public void keyPressed(KeyEvent e) {

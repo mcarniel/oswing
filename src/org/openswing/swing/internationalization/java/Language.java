@@ -41,6 +41,9 @@ public class Language implements Serializable {
   private String description = null;
 
 
+  public Language() {}
+
+
   /**
    * Constructor.
    * @param languageId language identifier
@@ -73,6 +76,12 @@ public class Language implements Serializable {
    */
   public final String toString() {
     return description;
+  }
+  public void setDescription(String description) {
+    this.description = description;
+  }
+  public void setLanguageId(String languageId) {
+    this.languageId = languageId;
   }
 
 

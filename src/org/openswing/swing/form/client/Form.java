@@ -737,7 +737,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
        }
       else
         OptionPane.showMessageDialog(
-            ClientUtils.getParentFrame(this),
+            this,
             ClientSettings.getInstance().getResources().getResource("Error while loading data:")+"\n"+
             ClientSettings.getInstance().getResources().getResource(answer.getErrorMessage()),
             ClientSettings.getInstance().getResources().getResource("Error on Loading"),
@@ -1170,7 +1170,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       if (isChanged())
         // data in changed: show message dialog to confirm the refresh/cancel operation...
         canReload = OptionPane.showConfirmDialog(
-          ClientUtils.getParentFrame(this),
+          this,
           ClientSettings.getInstance().getResources().getResource("Cancel changes and reload data?"),
           ClientSettings.getInstance().getResources().getResource("Attention"),
           JOptionPane.YES_NO_OPTION
@@ -1372,7 +1372,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       if (!this.formController.beforeDeleteData(this))
         return;
 
-      if (OptionPane.showConfirmDialog(ClientUtils.getParentFrame(this),
+      if (OptionPane.showConfirmDialog(this,
                                     ClientSettings.getInstance().getResources().getResource("Confirm deliting data?"),
                                     ClientSettings.getInstance().getResources().getResource("Attention"),
                                     JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION) {
@@ -1399,7 +1399,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
           }
           else OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource("Error on deleting:")+"\n"+
               ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
               ClientSettings.getInstance().getResources().getResource("Deleting Error"),
@@ -1418,17 +1418,14 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
 
   /**
-   *
-   * @return boolean value indicating whether or not all fields in this form have a valid state
-   * i.e. if an input control is mandatory and has a null value then is not in a valid state
+   * @return list of input controls not in valid state, i.e. the collection of input controls that are mandatory and have a null value
    */
-  public final ArrayList getInputControlsNotValid() {
-    ArrayList inputControlsNotValid = new ArrayList();
+  public HashSet getInputControlsRefNotValid() {
+    HashSet inputControlsNotValid = new HashSet();
     ArrayList list = null;
     String attrName = null;
     InputControl comp = null;
     Enumeration en = bindings.keys();
-    ArrayList models = new ArrayList();
     Object value = null;
     while(en.hasMoreElements()) {
       attrName = en.nextElement().toString();
@@ -1441,10 +1438,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           if (comp instanceof FormattedTextControl &&
               !((FormattedTextControl)comp).isEditValid()) {
             // input control is a formatted text control and its context is invalid...
-            if (comp.getLinkLabel()!=null)
-              inputControlsNotValid.add( comp.getLinkLabel().getText() );
-            else
-              inputControlsNotValid.add( comp.getAttributeName() );
+            inputControlsNotValid.add(comp);
           }
           else {
             try {
@@ -1456,19 +1450,35 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
             }
             value = comp.getValue();
             if ((value==null || value.equals("")) && comp.isRequired()) {
-              if (comp.getLinkLabel()!=null)
-                inputControlsNotValid.add( comp.getLinkLabel().getText() );
-              else
-                inputControlsNotValid.add( comp.getAttributeName() );
+              inputControlsNotValid.add(comp);
             }
             if (comp instanceof CodLookupControl) {
               if (((CodLookupControl)comp).getCodBox().hasFocus())
                 ((CodLookupControl)comp).getCodBox().forceValidate();
               if (((CodLookupControl)comp).getLookupController()!=null && !((CodLookupControl)comp).getLookupController().isCodeValid())
-                inputControlsNotValid.add( comp.getAttributeName() );
+                inputControlsNotValid.add(comp);
             }
           }
         }
+    }
+    return inputControlsNotValid;
+  }
+
+
+  /**
+   * @return list of labels of input controls not in valid state, i.e. the collection of input controls that are mandatory and have a null value
+   */
+  public final ArrayList getInputControlsNotValid() {
+    ArrayList inputControlsNotValid = new ArrayList();
+    HashSet set = getInputControlsRefNotValid();
+    Iterator it = set.iterator();
+    InputControl comp = null;
+    while(it.hasNext()) {
+      comp = (InputControl)it.next();
+      if (comp.getLinkLabel()!=null)
+        inputControlsNotValid.add( comp.getLinkLabel().getText() );
+      else
+        inputControlsNotValid.add( comp.getAttributeName() );
     }
     return inputControlsNotValid;
   }
@@ -1480,65 +1490,100 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   public final boolean push() {
     maybeCreateVOModel();
-    ArrayList inputControlsNotValid = getInputControlsNotValid();
-    if (inputControlsNotValid.size()>0) {
-      String list = "";
-      for(int i=0;i<inputControlsNotValid.size();i++)
-        list += inputControlsNotValid.get(i)+", ";
-      list = list.substring(0,list.length()-2);
-      OptionPane.showMessageDialog(
-          ClientUtils.getParentFrame(this),
-          ClientSettings.getInstance().getResources().getResource("Error while validating data:")+"\n"+list,
-          ClientSettings.getInstance().getResources().getResource("Validation Error"),
-          JOptionPane.WARNING_MESSAGE
-      );
-      return false;
-    }
 
-    // retrieve the value from each linked input control...
-    boolean result = true;
-    ArrayList list = null;
-    String attrName = null;
-    InputControl comp = null;
-    Enumeration en = bindings.keys();
-    ArrayList models = new ArrayList();
-    while(en.hasMoreElements()) {
-      attrName = en.nextElement().toString();
-      list = (ArrayList)bindings.get(attrName);
-      if (list!=null)
-        for(int i=0;i<list.size();i++) {
-          comp = (InputControl)list.get(i);
-          if (comp instanceof ProgressBarControl)
-            continue;
-          else if (comp instanceof BaseInputControl) {
-            if ( ((BaseInputControl)comp).getBindingComponent().hasFocus() ) {
-              ((BaseInputControl)comp).getBindingComponent().transferFocus();
-              try {
-                // case DateControl
-                comp.getClass().getMethod("focusLost",new Class[]{FocusEvent.class}).invoke(
-                  comp,
-                  new Object[]{null}
-                );
-              } catch (Exception ex) {
+    final HashSet set = getInputControlsRefNotValid();
+    try {
+      if (set.size()>0) {
+        String list = "";
+        Iterator it = set.iterator();
+        InputControl comp = null;
+        while(it.hasNext()) {
+          comp = (InputControl)it.next();
+          if (comp.getLinkLabel()!=null)
+            list += comp.getLinkLabel().getText()+", ";
+          else
+            list += comp.getAttributeName()+", ";
+        }
+        list = list.substring(0,list.length()-2);
+        OptionPane.showMessageDialog(
+            this,
+            ClientSettings.getInstance().getResources().getResource("Error while validating data:")+"\n"+list,
+            ClientSettings.getInstance().getResources().getResource("Validation Error"),
+            JOptionPane.WARNING_MESSAGE
+        );
+        return false;
+      }
+
+      // retrieve the value from each linked input control...
+      boolean result = true;
+      ArrayList list = null;
+      String attrName = null;
+      InputControl comp = null;
+      Enumeration en = bindings.keys();
+      while(en.hasMoreElements()) {
+        attrName = en.nextElement().toString();
+        list = (ArrayList)bindings.get(attrName);
+        if (list!=null)
+          for(int i=0;i<list.size();i++) {
+            comp = (InputControl)list.get(i);
+            if (comp instanceof ProgressBarControl)
+              continue;
+            else if (comp instanceof BaseInputControl) {
+              if ( ((BaseInputControl)comp).getBindingComponent().hasFocus() ) {
+                ((BaseInputControl)comp).getBindingComponent().transferFocus();
+                try {
+                  // case DateControl
+                  comp.getClass().getMethod("focusLost",new Class[]{FocusEvent.class}).invoke(
+                    comp,
+                    new Object[]{null}
+                  );
+                } catch (Exception ex) {
+                }
               }
             }
+            try {
+              model.setValue(comp.getAttributeName(), comp.getValue());
+            }
+            catch (Exception ex) {
+              OptionPane.showMessageDialog(
+                  this,
+                  ClientSettings.getInstance().getResources().getResource("Error while validating data:")+"\n"+comp.getAttributeName(),
+                  ClientSettings.getInstance().getResources().getResource("Validation Error"),
+                  JOptionPane.WARNING_MESSAGE
+              );
+              result = false;
+              set.add(comp);
+            }
           }
-          try {
-            model.setValue(comp.getAttributeName(), comp.getValue());
-          }
-          catch (Exception ex) {
-            OptionPane.showMessageDialog(
-                ClientUtils.getParentFrame(this),
-                ClientSettings.getInstance().getResources().getResource("Error while validating data:")+"\n"+comp.getAttributeName(),
-                ClientSettings.getInstance().getResources().getResource("Validation Error"),
-                JOptionPane.WARNING_MESSAGE
-            );
-            result = false;
-          }
-        }
+      }
+      return result;
     }
+    finally {
+      if (set.size()>0)
+        SwingUtilities.invokeLater(new Runnable() {
 
-    return result;
+          public void run() {
+            // set focus on first invalid control...
+            ArrayList inputControls = new ArrayList();
+            ArrayList buttons = new ArrayList();
+            findInputControlsAndButtons(Form.this.getComponents(),true, inputControls, buttons);
+            for(int i=0;i<inputControls.size();i++)
+              if (set.contains(inputControls.get(i))) {
+                if (inputControls.get(i) instanceof BaseInputControl) {
+                  if (!((BaseInputControl)inputControls.get(i)).getBindingComponent().hasFocus())
+                    ((BaseInputControl)inputControls.get(i)).getBindingComponent().requestFocus();
+                }
+                else {
+                  if (!((Component)inputControls.get(i)).hasFocus())
+                    ((Component)inputControls.get(i)).requestFocus();
+                }
+                break;
+              }
+          }
+
+        });
+
+    }
   }
 
 
@@ -1639,7 +1684,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         catch (Exception ex) {
           ex.printStackTrace();
           OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource("Error on setting value to the input control having the attribute name")+ " '"+comp.getAttributeName()+"'\n"+ex.getMessage(),
               ClientSettings.getInstance().getResources().getResource("Saving Error"),
               JOptionPane.WARNING_MESSAGE
@@ -1795,7 +1840,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           return true;
         } else {
           OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(this),
+              this,
               ClientSettings.getInstance().getResources().getResource("Error while saving: incorrect data.")+"\n"+
               ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
               ClientSettings.getInstance().getResources().getResource("Saving Error"),
@@ -1917,6 +1962,126 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
   }
 
 
+//  /**
+//   * Bind input controls added to the specified container:
+//   * only input controls of type InputControl that have an attribute name defined are linked.
+//   * @param form form to use to link the input controls
+//   * @param c components added to the container
+//   */
+//  private void linkInputControlsAndButtons(Component[] c,boolean evalLinkedForm) {
+//    maybeCreateVOModel();
+//    for(int i=0;i<c.length;i++)
+//      if (c[i] instanceof InputControl)
+//        try {
+//          if (((InputControl)c[i]).getAttributeName()==null)
+//            // input control not linkable: it has not defined the attribute name property...
+//            continue;
+//          try {
+//            // bind input control...
+//            bind((InputControl)c[i]);
+//          }
+//          catch (Exception ex) {
+//            Logger.error(this.getClass().getName(), "linkInputControls", "Error while linking the input control having attribute name '"+((InputControl)c[i]).getAttributeName()+"'",ex);
+//          }
+//        }
+//        catch (Exception ex) {
+//          ex.printStackTrace();
+//        }
+//      else if (c[i] instanceof GenericButton &&
+//               ((GenericButton)c[i]).getAttributeName()!=null &&
+//               !((GenericButton)c[i]).getAttributeName().equals("")) {
+//        ArrayList list = (ArrayList)bindedGenericButtons.get(((GenericButton)c[i]).getAttributeName());
+//        if (list==null)
+//          list = new ArrayList();
+//        list.add(c[i]);
+//        bindedGenericButtons.put(
+//          ((GenericButton)c[i]).getAttributeName(),
+//          list
+//        );
+//        final ArrayList auxList = list;
+//        final String attributeName = ((GenericButton)c[i]).getAttributeName();
+//        model.addValueChangeListener(new ValueChangeListener() {
+//
+//          public void valueChanged(ValueChangeEvent e) {
+//            if (e.getAttributeName().equals(attributeName)) {
+//              for(int j=0;j<auxList.size();j++)
+//                if (e.getNewValue()!=null)
+//                  ((GenericButton)auxList.get(j)).setText(e.getNewValue().toString());
+//                else
+//                  ((GenericButton)auxList.get(j)).setText("");
+//            }
+//          }
+//
+//        });
+//      }
+//      else if (c[i] instanceof LinkButton && (
+//               ((LinkButton)c[i]).getLabelAttributeName()!=null && !((LinkButton)c[i]).getLabelAttributeName().equals("") ||
+//               ((LinkButton)c[i]).getTooltipAttributeName()!=null && !((LinkButton)c[i]).getTooltipAttributeName().equals("") ||
+//               ((LinkButton)c[i]).getUriAttributeName()!=null && !((LinkButton)c[i]).getUriAttributeName().equals("")
+//               )) {
+//        final String labelAttributeName = ((LinkButton)c[i]).getLabelAttributeName();
+//        final String tooltipAttributeName = ((LinkButton)c[i]).getTooltipAttributeName();
+//        final String uriAttributeName = ((LinkButton)c[i]).getUriAttributeName();
+//
+//        String attrName = labelAttributeName;
+//        if (attrName==null || attrName.equals(""))
+//          attrName = tooltipAttributeName;
+//        if (attrName==null || attrName.equals(""))
+//          attrName = uriAttributeName;
+//
+//        ArrayList list = (ArrayList)bindedLinkButtons.get(attrName);
+//        if (list==null)
+//          list = new ArrayList();
+//        list.add(c[i]);
+//        bindedLinkButtons.put(
+//          attrName,
+//          list
+//        );
+//        final ArrayList auxList = list;
+//        model.addValueChangeListener(new ValueChangeListener() {
+//
+//          public void valueChanged(ValueChangeEvent e) {
+//            if (e.getAttributeName().equals(labelAttributeName)) {
+//              for(int j=0;j<auxList.size();j++)
+//                if (e.getNewValue()!=null)
+//                  ((LinkButton)auxList.get(j)).setLabel(e.getNewValue().toString());
+//                else
+//                  ((LinkButton)auxList.get(j)).setLabel("");
+//            }
+//            else if (e.getAttributeName().equals(tooltipAttributeName)) {
+//              for(int j=0;j<auxList.size();j++)
+//                if (e.getNewValue()!=null)
+//                  ((LinkButton)auxList.get(j)).setToolTipText(e.getNewValue().toString());
+//                else
+//                  ((LinkButton)auxList.get(j)).setToolTipText("");
+//            }
+//            else if (e.getAttributeName().equals(uriAttributeName)) {
+//              for(int j=0;j<auxList.size();j++)
+//                if (e.getNewValue()!=null)
+//                  ((LinkButton)auxList.get(j)).setUri(e.getNewValue().toString());
+//                else
+//                  ((LinkButton)auxList.get(j)).setUri("");
+//            }
+//          }
+//
+//        });
+//      }
+//      else if (c[i] instanceof Container)
+//        linkInputControlsAndButtons(((Container)c[i]).getComponents(),false);
+//
+//      if (evalLinkedForm) {
+//        Container container = null;
+//        for(int i=0;i<linkedPanels.size();i++) {
+//          container = (Container)linkedPanels.get(i);
+//          linkInputControlsAndButtons(container.getComponents(),false);
+//        }
+//      }
+//
+//      revalidate();
+//      repaint();
+//  }
+
+
   /**
    * Bind input controls added to the specified container:
    * only input controls of type InputControl that have an attribute name defined are linked.
@@ -1925,36 +2090,32 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   private void linkInputControlsAndButtons(Component[] c,boolean evalLinkedForm) {
     maybeCreateVOModel();
-    for(int i=0;i<c.length;i++)
-      if (c[i] instanceof InputControl)
-        try {
-          if (((InputControl)c[i]).getAttributeName()==null)
-            // input control not linkable: it has not defined the attribute name property...
-            continue;
-          try {
-            // bind input control...
-            bind((InputControl)c[i]);
-          }
-          catch (Exception ex) {
-            Logger.error(this.getClass().getName(), "linkInputControls", "Error while linking the input control having attribute name '"+((InputControl)c[i]).getAttributeName()+"'",ex);
-          }
-        }
-        catch (Exception ex) {
-          ex.printStackTrace();
-        }
-      else if (c[i] instanceof GenericButton &&
-               ((GenericButton)c[i]).getAttributeName()!=null &&
-               !((GenericButton)c[i]).getAttributeName().equals("")) {
-        ArrayList list = (ArrayList)bindedGenericButtons.get(((GenericButton)c[i]).getAttributeName());
+    ArrayList inputControls = new ArrayList();
+    ArrayList buttons = new ArrayList();
+    findInputControlsAndButtons(c, evalLinkedForm, inputControls, buttons);
+
+    for(int k=0;k<inputControls.size();k++) {
+      try {
+        // bind input control...
+        bind((InputControl)inputControls.get(k));
+      }
+      catch (Exception ex) {
+        Logger.error(this.getClass().getName(), "linkInputControls", "Error while linking the input control having attribute name '"+((InputControl)inputControls.get(k)).getAttributeName()+"'",ex);
+      }
+    }
+
+    for(int k=0;k<buttons.size();k++) {
+      if (buttons.get(k) instanceof GenericButton) {
+        ArrayList list = (ArrayList)bindedGenericButtons.get(((GenericButton)buttons.get(k)).getAttributeName());
         if (list==null)
           list = new ArrayList();
-        list.add(c[i]);
+        list.add(buttons.get(k));
         bindedGenericButtons.put(
-          ((GenericButton)c[i]).getAttributeName(),
+          ((GenericButton)buttons.get(k)).getAttributeName(),
           list
         );
         final ArrayList auxList = list;
-        final String attributeName = ((GenericButton)c[i]).getAttributeName();
+        final String attributeName = ((GenericButton)buttons.get(k)).getAttributeName();
         model.addValueChangeListener(new ValueChangeListener() {
 
           public void valueChanged(ValueChangeEvent e) {
@@ -1969,14 +2130,10 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
         });
       }
-      else if (c[i] instanceof LinkButton && (
-               ((LinkButton)c[i]).getLabelAttributeName()!=null && !((LinkButton)c[i]).getLabelAttributeName().equals("") ||
-               ((LinkButton)c[i]).getTooltipAttributeName()!=null && !((LinkButton)c[i]).getTooltipAttributeName().equals("") ||
-               ((LinkButton)c[i]).getUriAttributeName()!=null && !((LinkButton)c[i]).getUriAttributeName().equals("")
-               )) {
-        final String labelAttributeName = ((LinkButton)c[i]).getLabelAttributeName();
-        final String tooltipAttributeName = ((LinkButton)c[i]).getTooltipAttributeName();
-        final String uriAttributeName = ((LinkButton)c[i]).getUriAttributeName();
+      else if (buttons.get(k) instanceof LinkButton) {
+        final String labelAttributeName = ((LinkButton)buttons.get(k)).getLabelAttributeName();
+        final String tooltipAttributeName = ((LinkButton)buttons.get(k)).getTooltipAttributeName();
+        final String uriAttributeName = ((LinkButton)buttons.get(k)).getUriAttributeName();
 
         String attrName = labelAttributeName;
         if (attrName==null || attrName.equals(""))
@@ -1987,7 +2144,7 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         ArrayList list = (ArrayList)bindedLinkButtons.get(attrName);
         if (list==null)
           list = new ArrayList();
-        list.add(c[i]);
+        list.add(buttons.get(k));
         bindedLinkButtons.put(
           attrName,
           list
@@ -2021,20 +2178,57 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
         });
       }
+    }
+
+    revalidate();
+    repaint();
+  }
+
+
+  /**
+   * Find input controls and buttons included in the specified container:
+   * only input controls of type InputControl that have an attribute name defined are linked.
+   * @param c components added to the container
+   * @param evalLinkedForm analyze also linked Forms
+   */
+  private void findInputControlsAndButtons(Component[] c, boolean evalLinkedForm,ArrayList inputControls,ArrayList buttons) {
+    for(int i=0;i<c.length;i++)
+      if (c[i] instanceof InputControl)
+        try {
+          if (((InputControl)c[i]).getAttributeName()==null)
+            // input control not linkable: it has not defined the attribute name property...
+            continue;
+
+          // add input control...
+          inputControls.add(c[i]);
+        }
+        catch (Exception ex) {
+          ex.printStackTrace();
+        }
+      else if (c[i] instanceof GenericButton &&
+               ((GenericButton)c[i]).getAttributeName()!=null &&
+               !((GenericButton)c[i]).getAttributeName().equals("")) {
+        buttons.add(c[i]);
+      }
+      else if (c[i] instanceof LinkButton && (
+               ((LinkButton)c[i]).getLabelAttributeName()!=null && !((LinkButton)c[i]).getLabelAttributeName().equals("") ||
+               ((LinkButton)c[i]).getTooltipAttributeName()!=null && !((LinkButton)c[i]).getTooltipAttributeName().equals("") ||
+               ((LinkButton)c[i]).getUriAttributeName()!=null && !((LinkButton)c[i]).getUriAttributeName().equals("")
+               )) {
+        buttons.add(c[i]);
+      }
       else if (c[i] instanceof Container)
-        linkInputControlsAndButtons(((Container)c[i]).getComponents(),false);
+        findInputControlsAndButtons(((Container)c[i]).getComponents(),false,inputControls,buttons);
 
       if (evalLinkedForm) {
         Container container = null;
         for(int i=0;i<linkedPanels.size();i++) {
           container = (Container)linkedPanels.get(i);
-          linkInputControlsAndButtons(container.getComponents(),false);
+          findInputControlsAndButtons(container.getComponents(),false,inputControls,buttons);
         }
       }
-
-      revalidate();
-      repaint();
   }
+
 
 
 

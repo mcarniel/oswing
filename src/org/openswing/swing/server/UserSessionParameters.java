@@ -41,6 +41,14 @@ public class UserSessionParameters {
   private String sessionId;
 
 
+  public UserSessionParameters(String username) {
+    this.username = username;
+  }
+
+
+  public UserSessionParameters() {}
+
+
   /**
    * @return username
    */

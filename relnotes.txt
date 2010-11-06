@@ -1,4 +1,16 @@
 
+Release Notes 2.3.2
+-------------------
+
+Final release 2.3.2 available
+- added new input control: FileControl, in order to upload/download files in Form panel
+- centered warning messages in grid, form and lookups in relation with its container and not the MDI frame
+- added findNextValue method to GridControl, in order to programmatically search for a specified value in a specified column with case insensitive criteria
+- improved Form panel: now focus is automatically setted on the first invalid input control, when saving/pushing data
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.3.1
 -------------------
 

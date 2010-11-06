@@ -128,7 +128,13 @@ public class TextControl extends BaseInputControl implements InputControl {
         if (skip)
           return;
         if (textBox.getText()!=null &&
+            textBox.getSelectedText()==null &&
             textBox.getText().length()>=maxCharacters) {
+          e.consume();
+        }
+        else if (textBox.getText()!=null &&
+                 textBox.getSelectedText()!=null &&
+                 textBox.getText().length()-textBox.getSelectedText().length()>=maxCharacters) {
           e.consume();
         }
       }
@@ -137,7 +143,8 @@ public class TextControl extends BaseInputControl implements InputControl {
         skip = false;
         consumeEvent = false;
 
-        if (upperCase &&
+        if (!e.isAltDown() &&
+            upperCase &&
             Character.isLetter(e.getKeyChar()) &&
             !String.valueOf(e.getKeyChar()).toUpperCase().equals(String.valueOf(e.getKeyChar()))) {
           processKeyEvent(new KeyEvent(

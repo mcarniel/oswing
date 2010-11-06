@@ -204,3 +204,7 @@ Java-Bean: True
 
 Name: org/openswing/swing/client/SpinnerNumberControl.class
 Java-Bean: True
+
+
+Name: org/openswing/swing/client/FileControl.class
+Java-Bean: True

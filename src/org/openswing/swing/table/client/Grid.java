@@ -1191,7 +1191,7 @@ public class Grid extends JTable
       if (!colProp.isColumnSortable()) {
         // view warning message ...
         OptionPane.showMessageDialog(
-            ClientUtils.getParentFrame(this),
+            grids,
             ClientSettings.getInstance().getResources().getResource("This column is not sorteable"),
             ClientSettings.getInstance().getResources().getResource("Sorting not allowed"),
             JOptionPane.WARNING_MESSAGE
@@ -1242,7 +1242,7 @@ public class Grid extends JTable
           currentColSorted>=grids.getMaxSortedColumns()) {
         // view warning message...
         OptionPane.showMessageDialog(
-            ClientUtils.getParentFrame(this),
+            grids,
             ClientSettings.getInstance().getResources().getResource("Maximum number of sorted columns"),
             ClientSettings.getInstance().getResources().getResource("Sorting not applicable"),
             JOptionPane.WARNING_MESSAGE
