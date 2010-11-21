@@ -275,8 +275,10 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
   public final void validateCode(String code) throws RestoreFocusOnInvalidCodeException {
     if (autoCompletitionWaitTime>=0 &&
         autoCompletitionListener!=null &&
-        autoCompletitionListener.isWindowVisible())
+        autoCompletitionListener.isWindowVisible()) {
+      codBox.setText(null);
       return;
+    }
 
     if (validationController!=null)
       validationController.validateCode(

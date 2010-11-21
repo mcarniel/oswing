@@ -73,11 +73,11 @@ public class SpinnerListColumn extends Column {
   /** component orientation */
   private ComponentOrientation orientation = ClientSettings.TEXT_ORIENTATION;
 
-  /** cell renderer */
-  private DomainTableCellRenderer renderer = null;
+  /** DomainTableCellRenderer (cell renderer), one for each grid controller (top locked rows, bottom locked rows, etc.) */
+  private HashMap renderers = new HashMap();
 
-  /** cell editor */
-  private SpinnerListCellEditor editor = null;
+  /** SpinnerListCellEditor (cell editor), one for each grid controller (top locked rows, bottom locked rows, etc.) */
+  private HashMap editors = new HashMap();
 
 
   public SpinnerListColumn() { }
@@ -105,10 +105,19 @@ public class SpinnerListColumn extends Column {
    */
   public void setDomainId(String domainId) {
     this.domainId = domainId;
-    if (renderer!=null)
+
+    DomainTableCellRenderer renderer = null;
+    SpinnerListCellEditor editor = null;
+    Iterator it = renderers.values().iterator();
+    while(it.hasNext()) {
+      renderer = (DomainTableCellRenderer)it.next();
       renderer.setDomain(getDomain());
-    if (editor!=null)
+    }
+    it = editors.values().iterator();
+    while(it.hasNext()) {
+      editor = (SpinnerListCellEditor)it.next();
       editor.setDomain(getDomain());
+    }
   }
 
 
@@ -127,10 +136,19 @@ public class SpinnerListColumn extends Column {
    */
   public void setDomain(Domain domain) {
     this.domain = domain;
-    if (renderer!=null)
+
+    DomainTableCellRenderer renderer = null;
+    SpinnerListCellEditor editor = null;
+    Iterator it = renderers.values().iterator();
+    while(it.hasNext()) {
+      renderer = (DomainTableCellRenderer)it.next();
       renderer.setDomain(domain);
-    if (editor!=null)
+    }
+    it = editors.values().iterator();
+    while(it.hasNext()) {
+      editor = (SpinnerListCellEditor)it.next();
       editor.setDomain(domain);
+    }
   }
 
 
@@ -275,7 +293,8 @@ public class SpinnerListColumn extends Column {
     if (domain==null)
       domain = ClientSettings.getInstance().getDomain( getDomainId() );
     if (domain!=null) {
-      if (renderer==null)
+      DomainTableCellRenderer renderer = (DomainTableCellRenderer)renderers.get(tableContainer.toString());
+      if (renderer==null) {
         renderer = new DomainTableCellRenderer(
             domain,
             translateItemDescriptions,
@@ -287,7 +306,9 @@ public class SpinnerListColumn extends Column {
             getBottomMargin(),
             getTextOrientation(),
             getColumnName()
-            );
+        );
+        renderers.put(tableContainer.toString(),renderer);
+      }
       return renderer;
     }
     else {
@@ -310,7 +331,8 @@ public class SpinnerListColumn extends Column {
     if (domain==null)
       domain = ClientSettings.getInstance().getDomain( getDomainId() );
     if (domain!=null) {
-      if (editor==null)
+      SpinnerListCellEditor editor = (SpinnerListCellEditor)editors.get(tableContainer.toString());
+      if (editor==null) {
         editor = new SpinnerListCellEditor(
             isColumnRequired(),
             getTextAlignment(),
@@ -319,6 +341,8 @@ public class SpinnerListColumn extends Column {
             domain,
             getTextOrientation()
         );
+        editors.put(tableContainer.toString(),editor);
+      }
       return editor;
     }
     else {

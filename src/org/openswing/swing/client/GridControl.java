@@ -317,6 +317,24 @@ public class GridControl extends JPanel {
   /** flag used to allow the columns profile; default value:  <code>true</code> */
   private boolean allowColumnsProfile = true;
 
+  /** criteria to use with findNextValue method: search for values exactly uquals to the one specified as argument in findNextValue method */
+  public static int FIND_CRITERIA_EQUALS = 0;
+
+  /** criteria to use with findNextValue method: search for values uqualsIgnoreCase to the one specified as argument in findNextValue method */
+  public static int FIND_CRITERIA_EQUALS_IGNORE_CASE = 1;
+
+  /** criteria to use with findNextValue method: search for values that starts with the one specified as argument in findNextValue method */
+  public static int FIND_CRITERIA_STARTS_WITH = 2;
+
+  /** criteria to use with findNextValue method: search for values (case insensitive) that starts with the one specified as argument in findNextValue method */
+  public static int FIND_CRITERIA_STARTS_WITH_IGNORE_CASE = 3;
+
+  /** criteria to use with findNextValue method: search for values that contains (as for value like '%value%') the one specified as argument in findNextValue method */
+  public static int FIND_CRITERIA_CONTAINS = 4;
+
+  /** criteria to use with findNextValue method: search for values that contains (case insensitive, as for VALUE like '%VALUE%') the one specified as argument in findNextValue method */
+  public static int FIND_CRITERIA_CONTAINS_IGNORE_CASE = 5;
+
 
   /**
    * Costructor.
@@ -1014,26 +1032,27 @@ public class GridControl extends JPanel {
       tmpPanel.setLayout(new GridBagLayout());
 
 
-      if (topTable!=null)
+      if (topTable!=null) {
+        topTable.setMinimumSize(new Dimension(getWidth(),lockedRowsOnTop*rowHeight));
         tmpPanel.add(topTable,
                        new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0
                                               , GridBagConstraints.WEST,
                                               GridBagConstraints.BOTH,
                                               new Insets(0, 0, 0, 0), 0, lockedRowsOnTop*rowHeight));
-
+      }
       tmpPanel.add(table,
                      new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0
                                             , GridBagConstraints.WEST,
                                             GridBagConstraints.BOTH,
                                             new Insets(0, 0, 0, 0), 0, 0));
-      if (bottomTable!=null)
+      if (bottomTable!=null) {
+        bottomTable.setMinimumSize(new Dimension(getWidth(),lockedRowsOnBottom*rowHeight));
         tmpPanel.add(bottomTable,
                        new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0
                                               , GridBagConstraints.WEST,
                                               GridBagConstraints.BOTH,
                                               new Insets(0, 0, 0, 0), 0, lockedRowsOnBottom*rowHeight));
-
-
+      }
       table.getGrid().addFocusListener(new FocusListener() {
 
         public void focusGained(FocusEvent e) {
@@ -3468,7 +3487,7 @@ public class GridControl extends JPanel {
 
   /**
    * Find (starting from the first row) in grid the specified value within the column identified by
-   * the specified attribute name.
+   * the specified attribute name, using "equalsIgnoreCase" as matching criteria.
    * @param attributeName attribute used to identify the column where restricting the search
    * @param value value to search
    * @return row index having the specified value or -1 in case of search without a result
@@ -3479,13 +3498,29 @@ public class GridControl extends JPanel {
 
 
   /**
-   * Find in grid the specified value within the column identified by the specified attribute name.
+   * Find in grid the specified value within the column identified by the specified attribute name,
+   * using "equalsIgnoreCase" as matching criteria.
    * @param attributeName attribute used to identify the column where restricting the search
    * @param value value to search
    * @param startingFromRow row index in grid to use to start the search
+   * @param findCritera criteria to use with findNextValue method; allowed values: <code>GridControl.FIND_CRITERIA_EQUALS</code>, <code>GridControl.FIND_CRITERIA_EQUALS_IGNORE_CASE</code>, <code>GridControl.FIND_CRITERIA_STARTS_WITH</code>, <code>GridControl.FIND_CRITERIA_STARTS_WITH_IGNORE_CASE</code>, <code>GridControl.FIND_CRITERIA_CONTAINS</code>, <code>GridControl.FIND_CRITERIA_CONTAINS_IGNORE_CASE</code>
    * @return row index having the specified value or -1 in case of search without a result
    */
   public final int findNextValue(String attributeName,Object value,int startingFromRow) {
+    return findNextValue(attributeName,value,startingFromRow,GridControl.FIND_CRITERIA_EQUALS_IGNORE_CASE);
+  }
+
+
+  /**
+   * Find in grid the specified value within the column identified by the specified attribute name,
+   * using the matching criteria specified as argument.
+   * @param attributeName attribute used to identify the column where restricting the search
+   * @param value value to search
+   * @param startingFromRow row index in grid to use to start the search
+   * @param findCritera criteria to use with findNextValue method; allowed values: <code>GridControl.FIND_CRITERIA_EQUALS</code>, <code>GridControl.FIND_CRITERIA_EQUALS_IGNORE_CASE</code>, <code>GridControl.FIND_CRITERIA_STARTS_WITH</code>, <code>GridControl.FIND_CRITERIA_STARTS_WITH_IGNORE_CASE</code>, <code>GridControl.FIND_CRITERIA_CONTAINS</code>, <code>GridControl.FIND_CRITERIA_CONTAINS_IGNORE_CASE</code>
+   * @return row index having the specified value or -1 in case of search without a result
+   */
+  public final int findNextValue(String attributeName,Object value,int startingFromRow,int findCritera) {
     if (startingFromRow>table.getVOListTableModel().getRowCount())
       return -1;
     int col = table.getVOListTableModel().findColumn(attributeName);
@@ -3494,10 +3529,30 @@ public class GridControl extends JPanel {
       obj = table.getVOListTableModel().getValueAt(i, col);
       if (obj==null && value==null)
         return i;
-      else if (obj!=null && obj.toString().equalsIgnoreCase(value.toString()))
+      else if (obj!=null && matchValue(obj.toString(),value.toString(),findCritera))
         return i;
     }
     return -1;
+  }
+
+
+  private boolean matchValue(String o1,String o2,int findCritera) {
+    if (findCritera==GridControl.FIND_CRITERIA_EQUALS)
+      return o1.equals(o2);
+    else if (findCritera==GridControl.FIND_CRITERIA_EQUALS_IGNORE_CASE)
+      return o1.equalsIgnoreCase(o2);
+    else if (findCritera==GridControl.FIND_CRITERIA_STARTS_WITH)
+      return o1.startsWith(o2);
+    else if (findCritera==GridControl.FIND_CRITERIA_STARTS_WITH_IGNORE_CASE)
+      return o1.toUpperCase().startsWith(o2.toUpperCase());
+    else if (findCritera==GridControl.FIND_CRITERIA_CONTAINS)
+      return o1.indexOf(o2)!=-1;
+    else if (findCritera==GridControl.FIND_CRITERIA_CONTAINS_IGNORE_CASE)
+      return o1.toUpperCase().indexOf(o2.toUpperCase())!=-1;
+    else {
+      Logger.error(this.getClass().getName(), "matchValue", "Unsopported search criteria", null);
+      return false;
+    }
   }
 
 

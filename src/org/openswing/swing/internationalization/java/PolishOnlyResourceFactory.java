@@ -223,7 +223,7 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("minimizemnemonic", "M");
         dictionary.setProperty("minimize all", "Minimalizuj wszystkie");
         dictionary.setProperty("minimizeallmnemonic", "A");
-        dictionary.setProperty("selected frame","wybrana okna");
+        dictionary.setProperty("selected frame","wybrane okno");
 
         // server...
         dictionary.setProperty("Client request not supported", "\u017b\u0105dania do klienta nie s\u0105 obs\u0142ugiwane");
@@ -276,7 +276,7 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         // drag...
         dictionary.setProperty("drag", "Ci\u0105gnij");
 
-        dictionary.setProperty("Caps lock pressed","Przycisk caps lock");
+        dictionary.setProperty("Caps lock pressed","Caps Lock jest wci\u0015ni\u0119ty");
 
         // pivot table...
         dictionary.setProperty("pivot table settings","Ustawienia dla arkusza");

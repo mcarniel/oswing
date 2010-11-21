@@ -93,14 +93,14 @@ public class ComboVOColumn extends Column {
   /** attribute name in the combo-box v.o. that identify the attribute name in the v.o. of the combo-box container; as default value this attribute is null; null means that "attributeName" property will be used to identify the v.o. in the combo-box, i.e. the attribute names in the combo-box v.o. and in the container v.o. must have the same name */
   private String foreignKeyAttributeName;
 
-  /** cell renderer */
-  private ComboVOTableCellRenderer comboVOTableCellRenderer = null;
-
-  /** cell editor */
-  private ComboBoxVOCellEditor comboBoxVOCellEditor = null;
-
   /** component orientation */
   private ComponentOrientation orientation = ClientSettings.TEXT_ORIENTATION;
+
+  /** ComboVOTableCellRenderer (cell renderer), one for each grid controller (top locked rows, bottom locked rows, etc.) */
+  private HashMap renderers = new HashMap();
+
+  /** ComboBoxVOCellEditor (cell editor), one for each grid controller (top locked rows, bottom locked rows, etc.) */
+  private HashMap editors = new HashMap();
 
 
   public ComboVOColumn() { }
@@ -504,10 +504,18 @@ public class ComboVOColumn extends Column {
    * Method used to reload items in combo-box.
    */
   public final void reloadItems() {
-    if (comboVOTableCellRenderer!=null)
-      comboVOTableCellRenderer.reloadItems();
-    if (comboBoxVOCellEditor!=null)
-      comboBoxVOCellEditor.reloadItems();
+    ComboVOTableCellRenderer renderer = null;
+    ComboBoxVOCellEditor editor = null;
+    Iterator it = renderers.values().iterator();
+    while(it.hasNext()) {
+      renderer = (ComboVOTableCellRenderer)it.next();
+      renderer.reloadItems();
+    }
+    it = editors.values().iterator();
+    while(it.hasNext()) {
+      editor = (ComboBoxVOCellEditor)it.next();
+      editor.reloadItems();
+    }
   }
 
 
@@ -532,8 +540,9 @@ public class ComboVOColumn extends Column {
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
-    if (comboVOTableCellRenderer==null)
-      comboVOTableCellRenderer = new ComboVOTableCellRenderer(
+    ComboVOTableCellRenderer renderer = (ComboVOTableCellRenderer)renderers.get(tableContainer.toString());
+    if (renderer==null) {
+      renderer = new ComboVOTableCellRenderer(
         getComboDataLocator(),
         getColumnName(),
         getItemsVO(),
@@ -549,7 +558,9 @@ public class ComboVOColumn extends Column {
         getTextOrientation(),
         getForeignKeyAttributeName()
       );
-    return comboVOTableCellRenderer;
+      renderers.put(tableContainer.toString(),renderer);
+    }
+    return renderer;
   }
 
 
@@ -557,8 +568,9 @@ public class ComboVOColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    if (comboBoxVOCellEditor==null)
-      comboBoxVOCellEditor = new ComboBoxVOCellEditor(
+    ComboBoxVOCellEditor editor = (ComboBoxVOCellEditor)editors.get(tableContainer.toString());
+    if (editor==null) {
+      editor = new ComboBoxVOCellEditor(
         getItemsMapper(),
         getComboDataLocator(),
         getColumnName(),
@@ -576,7 +588,9 @@ public class ComboVOColumn extends Column {
         bottomMargin,
         getTextOrientation()
       );
-    return comboBoxVOCellEditor;
+      editors.put(tableContainer.toString(),editor);
+    }
+    return editor;
   }
 
 

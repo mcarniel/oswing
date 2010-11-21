@@ -66,12 +66,6 @@ public class SpinnerNumberColumn extends Column {
   /** component orientation */
   private ComponentOrientation orientation = ClientSettings.TEXT_ORIENTATION;
 
-  /** cell renderer */
-  private TextTableCellRenderer renderer = null;
-
-  /** cell editor */
-  private SpinnerNumberCellEditor editor = null;
-
   /** horizontal alignment */
   private int horizontalAlignment = JTextField.RIGHT;
 
@@ -86,6 +80,12 @@ public class SpinnerNumberColumn extends Column {
 
   /** increment value; default value: 1 */
   private Double step = new Double(1);
+
+  /** TextTableCellRenderer (cell renderer), one for each grid controller (top locked rows, bottom locked rows, etc.) */
+  private HashMap renderers = new HashMap();
+
+  /** SpinnerNumberCellEditor (cell editor), one for each grid controller (top locked rows, bottom locked rows, etc.) */
+  private HashMap editors = new HashMap();
 
 
   public SpinnerNumberColumn() { }
@@ -301,7 +301,8 @@ public class SpinnerNumberColumn extends Column {
    * @return TableCellRenderer for this column
    */
   public final TableCellRenderer getCellRenderer(GridController tableContainer,Grids grids) {
-    if (renderer==null)
+    TextTableCellRenderer renderer = (TextTableCellRenderer)renderers.get(tableContainer.toString());
+    if (renderer==null) {
       renderer = new TextTableCellRenderer(
           tableContainer,
           false,
@@ -313,6 +314,8 @@ public class SpinnerNumberColumn extends Column {
           getTextOrientation(),
           getColumnName()
       );
+      renderers.put(tableContainer.toString(),renderer);
+    }
     return renderer;
   }
 
@@ -321,7 +324,8 @@ public class SpinnerNumberColumn extends Column {
    * @return TableCellEditor for this column
    */
   public final TableCellEditor getCellEditor(GridController tableContainer,Grids grids) {
-    if (editor==null)
+    SpinnerNumberCellEditor editor = (SpinnerNumberCellEditor)editors.get(tableContainer.toString());
+    if (editor==null) {
       editor = new SpinnerNumberCellEditor(
           isColumnRequired(),
           getTextAlignment(),
@@ -332,6 +336,8 @@ public class SpinnerNumberColumn extends Column {
           getStep(),
           getTextOrientation()
       );
+      editors.put(tableContainer.toString(),editor);
+    }
     return editor;
   }
 

@@ -1,4 +1,16 @@
 
+Release Notes 2.3.3
+-------------------
+
+Final release 2.3.3 available
+- Improved findNextValue method in GridControl: now it is possible to specify the matching criteria to use when searching for patterns.
+- Fixed some translations for Polish language.
+- Fixed problems on rendering top/bottom rows.
+- Fixed problem when pressing TAB key on lookup control and auto completion window is visible.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.3.2
 -------------------
 
