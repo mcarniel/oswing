@@ -65,8 +65,19 @@ public class FilterDialog extends JDialog {
   private PivotTableParameters pars = new PivotTableParameters();
 
 
-  public FilterDialog(PivotTable table,PivotTableParameters pars) {
-    super(ClientUtils.getParentFrame(table), ClientSettings.getInstance().getResources().getResource("pivot table settings"), true);
+
+  public FilterDialog(JFrame parentComp,PivotTable table,PivotTableParameters pars) {
+    super(parentComp, ClientSettings.getInstance().getResources().getResource("pivot table settings"), true);
+    initDialog(table,pars);
+  }
+
+
+  public FilterDialog(JDialog parentComp,PivotTable table,PivotTableParameters pars) {
+    super(parentComp, ClientSettings.getInstance().getResources().getResource("pivot table settings"), true);
+    initDialog(table,pars);
+  }
+
+  private void initDialog(PivotTable table,PivotTableParameters pars) {
     this.table = table;
     this.pars = pars;
     try {
@@ -74,7 +85,7 @@ public class FilterDialog extends JDialog {
       jbInit();
       setDefaultCloseOperation(super.DISPOSE_ON_CLOSE);
       setSize(250,300);
-      ClientUtils.centerDialog(ClientUtils.getParentFrame(table),this);
+      ClientUtils.centerDialog(ClientUtils.getParentWindow(table),this);
       setVisible(true);
     }
     catch(Exception ex) {
@@ -156,7 +167,7 @@ public class FilterDialog extends JDialog {
   void okButton_actionPerformed(ActionEvent e) {
     if (dataGrid.getSelectedFields().size()==0) {
       OptionPane.showMessageDialog(
-        ClientUtils.getParentFrame(table),
+        ClientUtils.getParentWindow(table),
         "at least one data field must be selected",
         "Attention",
         JOptionPane.WARNING_MESSAGE
@@ -166,7 +177,7 @@ public class FilterDialog extends JDialog {
     rowsGrid.repaint();
     if (rowsGrid.getSelectedFields().size()==0) {
       OptionPane.showMessageDialog(
-        ClientUtils.getParentFrame(table),
+        ClientUtils.getParentWindow(table),
         "at least one row field must be selected",
         "Attention",
         JOptionPane.WARNING_MESSAGE
@@ -176,7 +187,7 @@ public class FilterDialog extends JDialog {
     colsGrid.repaint();
     if (colsGrid.getSelectedFields().size()==0) {
       OptionPane.showMessageDialog(
-        ClientUtils.getParentFrame(table),
+        ClientUtils.getParentWindow(table),
         "at least one column field must be selected",
         "Attention",
         JOptionPane.WARNING_MESSAGE

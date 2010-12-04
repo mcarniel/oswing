@@ -104,6 +104,30 @@ public class ClientUtils extends JApplet {
 
 
   /**
+   * @param comp graphic component which is contained into a JDialog/JFrame
+   * @return JDialog/JFrame object which contains the graphic component
+   */
+  public static Window getParentWindow(JComponent comp) {
+    if (comp==null)
+      return null;
+    Container parentFrame = comp.getParent();
+    while(parentFrame!=null) {
+      if (parentFrame instanceof JInternalFrame) {
+        parentFrame = ((JInternalFrame)parentFrame).getDesktopPane().getParent();
+      }
+      else if (parentFrame instanceof JDialog) {
+        return (Window)parentFrame;
+      }
+      else if (parentFrame instanceof JFrame) {
+        return (Window)parentFrame;
+      }
+      parentFrame = parentFrame.getParent();
+    }
+    return null;
+  }
+
+
+  /**
    * @param comp graphic component which is contained into a JInternalFrame
    * @return JInternalFrame object which contains the graphic component
    */
@@ -178,7 +202,7 @@ public class ClientUtils extends JApplet {
    * @param parentFrame parent frame containing the dialog
    * @param d dialog window to center
    */
-  public static void centerDialog(JFrame parentFrame,JDialog d) {
+  public static void centerDialog(Window parentFrame,JDialog d) {
     Dimension dim = parentFrame.getSize();
     d.setLocation(new Point(
         parentFrame.getLocation().x+(dim.width-d.getWidth())/2,
@@ -192,7 +216,7 @@ public class ClientUtils extends JApplet {
    * @param parentFrame parent frame containing the dialog
    * @param w window to center
    */
-  public static void centerWindow(JFrame parentFrame,Window w) {
+  public static void centerWindow(Window parentFrame,Window w) {
     Dimension dim = parentFrame.getSize();
     w.setLocation(new Point(
         parentFrame.getLocation().x+(dim.width-w.getWidth())/2,
@@ -205,7 +229,7 @@ public class ClientUtils extends JApplet {
    * Place the window in the middle of the desktop.
    * @param frame frame to center
    */
-  public static void centerFrame(JFrame frame) {
+  public static void centerFrame(Window frame) {
     Dimension dim = frame.getSize();
     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
     frame.setLocation(

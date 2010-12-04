@@ -79,7 +79,7 @@ public class VOModel {
     // retrieve attribute properties...
     if (Beans.isDesignTime())
       return;
-    analyzeClassFields(new Hashtable(),"",new Method[0],valueObjectClass);
+    analyzeClassFields("",new Method[0],valueObjectClass);
     setValueObject( (ValueObject) valueObjectClass.newInstance());
   }
 
@@ -94,7 +94,7 @@ public class VOModel {
     this.valueObject = null;
     voSetterMethods.clear();
     voGetterMethods.clear();
-    analyzeClassFields(new Hashtable(),"",new Method[0],valueObjectClass);
+    analyzeClassFields("",new Method[0],valueObjectClass);
     setValueObject( (ValueObject) valueObjectClass.newInstance());
   }
 
@@ -114,27 +114,10 @@ public class VOModel {
    * @param parentMethods getter methods of parent v.o.
    * @param classType class to analyze
    */
-  private void analyzeClassFields(Hashtable vosAlreadyProcessed,String prefix,Method[] parentMethods,Class classType) {
+  private void analyzeClassFields(String prefix,Method[] parentMethods,Class classType) {
     try {
-/*
-      Integer num = (Integer)vosAlreadyProcessed.get(classType);
-      if (num==null)
-        num = new Integer(0);
-      num = new Integer(num.intValue()+1);
-      if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
+      if (prefix.split("\\.").length>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
         return;
-      vosAlreadyProcessed.put(classType,num);
-*/
-
-      String hostProperty = new String(prefix.indexOf(".") > 0 ? prefix.substring(0, prefix.indexOf(".")) : "");
-      Integer num = (Integer)vosAlreadyProcessed.get(hostProperty+classType);
-      if (num==null)
-        num = new Integer(0);
-      num = new Integer(num.intValue()+1);
-      if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO &&
-          prefix.split("\\.").length>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
-        return;
-      vosAlreadyProcessed.put(hostProperty+classType,num);
 
       info = Introspector.getBeanInfo(classType);
       // retrieve attribute properties...
@@ -210,7 +193,7 @@ public class VOModel {
           Method[] newparentMethods = new Method[parentMethods.length+1];
           System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);
           newparentMethods[parentMethods.length] = props[i].getReadMethod();
-          analyzeClassFields(vosAlreadyProcessed,prefix+props[i].getName()+".",newparentMethods,props[i].getReadMethod().getReturnType());
+          analyzeClassFields(prefix+props[i].getName()+".",newparentMethods,props[i].getReadMethod().getReturnType());
         }
         Method[] newparentMethods = new Method[parentMethods.length+1];
         System.arraycopy(parentMethods,0,newparentMethods,0,parentMethods.length);

@@ -318,7 +318,7 @@ public class QuickFilterPanel extends JPanel implements MenuElement, MenuContain
           Response res = comboFilterController.getListControlValues(attributeName);
           if (res.isError()) {
             OptionPane.showMessageDialog(
-                ClientUtils.getParentFrame(this),
+                ClientUtils.getParentWindow(this),
                 ClientSettings.getInstance().getResources().getResource("Error while loading data")+":\n"+res.getErrorMessage(),
                 ClientSettings.getInstance().getResources().getResource("Loading Data Error"),
                 JOptionPane.ERROR_MESSAGE

@@ -133,7 +133,7 @@ public class FileCellEditor extends AbstractCellEditor implements TableCellEdito
         f.setFileSelectionMode(f.FILES_ONLY);
         if (fileFilter!=null)
           f.setFileFilter(fileFilter);
-        int res = f.showOpenDialog(ClientUtils.getParentFrame(table));
+        int res = f.showOpenDialog(ClientUtils.getParentWindow(table));
         if (res==f.APPROVE_OPTION && table!=null && table instanceof Grid) {
           // file selected: it will be set into cell...
           try {
@@ -150,7 +150,7 @@ public class FileCellEditor extends AbstractCellEditor implements TableCellEdito
             download.setEnabled(true);
           }
           catch (Exception ex) {
-            OptionPane.showMessageDialog(ClientUtils.getParentFrame(table),"Error",ex.getMessage(),JOptionPane.ERROR_MESSAGE);
+            OptionPane.showMessageDialog(ClientUtils.getParentWindow(table),"Error",ex.getMessage(),JOptionPane.ERROR_MESSAGE);
           }
         }
       }
@@ -168,7 +168,7 @@ public class FileCellEditor extends AbstractCellEditor implements TableCellEdito
           if (obj!=null)
             f.setSelectedFile(new File(obj.toString()));
         }
-        int res = f.showSaveDialog(ClientUtils.getParentFrame(table));
+        int res = f.showSaveDialog(ClientUtils.getParentWindow(table));
         if (res==f.APPROVE_OPTION) {
           try {
             File file = f.getSelectedFile();
@@ -180,7 +180,7 @@ public class FileCellEditor extends AbstractCellEditor implements TableCellEdito
             out.close();
           }
           catch (Throwable ex) {
-            OptionPane.showMessageDialog(ClientUtils.getParentFrame(table),ex.getMessage(),ClientSettings.getInstance().getResources().getResource("Error while saving"),JOptionPane.ERROR_MESSAGE);
+            OptionPane.showMessageDialog(ClientUtils.getParentWindow(table),ex.getMessage(),ClientSettings.getInstance().getResources().getResource("Error while saving"),JOptionPane.ERROR_MESSAGE);
           }
         }
       }

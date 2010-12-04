@@ -392,7 +392,7 @@ public class TreeMenu extends JPanel {
           ex.printStackTrace();
 
           OptionPane.showMessageDialog(
-              ClientUtils.getParentFrame(TreeMenu.this),
+              ClientUtils.getParentWindow(TreeMenu.this),
               ClientSettings.getInstance().getResources().getResource("Error while executing function")+" '"+node.getMethodName()+"'",
               ClientSettings.getInstance().getResources().getResource("Error"),
               JOptionPane.WARNING_MESSAGE

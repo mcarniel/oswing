@@ -162,7 +162,7 @@ public class FileControl  extends BaseInputControl implements InputControl {
         f.setFileSelectionMode(f.FILES_ONLY);
         if (fileFilter!=null)
           f.setFileFilter(fileFilter);
-        int res = f.showOpenDialog(ClientUtils.getParentFrame(FileControl.this));
+        int res = f.showOpenDialog(ClientUtils.getParentWindow(FileControl.this));
         if (res==f.APPROVE_OPTION) {
           readFile(f.getSelectedFile().getAbsolutePath());
         }
@@ -188,7 +188,7 @@ public class FileControl  extends BaseInputControl implements InputControl {
           if (name!=null)
             f.setSelectedFile(new File(name.toString()));
         }
-        int res = f.showSaveDialog(ClientUtils.getParentFrame(FileControl.this));
+        int res = f.showSaveDialog(ClientUtils.getParentWindow(FileControl.this));
         if (res==f.APPROVE_OPTION) {
           try {
             File file = f.getSelectedFile();
@@ -197,7 +197,7 @@ public class FileControl  extends BaseInputControl implements InputControl {
             out.close();
           }
           catch (Throwable ex) {
-            OptionPane.showMessageDialog(ClientUtils.getParentFrame(FileControl.this),ex.getMessage(),ClientSettings.getInstance().getResources().getResource("Error while saving"),JOptionPane.ERROR_MESSAGE);
+            OptionPane.showMessageDialog(ClientUtils.getParentWindow(FileControl.this),ex.getMessage(),ClientSettings.getInstance().getResources().getResource("Error while saving"),JOptionPane.ERROR_MESSAGE);
           }
         }
       }
@@ -226,7 +226,7 @@ public class FileControl  extends BaseInputControl implements InputControl {
       downloadButton.setEnabled(true);
     }
     catch (Exception ex) {
-      OptionPane.showMessageDialog(ClientUtils.getParentFrame(FileControl.this),"Error",ex.getMessage(),JOptionPane.ERROR_MESSAGE);
+      OptionPane.showMessageDialog(ClientUtils.getParentWindow(FileControl.this),"Error",ex.getMessage(),JOptionPane.ERROR_MESSAGE);
       bytes = null;
     }
 

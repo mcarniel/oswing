@@ -50,14 +50,38 @@ public class FilterDialog extends JDialog {
    * @param gridFilter list of filter clauses to apply to the grid
    * @param grid grid control
    */
-  public FilterDialog(Column[] colProperties,Grids grid) {
-    super(ClientUtils.getParentFrame(grid),ClientSettings.getInstance().getResources().getResource("filtering and sorting settings"),true);
+  public FilterDialog(JFrame parentComp,Column[] colProperties,Grids grid) {
+    super(parentComp,ClientSettings.getInstance().getResources().getResource("filtering and sorting settings"),true);
+    initDialog(colProperties,grid);
+  }
+
+
+  /**
+   * Constructor called by a grid control to apply filtering/sorting conditions.
+   * @param colProperties column properties
+   * @param gridOrder list or order clauses to apply to the grid
+   * @param gridFilter list of filter clauses to apply to the grid
+   * @param grid grid control
+   */
+  public FilterDialog(JDialog parentComp,Column[] colProperties,Grids grid) {
+    super(parentComp,ClientSettings.getInstance().getResources().getResource("filtering and sorting settings"),true);
+    initDialog(colProperties,grid);
+  }
+
+  /**
+   * Constructor called by a grid control to apply filtering/sorting conditions.
+   * @param colProperties column properties
+   * @param gridOrder list or order clauses to apply to the grid
+   * @param gridFilter list of filter clauses to apply to the grid
+   * @param grid grid control
+   */
+  private void initDialog(Column[] colProperties,Grids grid) {
     try {
       panel = new FilterPanel(colProperties,grid,Consts.FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT);
       jbInit();
       setSize(300,400);
       setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-      ClientUtils.centerDialog(ClientUtils.getParentFrame(grid),this);
+      ClientUtils.centerDialog(ClientUtils.getParentWindow(grid),this);
     }
     catch(Exception e) {
       e.printStackTrace();

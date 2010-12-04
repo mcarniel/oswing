@@ -64,7 +64,7 @@ public class AttributeNameEditor extends PropertyEditorSupport {
       if (o instanceof ValueObject) {
         try {
           ArrayList attrList = new ArrayList();
-          analyzeClassFields("",attrList,designVOClass,new Hashtable());
+          analyzeClassFields("",attrList,designVOClass);
           attributeNames = (String[])attrList.toArray(new String[attrList.size()]);
         }
         catch (Exception ex) {
@@ -82,17 +82,12 @@ public class AttributeNameEditor extends PropertyEditorSupport {
   }
 
 
-  private void analyzeClassFields(String prefix,ArrayList attributes,Class classType,Hashtable vosAlreadyProcessed) {
+  private void analyzeClassFields(String prefix,ArrayList attributes,Class classType) {
     try {
       if (classType!=null) {
-        Integer num = (Integer)vosAlreadyProcessed.get(classType);
-        if (num==null)
-          num = new Integer(0);
-        num = new Integer(num.intValue()+1);
-        if (num.intValue()>10) {
+        if (prefix.split("\\.").length>3) {
           return;
         }
-        vosAlreadyProcessed.put(classType,num);
       }
 
       BeanInfo  info = Introspector.getBeanInfo(classType);
@@ -104,7 +99,7 @@ public class AttributeNameEditor extends PropertyEditorSupport {
             props[i].getReadMethod().getParameterTypes().length==0 &&
             ValueObject.class.isAssignableFrom( props[i].getReadMethod().getReturnType() )
         ) {
-          analyzeClassFields(prefix+props[i].getName()+".",attributes,props[i].getReadMethod().getReturnType(),vosAlreadyProcessed);
+          analyzeClassFields(prefix+props[i].getName()+".",attributes,props[i].getReadMethod().getReturnType());
         }
         if (props[i].getReadMethod().getReturnType()!=null &&
             isCompatible(props[i].getReadMethod().getReturnType()) &&

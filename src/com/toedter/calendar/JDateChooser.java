@@ -206,7 +206,7 @@ public class JDateChooser extends JPanel implements ActionListener,
                         private static final long serialVersionUID = -1913767779079949668L;
 
                         public boolean isFocusable() {
-                                return false;
+                                return true;
                         }
                 };
                 calendarButton.setMargin(new Insets(0, 0, 0, 0));

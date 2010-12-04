@@ -103,7 +103,7 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
           ClientSettings.getInstance().getResources().getDateFormatSeparator(),
           ClientSettings.getInstance().getResources().isShowCenturyInDateFormat(),
           Resources.HH_MM
-          );
+      );
 
 
 //      addAncestorListener(new AncestorListener() {
@@ -203,6 +203,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 //      add("Center", date);
         date.addKeyListener(this);
         date.addFocusListener(this);
+        date.setFocusable(true);
+
 
         setMinimumSize(new Dimension(
           date.getFontMetrics(calendar.getFont()).stringWidth("0000000000"),
@@ -515,7 +517,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
    * Riceve il fuoco e lo smista al componente wrappato.
    */
   public final void requestFocus() {
-    date.requestFocus();
+    if (!date.hasFocus())
+      date.requestFocus();
   }
 
 
@@ -552,6 +555,8 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
     if (currentDate==null)
       refresh();
 //    date.select(0,date.getText().length());
+    if (!date.hasFocus())
+      date.requestFocus();
     date.setCaretPosition(0);
   }
 
@@ -1200,12 +1205,9 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
 
 
 
-
-
-
-
-
-
+  public boolean isFocusable() {
+    return false;
+  }
 
 
 
@@ -1285,6 +1287,10 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
       eventFiredByCalendar = false;
     }
 
+
+    public boolean isFocusable() {
+      return true;
+    }
 
     public JComponent getUiComponent() {
       return this;

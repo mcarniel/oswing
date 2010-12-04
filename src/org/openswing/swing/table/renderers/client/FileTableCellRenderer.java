@@ -134,7 +134,7 @@ public class FileTableCellRenderer extends DefaultTableCellRenderer {
               if (obj!=null)
                 f.setSelectedFile(new File(obj.toString()));
             }
-            int res = f.showSaveDialog(ClientUtils.getParentFrame(FileTableCellRenderer.this.table));
+            int res = f.showSaveDialog(ClientUtils.getParentWindow(FileTableCellRenderer.this.table));
             if (res==f.APPROVE_OPTION) {
               try {
                 File file = f.getSelectedFile();
@@ -145,7 +145,7 @@ public class FileTableCellRenderer extends DefaultTableCellRenderer {
                 out.close();
               }
               catch (Throwable ex) {
-                OptionPane.showMessageDialog(ClientUtils.getParentFrame(FileTableCellRenderer.this.table),ex.getMessage(),ClientSettings.getInstance().getResources().getResource("Error while saving"),JOptionPane.ERROR_MESSAGE);
+                OptionPane.showMessageDialog(ClientUtils.getParentWindow(FileTableCellRenderer.this.table),ex.getMessage(),ClientSettings.getInstance().getResources().getResource("Error while saving"),JOptionPane.ERROR_MESSAGE);
               }
             }
           }

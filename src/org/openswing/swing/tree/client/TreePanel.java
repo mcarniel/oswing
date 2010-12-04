@@ -239,8 +239,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
 
           ClientUtils.fireBusyEvent(true);
           try {
-            ClientUtils.getParentFrame(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-            ClientUtils.getParentFrame(TreePanel.this).getToolkit().sync();
+            ClientUtils.getParentWindow(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+            ClientUtils.getParentWindow(TreePanel.this).getToolkit().sync();
           }
           catch (Exception ex) {
           }
@@ -251,8 +251,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
           }
           finally {
             try {
-              ClientUtils.getParentFrame(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-              ClientUtils.getParentFrame(TreePanel.this).getToolkit().sync();
+              ClientUtils.getParentWindow(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+              ClientUtils.getParentWindow(TreePanel.this).getToolkit().sync();
             }
             catch (Exception ex1) {
             }
@@ -426,8 +426,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
   private void createTree() {
     ClientUtils.fireBusyEvent(true);
     try {
-      ClientUtils.getParentFrame(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-      ClientUtils.getParentFrame(TreePanel.this).getToolkit().sync();
+      ClientUtils.getParentWindow(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+      ClientUtils.getParentWindow(TreePanel.this).getToolkit().sync();
     }
     catch (Exception ex) {
     }
@@ -438,8 +438,8 @@ public class TreePanel extends JPanel implements DragSourceListener, DropTargetL
     }
     finally {
       try {
-        ClientUtils.getParentFrame(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        ClientUtils.getParentFrame(TreePanel.this).getToolkit().sync();
+        ClientUtils.getParentWindow(TreePanel.this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        ClientUtils.getParentWindow(TreePanel.this).getToolkit().sync();
       }
       catch (Exception ex1) {
       }

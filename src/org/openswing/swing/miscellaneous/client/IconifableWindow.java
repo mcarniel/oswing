@@ -280,8 +280,8 @@ public class IconifableWindow extends JPanel {
         window = new JWindow((Window)topLevelAncestor);
       }
       else {
-        Frame frame = ClientUtils.getParentFrame((JComponent)topLevelAncestor);
-        window = new JWindow((Frame)frame);
+        Window frame = ClientUtils.getParentWindow((JComponent)topLevelAncestor);
+        window = new JWindow(frame);
       }
 
 

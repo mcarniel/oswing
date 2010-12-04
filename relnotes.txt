@@ -1,4 +1,15 @@
 
+Release Notes 2.3.4
+-------------------
+
+Final release 2.3.4 available
+Fixed problem with attribute editor property to use in UI designer and problem when analyzing inner objects in complex components.
+Changed center dialog policy: now OpenSwing components will show a warning/error dialog centered related to a JDialog first and to a JFrame secondly.
+Fixed polish translation.
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.3.3
 -------------------
 

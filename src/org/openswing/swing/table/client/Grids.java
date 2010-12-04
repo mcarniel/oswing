@@ -1756,8 +1756,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             // data fetching is dispached to the grid controller...
             ClientUtils.fireBusyEvent(true);
             try {
-              ClientUtils.getParentFrame(Grids.this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-              ClientUtils.getParentFrame(Grids.this).getToolkit().sync();
+              ClientUtils.getParentWindow(Grids.this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+              ClientUtils.getParentWindow(Grids.this).getToolkit().sync();
             }
             catch (Exception ex3) {
             }
@@ -1787,8 +1787,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
             public void run() {
               // execute on EventQueue thread...
               try {
-                ClientUtils.getParentFrame(Grids.this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-                ClientUtils.getParentFrame(Grids.this).getToolkit().sync();
+                ClientUtils.getParentWindow(Grids.this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+                ClientUtils.getParentWindow(Grids.this).getToolkit().sync();
               }
               catch (Exception ex2) {
               }
@@ -2083,8 +2083,17 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         if (colProps[i].isVisible())
           colsVisible.add(colProps[i].getColumnName());
 
-      ExportDialog d = new ExportDialog(
-          ClientUtils.getParentFrame(this),
+      Window parentComp = ClientUtils.getParentWindow(this);
+      ExportDialog d = null;
+      if (parentComp instanceof JFrame)
+        d = new ExportDialog(
+            (JFrame)parentComp,
+            this,
+            colsVisible
+        );
+      else
+        d = new ExportDialog(
+          (JDialog)parentComp,
           this,
           colsVisible
       );
@@ -2104,11 +2113,21 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         if (colProps[i].isVisible())
           colsVisible.add(colProps[i].getColumnName());
 
-      ImportDialog d = new ImportDialog(
-          ClientUtils.getParentFrame(this),
-          this,
-          colsVisible
-      );
+      ImportDialog d = null;
+      Window parentComp = ClientUtils.getParentWindow(this);
+      if (parentComp instanceof JFrame)
+        d = new ImportDialog(
+            (JFrame)parentComp,
+            this,
+            colsVisible
+        );
+      else
+        d = new ImportDialog(
+            (JDialog)parentComp,
+            this,
+            colsVisible
+        );
+
     }
     else
       Logger.error(this.getClass().getName(),"export","You cannot import data: grid must be in read only mode.",null);
@@ -2121,9 +2140,15 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    */
   public final void filterSort() {
     if (getMode()==Consts.READONLY) {
-      if (filterDialog==null)
-        filterDialog = new FilterDialog(colProps,this);
-      filterDialog.init();
+      if (filterDialog==null) {
+        Window parentComp = ClientUtils.getParentWindow(grid);
+        if (parentComp instanceof JFrame)
+          filterDialog = new FilterDialog((JFrame)parentComp,colProps, this);
+        else
+          filterDialog = new FilterDialog((JDialog)parentComp,colProps, this);
+
+        filterDialog.init();
+      }
     }
   }
 
@@ -2251,9 +2276,13 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         gridExportOptions.setTitle(intFrame.getTitle());
       }
       else {
-        JFrame frame = ClientUtils.getParentFrame(this);
-        if (frame!=null && !frame.getTitle().equals(""))
-          gridExportOptions.setTitle(frame.getTitle());
+        Window frame = ClientUtils.getParentWindow(this);
+        if (frame!=null) {
+          if (frame instanceof JFrame && !((JFrame)frame).getTitle().equals(""))
+            gridExportOptions.setTitle(((JFrame)frame).getTitle());
+          else if (frame instanceof JDialog && !((JDialog)frame).getTitle().equals(""))
+            gridExportOptions.setTitle(((JDialog)frame).getTitle());
+        }
       }
     }
     gridController.exportGrid(opt);
@@ -2431,7 +2460,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
       });
 
-    int res = f.showOpenDialog(ClientUtils.getParentFrame(this));
+    int res = f.showOpenDialog(ClientUtils.getParentWindow(this));
     if (res==f.APPROVE_OPTION) {
       File file = f.getSelectedFile();
       InputStream in = null;
@@ -2961,7 +2990,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 //            if (response.isError()) {
 //              // saving operation throws an error: it will be viewed on a dialog...
 //              OptionPane.showMessageDialog(
-//                  ClientUtils.getParentFrame(this),
+//                  ClientUtils.getParentWindow(this),
 //                  ClientSettings.getInstance().getResources().getResource("Error while saving")+":\n"+ClientSettings.getInstance().getResources().getResource(response.getErrorMessage()),
 //                  ClientSettings.getInstance().getResources().getResource("Saving Error"),
 //                  JOptionPane.ERROR_MESSAGE
@@ -4097,8 +4126,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       // data fetching is dispached to the grid controller...
       ClientUtils.fireBusyEvent(true);
       try {
-        ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        ClientUtils.getParentFrame(this).getToolkit().sync();
+        ClientUtils.getParentWindow(this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        ClientUtils.getParentWindow(this).getToolkit().sync();
       }
       catch (Exception ex3) {
       }
@@ -4123,8 +4152,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       }
       finally {
         try {
-          ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-          ClientUtils.getParentFrame(this).getToolkit().sync();
+          ClientUtils.getParentWindow(this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+          ClientUtils.getParentWindow(this).getToolkit().sync();
         }
         catch (Exception ex2) {
         }

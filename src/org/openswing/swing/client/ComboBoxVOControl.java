@@ -364,15 +364,9 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
    * @param getterMethods list of getter methods already retrieved
    * @param clazz class to analize in order to fetch its getter methods
    */
-  private void analyzeVO(String prefix,Hashtable vosAlreadyProcessed,ArrayList attributes,ArrayList getterMethods,Class clazz) throws Throwable{
-    Integer num = (Integer)vosAlreadyProcessed.get(clazz);
-    if (num==null)
-      num = new Integer(0);
-    num = new Integer(num.intValue()+1);
-    if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO &&
-        prefix.split("\\.").length>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
+  private void analyzeVO(String prefix,ArrayList attributes,ArrayList getterMethods,Class clazz) throws Throwable{
+    if (prefix.split("\\.").length>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
       return;
-    vosAlreadyProcessed.put(clazz,num);
     String attributeName = null;
 
     Method[] methods = clazz.getMethods();
@@ -413,7 +407,7 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
         attributeName = methods[i].getName().substring(3);
         if (attributeName.length()>1)
           attributeName = attributeName.substring(0,1).toLowerCase()+attributeName.substring(1);
-        analyzeVO(prefix+attributeName+".",vosAlreadyProcessed,attributes,getterMethods,methods[i].getReturnType());
+        analyzeVO(prefix+attributeName+".",attributes,getterMethods,methods[i].getReturnType());
       }
     }
   }
@@ -429,7 +423,7 @@ public class ComboBoxVOControl extends BaseInputControl implements InputControl,
     try {
       ArrayList attributeNames = new ArrayList();
       ArrayList getterMethods = new ArrayList();
-      analyzeVO("",new Hashtable(),attributeNames,getterMethods,Class.forName(itemsValueObjectClassName));
+      analyzeVO("",attributeNames,getterMethods,Class.forName(itemsValueObjectClassName));
 
       this.itemsVO = (ValueObject) Class.forName(itemsValueObjectClassName).getConstructor(new Class[0]).newInstance(new Object[0]);
       this.colProperties = new Column[getterMethods.size()];

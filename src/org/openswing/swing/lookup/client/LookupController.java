@@ -257,7 +257,7 @@ public class LookupController {
         else if (!r.isError() && ((VOListResponse)r).getRows().size()>1) {
           // code was correctly validated but more than one row has been returned: a lookup grid frame will be opened...
           if (!createLookupGrid(
-            ClientUtils.getParentFrame(parentComponent),
+            ClientUtils.getParentWindow(parentComponent),
             lookupParent,
             new GridDataLocator() {
 
@@ -278,7 +278,7 @@ public class LookupController {
         else {
           Component parentComp = ClientUtils.getParentInternalFrame(parentComponent);
           if (parentComp==null)
-            parentComp = ClientUtils.getParentFrame(parentComponent);
+            parentComp = ClientUtils.getParentWindow(parentComponent);
 
           String errorMessage = ClientSettings.getInstance().getResources().getResource("Code is not correct.");
           if (r.isError() && r.getErrorMessage()!=null && showCustomErrorMessage)
@@ -461,7 +461,7 @@ public class LookupController {
    */
   public final void openLookupFrame(JComponent source,LookupParent lookupParent) {
     openLookupFrame(
-        ClientUtils.getParentFrame(source),
+        ClientUtils.getParentWindow(source),
         lookupParent
     );
   }
@@ -472,7 +472,7 @@ public class LookupController {
    * @param parentFrame parent frame
    * @param lookupParent lookup container
    */
-  public final void openLookupFrame(JFrame parentFrame,final LookupParent lookupParent) {
+  public final void openLookupFrame(Window parentFrame,final LookupParent lookupParent) {
     if (codeSelectionWindow==GRID_FRAME ||
         codeSelectionWindow==GRID_AND_FILTER_FRAME ||
         codeSelectionWindow==GRID_AND_PANEL_FRAME)
@@ -502,7 +502,7 @@ public class LookupController {
    * @param dataLocator data source used to fetching data for lookup grid
    * @return <code>true</code> if grid frame was correcly opened, <code>false</code> otherwise
    */
-  private boolean createLookupGrid(JFrame parentFrame,LookupParent lookupParent) {
+  private boolean createLookupGrid(Window parentFrame,LookupParent lookupParent) {
     return createLookupGrid(
       parentFrame,
       lookupParent,
@@ -553,7 +553,7 @@ public class LookupController {
    * @param dataLocator data source used to fetching data for lookup grid
    * @return <code>true</code> if grid frame was correcly opened, <code>false</code> otherwise
    */
-  private boolean createLookupGrid(JFrame parentFrame,LookupParent lookupParent,GridDataLocator dataLocator) {
+  private boolean createLookupGrid(Window parentFrame,LookupParent lookupParent,GridDataLocator dataLocator) {
     fireLookupActionEvent(lookupParent.getValueObject());
     selectedRow = -1;
     if (lookupValueObjectClassName==null) {
@@ -599,7 +599,11 @@ public class LookupController {
       table.setMaxSortedColumns(maxSortedColumns);
 
       // create the lookup grid frame...
-      lookupFrame = new LookupGridFrame(parentFrame,frameTitle, table, statusPanel);
+      if (parentFrame instanceof JFrame)
+        lookupFrame = new LookupGridFrame((JFrame)parentFrame,frameTitle, table, statusPanel);
+      else
+        lookupFrame = new LookupGridFrame((JDialog)parentFrame,frameTitle, table, statusPanel);
+
       lookupFrame.setSize(framePreferredSize);
       table.reload();
 
@@ -623,7 +627,7 @@ public class LookupController {
    * @param dataLocator data source used to fetching data for lookup grid
    * @return <code>true</code> if grid frame was correcly opend, <code>false</code> otherwise
    */
-  private boolean createLookupTree(JFrame parentFrame,final LookupParent lookupParent) {
+  private boolean createLookupTree(Window parentFrame,final LookupParent lookupParent) {
     fireLookupActionEvent(lookupParent.getValueObject());
     if (lookupValueObjectClassName==null) {
       Logger.error(this.getClass().getName(),"createLookupTree","You must set 'lookupValueObjectClassName' property",null);
@@ -663,7 +667,10 @@ public class LookupController {
       treePanel.setTreeDataLocator(lookupDataLocator);
 
       // create the lookup tree frame...
-      lookupFrame = new LookupTreeFrame(parentFrame,frameTitle, treePanel);
+      if (parentFrame instanceof JFrame)
+        lookupFrame = new LookupTreeFrame((JFrame)parentFrame,frameTitle, treePanel);
+      else
+        lookupFrame = new LookupTreeFrame((JDialog)parentFrame,frameTitle, treePanel);
       lookupFrame.setSize(framePreferredSize);
       ClientUtils.centerDialog(parentFrame,lookupFrame);
       lookupFrame.setVisible(true);
@@ -684,7 +691,7 @@ public class LookupController {
    * @param dataLocator data source used to fetching data for lookup grid
    * @return <code>true</code> if grid frame was correcly opend, <code>false</code> otherwise
    */
-  private boolean createLookupTreeGrid(JFrame parentFrame,final LookupParent lookupParent) {
+  private boolean createLookupTreeGrid(Window parentFrame,final LookupParent lookupParent) {
     fireLookupActionEvent(lookupParent.getValueObject());
     selectedRow = -1;
     if (lookupValueObjectClassName==null) {
@@ -826,7 +833,10 @@ public class LookupController {
 
 
       // create the lookup tree grid frame...
-      lookupFrame = new LookupTreeGridFrame(parentFrame,frameTitle,treePanel,table, statusPanel);
+      if (parentFrame instanceof JFrame)
+        lookupFrame = new LookupTreeGridFrame((JFrame)parentFrame,frameTitle,treePanel,table, statusPanel);
+      else
+        lookupFrame = new LookupTreeGridFrame((JDialog)parentFrame,frameTitle,treePanel,table, statusPanel);
       lookupFrame.setSize(framePreferredSize);
 //      table.reload();
       ClientUtils.centerDialog(parentFrame,lookupFrame);
@@ -1443,15 +1453,9 @@ public class LookupController {
    * @param getterMethods list of getter methods already retrieved
    * @param clazz class to analize in order to fetch its getter methods
    */
-  private void analyzeVO(String prefix,Hashtable vosAlreadyProcessed,ArrayList attributes,ArrayList getterMethods,Class clazz) throws Throwable{
-    Integer num = (Integer)vosAlreadyProcessed.get(clazz);
-    if (num==null)
-      num = new Integer(0);
-    num = new Integer(num.intValue()+1);
-    if (num.intValue()>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO &&
-        prefix.split("\\.").length>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
+  private void analyzeVO(String prefix,ArrayList attributes,ArrayList getterMethods,Class clazz) throws Throwable{
+    if (prefix.split("\\.").length>ClientSettings.MAX_NR_OF_LOOPS_IN_ANALYZE_VO)
       return;
-    vosAlreadyProcessed.put(clazz,num);
     String attributeName = null;
 
     Method[] methods = clazz.getMethods();
@@ -1492,7 +1496,7 @@ public class LookupController {
         attributeName = methods[i].getName().substring(3);
         if (attributeName.length()>1)
           attributeName = attributeName.substring(0,1).toLowerCase()+attributeName.substring(1);
-        analyzeVO(prefix+attributeName+".",vosAlreadyProcessed,attributes,getterMethods,methods[i].getReturnType());
+        analyzeVO(prefix+attributeName+".",attributes,getterMethods,methods[i].getReturnType());
       }
     }
   }
@@ -1506,7 +1510,7 @@ public class LookupController {
     try {
       ArrayList attributes = new ArrayList();
       ArrayList getterMethods = new ArrayList();
-      analyzeVO("",new Hashtable(),attributes,getterMethods,Class.forName(lookupValueObjectClassName));
+      analyzeVO("",attributes,getterMethods,Class.forName(lookupValueObjectClassName));
       String attributeName = null;
       this.colProperties = new Column[getterMethods.size()];
       this.columnsSelectable = new Boolean[this.colProperties.length];
@@ -1965,6 +1969,11 @@ public class LookupController {
     }
 
 
+    public LookupFrame(JDialog parent,String title,boolean modal) {
+      super(parent,title,modal);
+    }
+
+
     /**
      * @return lookup grid
      */
@@ -2009,6 +2018,16 @@ public class LookupController {
 
     public LookupGridFrame(JFrame parentFrame,String title,Grids table,GridStatusPanel labelPanel) {
       super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+      init(parentFrame,title,table,labelPanel);
+    }
+
+
+    public LookupGridFrame(JDialog parentFrame,String title,Grids table,GridStatusPanel labelPanel) {
+      super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+      init(parentFrame,title,table,labelPanel);
+    }
+
+    private void init(Window parentFrame,String title,Grids table,GridStatusPanel labelPanel) {
       this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
       this.table = table;
       getContentPane().setLayout(new BorderLayout());
@@ -2180,6 +2199,18 @@ public class LookupController {
 
     public LookupTreeFrame(JFrame parentFrame,String title,TreePanel treePanel) {
       super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+      init(parentFrame,title,treePanel);
+    }
+
+
+    public LookupTreeFrame(JDialog parentFrame,String title,TreePanel treePanel) {
+      super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+      init(parentFrame,title,treePanel);
+    }
+
+
+    private void init(Window parentFrame,String title,TreePanel treePanel) {
+
       this.treePanel = treePanel;
       getContentPane().setLayout(new BorderLayout());
       getContentPane().add(new JScrollPane(treePanel),BorderLayout.CENTER);
@@ -2230,9 +2261,19 @@ public class LookupController {
     /** filter tree */
     private TreePanel treePanel = null;
 
-
     public LookupTreeGridFrame(JFrame parentFrame,String title,TreePanel treePanel,Grids table,GridStatusPanel labelPanel) {
       super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+      init(parentFrame,title,treePanel,table,labelPanel);
+    }
+
+
+    public LookupTreeGridFrame(JDialog parentFrame,String title,TreePanel treePanel,Grids table,GridStatusPanel labelPanel) {
+      super(parentFrame,ClientSettings.getInstance().getResources().getResource(title),true);
+      init(parentFrame,title,treePanel,table,labelPanel);
+    }
+
+
+    private void init(Window parentFrame,String title,TreePanel treePanel,Grids table,GridStatusPanel labelPanel) {
       this.treePanel = treePanel;
       this.table = table;
       getContentPane().setLayout(new BorderLayout());

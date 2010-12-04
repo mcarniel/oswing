@@ -276,7 +276,7 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         // drag...
         dictionary.setProperty("drag", "Ci\u0105gnij");
 
-        dictionary.setProperty("Caps lock pressed","Caps Lock jest wci\u0015ni\u0119ty");
+        dictionary.setProperty("Caps lock pressed","Caps Lock jest w\u0142\u0105czony");
 
         // pivot table...
         dictionary.setProperty("pivot table settings","Ustawienia dla arkusza");

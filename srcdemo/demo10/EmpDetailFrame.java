@@ -187,7 +187,6 @@ public class EmpDetailFrame extends InternalFrame {
     controlNote.setAttributeName("note");
     titledBorder1.setTitle("Title");
     titledBorder1.setTitleColor(Color.blue);
-    labelFName.setRequestFocusEnabled(true);
     labelFName.setText("firstName");
     labelLName.setText("lastName");
     controlFName.setLinkLabel(labelFName);
@@ -195,7 +194,6 @@ public class EmpDetailFrame extends InternalFrame {
     controlFName.setAttributeName("firstName");
     controlLName.setRequired(true);
     controlLName.setAttributeName("lastName");
-    labelSex.setRequestFocusEnabled(true);
     labelSex.setText("sex");
     labelSalary.setText("salary");
     labelTask.setText("task");
@@ -262,6 +260,8 @@ public class EmpDetailFrame extends InternalFrame {
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(controlCurrency,                new GridBagConstraints(1, 2, 4, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
+    mainPanel.add(controlDate,   new GridBagConstraints(3, 2, 2, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
     mainPanel.add(controlLookup,        new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
     mainPanel.add(controlDeptDescr,                   new GridBagConstraints(2, 4, 3, 2, 1.0, 0.0
@@ -286,8 +286,6 @@ public class EmpDetailFrame extends InternalFrame {
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     mainPanel.add(labelDate,   new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-    mainPanel.add(controlDate,   new GridBagConstraints(3, 2, 2, 1, 0.0, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));
     this.getContentPane().add(whPanel, BorderLayout.SOUTH);
     whPanel.add(buttons2Panel, BorderLayout.NORTH);
     buttons2Panel.add(editButton1, null);

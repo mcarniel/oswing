@@ -55,7 +55,7 @@ public class ImportDialog extends JDialog {
   JTable cols = new JTable();
 
   /** parent frame */
-  private JFrame frame = null;
+  private Window frame = null;
 
   /** grid */
   private Grids grids = null;
@@ -79,6 +79,29 @@ public class ImportDialog extends JDialog {
    */
   public ImportDialog(JFrame frame,Grids grids,HashSet colsVisible) {
     super(frame, ClientSettings.getInstance().getResources().getResource("grid import"), true);
+    init(frame,grids,colsVisible);
+  }
+
+
+  /**
+   * Constructor called by Grid.
+   * @param frame parent frame
+   * @param grid grid to import
+   * @param colsVisible collection of grid columns currently visible
+   */
+  public ImportDialog(JDialog frame,Grids grids,HashSet colsVisible) {
+    super(frame, ClientSettings.getInstance().getResources().getResource("grid import"), true);
+    init(frame,grids,colsVisible);
+  }
+
+
+  /**
+   * Constructor called by Grid.
+   * @param frame parent frame
+   * @param grid grid to import
+   * @param colsVisible collection of grid columns currently visible
+   */
+  private void init(Window frame,Grids grids,HashSet colsVisible) {
     this.frame = frame;
     this.grids = grids;
     try {

@@ -321,7 +321,7 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
           ex.printStackTrace();
         }
         finally {
-          Object c = ClientUtils.getParentFrame(table);
+          Object c = ClientUtils.getParentWindow(table);
           if (c!=null && c instanceof MDIFrame) {
             table.requestFocus();
           }
@@ -403,7 +403,7 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
    */
   public final void actionPerformed(ActionEvent e) {
     if (lookupController!=null) {
-      lookupController.openLookupFrame(ClientUtils.getParentFrame(table),this);
+      lookupController.openLookupFrame(ClientUtils.getParentWindow(table),this);
 
       // now the parent v.o. (i.e. gridValueObject) has the code attributed filled:
       // set codBox content with that code value...

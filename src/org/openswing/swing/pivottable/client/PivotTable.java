@@ -1094,7 +1094,11 @@ public final class PivotTable extends JPanel implements DataController,Draggable
    * Invoked when pressing filter button.
    */
   public final void filterSort() {
-    new FilterDialog(this,pars);
+    Window parentComp = ClientUtils.getParentWindow(this);
+    if (parentComp instanceof JFrame)
+      new FilterDialog((JFrame)parentComp,this,pars);
+    else
+      new FilterDialog((JDialog)parentComp,this,pars);
   }
 
 

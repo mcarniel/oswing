@@ -61,7 +61,7 @@ public class IconifableWindowsContainer extends JPanel {
         // thread used to wait until this container has been showed...
         public void run() {
           try {
-            while (!ClientUtils.getParentFrame(IconifableWindowsContainer.this).isVisible()) {
+            while (!ClientUtils.getParentWindow(IconifableWindowsContainer.this).isVisible()) {
               Thread.sleep(100);
             }
           }

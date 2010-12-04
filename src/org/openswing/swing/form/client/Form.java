@@ -710,8 +710,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       // data loading...
       ClientUtils.fireBusyEvent(true);
       try {
-        ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        ClientUtils.getParentFrame(this).getToolkit().sync();
+        ClientUtils.getParentWindow(this).setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        ClientUtils.getParentWindow(this).getToolkit().sync();
       }
       catch (Exception ex1) {
       }
@@ -722,8 +722,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       }
       finally {
         try {
-          ClientUtils.getParentFrame(this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-          ClientUtils.getParentFrame(this).getToolkit().sync();
+          ClientUtils.getParentWindow(this).setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+          ClientUtils.getParentWindow(this).getToolkit().sync();
         }
         catch (Exception ex2) {
         }
