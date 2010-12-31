@@ -82,6 +82,9 @@ public class Controller extends HttpServlet {
 
   private ControllerCallbacks controllerCallbacksObj = null;
 
+  /** collection of request names always available, also before logging in */
+  private HashSet alwaysAvailableRequests = new HashSet();
+
 
   /**
    * Initialize global variables.
@@ -184,6 +187,26 @@ public class Controller extends HttpServlet {
 
     if (controllerCallbacksObj != null)
       controllerCallbacksObj.afterInit(super.getServletContext());
+
+    // read optional web.xml property, related to the list of request names that are always available,
+    // even when the user has not yet logged in; list of request names must be separated by a comma
+    try {
+      String alwaysAvailableRequests = super.getInitParameter("alwaysAvailableRequests");
+      if (alwaysAvailableRequests != null) {
+        String[] names = alwaysAvailableRequests.split(",");
+        this.alwaysAvailableRequests.clear();
+        for(int i=0;i<names.length;i++)
+          this.alwaysAvailableRequests.add(names[i].trim());
+      }
+    }
+    catch (Throwable ex) {
+      String msg = "Error on initializing controller callbacks class";
+      if (logOk)
+        Logger.error("NONAME",this.getClass().getName(),"init",msg,ex);
+      else
+        this.getServletContext().log(msg,ex);
+    }
+
 
     // initialize objects receiver...
     try {
@@ -361,8 +384,9 @@ public class Controller extends HttpServlet {
     try {
       Command command = objectReceiver.getObjectFromRequest(request);
 
-      if (!ConnectionManager.isConnectionSourceCreated() || command.getMethodName().equals("databaseAlreadyExixts")) {
-        // database connection error: all requests will pass. throught..
+      if (!ConnectionManager.isConnectionSourceCreated() ||
+          command.getMethodName().equals("databaseAlreadyExixts") ||
+          alwaysAvailableRequests.contains(command.getMethodName())) {
         Object action = actions.get( command.getMethodName() );
         if (action!=null && action instanceof Action)
           answer = ((Action)action).executeCommand(

@@ -811,10 +811,13 @@ public class MDIFrame extends JFrame implements BusyListener {
           treeMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
           treeMenu.getToolkit().sync();
         } catch (Exception ex) {}
-      } if (busy)
+      }
+
+      if (busy)
         busyCount = new Integer(busyCount.intValue()+1);
       else if (busyCount.intValue()>0)
         busyCount = new Integer(busyCount.intValue()-1);
+
       if (busyCount.intValue()==0) {
         statusBar.setBusy(false);
         // default cursor...
@@ -837,11 +840,20 @@ public class MDIFrame extends JFrame implements BusyListener {
       uniqueInstances.remove(frame.getClass());
     }
 
+    stopProgressBar();
+  }
+
+
+  /**
+   * Callback invoked by windowClosed method.
+   */
+  public final void stopProgressBar() {
     synchronized(busyCount) {
       busyCount = new Integer(1);
     }
     setBusy(false);
   }
+
 
 
   /**

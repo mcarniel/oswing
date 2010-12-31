@@ -4,7 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 
 import org.openswing.swing.util.client.*;
-
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * <p>Title: OpenSwing Framework</p>
@@ -42,7 +43,7 @@ public class StatusBar extends JPanel {
   JProgressBar progressBar = new JProgressBar(0,15);
 
   /** next position for a new component to add */
-  private int pos = 2;
+  private int pos = 3;
 
   /** delay in progress bar (in milliseconds) */
   private int delay = ClientSettings.PROGRESS_BAR_DELAY;
@@ -52,6 +53,9 @@ public class StatusBar extends JPanel {
 
   /** progress bar color */
   private Color progressBarColor = ClientSettings.PROGRESS_BAR_COLOR;
+
+  /** stop progress bar button */
+  private JButton stopProgress = new JButton(new ImageIcon(ClientUtils.getImage("stop.gif")));
 
 
   public StatusBar() {
@@ -83,6 +87,8 @@ public class StatusBar extends JPanel {
   public final void addStatusComponent(JComponent c) {
     this.add(c,      new GridBagConstraints(pos++, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 2), 0, 0));
+    this.revalidate();
+    this.repaint();
   }
 
 
@@ -111,17 +117,30 @@ public class StatusBar extends JPanel {
 
 
   private void jbInit() throws Exception {
+    stopProgress.setMaximumSize(new Dimension(20,20));
+    stopProgress.setPreferredSize(new Dimension(20,20));
+    stopProgress.setSize(20,20);
+    stopProgress.addActionListener(new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+        MDIFrame.getInstance().stopProgressBar();
+      }
+
+    });
+
     statusText.setOpaque(false);
     statusText.setEditable(false);
     statusText.setText(" ");
     this.setLayout(gridBagLayout1);
     this.setBorder(BorderFactory.createLoweredBevelBorder());
-    progressBar.setPreferredSize(new Dimension(200, (int)statusText.getPreferredSize().getHeight()));
+    progressBar.setMinimumSize(new Dimension(175, (int)statusText.getPreferredSize().getHeight()));
+    progressBar.setPreferredSize(new Dimension(175, (int)statusText.getPreferredSize().getHeight()));
     this.add(progressBar,       new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    this.add(stopProgress,       new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 2), 0, 0));
 
-    int pos = 1;
-
+    int pos = 2;
     this.add(statusText,       new GridBagConstraints(pos, 0, 1, 1, 1.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 2), 0, 0));
   }

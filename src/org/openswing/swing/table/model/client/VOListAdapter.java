@@ -391,7 +391,21 @@ public class VOListAdapter {
         }
       }
 
-      setter[setter.length-1].invoke(obj,new Object[]{value});
+      // avoid to set null for primitive types!
+      if (value==null && setter[setter.length-1].getParameterTypes()[0].equals(Long.TYPE))
+        setter[setter.length-1].invoke(obj,new Object[]{new Long(0)});
+      if (value==null && setter[setter.length-1].getParameterTypes()[0].equals(Integer.TYPE))
+        setter[setter.length-1].invoke(obj,new Object[]{new Integer(0)});
+      if (value==null && setter[setter.length-1].getParameterTypes()[0].equals(Short.TYPE))
+        setter[setter.length-1].invoke(obj,new Object[]{new Short((short)0)});
+      if (value==null && setter[setter.length-1].getParameterTypes()[0].equals(Float.TYPE))
+        setter[setter.length-1].invoke(obj,new Object[]{new Float(0)});
+      if (value==null && setter[setter.length-1].getParameterTypes()[0].equals(Double.TYPE))
+        setter[setter.length-1].invoke(obj,new Object[]{new Double(0)});
+      if (value==null && setter[setter.length-1].getParameterTypes()[0].equals(Boolean.TYPE))
+        setter[setter.length-1].invoke(obj,new Object[]{Boolean.FALSE});
+      else
+        setter[setter.length-1].invoke(obj,new Object[]{value});
     }
     catch (Exception ex) {
       ex.printStackTrace();

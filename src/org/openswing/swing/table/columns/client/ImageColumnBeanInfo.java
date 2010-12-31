@@ -26,7 +26,7 @@ public class ImageColumnBeanInfo extends SimpleBeanInfo {
       _columnName.setPropertyEditorClass(org.openswing.swing.client.BytesAttributeNameEditor.class);
       PropertyDescriptor _fileFilter = new PropertyDescriptor("fileFilter", beanClass, "getFileFilter", "setFileFilter");
       PropertyDescriptor _showButton = new PropertyDescriptor("showButton", beanClass, "isShowButton", "setShowButton");
-      PropertyDescriptor _showPreview = new PropertyDescriptor("showPreview", beanClass, "getShowPreview", "setShowPreview");
+      PropertyDescriptor _showPreview = new PropertyDescriptor("showPreview", beanClass, "isShowPreview", "setShowPreview");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _columnName,
         _fileFilter,

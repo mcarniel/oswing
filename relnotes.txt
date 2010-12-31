@@ -1,4 +1,17 @@
 
+
+Release Notes 2.3.5
+-------------------
+
+Final release 2.3.5 available
+Added stop progress bar button.
+Added "alwaysAvailableRequests" optional property to web.xml and used by Controller class, 
+in order to specify a list of request names that can be accessible event without login.
+Fixed some bean info properties, not correctly defined in BeanInfo.jar
+The distribution includes also Jar file libraries, source files, javadoc, licence and readme.txt installation instructions.
+
+
+
 Release Notes 2.3.4
 -------------------
 

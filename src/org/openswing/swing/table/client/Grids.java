@@ -1961,8 +1961,12 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
     }
     finally {
-      grid.getSelectionModel().setSelectionMode(selMode);
+      try {
+        grid.getSelectionModel().setSelectionMode(selMode);
 //      MDIFrame.setBusy(false);
+      }
+      catch (Exception ex1) {
+      }
     }
     return result;
   }

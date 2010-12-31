@@ -22,7 +22,7 @@ public class TreeGridPanelBeanInfo extends SimpleBeanInfo {
   }
   public PropertyDescriptor[] getPropertyDescriptors() {
     try {
-      PropertyDescriptor _backgroundColor = new PropertyDescriptor("backgroundColor", beanClass, "getBackgroundColor", "setBackgroundColor");
+      PropertyDescriptor _background = new PropertyDescriptor("background", beanClass, "getBackground", "setBackground");
       PropertyDescriptor _expandAllNodes = new PropertyDescriptor("expandAllNodes", beanClass, "isExpandAllNodes", "setExpandAllNodes");
       PropertyDescriptor _expandRoot = new PropertyDescriptor("expandRoot", beanClass, "isExpandRoot", "setExpandRoot");
       PropertyDescriptor _folderIconName = new PropertyDescriptor("folderIconName", beanClass, "getFolderIconName", "setFolderIconName");
@@ -33,7 +33,7 @@ public class TreeGridPanelBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _treeController = new PropertyDescriptor("treeController", beanClass, "getTreeController", "setTreeController");
       PropertyDescriptor _treeDataLocator = new PropertyDescriptor("treeDataLocator", beanClass, "getTreeDataLocator", "setTreeDataLocator");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
-        _backgroundColor,
+        _background,
         _expandAllNodes,
         _expandRoot,
         _folderIconName,
