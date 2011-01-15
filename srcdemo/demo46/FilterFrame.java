@@ -39,6 +39,7 @@ public class FilterFrame extends JFrame {
 
 
   public FilterFrame(Connection conn) {
+    super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
     this.conn = conn;
     try {
       jbInit();

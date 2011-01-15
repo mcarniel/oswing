@@ -48,6 +48,7 @@ public class GridFrame extends InternalFrame {
 
 
   public GridFrame(Connection conn,GridFrameController controller) {
+    super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
     this.conn = conn;
     try {
       setTitle("Grid");

@@ -34,6 +34,7 @@ public class TreeFrame extends JFrame {
 
   public TreeFrame() {
     try {
+      super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
       jbInit();
       setTitle("Draggable Tree");
       setSize(600,600);

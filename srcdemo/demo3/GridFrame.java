@@ -59,6 +59,7 @@ public class GridFrame extends JFrame {
   public GridFrame(Connection conn,GridFrameController controller) {
     this.conn = conn;
     try {
+      super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
       jbInit();
       setSize(750,600);
       grid.setController(controller);
@@ -277,19 +278,15 @@ public class GridFrame extends JFrame {
     colFormattedText.setEditableOnEdit(true);
     colFormattedText.setEditableOnInsert(true);
 
+//    MaskFormatter formatter = new MaskFormatter("(##)####.####");
+//    formatter.setValidCharacters("1234567890(.");
+
+
 //    MaskFormatter formatter = new MaskFormatter("###-##-####");
 //    formatter.setValidCharacters("0123456789-");
 
     JFormattedTextField.AbstractFormatter formatter = new JFormattedTextField.AbstractFormatter() {
 
-      /**
-       * Parses <code>text</code> returning an arbitrary Object. Some
-       * formatters may return null.
-       *
-       * @throws ParseException if there is an error in the conversion
-       * @param text String to convert
-       * @return Object representation of text
-       */
       public Object stringToValue(String text) throws ParseException {
         if (text==null || text.equals(""))
           return null;
@@ -303,13 +300,6 @@ public class GridFrame extends JFrame {
         return new BigDecimal(t);
       }
 
-      /**
-       * Returns the string value to display for <code>value</code>.
-       *
-       * @throws ParseException if there is an error in the conversion
-       * @param value Value to convert
-       * @return String representation of value
-       */
       public String valueToString(Object value) throws ParseException {
         if (value==null)
           return null;

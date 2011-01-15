@@ -26,6 +26,7 @@ public class TreeGridFrame extends JFrame {
 
   public TreeGridFrame(TreeGridFrameController controller) {
     try {
+      super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
       jbInit();
       setSize(750,300);
       setTitle("Bill of material");

@@ -27,6 +27,7 @@ public class WizardFrame extends JFrame {
 
   public WizardFrame() {
     try {
+      super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
       jbInit();
       setTitle("Zip/Unzip Files Wizard");
       setSize(750,400);

@@ -35,6 +35,7 @@ public class GridFrame extends JFrame {
 
   public GridFrame(GridFrameController controller) {
     try {
+      super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
       jbInit();
       setSize(400,300);
       grid.setController(controller);

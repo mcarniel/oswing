@@ -40,6 +40,7 @@ public class GridFrame extends JFrame {
   EditButton editButton = new EditButton();
 
   public GridFrame(Connection conn,GridFrameController controller) {
+    super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
     this.conn = conn;
     try {
       jbInit();

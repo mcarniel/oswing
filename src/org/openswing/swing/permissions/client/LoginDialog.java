@@ -693,7 +693,7 @@ public class LoginDialog extends JDialog implements ItemListener {
    * Method invoked when changing language from combo box.
    */
   public void itemStateChanged(ItemEvent e) {
-    if (e.getStateChange()==e.SELECTED) {
+    if (e.getStateChange()==e.SELECTED && languagesComboBox.getValue()!=null) {
       updateLanguage((String)languagesComboBox.getValue());
     }
   }

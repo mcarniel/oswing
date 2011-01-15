@@ -55,6 +55,7 @@ public class DetailFrame extends JFrame {
 
   public DetailFrame(Connection conn,DetailFrameController dataController) {
     try {
+      super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
       this.conn = conn;
       jbInit();
 

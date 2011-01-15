@@ -46,6 +46,7 @@ public class ImageFrame extends JFrame {
 
   public ImageFrame(FormController dataController) {
       try {
+        super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
         mainPanel.setFormController(dataController);
         setSize(750,550);
         jbInit();

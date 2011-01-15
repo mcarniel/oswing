@@ -37,6 +37,7 @@ public class UsersGridFrame extends InternalFrame {
 
 
   public UsersGridFrame(Connection conn,UsersGridFrameController controller) {
+    super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
     this.conn = conn;
     try {
       jbInit();

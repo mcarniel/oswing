@@ -26,6 +26,7 @@ public class TreeFrame extends JFrame {
 
   public TreeFrame(TreeFrameController controller) {
     try {
+      super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
       jbInit();
       setTitle("Check-boxes Tree");
       setSize(600,300);

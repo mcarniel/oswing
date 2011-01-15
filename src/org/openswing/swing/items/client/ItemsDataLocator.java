@@ -44,11 +44,6 @@ public abstract class ItemsDataLocator {
 
   /**
    * Method called by items controller to fill in the combo-box or list.
-   * @param action fetching versus: PREVIOUS_BLOCK_ACTION, NEXT_BLOCK_ACTION or LAST_BLOCK_ACTION
-   * @param startIndex current index row on grid to use to start fetching data
-   * @param filteredColumns filtered columns
-   * @param currentSortedColumns sorted columns
-   * @param currentSortedVersusColumns ordering versus of sorted columns
    * @param valueObjectType type of value object associated to the items grid
    * @return list of value objects to fill in the items grid: VOListResponse if data fetching has success, ErrorResponse otherwise
    */

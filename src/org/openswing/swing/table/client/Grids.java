@@ -1740,14 +1740,20 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    */
   private boolean loadData(final int action) {
     boolean result = false;
-    int selMode = grid.getSelectionModel().getSelectionMode();
+    int selMode = ListSelectionModel.SINGLE_SELECTION;
+    try {
+      selMode = grid.getSelectionModel().getSelectionMode();
+    }
+    catch (Exception ex2) {
+    }
     try {
 
       try {
         SwingUtilities.invokeAndWait(new Runnable() {
           public void run() {
             // esecute on EventQueue thread...
-            grid.getSelectionModel().setSelectionMode(grid.getSelectionModel().SINGLE_SELECTION);
+            if (grid!=null&& grid.getSelectionModel()!=null)
+              grid.getSelectionModel().setSelectionMode(grid.getSelectionModel().SINGLE_SELECTION);
             if (gridType==Grid.MAIN_GRID) {
               statusPanel.setText(ClientSettings.getInstance().getResources().getResource("Loading data..."));
               statusPanel.setPage("");

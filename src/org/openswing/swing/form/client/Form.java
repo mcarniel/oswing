@@ -1193,6 +1193,13 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   public final void executeReload() {
     try {
+      // check if there is a linked grid: in this case update selected row in grid BEFORE reloading form!
+       if (grid!=null && pkAttributes!=null && getMode()==Consts.READONLY) {
+        int rowIndex = getRowIndexInGrid();
+        if (rowIndex!=-1)
+          grid.setRowSelectionInterval(rowIndex,rowIndex);
+      }
+
       setMode(Consts.READONLY);
       reloadData();
     }
@@ -1768,75 +1775,27 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           }
 
           // reset changed property for all linked input controls...
-          Enumeration en = bindings.keys();
-          String attrName = null;
-          ArrayList list = null;
-          while(en.hasMoreElements()) {
-            attrName = en.nextElement().toString();
-            list = (ArrayList)bindings.get(attrName);
-            for(int i=0;i<list.size();i++)
-              ((InputControl)list.get(i)).setChanged(false);
-          }
-
-          resetButtonsState();
-
-          // if a grid has been linked to this Form then update automatically its content:
-          // the new/updated row will be reloaded and set into the grid...
-          if (grid!=null && pkAttributes!=null) {
-            Map filters = new HashMap();
-            String pkAttrName = null;
-            Iterator it = pkAttributes.iterator();
-            FilterWhereClause[] filter = null;
-            while(it.hasNext()) {
-              pkAttrName = it.next().toString();
-              filter = new FilterWhereClause[2];
-
-              filter[0] = new FilterWhereClause(pkAttrName,Consts.EQ,model.getValue(pkAttrName));
-              filters.put(pkAttrName,filter);
-            }
-            Response res = grid.getGridDataLocator().loadData(
-                GridParams.NEXT_BLOCK_ACTION,
-                0,
-                filters,
-                new ArrayList(),
-                new ArrayList(),
-                Class.forName(grid.getValueObjectClassName()),
-                grid.getOtherGridParams()
-            );
-            if (res.isError())
-              Logger.error(this.getClass().getName(), "save", "Error while loading new row for grid:\n"+res.getErrorMessage(),null);
-            else {
-              java.util.List rows = ((VOListResponse)res).getRows();
-              if (rows.size()==1) {
-                final int gridRowIndex = getRowIndexInGrid();
-                if (gridRowIndex==-1) {
-                  grid.getVOListTableModel().addObject((ValueObject)rows.get(0));
-                  grid.repaint();
-                  SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                      grid.setRowSelectionInterval(grid.getVOListTableModel().getRowCount()-1,grid.getVOListTableModel().getRowCount()-1);
-                    }
-                  });
-                }
-                else {
-                  grid.getVOListTableModel().updateObjectAt((ValueObject)rows.get(0),gridRowIndex);
-                  grid.repaint();
-                  SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                      grid.setRowSelectionInterval(gridRowIndex,gridRowIndex);
-                    }
-                  });
-                }
-              }
-
-              // if this Form is a nested component of a grid, then refresh grid row...
-              Grid grid = getParentGrid();
-              if (grid!=null)
-                grid.refreshExpandableRenderer();
+          try {
+            Enumeration en = bindings.keys();
+            String attrName = null;
+            ArrayList list = null;
+            while(en.hasMoreElements()) {
+              attrName = en.nextElement().toString();
+              list = (ArrayList)bindings.get(attrName);
+              for(int i=0;i<list.size();i++)
+                ((InputControl)list.get(i)).setChanged(false);
             }
 
+            resetButtonsState();
+
+            updateParentGridRow();
+
+            previousVO = getVOModel().getValueObject();
           }
-          previousVO = getVOModel().getValueObject();
+          catch (Exception ex) {
+            // in case in afterInsert/Edit the form is closed, bindings variable will be null!
+            return false;
+          }
           return true;
         } else {
           OptionPane.showMessageDialog(
@@ -1857,6 +1816,72 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
     else {
       Logger.error(this.getClass().getName(), "save", "The form is in READONLY mode: operation not allowed.",null);
       return false;
+    }
+  }
+
+
+  /**
+   * If a grid has been linked to this Form then update automatically its content:
+   * the new/updated row will be reloaded and set into the grid...
+   */
+  public final void updateParentGridRow() {
+    try {
+      if (grid!=null && pkAttributes!=null) {
+        Map filters = new HashMap();
+        String pkAttrName = null;
+        Iterator it = pkAttributes.iterator();
+        FilterWhereClause[] filter = null;
+        while(it.hasNext()) {
+          pkAttrName = it.next().toString();
+          filter = new FilterWhereClause[2];
+
+          filter[0] = new FilterWhereClause(pkAttrName,Consts.EQ,model.getValue(pkAttrName));
+          filters.put(pkAttrName,filter);
+        }
+        Response res = grid.getGridDataLocator().loadData(
+            GridParams.NEXT_BLOCK_ACTION,
+            0,
+            filters,
+            new ArrayList(),
+            new ArrayList(),
+            Class.forName(grid.getValueObjectClassName()),
+            grid.getOtherGridParams()
+        );
+        if (res.isError())
+          Logger.error(this.getClass().getName(), "save", "Error while loading new row for grid:\n"+res.getErrorMessage(),null);
+        else {
+          java.util.List rows = ((VOListResponse)res).getRows();
+          if (rows.size()==1) {
+            final int gridRowIndex = getRowIndexInGrid();
+            if (gridRowIndex==-1) {
+              grid.getVOListTableModel().addObject((ValueObject)rows.get(0));
+              grid.repaint();
+              SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                  grid.setRowSelectionInterval(grid.getVOListTableModel().getRowCount()-1,grid.getVOListTableModel().getRowCount()-1);
+                }
+              });
+            }
+            else {
+              grid.getVOListTableModel().updateObjectAt((ValueObject)rows.get(0),gridRowIndex);
+              grid.repaint();
+              SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                  grid.setRowSelectionInterval(gridRowIndex,gridRowIndex);
+                }
+              });
+            }
+          }
+
+          // if this Form is a nested component of a grid, then refresh grid row...
+          Grid grid = getParentGrid();
+          if (grid!=null)
+            grid.refreshExpandableRenderer();
+        }
+      } // end if
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
     }
   }
 

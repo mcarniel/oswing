@@ -30,7 +30,7 @@ public class TreePanelBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _iconAttributeName = new PropertyDescriptor("iconAttributeName", beanClass, "getIconAttributeName", "setIconAttributeName");
       PropertyDescriptor _leavesImageName = new PropertyDescriptor("leavesImageName", beanClass, "getLeavesImageName", "setLeavesImageName");
       PropertyDescriptor _loadWhenVisibile = new PropertyDescriptor("loadWhenVisibile", beanClass, "isLoadWhenVisibile", "setLoadWhenVisibile");
-      PropertyDescriptor _rootVisibile = new PropertyDescriptor("rootVisibile", beanClass, "isRootVisibile", "setRootVisibile");
+      PropertyDescriptor _rootVisible = new PropertyDescriptor("rootVisible", beanClass, "isRootVisible", "setRootVisible");
       PropertyDescriptor _rowHeight = new PropertyDescriptor("rowHeight", beanClass, "getRowHeight", "setRowHeight");
       PropertyDescriptor _selectionBackground = new PropertyDescriptor("selectionBackground", beanClass, "getSelectionBackground", "setSelectionBackground");
       PropertyDescriptor _selectionForeground = new PropertyDescriptor("selectionForeground", beanClass, "getSelectionForeground", "setSelectionForeground");
@@ -49,7 +49,7 @@ public class TreePanelBeanInfo extends SimpleBeanInfo {
         _iconAttributeName,
         _leavesImageName,
         _loadWhenVisibile,
-        _rootVisibile,
+        _rootVisible,
         _rowHeight,
         _selectionBackground,
         _selectionForeground,

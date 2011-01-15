@@ -1,5 +1,14 @@
 
 
+Release Notes 2.3.6
+-------------------
+
+Final release 2.3.6 available
+Fixed exception on changing language in LoginDialog
+Fixed bean info descriptors of TreePanel and ImageControl components.
+
+
+
 Release Notes 2.3.5
 -------------------
 

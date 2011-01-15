@@ -44,6 +44,7 @@ public class FileGridFrame extends JFrame {
 
   public FileGridFrame(FileGridFrameController gridController) {
       try {
+        super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
         setSize(540,440);
         jbInit();
         grid.setController(gridController);

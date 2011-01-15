@@ -42,6 +42,7 @@ public class GridFrame extends JFrame {
   public GridFrame() {
 //  public GridFrame(ArrayList vos) {
     try {
+      super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
       jbInit();
       setSize(750,600);
       setTitle("Pivot Table for sales");

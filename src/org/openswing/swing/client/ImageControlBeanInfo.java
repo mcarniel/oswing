@@ -34,7 +34,7 @@ public class ImageControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _required = new PropertyDescriptor("required", beanClass, "isRequired", "setRequired");
       PropertyDescriptor _enabledOnInsert = new PropertyDescriptor("enabledOnInsert", beanClass, "isEnabledOnInsert", "setEnabledOnInsert");
       PropertyDescriptor _enabledOnEdit = new PropertyDescriptor("enabledOnEdit", beanClass, "isEnabledOnEdit", "setEnabledOnEdit");
-      PropertyDescriptor _showPreview = new PropertyDescriptor("showPreview", beanClass, "getShowPreview", "setShowPreview");
+      PropertyDescriptor _showPreview = new PropertyDescriptor("showPreview", beanClass, "isShowPreview", "setShowPreview");
       PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _autoResize,

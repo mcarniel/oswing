@@ -44,6 +44,7 @@ public class ImageGridFrame extends JFrame {
 
   public ImageGridFrame(ImageGridFrameController gridController) {
       try {
+        super.setDefaultCloseOperation(super.EXIT_ON_CLOSE);
         setSize(800,440);
         jbInit();
         grid.setController(gridController);
