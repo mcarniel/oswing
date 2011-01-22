@@ -678,7 +678,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
   public final void clearData() {
     // crear table model...
     model.clear();
-    expandedRows.clear();
+    while(expandedRows.size()>0)
+      collapseRow(((Integer)expandedRows.get(0)).intValue());
     cache.clear();
     this.revalidate();
     grid.revalidate();
@@ -1661,8 +1662,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
         executeReload();
     } else if (getMode()==Consts.READONLY) {
 
-      for(int i=0;i<expandedRows.size();i++)
-        grid.collapseRow( ((Integer)expandedRows.get(i)).intValue() );
+      while(expandedRows.size()>0)
+        collapseRow(((Integer)expandedRows.get(0)).intValue());
       currentNestedComponent = null;
       currentNestedComponentRow = -1;
 
@@ -1860,7 +1861,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
                 throw ex1;
               }
 
-              expandedRows.clear();
+              while(expandedRows.size()>0)
+                collapseRow(((Integer)expandedRows.get(0)).intValue());
               cache.clear();
 
               // update status bar content...
@@ -2156,9 +2158,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           filterDialog = new FilterDialog((JFrame)parentComp,colProps, this);
         else
           filterDialog = new FilterDialog((JDialog)parentComp,colProps, this);
-
-        filterDialog.init();
       }
+      filterDialog.init();
     }
   }
 

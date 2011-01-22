@@ -50,13 +50,14 @@ public class OrdersGridFrameController extends GridController implements GridDat
       Class valueObjectType,
       Map otherGridParams) {
     try {
-      String sql = "select ORDERS.ORDER_NUMBER,ORDERS.ORDER_YEAR,ORDERS.ORDER_DATE,ORDERS.CUSTOMER_ID,ORDERS.TOTAL from ORDERS";
+      String sql = "select ORDERS.ORDER_NUMBER,ORDERS.ORDER_YEAR,ORDERS.ORDER_DATE,ORDERS.CUSTOMER_ID,ORDERS.TOTAL,ORDERS.ORDER_STATE from ORDERS";
       HashMap map = new HashMap();
       map.put("orderNumber","ORDERS.ORDER_NUMBER");
       map.put("orderYear","ORDERS.ORDER_YEAR");
       map.put("orderDate","ORDERS.ORDER_DATE");
       map.put("customerId","ORDERS.CUSTOMER_ID");
       map.put("total","ORDERS.TOTAL");
+      map.put("state","ORDERS.ORDER_STATE");
 
       Response res = QueryUtil.getQuery(
         conn,

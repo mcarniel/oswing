@@ -607,7 +607,11 @@ public class CodLookupControl extends BaseInputControl implements CodBoxContaine
    * @return parent value object
    */
   public ValueObject getValueObject() {
-    return validationController.getForm()==null?null:validationController.getForm().getVOModel().getValueObject();
+    if (validationController.getForm()==null)
+      return null;
+    if (validationController.getForm().getVOModel()==null)
+      return null;
+    return validationController.getForm().getVOModel().getValueObject();
   }
 
 

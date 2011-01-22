@@ -1,5 +1,14 @@
 
 
+Release Notes 2.3.7
+-------------------
+
+Fixed problem with expandable grids, when moving from a block of data to another one.
+Fixed problem with expandable grids, when using combobox columns.
+Fixed filter button issue.
+
+
+
 Release Notes 2.3.6
 -------------------
 

@@ -23,6 +23,7 @@ public class OrderVO extends ValueObjectImpl {
   private String customerId;
   private java.sql.Date orderDate;
   private boolean hasOrderRows;
+  private String state;
 
 
   public OrderVO() {
@@ -64,6 +65,12 @@ public class OrderVO extends ValueObjectImpl {
   }
   public void setHasOrderRows(boolean hasOrderRows) {
     this.hasOrderRows = hasOrderRows;
+  }
+  public String getState() {
+    return state;
+  }
+  public void setState(String state) {
+    this.state = state;
   }
 
 

@@ -13,6 +13,19 @@ import org.openswing.swing.table.model.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.client.ImagePanel;
 import org.openswing.swing.util.java.Consts;
+import org.openswing.swing.table.columns.client.Column;
+import org.openswing.swing.table.columns.client.ComboColumn;
+import org.openswing.swing.table.columns.client.ButtonColumn;
+import org.openswing.swing.table.columns.client.CheckBoxColumn;
+import org.openswing.swing.table.columns.client.ComboVOColumn;
+import org.openswing.swing.table.columns.client.CurrencyColumn;
+import org.openswing.swing.table.columns.client.DateColumn;
+import org.openswing.swing.table.columns.client.DecimalColumn;
+import org.openswing.swing.table.columns.client.FormattedTextColumn;
+import org.openswing.swing.table.columns.client.IntegerColumn;
+import org.openswing.swing.table.columns.client.CodLookupColumn;
+import org.openswing.swing.table.columns.client.PercentageColumn;
+import org.openswing.swing.table.columns.client.TextColumn;
 
 
 /**
@@ -97,6 +110,17 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
     treeLinesPanel.setSize(12,12);
     treeLinesPanel.setMinimumSize(new Dimension(12,12));
     treeLinesPanel.setMaximumSize(new Dimension(12,12));
+
+    modelAdapter.getGrids().getVOListTableModel().addTableModelListener(new TableModelListener() {
+
+      public void tableChanged(TableModelEvent e) {
+        if (e.getType()==e.DELETE || e.getType()==e.INSERT) {
+          if (getCurrentExpandedRow()!=-1)
+              collapseRow(getCurrentExpandedRow());
+        }
+      }
+
+    });
 
     grid.addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
@@ -260,8 +284,91 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
           Component comp = null;
   //        JPanel rendPanel = null;
           int w = 0;
+          JLabel lb = null;
+          JLabel cc = null;
+          int leftMargin = 0;
+          int rightMargin = 0;
+          int topMargin = 0;
+          int bottomMargin = 0;
+          Column col = null;
           for(int i=expandableColumn;i<grid.getColumnModel().getColumnCount();i++) {
             comp = modelAdapter.getCellRenderer(grid.convertColumnIndexToModel(i)).getTableCellRendererComponent(grid, grid.getValueAt(row,i), false, false, row, i);
+            col = modelAdapter.getFieldColumn(grid.convertColumnIndexToModel(i));
+            leftMargin = 0;
+            rightMargin = 0;
+            topMargin = 0;
+            bottomMargin = 0;
+            if (col.getColumnType()==col.TYPE_COMBO) {
+              leftMargin = ((ComboColumn)col).getLeftMargin();
+              rightMargin = ((ComboColumn)col).getRightMargin();
+              topMargin = ((ComboColumn)col).getTopMargin();
+              bottomMargin = ((ComboColumn)col).getBottomMargin();
+            }
+            else if (col.getColumnType()==col.TYPE_COMBO_VO) {
+              leftMargin = ((ComboVOColumn)col).getLeftMargin();
+              rightMargin = ((ComboVOColumn)col).getRightMargin();
+              topMargin = ((ComboVOColumn)col).getTopMargin();
+              bottomMargin = ((ComboVOColumn)col).getBottomMargin();
+            }
+            else if (col.getColumnType()==col.TYPE_CURRENCY) {
+              leftMargin = ((CurrencyColumn)col).getLeftMargin();
+              rightMargin = ((CurrencyColumn)col).getRightMargin();
+              topMargin = ((CurrencyColumn)col).getTopMargin();
+              bottomMargin = ((CurrencyColumn)col).getBottomMargin();
+            }
+            else if (col.getColumnType()==col.TYPE_DEC) {
+              leftMargin = ((DecimalColumn)col).getLeftMargin();
+              rightMargin = ((DecimalColumn)col).getRightMargin();
+              topMargin = ((DecimalColumn)col).getTopMargin();
+              bottomMargin = ((DecimalColumn)col).getBottomMargin();
+            }
+            else if (col.getColumnType()==col.TYPE_FORMATTED_TEXT) {
+              leftMargin = ((FormattedTextColumn)col).getLeftMargin();
+              rightMargin = ((FormattedTextColumn)col).getRightMargin();
+              topMargin = ((FormattedTextColumn)col).getTopMargin();
+              bottomMargin = ((FormattedTextColumn)col).getBottomMargin();
+            }
+            else if (col.getColumnType()==col.TYPE_INT) {
+              leftMargin = ((IntegerColumn)col).getLeftMargin();
+              rightMargin = ((IntegerColumn)col).getRightMargin();
+              topMargin = ((IntegerColumn)col).getTopMargin();
+              bottomMargin = ((IntegerColumn)col).getBottomMargin();
+            }
+            else if (col.getColumnType()==col.TYPE_LOOKUP) {
+              leftMargin = ((CodLookupColumn)col).getLeftMargin();
+              rightMargin = ((CodLookupColumn)col).getRightMargin();
+              topMargin = ((CodLookupColumn)col).getTopMargin();
+              bottomMargin = ((CodLookupColumn)col).getBottomMargin();
+            }
+            else if (col.getColumnType()==col.TYPE_PERC) {
+              leftMargin = ((PercentageColumn)col).getLeftMargin();
+              rightMargin = ((PercentageColumn)col).getRightMargin();
+              topMargin = ((PercentageColumn)col).getTopMargin();
+              bottomMargin = ((PercentageColumn)col).getBottomMargin();
+            }
+            else if (col.getColumnType()==col.TYPE_TEXT) {
+              leftMargin = ((TextColumn)col).getLeftMargin();
+              rightMargin = ((TextColumn)col).getRightMargin();
+              topMargin = ((TextColumn)col).getTopMargin();
+              bottomMargin = ((TextColumn)col).getBottomMargin();
+            }
+
+            if (comp.getWidth()==0 && comp.getHeight()==0) {
+              if (comp instanceof JLabel) {
+                lb = ((JLabel)comp);
+                cc = new JLabel(lb.getText());
+                cc.setBackground(lb.getBackground());
+                cc.setForeground(lb.getForeground());
+                cc.setFont(lb.getFont());
+                cc.setHorizontalAlignment(lb.getHorizontalAlignment());
+                cc.setHorizontalTextPosition(lb.getHorizontalTextPosition());
+                comp = cc;
+              }
+              comp.setSize(
+                  grid.getColumnModel().getColumn(i + expandableColumn).getWidth() - 1 - (i == expandableColumn ? 12 : 0)-leftMargin-rightMargin,
+                  delta
+              );
+            }
             if (i==expandableColumn) {
               aux.add(expTreePanel);
               expTreePanel.setBackground(comp.getBackground());
@@ -269,10 +376,10 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
             }
             aux.add(comp);
             comp.setBounds(
-              w+(i==expandableColumn?+12:0),
-              0,
-              grid.getColumnModel().getColumn(i+expandableColumn).getWidth()-1-(i==expandableColumn?12:0),
-              delta
+              w+(i==expandableColumn?+12:0)+leftMargin,
+              0+topMargin,
+              grid.getColumnModel().getColumn(i+expandableColumn).getWidth()-1-(i==expandableColumn?12:0)-leftMargin-rightMargin,
+              delta-topMargin-bottomMargin
             );
             w += grid.getColumnModel().getColumn(i+expandableColumn).getWidth();
             JSeparator sep = new JSeparator(JSeparator.VERTICAL);

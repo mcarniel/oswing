@@ -28,6 +28,12 @@ public class ClientApplication {
   public ClientApplication() {
 
     Hashtable domains = new Hashtable();
+
+    Domain state = new Domain("ORDER_STATE");
+    state.addDomainPair("O","Open");
+    state.addDomainPair("C","Closed");
+    domains.put(state.getDomainId(),state);
+
     Properties props = new Properties();
     props.setProperty("...","...");
     ClientSettings clientSettings = new ClientSettings(
@@ -60,18 +66,18 @@ public class ClientApplication {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:"+"a"+Math.random(),"sa","");
       PreparedStatement stmt = null;
       try {
-        stmt = conn.prepareStatement("create table ORDERS(ORDER_NUMBER NUMERIC(6),ORDER_YEAR NUMERIC(4),ORDER_DATE DATE,CUSTOMER_ID VARCHAR,TOTAL NUMERIC(12,2),PRIMARY KEY(ORDER_NUMBER,ORDER_YEAR))");
+        stmt = conn.prepareStatement("create table ORDERS(ORDER_NUMBER NUMERIC(6),ORDER_YEAR NUMERIC(4),ORDER_DATE DATE,CUSTOMER_ID VARCHAR,TOTAL NUMERIC(12,2),ORDER_STATE CHAR(1),PRIMARY KEY(ORDER_NUMBER,ORDER_YEAR))");
         stmt.execute();
         stmt.close();
 
         for(int i=1;i<=5;i++) {
-          stmt = conn.prepareStatement("insert into ORDERS values("+i+",2007,?,'C"+i+"',1000)");
+          stmt = conn.prepareStatement("insert into ORDERS values("+i+",2007,?,'C"+i+"',1000,'O')");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }
 
         for(int i=1;i<=100;i++) {
-          stmt = conn.prepareStatement("insert into ORDERS values("+i+",2008,?,'C"+i+"',1000)");
+          stmt = conn.prepareStatement("insert into ORDERS values("+i+",2008,?,'C"+i+"',1000,'C')");
           stmt.setObject(1,new java.sql.Date(System.currentTimeMillis()+86400000*i));
           stmt.execute();
         }

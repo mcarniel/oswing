@@ -42,13 +42,14 @@ public class OrdersGridFrame extends JFrame {
   ExportButton exportButton = new ExportButton();
   NavigatorBar navigatorBar1 = new NavigatorBar();
   DateColumn colOrderDate = new DateColumn();
+  ComboColumn colState = new ComboColumn();
 
 
   public OrdersGridFrame(Connection conn,OrdersGridFrameController controller) {
     this.conn = conn;
     try {
       jbInit();
-      setSize(550,600);
+      setSize(590,600);
       grid.setController(controller);
       grid.setGridDataLocator(controller);
       setVisible(true);
@@ -66,6 +67,7 @@ public class OrdersGridFrame extends JFrame {
 
 
   private void jbInit() throws Exception {
+    colState.setDomainId("ORDER_STATE");
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
     grid.setExpandableColumn(0);
@@ -95,6 +97,10 @@ public class OrdersGridFrame extends JFrame {
     colTotal.setHeaderColumnName("Total Amount");
     colOrderDate.setColumnName("orderDate");
     colOrderDate.setHeaderColumnName("Order Date");
+    colState.setColumnName("state");
+    colState.setColumnFilterable(false);
+    colState.setHeaderColumnName("State");
+    colState.setPreferredWidth(60);
     this.getContentPane().add(grid, BorderLayout.CENTER);
     this.getContentPane().add(buttonsPanel, BorderLayout.NORTH);
     buttonsPanel.add(reloadButton, null);
@@ -104,6 +110,7 @@ public class OrdersGridFrame extends JFrame {
     grid.getColumnContainer().add(colOrderNUmber, null);
     grid.getColumnContainer().add(colOrderDate, null);
     grid.getColumnContainer().add(colCustomerId, null);
+    grid.getColumnContainer().add(colState, null);
     grid.getColumnContainer().add(colTotal, null);
 
     grid.setOverwriteRowWhenExpanding(false);
