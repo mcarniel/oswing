@@ -599,6 +599,9 @@ public class ClientSettings {
   /** define how a date control/column must behave when an invalid date has been specified within it: clean up the content (stricy usage) or trying to correct it; default value: <code>false</code>, i.e. try to correct the date */
   public static boolean DATE_COMPONENT_STRICT_USAGE;
 
+  /** define if GenericButton instances are focusable; default value: <code>false</code> */
+  public static boolean GENERIC_BUTTON_FOCUSABLE = false;
+
 
   /**
    * Contains application settings.

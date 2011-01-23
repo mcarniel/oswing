@@ -3,6 +3,7 @@ package org.openswing.swing.internationalization.java;
 import java.util.*;
 import org.openswing.swing.internationalization.java.Resources;
 import org.openswing.swing.internationalization.java.ResourcesFactory;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -291,6 +292,19 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("at least one column field must be selected","Musiby\u0107 wybrana co najmniej jedna kolumna.");
         dictionary.setProperty("expand all","Rozwi\u0144 wszystko");
         dictionary.setProperty("collapse all","Zwi\u0144 wszystko");
+
+        dictionary.setProperty(Consts.EQ,"Equals to");
+        dictionary.setProperty(Consts.GE,"Greater or equals to");
+        dictionary.setProperty(Consts.GT,"Greater than");
+        dictionary.setProperty(Consts.IS_NOT_NULL,"Is filled");
+        dictionary.setProperty(Consts.IS_NULL,"Is not filled");
+        dictionary.setProperty(Consts.LE,"Less or equals to");
+        dictionary.setProperty(Consts.LIKE,"Contains");
+        dictionary.setProperty(Consts.LT,"Less than");
+        dictionary.setProperty(Consts.NEQ,"Not equals to");
+        dictionary.setProperty(Consts.IN,"Contains values");
+        dictionary.setProperty(Consts.ASC_SORTED,"Ascending");
+        dictionary.setProperty(Consts.DESC_SORTED,"Descending");
 
         resources = new Resources(
                 dictionary,

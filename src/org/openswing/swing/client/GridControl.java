@@ -433,7 +433,14 @@ public class GridControl extends JPanel {
       table.setEditOnSingleRow(editOnSingleRow);
       for (int i = 0; i < columnProperties.length; i++) {
         columnProperties[i].setTable(table);
+
+        if (columnProperties[i].getDefaultFilterValues()!=null)
+          table.getQuickFilterValues().put(
+            columnProperties[i].getColumnName(),
+            columnProperties[i].getDefaultFilterValues()
+          );
       }
+
 
       // apply grid permissions, if defined...
       if (ClientSettings.getInstance().GRID_PERMISSION_MANAGER!=null &&
@@ -2704,6 +2711,15 @@ public class GridControl extends JPanel {
       table.getCurrentSortedVersusColumns().clear();
       table.getCurrentSortedVersusColumns().addAll(profile.getCurrentSortedVersusColumns());
       table.getQuickFilterValues().clear();
+
+      for (int i = 0; i < columnProperties.length; i++) {
+        if (columnProperties[i].getDefaultFilterValues()!=null)
+          table.getQuickFilterValues().put(
+            columnProperties[i].getColumnName(),
+            columnProperties[i].getDefaultFilterValues()
+          );
+      }
+
       table.getQuickFilterValues().putAll(profile.getQuickFilterValues());
     }
     if (topTable!=null) {
@@ -2770,17 +2786,23 @@ public class GridControl extends JPanel {
     int[] columnsWidth = new int[columnProperties.length];
     ArrayList currentSortedColumns = new ArrayList();
     ArrayList currentSortedVersusColumns = new ArrayList();
+    HashMap filters = new HashMap();
 
     int[] aux = new int[columnProperties.length+1];
     for(int i=0;i<aux.length;i++)
       aux[i] = -1;
     for(int i=0;i<columnProperties.length;i++) {
+
       columnsAttribute[i] = columnProperties[i].getColumnName();
       columnsVisibility[i] = columnProperties[i].isColumnVisible();
       columnsWidth[i] = columnProperties[i].getPreferredWidth();
       if (!columnProperties[i].getSortVersus().equals(Consts.NO_SORTED)) {
         aux[columnProperties[i].getSortingOrder()] = i;
       }
+
+      if (columnProperties[i].getDefaultFilterValues()!=null)
+        filters.put(columnProperties[i].getColumnName(),columnProperties[i].getDefaultFilterValues());
+
     }
     for(int i=0;i<aux.length;i++)
       if (aux[i]>=0) {
@@ -2794,7 +2816,7 @@ public class GridControl extends JPanel {
       ClientSettings.getInstance().GRID_PROFILE_MANAGER.getUsername(),
       currentSortedColumns,
       currentSortedVersusColumns,
-      new HashMap(),
+      filters,
       columnsAttribute,
       columnsVisibility,
       columnsWidth,

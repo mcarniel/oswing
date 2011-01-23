@@ -79,7 +79,7 @@ public class FilterDialog extends JDialog {
     try {
       panel = new FilterPanel(colProperties,grid,Consts.FILTER_PANEL_ON_GRID_CLOSE_ON_EXIT);
       jbInit();
-      setSize(300,400);
+      setSize(400,400);
       setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
       ClientUtils.centerDialog(ClientUtils.getParentWindow(grid),this);
     }

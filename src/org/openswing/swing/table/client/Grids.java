@@ -1752,7 +1752,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       try {
         SwingUtilities.invokeAndWait(new Runnable() {
           public void run() {
-            // esecute on EventQueue thread...
+            // execute on EventQueue thread...
             if (grid!=null&& grid.getSelectionModel()!=null)
               grid.getSelectionModel().setSelectionMode(grid.getSelectionModel().SINGLE_SELECTION);
             if (gridType==Grid.MAIN_GRID) {
@@ -3764,6 +3764,14 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
     if (expandedRows.contains(new Integer(row)))
      expandedRows.remove(new Integer(row));
     currentNestedComponent = null;
+  }
+
+
+  /**
+   * @return <code>true</code> is there is at least one row currently expanded; <code>false</code> if no row is currently expanded
+   */
+  public final boolean isAnyRowExpanded() {
+  return !expandedRows.isEmpty();
   }
 
 

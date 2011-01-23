@@ -317,7 +317,7 @@ public class Grid extends JTable
 
       checkColumnSpans();
       if (expandableRowController!=null) {
-        setResizingAllowed(false);
+        //setResizingAllowed(false);
         //setReorderingAllowed(false);
         // see moveColumn callback method...
       }

@@ -74,7 +74,7 @@ public class GenericButton extends JButton {
           }.start();
       }
     });
-    this.setFocusable(false);
+    this.setFocusable(ClientSettings.GENERIC_BUTTON_FOCUSABLE);
   }
 
 

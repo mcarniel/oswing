@@ -9,6 +9,7 @@ import javax.swing.table.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import org.openswing.swing.message.send.java.FilterWhereClause;
 
 
 /**
@@ -125,6 +126,9 @@ public class Column extends JPanel {
 
   /** list-filter to add to this column (optional) */
   private ListFilterController filter = null;
+
+  /** default filter conditions to apply when the grid is showed */
+  private FilterWhereClause[] defaultFilterValues = null;
 
   /** flag used to auto fit column size, according to text header; default value: <code>ClientSettings.AUTO_FIT_COLUMNS</code> */
   public boolean autoFitColumn = ClientSettings.AUTO_FIT_COLUMNS;
@@ -681,6 +685,23 @@ public class Column extends JPanel {
    */
   public final void setAutoFitColumn(boolean autoFitColumn) {
     this.autoFitColumn = autoFitColumn;
+  }
+
+
+  /**
+   * @return default filter conditions to apply when the grid is showed
+   */
+  public final FilterWhereClause[] getDefaultFilterValues() {
+    return defaultFilterValues;
+  }
+
+
+  /**
+   * Set the default filter conditions to apply when the grid is showed.
+   * @param defaultFilterValues default filter conditions to apply when the grid is showed (a two elements length array is required)
+   */
+  public final void setDefaultFilterValues(FilterWhereClause firstFilterValue,FilterWhereClause optionalSecondFilterValue) {
+    this.defaultFilterValues = new FilterWhereClause[]{firstFilterValue,optionalSecondFilterValue};
   }
 
 

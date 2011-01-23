@@ -10,6 +10,8 @@ import java.awt.event.*;
 import org.openswing.swing.table.java.*;
 import org.openswing.swing.util.client.ClientSettings;
 import org.openswing.swing.table.columns.client.ComboVOColumn;
+import org.openswing.swing.message.send.java.FilterWhereClause;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -81,6 +83,9 @@ public class GridFrame extends JFrame {
     grid.setAllowColumnsSortingInEdit(true);
     colCustomerCode.setColumnFilterable(true);
     colCustomerCode.setColumnName("customerCode");
+
+    colCustomerCode.setDefaultFilterValues(new FilterWhereClause("customerCode",Consts.LIKE,"C%"),null);
+
     colCustomerCode.setColumnSortable(true);
     colCustomerCode.setEditableOnEdit(false);
     colCustomerCode.setEditableOnInsert(true);

@@ -120,7 +120,7 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
     list.addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent e) {
         if (e.getKeyCode()==e.VK_CANCEL || e.getKeyCode()==e.VK_BACK_SPACE || e.getKeyCode()==e.VK_DELETE)
-          list.setSelectedIndex(-1);
+          list.clearSelection();
       }
     });
     list.setSelectionForeground((Color)UIManager.get("TextField.foreground"));
@@ -818,6 +818,21 @@ public class ListVOControl extends BaseInputControl implements InputControl,Item
     }
     catch (Exception ex) {
     }
+  }
+
+
+  /**
+   * Clears the selection - after calling this method
+   * <code>isSelectionEmpty</code> will return true.
+   * This is a convenience method that just delegates to the
+   * <code>selectionModel</code>.
+   *
+   * @see ListSelectionModel#clearSelection
+   * @see #isSelectionEmpty
+   * @see #addListSelectionListener
+   */
+  public final void clearSelection() {
+    list.clearSelection();
   }
 
 

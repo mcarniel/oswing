@@ -1,6 +1,7 @@
 package org.openswing.swing.internationalization.java;
 
 import java.util.*;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -288,6 +289,19 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty("at least one column field must be selected","Almeno un campo colonna deve essere selezionato.");
     dictionary.setProperty("expand all","Espandi tutto");
     dictionary.setProperty("collapse all","Riduci tutto");
+
+    dictionary.setProperty(Consts.EQ,"Uguale a");
+    dictionary.setProperty(Consts.GE,"Maggiore o uguale a");
+    dictionary.setProperty(Consts.GT,"Maggiore di");
+    dictionary.setProperty(Consts.IS_NOT_NULL,"Non è nullo");
+    dictionary.setProperty(Consts.IS_NULL,"E' nullo");
+    dictionary.setProperty(Consts.LE,"Minore o uguale a");
+    dictionary.setProperty(Consts.LIKE,"Contiene");
+    dictionary.setProperty(Consts.LT,"Minore di");
+    dictionary.setProperty(Consts.NEQ,"Non uguale a");
+    dictionary.setProperty(Consts.IN,"Contiene i valori");
+    dictionary.setProperty(Consts.ASC_SORTED,"Ascendente");
+    dictionary.setProperty(Consts.DESC_SORTED,"Discendente");
 
     resources = new Resources(
       dictionary,

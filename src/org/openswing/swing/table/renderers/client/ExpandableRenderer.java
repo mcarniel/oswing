@@ -97,6 +97,9 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
   /** current expanded row; -1 if no row is currently expanded */
   private int currentExpandedRow = -1;
 
+  /** variable used to store the old value of "resizingAllowed" grid property */
+  private Boolean oldResizingAllowed = null;
+
 
   public ExpandableRenderer(Grid grid,Grids grids,int expandableColumn,VOListAdapter modelAdapter) {
     this.grid = grid;
@@ -221,6 +224,10 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
 
     if (grid.getExpandableRowController().removeShowedComponent(grids.getVOListTableModel(),row,(JComponent)c.getNestedComponent()))
       grids.removeComponentInCache(row);
+
+    if (!grids.isAnyRowExpanded() && oldResizingAllowed!=null) {
+      grid.setResizingAllowed(oldResizingAllowed.booleanValue());
+    }
   }
 
 
@@ -232,6 +239,10 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
       }
       grids.expandRow(row);
       currentExpandedRow = row;
+
+      if (oldResizingAllowed==null)
+        oldResizingAllowed = new Boolean(grid.getTableHeader().getResizingAllowed());
+      grid.setResizingAllowed(false);
 
       ExpandablePanel expPanel = (ExpandablePanel)grids.getComponentInCache(row);
       Component c = null;

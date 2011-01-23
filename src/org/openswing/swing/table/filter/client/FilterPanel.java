@@ -264,7 +264,8 @@ public class FilterPanel extends JPanel {
       colOrdered.add(null);
     int row = 0;
     ComboModel colNamesComboModel = null;
-    DefaultComboBoxModel orderVersusComboModel = null;
+    ComboBoxControl orderVersusComboBox = null;
+    Domain d = null;
 
     for(int i=0;i<grid.getMaxSortedColumns();i++) {
       // prepare combo model having column names, one combo for each sortable column...
@@ -275,13 +276,14 @@ public class FilterPanel extends JPanel {
           colNamesComboModel.addItem(colProperties[j].getColumnName(),ClientSettings.getInstance().getResources().getResource(colProperties[j].getHeaderColumnName()));
 
       // prepare combo model related to sorting versus, one for each sortable column...
-      orderVersusComboModel = new DefaultComboBoxModel();
-      orderVersusComboModel.addElement("");
-      orderVersusComboModel.addElement(Consts.ASC_SORTED);
-      orderVersusComboModel.addElement(Consts.DESC_SORTED);
+      d = new Domain("");
+      d.addDomainPair("","");
+      d.addDomainPair(Consts.ASC_SORTED,Consts.ASC_SORTED);
+      d.addDomainPair(Consts.DESC_SORTED,Consts.DESC_SORTED);
+      orderVersusComboBox = new ComboBoxControl();
+      orderVersusComboBox.setDomain(d);
 
       JComboBox colNameComboBox = new JComboBox(colNamesComboModel);
-      JComboBox orderVersusComboBox = new JComboBox(orderVersusComboModel);
 
       oPanel.add(colNameComboBox,    new GridBagConstraints(0, row, 1, 1, 1.0, 0.0
               ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
@@ -313,9 +315,9 @@ public class FilterPanel extends JPanel {
         );
 
         if (colProperties[colIndex].getSortVersus().equals(Consts.ASC_SORTED))
-          ((JComboBox)sortVersus.get(row)).setSelectedIndex(1);
+          ((ComboBoxControl)sortVersus.get(row)).setSelectedIndex(1);
         else if (colProperties[colIndex].getSortVersus().equals(Consts.DESC_SORTED))
-          ((JComboBox)sortVersus.get(row)).setSelectedIndex(2);
+          ((ComboBoxControl)sortVersus.get(row)).setSelectedIndex(2);
 
         row++;
       }
@@ -336,11 +338,11 @@ public class FilterPanel extends JPanel {
     }
 
     int row = 0;
-    DefaultComboBoxModel colOpsComboModel = null;
-    DefaultComboBoxModel colOpsComboModel2 = null;
     FilterWhereClause[] filter = null;
     String colOpValue = null;
     Object colValue = null;
+    Domain d = null;
+    Domain d2 = null;
     for(int i=0;i<colProperties.length;i++)
       if (colProperties[i].isColumnFilterable() &&
 //          colProperties[i].getColumnType()!=Column.TYPE_CHECK &&
@@ -356,31 +358,32 @@ public class FilterPanel extends JPanel {
         }
 
         // prepare a combo model for the first filter criteria...
-        colOpsComboModel = new DefaultComboBoxModel();
-        colOpsComboModel.addElement("");
-        colOpsComboModel.addElement(Consts.EQ);
-        colOpsComboModel.addElement(Consts.NEQ);
+        d = new Domain("");
+        d.addDomainPair("","");
+        d.addDomainPair(Consts.EQ,Consts.EQ);
+        d.addDomainPair(Consts.NEQ,Consts.NEQ);
         if (colProperties[i].getColumnType()==Column.TYPE_LINK ||
             colProperties[i].getColumnType()==Column.TYPE_BUTTON ||
             colProperties[i].getColumnType()==Column.TYPE_FORMATTED_TEXT ||
             colProperties[i].getColumnType()==Column.TYPE_LOOKUP ||
             colProperties[i].getColumnType()==Column.TYPE_MULTI_LINE_TEXT ||
             colProperties[i].getColumnType()==Column.TYPE_TEXT)
-          colOpsComboModel.addElement(ClientSettings.LIKE);
+          d.addDomainPair(ClientSettings.LIKE,Consts.LIKE);
         if (colProperties[i].getColumnType()!=Column.TYPE_CHECK) {
-          colOpsComboModel.addElement(Consts.IS_NOT_NULL);
-          colOpsComboModel.addElement(Consts.IS_NULL);
-          colOpsComboModel.addElement(Consts.GE);
-          colOpsComboModel.addElement(Consts.GT);
-          colOpsComboModel.addElement(Consts.LE);
-          colOpsComboModel.addElement(Consts.LT);
+          d.addDomainPair(Consts.IS_NOT_NULL,Consts.IS_NOT_NULL);
+          d.addDomainPair(Consts.IS_NULL,Consts.IS_NULL);
+          d.addDomainPair(Consts.GE,Consts.GE);
+          d.addDomainPair(Consts.GT,Consts.GT);
+          d.addDomainPair(Consts.LE,Consts.LE);
+          d.addDomainPair(Consts.LT,Consts.LT);
           if (ClientSettings.INCLUDE_IN_OPERATOR)
-            colOpsComboModel.addElement(Consts.IN);
+            d.addDomainPair(Consts.IN,Consts.IN);
         }
 
-        final JComboBox colOpsComboBox = new JComboBox(colOpsComboModel);
+        final ComboBoxControl colOpsComboBox = new ComboBoxControl();
+        colOpsComboBox.setDomain(d);
         if (colOpValue!=null)
-          colOpsComboBox.setSelectedItem(colOpValue);
+          colOpsComboBox.setValue(colOpValue);
 
         final JComponent c = createValueComponent(colProperties[i]);
 
@@ -397,7 +400,7 @@ public class FilterPanel extends JPanel {
                    new GridBagConstraints(2, row, 1, 1, 1.0, 0.0
                 ,GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
 
-        colOpsComboBox.addItemListener(new ComboItemListener(i,colOpsComboBox,c instanceof JPanel ? (JComponent)c.getComponent(0):c));
+        colOpsComboBox.addItemListener(new ComboItemListener(i,colOpsComboBox.getComboBox(),c instanceof JPanel ? (JComponent)c.getComponent(0):c));
         c.addFocusListener(new OpFocusListener(filterColOps.size(),c));
         JComponent[] cc = new JComponent[]{c};
 
@@ -443,29 +446,30 @@ public class FilterPanel extends JPanel {
 
 
           // prepare a combo model for the second filter criteria...
-          colOpsComboModel2 = new DefaultComboBoxModel();
-          colOpsComboModel2.addElement("");
-          colOpsComboModel2.addElement(Consts.EQ);
-          colOpsComboModel2.addElement(Consts.GE);
-          colOpsComboModel2.addElement(Consts.GT);
-          colOpsComboModel2.addElement(Consts.IS_NOT_NULL);
-          colOpsComboModel2.addElement(Consts.IS_NULL);
-          colOpsComboModel2.addElement(Consts.LE);
+          d2 = new Domain("");
+          d2.addDomainPair("","");
+          d2.addDomainPair(Consts.EQ,Consts.EQ);
+          d2.addDomainPair(Consts.GE,Consts.GE);
+          d2.addDomainPair(Consts.GT,Consts.GT);
+          d2.addDomainPair(Consts.IS_NOT_NULL,Consts.IS_NOT_NULL);
+          d2.addDomainPair(Consts.IS_NULL,Consts.IS_NULL);
+          d2.addDomainPair(Consts.LE,Consts.LE);
           if (colProperties[i].getColumnType()==Column.TYPE_LINK ||
               colProperties[i].getColumnType()==Column.TYPE_BUTTON ||
               colProperties[i].getColumnType()==Column.TYPE_FORMATTED_TEXT ||
               colProperties[i].getColumnType()==Column.TYPE_LOOKUP ||
               colProperties[i].getColumnType()==Column.TYPE_MULTI_LINE_TEXT ||
               colProperties[i].getColumnType()==Column.TYPE_TEXT)
-          colOpsComboModel2.addElement(ClientSettings.LIKE);
-          colOpsComboModel2.addElement(Consts.LT);
-          colOpsComboModel2.addElement(Consts.NEQ);
+            d2.addDomainPair(ClientSettings.LIKE,Consts.LIKE);
+          d2.addDomainPair(Consts.LT,Consts.LT);
+          d2.addDomainPair(Consts.NEQ,Consts.NEQ);
           if (ClientSettings.INCLUDE_IN_OPERATOR)
-            colOpsComboModel2.addElement(Consts.IN);
+            d2.addDomainPair(Consts.IN,Consts.IN);
 
-          final JComboBox colOpsComboBox2 = new JComboBox(colOpsComboModel2);
+          final ComboBoxControl colOpsComboBox2 = new ComboBoxControl();
+          colOpsComboBox2.setDomain(d2);
           if (colOpValue!=null)
-            colOpsComboBox2.setSelectedItem(colOpValue);
+            colOpsComboBox2.setValue(colOpValue);
 
           final JComponent c2 = createValueComponent(colProperties[i]);
           c2.addFocusListener(new OpFocusListener(filterColOps.size(),c2));
@@ -503,8 +507,8 @@ public class FilterPanel extends JPanel {
           colOpsComboBox2.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
               if (e.getStateChange()==e.SELECTED) {
-                if (colOpsComboBox2.getSelectedItem().equals(Consts.IS_NOT_NULL) ||
-                    colOpsComboBox2.getSelectedItem().equals(Consts.IS_NULL))
+                if (colOpsComboBox2.getValue().equals(Consts.IS_NOT_NULL) ||
+                    colOpsComboBox2.getValue().equals(Consts.IS_NULL))
                   c2.setEnabled(false);
                 else
                   c2.setEnabled(true);
@@ -910,16 +914,16 @@ public class FilterPanel extends JPanel {
     grid.getCurrentSortedVersusColumns().clear();
     for(int i=0;i<sortColNames.size();i++)
       if (((JComboBox)sortColNames.get(i)).getSelectedIndex()>0 &&
-          ((JComboBox)sortVersus.get(i)).getSelectedIndex()>0) {
+          ((ComboBoxControl)sortVersus.get(i)).getSelectedIndex()>0) {
         colName = ((ComboModel)((JComboBox)sortColNames.get(i)).getModel()).getSelectedCode(((JComboBox)sortColNames.get(i)).getSelectedIndex());
 
         alreadyExist = grid.getCurrentSortedColumns().contains(colName);
         if (alreadyExist)
           continue;
 
-        if (((JComboBox)sortVersus.get(i)).getSelectedIndex()==1)
+        if (((ComboBoxControl)sortVersus.get(i)).getSelectedIndex()==1)
           versus = Consts.ASC_SORTED;
-        else if (((JComboBox)sortVersus.get(i)).getSelectedIndex()==2)
+        else if (((ComboBoxControl)sortVersus.get(i)).getSelectedIndex()==2)
           versus = Consts.DESC_SORTED;
         orderColumns.put(colName,new String[]{colName,versus});
         grid.getCurrentSortedColumns().add(colName);
@@ -932,8 +936,8 @@ public class FilterPanel extends JPanel {
     JComponent[] cc = null;
     for(int i=0;i<filterColOps.size();i++) { // for each applyable filter...
       cc = (JComponent[])filterColValues.get(i);
-      if (((JComboBox)filterColOps.get(i)).getSelectedIndex()>0 &&
-          ((JComboBox)filterColOps.get(i)).getSelectedItem().toString().equals(Consts.IN)) {
+      if (((ComboBoxControl)filterColOps.get(i)).getSelectedIndex()>0 &&
+          ((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IN)) {
         // "IN" operator has been selected:
         // FilterWhereClause will always contain an ArrayList of objects
         ArrayList values = new ArrayList();
@@ -947,7 +951,7 @@ public class FilterPanel extends JPanel {
           colName = ((Column)filterColNames.get(i)).getColumnName();
           for(int j=0;j<values.size();j++)
             values.set(j,grid.getGridController().beforeFilterGrid(colName,values.get(j)));
-          op = ((JComboBox)filterColOps.get(i)).getSelectedItem().toString();
+          op = ((ComboBoxControl)filterColOps.get(i)).getValue().toString();
           FilterWhereClause whereClause = new FilterWhereClause(colName,op,values);
           filterColumns.put(colName,whereClause);
 
@@ -957,10 +961,10 @@ public class FilterPanel extends JPanel {
             ((FilterWhereClause[])grid.getQuickFilterValues().get(colName))[1] = whereClause;
         }
       }
-      else if (((JComboBox)filterColOps.get(i)).getSelectedIndex()>0 &&
-          !((JComboBox)filterColOps.get(i)).getSelectedItem().toString().equals(Consts.IN) &&
-          !((JComboBox)filterColOps.get(i)).getSelectedItem().toString().equals(Consts.IS_NOT_NULL) &&
-          !((JComboBox)filterColOps.get(i)).getSelectedItem().toString().equals(Consts.IS_NULL)) {
+      else if (((ComboBoxControl)filterColOps.get(i)).getSelectedIndex()>0 &&
+          !((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IN) &&
+          !((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IS_NOT_NULL) &&
+          !((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IS_NULL)) {
         // operator is not "IN" and is not "IS NULL" and is not IS NOT NULL:
         // FilterWhereClause could contain an ArrayList of objects or directly an onject
         ArrayList values = new ArrayList();
@@ -974,7 +978,7 @@ public class FilterPanel extends JPanel {
           colName = ((Column)filterColNames.get(i)).getColumnName();
           for(int j=0;j<values.size();j++)
             values.set(j,grid.getGridController().beforeFilterGrid(colName,values.get(j)));
-          op = ((JComboBox)filterColOps.get(i)).getSelectedItem().toString();
+          op = ((ComboBoxControl)filterColOps.get(i)).getValue().toString();
           FilterWhereClause whereClause = new FilterWhereClause(colName,op,values);
           filterColumns.put(colName,whereClause);
 
@@ -983,13 +987,13 @@ public class FilterPanel extends JPanel {
           else
             ((FilterWhereClause[])grid.getQuickFilterValues().get(colName))[1] = whereClause;
         }
-        else if (((JComboBox)filterColOps.get(i)).getSelectedIndex()>0 &&
+        else if (((ComboBoxControl)filterColOps.get(i)).getSelectedIndex()>0 &&
             getValueComponent(cc[0],(Column)filterColNames.get(i))!=null) { // a filter value has been specified
           // filter value has been specified...
           colName = ((Column)filterColNames.get(i)).getColumnName();
           value = getValueComponent(cc[0],(Column)filterColNames.get(i));
           value = grid.getGridController().beforeFilterGrid(colName,value);
-          op = ((JComboBox)filterColOps.get(i)).getSelectedItem().toString();
+          op = ((ComboBoxControl)filterColOps.get(i)).getValue().toString();
           FilterWhereClause whereClause = new FilterWhereClause(colName,op,value);
           filterColumns.put(colName,whereClause);
 
@@ -999,14 +1003,14 @@ public class FilterPanel extends JPanel {
             ((FilterWhereClause[])grid.getQuickFilterValues().get(colName))[1] = whereClause;
         }
       }
-      else if (((JComboBox)filterColOps.get(i)).getSelectedIndex()>0 && // an operator has been selected
-               (((JComboBox)filterColOps.get(i)).getSelectedItem().toString().equals(Consts.IS_NOT_NULL) ||
-                ((JComboBox)filterColOps.get(i)).getSelectedItem().toString().equals(Consts.IS_NULL))) {
+      else if (((ComboBoxControl)filterColOps.get(i)).getSelectedIndex()>0 && // an operator has been selected
+               (((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IS_NOT_NULL) ||
+                ((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IS_NULL))) {
         // operator is "IS NULL "or "IS NOT NULL"...
         colName = ((Column)filterColNames.get(i)).getColumnName();
-        op = ((JComboBox)filterColOps.get(i)).getSelectedItem().toString();
+        op = ((ComboBoxControl)filterColOps.get(i)).getValue().toString();
         FilterWhereClause whereClause = null;
-        whereClause = new FilterWhereClause(colName,((JComboBox)filterColOps.get(i)).getSelectedItem().toString(),null);
+        whereClause = new FilterWhereClause(colName,((ComboBoxControl)filterColOps.get(i)).getValue().toString(),null);
         filterColumns.put(colName,whereClause);
 
         if (grid.getQuickFilterValues().get(colName)==null)
@@ -1059,7 +1063,7 @@ public class FilterPanel extends JPanel {
      * FocusLost event in filter value field.
      */
     public void focusLost(FocusEvent e) {
-      String op = ((JComboBox)filterColOps.get(pos)).getSelectedItem().toString();
+      String op = ((ComboBoxControl)filterColOps.get(pos)).getValue().toString();
       if (!op.equals(Consts.IS_NULL) && !op.equals(Consts.IS_NOT_NULL) &&
           (op.equals(Consts.IN) || ClientSettings.ALLOW_OR_OPERATOR)) {
         // allows to add another filter field only if:
