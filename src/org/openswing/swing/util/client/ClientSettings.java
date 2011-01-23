@@ -293,7 +293,7 @@ public class ClientSettings {
   /** default value that could be set in the quick filter criteria; values allowed: Consts.EQUALS,Consts.CONTAINS,Consts.STARTS_WITH,Consts.ENDS_WITH */
   public static int DEFAULT_QUICK_FILTER_CRITERIA = Consts.EQUALS;
 
-  /** define if IN operator must be included in quick filter and filter panel; default value: <code>true</code> */
+  /** define if IN/NOT IN operator must be included in quick filter and filter panel; default value: <code>true</code> */
   public static boolean INCLUDE_IN_OPERATOR = true;
 
   /** define if OR logical connector is allowable for operators different from IS NULL, IN NOT NULL and IN, within the filter panel; default value: <code>true</code> */

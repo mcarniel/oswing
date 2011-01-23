@@ -66,6 +66,7 @@ public class Consts {
   public static final String LT = "<";
   public static final String NEQ = "<>";
   public static final String IN = "in";
+  public static final String NOT_IN = "not in";
 
   /** default value that could be set in the quick filter criteria: equals */
   public static final int EQUALS = 0;

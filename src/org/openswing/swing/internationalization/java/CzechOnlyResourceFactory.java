@@ -302,6 +302,7 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty(Consts.IN,"Contains values");
         dictionary.setProperty(Consts.ASC_SORTED,"Ascending");
         dictionary.setProperty(Consts.DESC_SORTED,"Descending");
+        dictionary.setProperty(Consts.NOT_IN,"Not contains values");
 
         resources = new Resources(
                 dictionary,

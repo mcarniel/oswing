@@ -80,9 +80,12 @@ public class CayenneUtils {
           !(filterClauses[0].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[0].getOperator().equals(Consts.IS_NULL))) {
         if (filterClauses[0].getValue() instanceof ArrayList) {
           // name IN (...)
+          // name NOT IN (...)
           // (name op value1 OR name op value2 OR ...)
-          if (filterClauses[0].getOperator().equals(Consts.IN)) {
+          if (filterClauses[0].getOperator().equals(Consts.IN) ||
+              filterClauses[0].getOperator().equals(Consts.NOT_IN)) {
             // name IN (...)
+            // name NOT IN (...)
             baseSQL +=
               attributeName +
               " " + filterClauses[0].getOperator() +
@@ -134,9 +137,12 @@ public class CayenneUtils {
             !(filterClauses[1].getOperator().equals(Consts.IS_NOT_NULL) || filterClauses[1].getOperator().equals(Consts.IS_NULL))) {
           if (filterClauses[1].getValue() instanceof ArrayList) {
             // name IN (...)
+            // name NOT IN (...)
             // (name op value1 OR name op value2 OR ...)
-            if (filterClauses[1].getOperator().equals(Consts.IN)) {
+            if (filterClauses[1].getOperator().equals(Consts.IN) ||
+                filterClauses[1].getOperator().equals(Consts.NOT_IN)) {
               // name IN (...)
+              // name NOT IN (...)
               baseSQL +=
                 attributeName +
                 " " + filterClauses[1].getOperator() +

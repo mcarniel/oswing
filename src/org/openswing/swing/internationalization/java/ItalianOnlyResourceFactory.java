@@ -302,6 +302,7 @@ public class ItalianOnlyResourceFactory extends ResourcesFactory {
     dictionary.setProperty(Consts.IN,"Contiene i valori");
     dictionary.setProperty(Consts.ASC_SORTED,"Ascendente");
     dictionary.setProperty(Consts.DESC_SORTED,"Discendente");
+    dictionary.setProperty(Consts.NOT_IN,"Non contiene i valori");
 
     resources = new Resources(
       dictionary,

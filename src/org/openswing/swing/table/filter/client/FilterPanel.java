@@ -376,8 +376,10 @@ public class FilterPanel extends JPanel {
           d.addDomainPair(Consts.GT,Consts.GT);
           d.addDomainPair(Consts.LE,Consts.LE);
           d.addDomainPair(Consts.LT,Consts.LT);
-          if (ClientSettings.INCLUDE_IN_OPERATOR)
-            d.addDomainPair(Consts.IN,Consts.IN);
+          if (ClientSettings.INCLUDE_IN_OPERATOR) {
+            d.addDomainPair(Consts.IN, Consts.IN);
+            d.addDomainPair(Consts.NOT_IN, Consts.NOT_IN);
+          }
         }
 
         final ComboBoxControl colOpsComboBox = new ComboBoxControl();
@@ -463,8 +465,10 @@ public class FilterPanel extends JPanel {
             d2.addDomainPair(ClientSettings.LIKE,Consts.LIKE);
           d2.addDomainPair(Consts.LT,Consts.LT);
           d2.addDomainPair(Consts.NEQ,Consts.NEQ);
-          if (ClientSettings.INCLUDE_IN_OPERATOR)
+          if (ClientSettings.INCLUDE_IN_OPERATOR) {
             d2.addDomainPair(Consts.IN,Consts.IN);
+            d2.addDomainPair(Consts.NOT_IN, Consts.NOT_IN);
+          }
 
           final ComboBoxControl colOpsComboBox2 = new ComboBoxControl();
           colOpsComboBox2.setDomain(d2);
@@ -937,7 +941,8 @@ public class FilterPanel extends JPanel {
     for(int i=0;i<filterColOps.size();i++) { // for each applyable filter...
       cc = (JComponent[])filterColValues.get(i);
       if (((ComboBoxControl)filterColOps.get(i)).getSelectedIndex()>0 &&
-          ((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IN)) {
+          (((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IN) ||
+           ((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.NOT_IN))) {
         // "IN" operator has been selected:
         // FilterWhereClause will always contain an ArrayList of objects
         ArrayList values = new ArrayList();
@@ -962,6 +967,7 @@ public class FilterPanel extends JPanel {
         }
       }
       else if (((ComboBoxControl)filterColOps.get(i)).getSelectedIndex()>0 &&
+          !((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.NOT_IN) &&
           !((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IN) &&
           !((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IS_NOT_NULL) &&
           !((ComboBoxControl)filterColOps.get(i)).getValue().toString().equals(Consts.IS_NULL)) {
@@ -1065,10 +1071,10 @@ public class FilterPanel extends JPanel {
     public void focusLost(FocusEvent e) {
       String op = ((ComboBoxControl)filterColOps.get(pos)).getValue().toString();
       if (!op.equals(Consts.IS_NULL) && !op.equals(Consts.IS_NOT_NULL) &&
-          (op.equals(Consts.IN) || ClientSettings.ALLOW_OR_OPERATOR)) {
+          (op.equals(Consts.IN) || op.equals(Consts.NOT_IN) || ClientSettings.ALLOW_OR_OPERATOR)) {
         // allows to add another filter field only if:
         // operator is not IS NULL and is not IS NOT NULL and
-        // the selected operator is IN or OR logical connector is allowable
+        // the selected operator is IN or NOT IN or OR logical connector is allowable
         JComponent[] cc = (JComponent[])filterColValues.get(pos);
         JPanel parentPanel = (JPanel)field.getParent();
         Object value = getValueComponent(field, (Column) filterColNames.get(pos));

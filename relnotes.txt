@@ -6,7 +6,9 @@ Release Notes 2.3.7
 Improved grid: now it is possible to define a default filtering condition at column level, through "Column.setDefaultFilterValues" method,
 to apply when the grid is showed.
 Improved expandable grids: now it is possible to resize/repositioning columns also with expandable grids.
-Improved filter panel, by adding translations to filter operators and sorting orders.
+Improved filter panel:
+- added translations to filter operators and sorting orders
+- added "NOT IN" filter condition
 Added GENERIC_BUTTON_FOCUSABLE global property to ClientSettings class, in order to define if GenericButton instances are focusable.
 Fixed problem with expandable grids, when moving from a block of data to another one.
 Fixed problem with expandable grids, when using combobox columns.

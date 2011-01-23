@@ -293,18 +293,19 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("expand all","Rozwi\u0144 wszystko");
         dictionary.setProperty("collapse all","Zwi\u0144 wszystko");
 
-        dictionary.setProperty(Consts.EQ,"Equals to");
-        dictionary.setProperty(Consts.GE,"Greater or equals to");
-        dictionary.setProperty(Consts.GT,"Greater than");
-        dictionary.setProperty(Consts.IS_NOT_NULL,"Is filled");
-        dictionary.setProperty(Consts.IS_NULL,"Is not filled");
-        dictionary.setProperty(Consts.LE,"Less or equals to");
-        dictionary.setProperty(Consts.LIKE,"Contains");
-        dictionary.setProperty(Consts.LT,"Less than");
-        dictionary.setProperty(Consts.NEQ,"Not equals to");
-        dictionary.setProperty(Consts.IN,"Contains values");
-        dictionary.setProperty(Consts.ASC_SORTED,"Ascending");
-        dictionary.setProperty(Consts.DESC_SORTED,"Descending");
+        dictionary.setProperty(Consts.EQ,"r\u00f3wne");
+        dictionary.setProperty(Consts.GE,"wi\u0119ksze lub r\u00f3wne");
+        dictionary.setProperty(Consts.GT,"wi\u0119ksze ni\u017c");
+        dictionary.setProperty(Consts.IS_NOT_NULL,"jest niepuste");
+        dictionary.setProperty(Consts.IS_NULL,"jest puste");
+        dictionary.setProperty(Consts.LE,"mniejsze lub r\u00f3wne");
+        dictionary.setProperty(Consts.LIKE,"podobne do");
+        dictionary.setProperty(Consts.LT,"mniejsze ni\u017c");
+        dictionary.setProperty(Consts.NEQ,"r\u00f3\u017cne od");
+        dictionary.setProperty(Consts.IN,"spo\u0015r\u00f3d");
+        dictionary.setProperty(Consts.ASC_SORTED,"rosn\u0105co");
+        dictionary.setProperty(Consts.DESC_SORTED,"malej\u0105co");
+        dictionary.setProperty(Consts.NOT_IN,"spoza");
 
         resources = new Resources(
                 dictionary,
