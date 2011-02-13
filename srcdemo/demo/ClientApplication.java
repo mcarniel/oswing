@@ -14,6 +14,8 @@ import org.openswing.swing.mdi.java.ApplicationFunction;
 import org.openswing.swing.client.SplashScreen;
 import org.openswing.swing.tree.java.OpenSwingTreeNode;
 import java.awt.Event;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 
 /**
@@ -78,6 +80,12 @@ public class ClientApplication implements MDIController,LoginController {
     frame.setRolloverOnToolBar(false);
     new SplashScreen(frame,"about.jpg",getMDIFrameTitle(),5);
     frame.getMenuItem("F2").setMnemonic('2');
+
+//    JPanel rightPanel = new JPanel();
+//    rightPanel.setBorder(BorderFactory.createTitledBorder("Right Panel"));
+//    rightPanel.setPreferredSize(new Dimension(150,frame.getHeight()));
+//    frame.getContentPane().add(rightPanel,BorderLayout.EAST);
+
   }
 
 

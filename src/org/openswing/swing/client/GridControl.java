@@ -2350,6 +2350,46 @@ public class GridControl extends JPanel {
 
 
   /**
+   * Adds the rows from <code>index0</code> to <code>index1</code>, inclusive, to
+   * the current selection.
+   *
+   * @exception IllegalArgumentException      if <code>index0</code> or <code>index1</code>
+   *                                          lie outside [0, <code>getRowCount()</code>-1]
+   * @param   index0 one end of the interval
+   * @param   index1 the other end of the interval
+   */
+  public final void addRowSelectionInterval(int index0, int index1) {
+    if (table!=null)
+      table.addRowSelectionInterval(index0,index1);
+  }
+
+
+  /**
+   * Deselects the rows from <code>index0</code> to <code>index1</code>, inclusive.
+   *
+   * @exception IllegalArgumentException      if <code>index0</code> or
+   *						<code>index1</code> lie outside
+   *                                          [0, <code>getRowCount()</code>-1]
+   * @param   index0 one end of the interval
+   * @param   index1 the other end of the interval
+   */
+  public final void removeRowSelectionInterval(int index0, int index1) {
+    if (table!=null)
+      table.removeRowSelectionInterval(index0,index1);
+  }
+
+
+
+  /**
+   * Deselects all selected columns and rows.
+   */
+  public final void clearSelection() {
+    if (table!=null)
+      table.clearSelection();
+  }
+
+
+  /**
    * Set editing to the specified cell.
    * This method is ignored if the grid control is in READONY mode.
    * @param row row index
@@ -2985,6 +3025,17 @@ public class GridControl extends JPanel {
    */
   public final void setExpandableColumn(int expandableColumn) {
     this.expandableColumn = expandableColumn;
+  }
+
+
+  /**
+   * Collapse all expanded rows.
+   * This command will be performed only if "expandableRowController" property is setted and row is not yet collapsed
+   * @param row row number
+   */
+  public final void collapseAllRows() {
+    if (table!=null)
+      table.collapseAllRows();
   }
 
 

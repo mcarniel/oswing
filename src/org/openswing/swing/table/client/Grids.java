@@ -3768,6 +3768,60 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 
 
   /**
+   * Collapse all expanded rows.
+   * This command will be performed only if "expandableRowController" property is setted and row is not yet collapsed
+   * @param row row number
+   */
+  public final void collapseAllRows() {
+    int row = -1;
+    while(expandedRows.size()>0) {
+      row = ((Integer)expandedRows.get(0)).intValue();
+      collapseRow(row);
+      grid.collapseRow(row);
+    }
+    currentNestedComponent = null;
+    currentNestedComponentRow = -1;
+  }
+
+
+  /**
+   * Adds the rows from <code>index0</code> to <code>index1</code>, inclusive, to
+   * the current selection.
+   *
+   * @exception IllegalArgumentException      if <code>index0</code> or <code>index1</code>
+   *                                          lie outside [0, <code>getRowCount()</code>-1]
+   * @param   index0 one end of the interval
+   * @param   index1 the other end of the interval
+   */
+  public final void addRowSelectionInterval(int index0, int index1) {
+    grid.addRowSelectionInterval(index0,index1);
+  }
+
+
+  /**
+   * Deselects the rows from <code>index0</code> to <code>index1</code>, inclusive.
+   *
+   * @exception IllegalArgumentException      if <code>index0</code> or
+   *						<code>index1</code> lie outside
+   *                                          [0, <code>getRowCount()</code>-1]
+   * @param   index0 one end of the interval
+   * @param   index1 the other end of the interval
+   */
+  public final void removeRowSelectionInterval(int index0, int index1) {
+    grid.removeRowSelectionInterval(index0,index1);
+  }
+
+
+
+  /**
+   * Deselects all selected columns and rows.
+   */
+  public final void clearSelection() {
+    grid.clearSelection();
+  }
+
+
+  /**
    * @return <code>true</code> is there is at least one row currently expanded; <code>false</code> if no row is currently expanded
    */
   public final boolean isAnyRowExpanded() {

@@ -2160,6 +2160,45 @@ public class QueryUtil {
   );
  }
 
+
+ /**
+  * This method esecute an insert on a table, by means of the value object and a subset of its fields: all field related to that table.
+  * @param vo value object to use on insert
+  * @param tableName table name to use on insert
+  * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields related to the specified table
+  * @param booleanTrueValue value to interpret as true
+  * @param booleanFalseValue value to interpret as false
+  * @param context servlet context; this may be null
+  * @param logSQL <code>true</code> to log the SQL, <code>false</code> to no log the SQL
+  * @return the insert response
+  */
+ public static Response insertTable(
+     Connection conn,
+     UserSessionParameters userSessionPars,
+     ValueObject vo,
+     String tableName,
+     Map attribute2dbField,
+     String booleanTrueValue,
+     String booleanFalseValue,
+
+     ServletContext context,
+     boolean logSQL
+ ) throws Exception {
+    return insertTable(
+      conn,
+      userSessionPars,
+      vo,
+      tableName,
+      attribute2dbField,
+      booleanTrueValue,
+      booleanFalseValue,
+      new HashMap(),
+      null,
+      logSQL
+  );
+ }
+
+
    /**
     * This method esecute an insert on a table, by means of the value object and a subset of its fields: all field related to that table.
     * @param vo value object to use on insert
@@ -2167,6 +2206,7 @@ public class QueryUtil {
     * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields related to the specified table
     * @param booleanTrueValue value to interpret as true
     * @param booleanFalseValue value to interpret as false
+    * @param fieldsValues collection of pairs <database column,value> to include in INSERT clause, without extracting values from the value object; e.g. CREATE_DATE, CREATE_USER, etc.
     * @param context servlet context; this may be null
     * @param logSQL <code>true</code> to log the SQL, <code>false</code> to no log the SQL
     * @return the insert response
@@ -2179,6 +2219,7 @@ public class QueryUtil {
        Map attribute2dbField,
        String booleanTrueValue,
        String booleanFalseValue,
+       Map fieldsValues,
        ServletContext context,
        boolean logSQL
    ) throws Exception {
@@ -2192,12 +2233,19 @@ public class QueryUtil {
        sql = "insert into "+tableName+"(";
        String sqlvalues = " values(";
        ArrayList values = new ArrayList();
-       ArrayList whereValues = new ArrayList();
 
-       Iterator it = attribute2dbField.keySet().iterator();
+       String field = null;
+       Iterator it = fieldsValues.keySet().iterator();
+       while(it.hasNext()) {
+         field = it.next().toString();
+         sql += field+",";
+         sqlvalues += "?,";
+         values.add(fieldsValues.get(field));
+       }
+
+       it = attribute2dbField.keySet().iterator();
        Method getter = null;
        String attributeName = null;
-       String field = null;
        Object value = null;
        int i=0;
        while(it.hasNext()) {
@@ -2398,6 +2446,44 @@ public class QueryUtil {
       ServletContext context,
       boolean logSQL
   ) throws Exception {
+    return insertTable(
+      conn,
+      userSessionPars,
+      vos,
+      tableName,
+      attribute2dbField,
+      booleanTrueValue,
+      booleanFalseValue,
+      new HashMap(),
+      null,
+      logSQL
+    );
+  }
+
+  /**
+   * This method esecute many insert on a table, by means of a list of value objects and a subset of its fields: all field related to that table.
+   * @param vos list of ValueObject's to use on insert operations
+   * @param tableName table name to use on insert
+   * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields related to the specified table
+   * @param booleanTrueValue value to interpret as true
+   * @param booleanFalseValue value to interpret as false
+   * @param fieldsValues collection of pairs <database column,value> to include in INSERT clause, without extracting values from the value object; e.g. CREATE_DATE, CREATE_USER, etc.
+   * @param context servlet context; this may be null
+   * @param logSQL <code>true</code> to log the SQL, <code>false</code> to no log the SQL
+   * @return the insert response (VOListResponse object or an ErrorResponse object)
+   */
+  public static Response insertTable(
+      Connection conn,
+      UserSessionParameters userSessionPars,
+      ArrayList vos,
+      String tableName,
+      Map attribute2dbField,
+      String booleanTrueValue,
+      String booleanFalseValue,
+      Map fieldsValues,
+      ServletContext context,
+      boolean logSQL
+  ) throws Exception {
     PreparedStatement pstmt = null;
     StringBuffer params = new StringBuffer();
     StringBuffer sql = new StringBuffer();
@@ -2409,7 +2495,6 @@ public class QueryUtil {
     Object value = null;
     Iterator it = null;
     ArrayList values = new ArrayList();
-    ArrayList whereValues = new ArrayList();
     long t2;
     try {
       ValueObject vo = null;
@@ -2424,7 +2509,14 @@ public class QueryUtil {
         sql.append("insert into ").append(tableName).append("(");
         sqlvalues.append(" values(");
         values.clear();
-        whereValues.clear();
+
+        it = fieldsValues.keySet().iterator();
+        while(it.hasNext()) {
+          field = it.next().toString();
+          sql.append(field).append(",");
+          sqlvalues.append("?,");
+          values.add(fieldsValues.get(field));
+        }
 
         it = attribute2dbField.keySet().iterator();
         i=0;
@@ -2617,6 +2709,49 @@ public class QueryUtil {
  }
 
 
+ /**
+  * This method esecute an update on a table, by means of the value object and a subset of its fields: all field related to that table.
+  * The update operation verifies if the record is yet the same as when the v.o. was read (concurrent access resolution).
+  * @param pkAttributes v.o. attributes related to the primary key of the table
+  * @param oldVO previous value object to use on the where clause
+  * @param newVO new value object to use on update
+  * @param tableName table name to use on update
+  * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields related to the specified table
+  * @param booleanTrueValue value to interpret as true
+  * @param booleanFalseValue value to interpret as false
+  * @param context servlet context; this may be null
+  * @param logSQL <code>true</code> to log the SQL, <code>false</code> to no log the SQL
+  * @return the update response
+  */
+ public static Response updateTable(
+     Connection conn,
+     UserSessionParameters userSessionPars,
+     HashSet pkAttributes,
+     ValueObject oldVO,
+     ValueObject newVO,
+     String tableName,
+     Map attribute2dbField,
+     String booleanTrueValue,
+     String booleanFalseValue,
+     ServletContext context,
+     boolean logSQL
+  ) throws Exception {
+      return updateTable(
+        conn,
+        new UserSessionParameters(),
+        pkAttributes,
+        oldVO,
+        newVO,
+        tableName,
+        attribute2dbField,
+        booleanTrueValue,
+        booleanFalseValue,
+        new HashMap(),
+        null,
+        logSQL
+      );
+  }
+
   /**
    * This method esecute an update on a table, by means of the value object and a subset of its fields: all field related to that table.
    * The update operation verifies if the record is yet the same as when the v.o. was read (concurrent access resolution).
@@ -2627,6 +2762,7 @@ public class QueryUtil {
    * @param attribute2dbField collection of pairs attributeName, corresponding database column (table.column) - for ALL fields related to the specified table
    * @param booleanTrueValue value to interpret as true
    * @param booleanFalseValue value to interpret as false
+   * @param fieldsValuesToNotCompare collection of pairs <database column,value> to include in SET clause, without compare them in the WHERE clause (e.g. LAST_UPDATE_DATE, LAST_UPDATE_USER, etc.)
    * @param context servlet context; this may be null
    * @param logSQL <code>true</code> to log the SQL, <code>false</code> to no log the SQL
    * @return the update response
@@ -2641,6 +2777,7 @@ public class QueryUtil {
       Map attribute2dbField,
       String booleanTrueValue,
       String booleanFalseValue,
+      Map fieldsValuesToNotCompare,
       ServletContext context,
       boolean logSQL
   ) throws Exception {
@@ -2654,10 +2791,17 @@ public class QueryUtil {
       ArrayList values = new ArrayList();
       ArrayList whereValues = new ArrayList();
 
-      Iterator it = attribute2dbField.keySet().iterator();
+      String field = null;
+      Iterator it = fieldsValuesToNotCompare.keySet().iterator();
+      while(it.hasNext()) {
+        field = it.next().toString();
+        sql += field+"=?,";
+        values.add(fieldsValuesToNotCompare.get(field));
+      }
+
+      it = attribute2dbField.keySet().iterator();
       Method getter = null;
       String attributeName = null;
-      String field = null;
       int i=0;
       String aName = null;
       Class clazz = null;

@@ -123,6 +123,8 @@ public class DetailFrame extends JFrame {
     MaskFormatter mask = new MaskFormatter("####/##.##.##");
 //    MaskFormatter mask = new MaskFormatter("###-##-####");
     mask.setValidCharacters("0123456789");
+//    mask.setValueContainsLiteralCharacters(false);
+
 
     controlFormattedText.setFormatter(mask);
     controlComboBox.setLinkLabel(labelCombo);
@@ -142,8 +144,9 @@ public class DetailFrame extends JFrame {
     controlNumeric.setTextAlignment(SwingConstants.RIGHT);
     labelRadioButton.setText("radio button");
     controlText.setFont(new java.awt.Font(controlText.getFont().getName(), Font.BOLD, controlText.getFont().getSize()));
-    controlText.setMaxCharacters(7);
+    //controlText.setMaxCharacters(7);
     controlText.setTrimText(true);
+    controlText.setRpadding(true);
     controlText.setUpperCase(true);
     buttonsPanel.setLayout(flowLayout1);
     flowLayout1.setAlignment(FlowLayout.LEFT);
@@ -178,7 +181,7 @@ public class DetailFrame extends JFrame {
     listControl1.setDomainId("LISTVALUES");
 //    listControl1.setShowCheckBoxes(true);
     controlPasswd.setAttributeName("stringValue");
-    controlPasswd.setRequired(true);
+    controlPasswd.setTextAlignment(SwingConstants.LEFT);
     linkButton1.addActionListener(new DetailFrame_linkButton1_actionAdapter(this));
     linkButton1.setFont(new java.awt.Font("Dialog", 1, 11));
     linkButton1.setLabel("OpenSwing Site");

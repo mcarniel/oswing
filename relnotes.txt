@@ -1,5 +1,24 @@
 
 
+Release Notes 2.3.8
+-------------------
+
+Added "setColumnDynamicSettings" method to LookupController class, in order to format numeric values.
+Improved QueryUtil class, by providing:
+- other   "insertTable" methods, where it is possible to specify fields to insert without extracting values from the value object.
+- another "updateTable" method, where it is possible to specify fields to update and not compare.
+Improved GridControl component, by adding some utility methods:
+  - "collapseAllRows", to collapse all expanded rows, in case of grid having nested components.
+  - "addRowSelectionInterval" to select additional rows
+  - "removeRowSelectionInterval" to deselect rows
+  - "clearSelection" to remove all rows selection
+Changed attribute name selector in UI designer, in order to include Character type attribute too.
+Fixed translation in PolishOnlyResourceFactory class.
+Fixed problem in TextFormattedControl when using MaskFormatter.setValueContainsLiteralCharacters(false);
+Fixed problem with expandable grids, when using a combobox column as expandable column.
+
+
+
 Release Notes 2.3.7
 -------------------
 
@@ -10,6 +29,7 @@ Improved filter panel:
 - added translations to filter operators and sorting orders
 - added "NOT IN" filter condition
 Added GENERIC_BUTTON_FOCUSABLE global property to ClientSettings class, in order to define if GenericButton instances are focusable.
+Added Russian translations.
 Fixed problem with expandable grids, when moving from a block of data to another one.
 Fixed problem with expandable grids, when using combobox columns.
 Fixed filter button issue.

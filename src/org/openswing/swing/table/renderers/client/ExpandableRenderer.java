@@ -364,7 +364,8 @@ public class ExpandableRenderer extends DefaultTableCellRenderer {
               bottomMargin = ((TextColumn)col).getBottomMargin();
             }
 
-            if (comp.getWidth()==0 && comp.getHeight()==0) {
+            if (i==expandableColumn && col.getColumnType()==col.TYPE_COMBO ||
+                comp.getWidth()==0 && comp.getHeight()==0) {
               if (comp instanceof JLabel) {
                 lb = ((JLabel)comp);
                 cc = new JLabel(lb.getText());

@@ -1343,6 +1343,22 @@ public class LookupController {
 
 
   /**
+   * Set dynamic settings used to reset numeric editor properties for each grid row.
+   * @param dynamicSettings dynamic settings used to reset numeric editor properties for each grid row
+   */
+  public final void setColumnDynamicSettings(String lookupAttributeName,DecimalColumnSettings dynamicSettings) {
+    for(int i=0;i<colProperties.length;i++)
+      if (colProperties[i].getColumnName().equals(lookupAttributeName) &&
+          colProperties[i] instanceof DecimalColumn) {
+        ((DecimalColumn)colProperties[i]).setDynamicSettings(dynamicSettings);
+        return;
+      }
+    Logger.error(this.getClass().getName(),"setColumnDynamicSettings","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);
+  }
+
+
+
+  /**
    * Define if an editable column is required in insert/edit mode.
    * @param lookupAttributeName attribute name that identifies the column
    * @param required <code>true</code> if the editable column is required, <code>false</code> otherwise

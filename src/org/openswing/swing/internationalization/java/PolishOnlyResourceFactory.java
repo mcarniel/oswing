@@ -302,7 +302,7 @@ public class PolishOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty(Consts.LIKE,"podobne do");
         dictionary.setProperty(Consts.LT,"mniejsze ni\u017c");
         dictionary.setProperty(Consts.NEQ,"r\u00f3\u017cne od");
-        dictionary.setProperty(Consts.IN,"spo\u0015r\u00f3d");
+        dictionary.setProperty(Consts.IN,"spo\u015br\u00f3d");
         dictionary.setProperty(Consts.ASC_SORTED,"rosn\u0105co");
         dictionary.setProperty(Consts.DESC_SORTED,"malej\u0105co");
         dictionary.setProperty(Consts.NOT_IN,"spoza");

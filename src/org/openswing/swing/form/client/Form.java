@@ -1443,7 +1443,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
           if (comp instanceof ProgressBarControl)
             continue;
           if (comp instanceof FormattedTextControl &&
-              !((FormattedTextControl)comp).isEditValid()) {
+              !((FormattedTextControl)comp).isEditValid() &&
+              ((FormattedTextControl)comp).getValue()!=null) {
             // input control is a formatted text control and its context is invalid...
             inputControlsNotValid.add(comp);
           }

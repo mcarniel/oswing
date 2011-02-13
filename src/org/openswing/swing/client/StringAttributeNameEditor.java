@@ -41,7 +41,7 @@ public class StringAttributeNameEditor extends AttributeNameEditor {
    */
   protected boolean isCompatible(Class attrType) {
     try {
-      if (attrType.equals(String.class)) {
+      if (attrType.equals(String.class) || attrType.equals(Character.class)) {
         return true;
       }
       return false;

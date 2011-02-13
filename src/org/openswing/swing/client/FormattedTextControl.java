@@ -7,6 +7,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.*;
 import org.openswing.swing.util.client.ClientSettings;
+import org.openswing.swing.logger.client.Logger;
 
 
 /**
@@ -108,7 +109,14 @@ public class FormattedTextControl extends BaseInputControl implements InputContr
         text = "";
       }
       textBox.setText(text);
-      textBox.setValue(text);
+
+      try {
+        text = (String)textBox.getFormatter().stringToValue(text);
+
+      }
+      catch (ParseException ex1) {
+        textBox.setValue(null);
+      }
     }
     catch (Exception ex) {
     }
@@ -163,10 +171,17 @@ public class FormattedTextControl extends BaseInputControl implements InputContr
    * @param value value to set into the input control
    */
   public final void setValue(Object value) {
-    if (value==null || value!=null && value instanceof String)
-      setText((String)value);
-    else
-      textBox.setValue(value);
+    try {
+      if (value == null || value != null && value instanceof String) {
+        setText(textBox.getFormatter().valueToString(value));
+      }
+      else {
+        textBox.setValue(value);
+      }
+    }
+    catch (Exception ex) {
+      Logger.error(this.getClass().getName(),"setValue",ex.getMessage(),ex);
+    }
   }
 
 

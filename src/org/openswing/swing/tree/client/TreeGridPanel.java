@@ -751,6 +751,8 @@ public class TreeGridPanel extends JPanel {
     public Object getValueAt(Object node, int column) {
       DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)node;
       ValueObject vo = (ValueObject)treeNode.getUserObject();
+      if (vo==null)
+        return vo;
 
       if (getterMethods==null) {
         try {
