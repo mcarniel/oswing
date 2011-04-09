@@ -202,6 +202,8 @@ public class GridFrame extends JFrame {
     grid.setLockedColumns(2);
     grid.setLockedRowsOnTop(1);
 
+    //colButton.setBorder(BorderFactory.createEmptyBorder());
+
     grid.setLockedRowsOnBottom(1);
 
     grid.setValueObjectClassName("demo3.TestVO");

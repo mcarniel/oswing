@@ -1,5 +1,33 @@
 
 
+
+Release Notes 2.4.1
+-------------------
+
+Added setHeaderTextAlignment method to LookupController, in order to set the horizontal alignment of column header.
+Added another constructor to LabelControl, in order to directly specify the label's text.
+
+
+
+Release Notes 2.4
+-----------------
+
+Added "border" property to ButtonColumn, in order to customize button border.
+Fixed a bug in GridControl with CheckBoxColumn when this column is locked to the left of the grid.
+
+
+
+
+Release Notes 2.3.9
+-------------------
+
+Improved buttons panel on the bottom area of the MDIFrame: now windows numeration reuse free numbers.
+Improved FormController: added beforeSaveDataInEdit and beforeSaveDataInInsert callback methods, in order to interrupt saving operation.
+Improved GridController: added beforeSaveDataInEdit and beforeSaveDataInInsert callback methods, in order to interrupt saving operation.
+
+
+
+
 Release Notes 2.3.8
 -------------------
 

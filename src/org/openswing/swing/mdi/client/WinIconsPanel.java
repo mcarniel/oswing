@@ -12,6 +12,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import org.openswing.swing.util.client.*;
+import java.util.List;
+import java.util.Collections;
 
 
 /**
@@ -53,7 +55,7 @@ public class WinIconsPanel extends JPanel {
   /** collection of button, linked frame */
   private Hashtable buttons = new Hashtable();
 
-  /** collection of frame title, number of frames with that title */
+  /** collection of pairs <frame title, SortedSet of associated Integer number> */
   private Hashtable buttonsNr = new Hashtable();
 
   /* toggle button width */
@@ -142,14 +144,22 @@ public class WinIconsPanel extends JPanel {
    */
   public final void add(final InternalFrame frame) {
     try {
-      Integer n = (Integer)buttonsNr.get(frame.getTitle());
-      if (n==null) {
+      Integer n = null;
+      SortedSet list = (SortedSet)buttonsNr.get(frame.getTitle());
+      if (list==null) {
+        list = new TreeSet();
         n = new Integer(1);
-        buttonsNr.put(frame.getTitle(),n);
+        list.add(n);
+        buttonsNr.put(frame.getTitle(),list);
       }
       else {
-        n = new Integer(n.intValue()+1);
-        buttonsNr.put(frame.getTitle(),n);
+        n = new Integer( ((Integer)list.last()).intValue()+1 );
+        for(int i=1;i<n.intValue();i++)
+          if (!list.contains(new Integer(i))) {
+            n = new Integer(i);
+            break;
+          }
+        list.add(n);
       }
 
       final JToggleButton btn = new JToggleButton((n.intValue()>1?" ["+n.intValue()+"] ":"")+frame.getTitle());
@@ -305,12 +315,19 @@ public class WinIconsPanel extends JPanel {
           try {
             buttons.remove(btn);
             try {
-              if ( ( (Integer) buttonsNr.get(frame.getTitle())).intValue() == 1) {
+              SortedSet list = (SortedSet)buttonsNr.get(frame.getTitle());
+              if (list!=null) {
+                if (list.size() == 1) {
                 buttonsNr.remove(frame.getTitle());
-              }
-              else if ( ( (Integer) buttonsNr.get(frame.getTitle())).intValue() > 1) {
-                int num = ((Integer) buttonsNr.get(frame.getTitle())).intValue() - 1;
-                buttonsNr.put(frame.getTitle(),new Integer(num));
+                }
+                else {
+                  String aux = btn.getText();
+                  if (aux.indexOf("[")!=-1 && aux.indexOf("]")!=-1)
+                    aux = aux.substring(aux.indexOf("[")+1,aux.indexOf("]"));
+                  else
+                    aux = "1";
+                  list.remove(new Integer(aux));
+                }
               }
             }
             catch (Exception ex) {

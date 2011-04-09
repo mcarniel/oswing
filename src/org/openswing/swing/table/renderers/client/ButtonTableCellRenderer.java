@@ -7,6 +7,7 @@ import javax.swing.table.*;
 import org.openswing.swing.table.client.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.util.java.*;
+import javax.swing.border.Border;
 
 
 /**
@@ -64,7 +65,7 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
    * @param gridController grid controller
    * @param attributeName attribute name associated to this column
    */
-  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController,int alignement,boolean enableInReadOnlyMode,Icon icon,String attributeName) {
+  public ButtonTableCellRenderer(String text,boolean showAttributeValue,GridController gridController,int alignement,boolean enableInReadOnlyMode,Icon icon,Border buttonBorder,String attributeName) {
     this.gridController = gridController;
     this.showAttributeValue = showAttributeValue;
     if (!showAttributeValue)
@@ -75,6 +76,8 @@ public class ButtonTableCellRenderer extends DefaultTableCellRenderer {
     this.attributeName = attributeName;
     if (icon!=null)
       rend.setIcon(icon);
+    if (buttonBorder!=null)
+      rend.setBorder(buttonBorder);
   }
 
 

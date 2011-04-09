@@ -272,7 +272,7 @@ public class VOListAdapter {
   public final String getFieldName(int colIndex) {
     String attributeName = (String)indexes.get(new Integer(colIndex));
     if (attributeName==null)
-      Logger.error(this.getClass().getName(),"getField","No attribute found for index "+colIndex+".",null);
+      Logger.error(this.getClass().getName(),"getFieldName","No attribute found for index "+colIndex+".",null);
     return attributeName;
   }
 

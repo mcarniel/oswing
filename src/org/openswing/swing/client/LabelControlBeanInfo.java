@@ -26,10 +26,12 @@ public class LabelControlBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor _font = new PropertyDescriptor("font", beanClass, "getFont", "setFont");
       PropertyDescriptor _toolTipText = new PropertyDescriptor("toolTipText", beanClass, "getToolTipText", "setToolTipText");
       PropertyDescriptor _textAlignment = new PropertyDescriptor("textAlignment", beanClass, "getTextAlignment", "setTextAlignment");
+      PropertyDescriptor _text = new PropertyDescriptor("text", beanClass, "getText", "setText");
       _textAlignment.setPropertyEditorClass(org.openswing.swing.table.columns.client.HeaderTextHorizontalAlignmentEditor.class);
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
         _font,
         _label,
+        _text,
         _textAlignment,
         _toolTipText};
       return pds;

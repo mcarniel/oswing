@@ -295,6 +295,7 @@ public class GridFrame extends JFrame {
     buttonsPanel.add(exportButton, null);
     buttonsPanel.add(deleteButton, null);
     buttonsPanel.add(navigatorBar1, null);
+
     grid.getColumnContainer().add(colText, null);
     grid.getColumnContainer().add(colFormattedText, null);
     grid.getColumnContainer().add(colDecimal, null);
@@ -306,7 +307,6 @@ public class GridFrame extends JFrame {
     grid.getColumnContainer().add(colLookup, null);
     grid.getColumnContainer().add(textColumn1, null);
     grid.getColumnContainer().add(colCheck, null);
-
 
   }
   public GridControl getGrid() {

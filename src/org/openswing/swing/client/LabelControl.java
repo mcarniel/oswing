@@ -52,6 +52,14 @@ public class LabelControl extends JLabel {
   }
 
 
+  public LabelControl(String text) {
+    setTextAlignment(SwingConstants.LEFT);
+    if (ClientSettings.TEXT_ORIENTATION!=null)
+        setComponentOrientation(ClientSettings.TEXT_ORIENTATION);
+    setText(text);
+  }
+
+
   /**
    * Set label text.
    * @param label text for the label, translated according to internalization settings

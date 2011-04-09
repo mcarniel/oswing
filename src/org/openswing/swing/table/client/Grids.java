@@ -2687,8 +2687,10 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               col++;
             if (col<lockedGrid.getColumnCount())
               lockedGrid.setColumnSelectionInterval(col,col);
-            if (lockedGrid.getSelectedColumn()!=-1)
+            if (lockedGrid.getSelectedColumn()!=-1) {
+              grid.setCellEditor(null);
               lockedGrid.editCellAt(lockedGrid.getSelectedRow(),lockedGrid.getSelectedColumn());
+            }
             lockedGrid.requestFocus();
           }
           else {
@@ -2697,6 +2699,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               col--;
             if (col>=0)
               grid.setColumnSelectionInterval(col,col);
+            grid.setCellEditor(null);
             grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
             grid.requestFocus();
           }
@@ -2708,6 +2711,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               col++;
             if (col<grid.getColumnCount())
               grid.setColumnSelectionInterval(col,col);
+            grid.setCellEditor(null);
             grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
             grid.requestFocus();
           }
@@ -2717,6 +2721,7 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               col--;
             if (col>=0)
               grid.setColumnSelectionInterval(col,col);
+            grid.setCellEditor(null);
             grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
             grid.requestFocus();
           }
@@ -2983,6 +2988,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
               newRowsIndexes[i] = model.getRowCount()-currentNumberOfNewRows+i;
               newRows.add(model.getObjectForRow(newRowsIndexes[i]));
             }
+          if (!gridController.beforeSaveDataInInsert(gridControl, newRowsIndexes,newRows))
+            return false;
           response = gridController.insertRecords(newRowsIndexes,newRows);
         }
         else if (getMode()==Consts.EDIT) {
@@ -3010,6 +3017,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
 //            }
 //          }
 
+          if (!gridController.beforeSaveDataInEdit(gridControl, model.getChangedRowNumbers(), model.getOldVOsChanged(), model.getChangedRows()))
+            return false;
           response = gridController.updateRecords(model.getChangedRowNumbers(), model.getOldVOsChanged(), model.getChangedRows());
         }
         if (!response.isError()) {

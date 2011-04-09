@@ -10,6 +10,7 @@ import org.openswing.swing.table.client.*;
 import org.openswing.swing.table.editors.client.*;
 import org.openswing.swing.table.renderers.client.*;
 import org.openswing.swing.util.client.*;
+import javax.swing.border.Border;
 
 
 /**
@@ -60,6 +61,9 @@ public class ButtonColumn extends Column {
 
   /** file name (inside "image" folder) related to the icon to render within the button (optional) */
   private String iconName = null;
+
+  /** define the border to show around the button */
+  private Border buttonBorder = null;
 
 
   public ButtonColumn() {
@@ -164,6 +168,7 @@ public class ButtonColumn extends Column {
       getTextAlignment(),
       isEnableInReadOnlyMode(),
       icon,
+      buttonBorder,
       getColumnName()
     );
   }
@@ -177,7 +182,8 @@ public class ButtonColumn extends Column {
       getText(),
       isShowAttributeValue(),
       getActionListeners(),
-      icon
+      icon,
+      buttonBorder
     );
   }
 
@@ -216,6 +222,22 @@ public class ButtonColumn extends Column {
     if (iconName!=null)
       icon = new ImageIcon(ClientUtils.getImage(iconName));
 
+  }
+
+
+  /**
+   * @return border to show around the button
+   */
+  public final Border getBorder() {
+    return buttonBorder;
+  }
+
+  /**
+   * Define the border to show around the button.
+   * @param buttonBorder border to show around the button
+   */
+  public final void setBorder(Border buttonBorder) {
+    this.buttonBorder = buttonBorder;
   }
 
 

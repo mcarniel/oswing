@@ -1151,6 +1151,21 @@ public class LookupController {
 
 
   /**
+   * Define column's header alignement in the lookup grid frame.
+   * @param lookupAttributeName attribute name that identifies the column header
+   * @param alignment column's header text horizontal alignement; possible values: "SwingConstants.LEFT", "SwingConstants.RIGHT", "SwingConstants.CENTER".
+   */
+  public final void setHeaderTextAlignment(String lookupAttributeName,int alignement) {
+    for(int i=0;i<colProperties.length;i++)
+      if (colProperties[i].getColumnName().equals(lookupAttributeName)) {
+        colProperties[i].setHeaderTextHorizontalAlignment(alignement);
+        return;
+      }
+    Logger.error(this.getClass().getName(),"setHeaderTextAlignment","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);
+  }
+
+
+  /**
    * Set grouping setting in a numeric column.
    * @param lookupAttributeName attribute name that identifies the column
    * @param groupEnabled flag used to grouping in a numeric column

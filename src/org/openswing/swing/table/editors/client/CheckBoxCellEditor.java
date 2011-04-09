@@ -11,6 +11,7 @@ import javax.swing.table.*;
 import org.openswing.swing.util.client.*;
 import org.openswing.swing.table.client.Grids;
 import org.openswing.swing.util.java.Consts;
+import org.openswing.swing.table.client.Grid;
 
 
 /**
@@ -93,8 +94,14 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
       public void mouseClicked(MouseEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
           public void run() {
-            if (!CheckBoxCellEditor.this.grids.getGrid().hasFocus())
-              CheckBoxCellEditor.this.grids.getGrid().requestFocus();
+            Grid grid =  CheckBoxCellEditor.this.grids.getGrid();
+            if (CheckBoxCellEditor.this.grids.getLockedGrid()!=null &&
+                column<CheckBoxCellEditor.this.grids.getLockedGrid().getColumnCount())
+              grid = CheckBoxCellEditor.this.grids.getLockedGrid();
+            int gridIndex = grid.convertColumnIndexToView(column);
+
+            if (!grid.hasFocus())
+              grid.requestFocus();
 
             changeSelectedValue();
 
@@ -108,18 +115,19 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
             else
               value = CheckBoxCellEditor.this.negativeValue;
 
-            CheckBoxCellEditor.this.grids.getGrid().setValueAt(
+
+            grid.setValueAt(
               value,
-              CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),
-              CheckBoxCellEditor.this.grids.getGrid().convertColumnIndexToView(column)
+              grid.getSelectedRow(),
+              gridIndex
              );
-            CheckBoxCellEditor.this.grids.getGrid().editCellAt(
-              CheckBoxCellEditor.this.grids.getGrid().getSelectedRow(),
-              CheckBoxCellEditor.this.grids.getGrid().convertColumnIndexToView(column)
+            grid.editCellAt(
+              grid.getSelectedRow(),
+              gridIndex
             );
             for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
               ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
-            CheckBoxCellEditor.this.grids.getGrid().repaint();
+            grid.repaint();
           }
         });
 
@@ -248,15 +256,22 @@ public class CheckBoxCellEditor extends AbstractCellEditor implements TableCellE
           else
             value = CheckBoxCellEditor.this.negativeValue;
 
-          grids.getGrid().setValueAt(
+          Grid grid =  CheckBoxCellEditor.this.grids.getGrid();
+          if (CheckBoxCellEditor.this.grids.getLockedGrid()!=null &&
+              column<CheckBoxCellEditor.this.grids.getLockedGrid().getColumnCount())
+            grid = CheckBoxCellEditor.this.grids.getLockedGrid();
+          int gridIndex = grid.convertColumnIndexToView(column);
+
+
+          grid.setValueAt(
             value,
-            grids.getGrid().getSelectedRow(),
-            grids.getGrid().convertColumnIndexToView(column)
+            grid.getSelectedRow(),
+            gridIndex
           );
-          grids.getGrid().editCellAt(grids.getGrid().getSelectedRow(),grids.getGrid().convertColumnIndexToView(column));
+         grid.editCellAt(grid.getSelectedRow(),gridIndex);
           for(int i=0;i<CheckBoxCellEditor.this.itemListenerList.size();i++)
             ((ItemListener)CheckBoxCellEditor.this.itemListenerList.get(i)).itemStateChanged(new ItemEvent(new JCheckBox(),column,CheckBoxCellEditor.this,-1));
-          grids.getGrid().repaint();
+          grid.repaint();
         }
       });
     }

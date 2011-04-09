@@ -24,6 +24,7 @@ public class ButtonColumnBeanInfo extends SimpleBeanInfo {
     try {
       PropertyDescriptor _additionalHeaderColumnName = new PropertyDescriptor("additionalHeaderColumnName", beanClass, "getAdditionalHeaderColumnName", "setAdditionalHeaderColumnName");
       PropertyDescriptor _additionalHeaderColumnSpan = new PropertyDescriptor("additionalHeaderColumnSpan", beanClass, "getAdditionalHeaderColumnSpan", "setAdditionalHeaderColumnSpan");
+      PropertyDescriptor _border = new PropertyDescriptor("border", beanClass, "getBorder", "setBorder");
       PropertyDescriptor _icon = new PropertyDescriptor("icon", beanClass, "getIcon", "setIcon");
       PropertyDescriptor _iconName = new PropertyDescriptor("iconName", beanClass, "getIconName", "setIconName");
       PropertyDescriptor _text = new PropertyDescriptor("text", beanClass, "getText", "setText");
@@ -39,6 +40,7 @@ public class ButtonColumnBeanInfo extends SimpleBeanInfo {
       PropertyDescriptor[] pds = new PropertyDescriptor[] {
           _additionalHeaderColumnName,
           _additionalHeaderColumnSpan,
+          _border,
           _columnName,
           _editableOnEdit,
           _editableOnInsert,

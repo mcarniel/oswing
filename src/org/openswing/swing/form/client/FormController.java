@@ -175,6 +175,26 @@ public class FormController {
 
 
   /**
+   * Callback method invoked on pressing SAVE button, before invoking updateRecord method.
+   * It can be used to interrupt saving operation.
+   * @return <code>true</code> allows to continue saving operation, <code>false</code> ti interrupt saving operation
+   */
+  public boolean beforeSaveDataInEdit(Form form) {
+    return true;
+  }
+
+
+  /**
+   * Callback method invoked on pressing SAVE button, before invoking insertRecord method.
+   * It can be used to interrupt saving operation.
+   * @return <code>true</code> allows to continue saving operation, <code>false</code> ti interrupt saving operation
+   */
+  public boolean beforeSaveDataInInsert(Form form) {
+    return true;
+  }
+
+
+  /**
    * Callback method invoked on pressing EDIT button to check if edit mode is allowed.
    * @return <code>true</code> allows to go to EDIT mode, <code>false</code> the mode change is interrupted
    */

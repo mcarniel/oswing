@@ -1728,15 +1728,22 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       catch (Exception ex) {
         ex.printStackTrace();
       }
+
       try {
         //execute insert/edit operation...
         maybeCreateVOModel();
         previousMode = getMode();
         Response response = null;
-        if (getMode()==Consts.INSERT)
+        if (getMode()==Consts.INSERT) {
+          if (!formController.beforeSaveDataInInsert(this))
+            return false;
           response = formController.insertRecord((ValueObject)model.getValueObject());
-        else if (getMode()==Consts.EDIT)
+        }
+        else if (getMode()==Consts.EDIT) {
+          if (!formController.beforeSaveDataInEdit(this))
+            return false;
           response = formController.updateRecord(previousVO,(ValueObject)model.getValueObject());
+        }
         if (!response.isError()) {
           model.setValueObject( (ValueObject)((VOResponse)response).getVo() );
           if (getMode()==Consts.INSERT)

@@ -231,6 +231,26 @@ public class GridController {
 
 
   /**
+   * Callback method invoked on pressing SAVE button, before invoking updateRecords method.
+   * It can be used to interrupt saving operation.
+   * @return <code>true</code> allows to continue saving operation, <code>false</code> ti interrupt saving operation
+   */
+  public boolean beforeSaveDataInEdit(GridControl grid,int[] rowNumbers,ArrayList oldPersistentObjects,ArrayList persistentObjects) {
+    return true;
+  }
+
+
+  /**
+   * Callback method invoked on pressing SAVE button, before invoking insertRecords method.
+   * It can be used to interrupt saving operation.
+   * @return <code>true</code> allows to continue saving operation, <code>false</code> ti interrupt saving operation
+   */
+  public boolean beforeSaveDataInInsert(GridControl grid,int[] rowNumbers,ArrayList persistentObjects) {
+    return true;
+  }
+
+
+  /**
    * Callback method invoked on pressing EDIT button.
    * @return <code>true</code> allows to go to EDIT mode, <code>false</code> the mode change is interrupted
    */

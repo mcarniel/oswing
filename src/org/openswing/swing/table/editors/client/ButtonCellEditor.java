@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import org.openswing.swing.util.client.*;
+import javax.swing.border.Border;
 
 
 /**
@@ -64,13 +65,15 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
    * @param text button text
    * @param actionListeners list of ActionListeners linked to the button
    */
-  public ButtonCellEditor(String text,boolean showAttributeValue,ArrayList actionListeners,Icon icon) {
+  public ButtonCellEditor(String text,boolean showAttributeValue,ArrayList actionListeners,Icon icon,Border buttonBorder) {
     this.showAttributeValue = showAttributeValue;
     if (!showAttributeValue)
       this.field.setText(ClientSettings.getInstance().getResources().getResource(text));
     if (icon!=null)
       field.setIcon(icon);
     this.actionListeners = actionListeners;
+    if (buttonBorder!=null)
+      field.setBorder(buttonBorder);
     field.addActionListener(this);
   }
 

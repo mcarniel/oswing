@@ -133,6 +133,9 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
   /** flag used in grid to automatically select data in cell when editing cell; default value: ClientSettings.SELECT_DATA_IN_EDIT; <code>false</code>to do not select data stored cell; <code>true</code> to automatically select data already stored in cell */
   private boolean selectDataOnEdit = ClientSettings.SELECT_DATA_IN_EDITABLE_GRID;
 
+  /** flag used in getCellEditorValue to return the correct value */
+  private boolean getTableCellEditorComponentInvoked = false;
+
 
   /**
    * Constructor.
@@ -495,9 +498,18 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
   }
 
 
+  public void cancelCellEditing() {
+    super.cancelCellEditing();
+    getTableCellEditorComponentInvoked = false;
+  }
+
 
   public final Object getCellEditorValue() {
     lastCodeValue = table.getVOListTableModel().getValueAt(selectedRow,table.getColumnIndex(codAttributeName));
+    if (!getTableCellEditorComponentInvoked)
+      return lastCodeValue;
+
+    getTableCellEditorComponentInvoked = false;
 
     if (numericValue) {
       if (codBox.getText().trim().length()==0)
@@ -524,6 +536,7 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
   public Component getTableCellEditorComponent(JTable table, Object value,
                                                boolean isSelected, int row,
                                                int column) {
+    getTableCellEditorComponentInvoked = true;
     if (!codBoxVisible) {
       lookupButton.setMinimumSize(new Dimension(panel.getPreferredSize().width-5,panel.getPreferredSize().height-6));
       lookupButton.setMaximumSize(new Dimension(panel.getPreferredSize().width-5,panel.getPreferredSize().height-6));
