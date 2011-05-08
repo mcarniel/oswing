@@ -817,11 +817,37 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
         if (!this.formController.beforeInsertData(this))
           return;
 
-        ValueObject vo = (ValueObject)model.getValueObjectType().newInstance();
-        model.setValueObject( vo );
+        ValueObject vo = (ValueObject) model.getValueObjectType().newInstance();
+        model.setValueObject(vo);
 
         // callback used to set default values in input controls...
         formController.createPersistentObject(vo);
+
+
+        if (ClientSettings.PRESET_LAST_VALUE_IN_COMBO_CONTROL) {
+          // evaluate each combo control and preset last value if the current value is null...
+          String attrName = null;
+          Enumeration en = bindings.keys();
+          ArrayList list = null;
+          InputControl comp = null;
+          Object value = null;
+          while(en.hasMoreElements()) {
+            attrName = en.nextElement().toString();
+            list = (ArrayList)bindings.get(attrName);
+            if (list!=null) {
+              for (int i = 0; i < list.size(); i++) {
+                comp = (InputControl) list.get(i);
+                if (comp instanceof ComboBoxControl &&
+                    model.getValue(comp.getAttributeName())==null) {
+                  value = model.getValue(comp.getAttributeName(),model.getOldValueObject());
+                  model.setValue(comp.getAttributeName(),value);
+                }
+              }
+            }
+          }
+        }
+
+
         pull();
 
         Component[] c = this.getComponents();

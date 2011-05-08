@@ -963,6 +963,12 @@ public class DateControl extends BaseInputControl implements KeyListener,FocusLi
       this.date.setColumns(12);
     else
       this.date.setColumns(8);
+
+    if (dateType==Consts.TYPE_TIME) {
+      // hide date button...
+      setShowCalendarButton(false);
+    }
+
     setFormat(dateFormat);
   }
 

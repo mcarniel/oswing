@@ -602,6 +602,15 @@ public class ClientSettings {
   /** define if GenericButton instances are focusable; default value: <code>false</code> */
   public static boolean GENERIC_BUTTON_FOCUSABLE = false;
 
+  /** flag used to set the last selected item in combo column; default value: <code>false</code>, i.e. the selecteed item is the first item */
+  public static boolean PRESET_LAST_VALUE_IN_COMBO_COLUMN = false;
+
+  /** flag used to set the last selected item in combo control; default value: <code>false</code>, i.e. the selecteed item is the first item */
+  public static boolean PRESET_LAST_VALUE_IN_COMBO_CONTROL = false;
+
+  /** <code>true</code> to execute ActionEvent event fired by GenericButtons in a sepated thread; default value: <code>false</code> */
+  public static boolean BUTTONS_EXECUTE_AS_THREAD = false;
+
 
   /**
    * Contains application settings.

@@ -834,13 +834,24 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
           // check if there exists a combo-box editable column to pre-set...
           for(int i=0;i<colProps.length;i++)
             if (colProps[i] instanceof ComboColumn &&
-                !((ComboColumn)colProps[i]).isNullAsDefaultValue())
-              model.setValueAt(
-                ((ComboColumn)colProps[i]).getDomain().getDomainPairList()[0].getCode(),
-                rowToSel,
-                model.findColumn(((ComboColumn)colProps[i]).getColumnName())
-              );
+                !((ComboColumn)colProps[i]).isNullAsDefaultValue()) {
 
+              Object value = ((ComboColumn)colProps[i]).getDomain().getDomainPairList()[0].getCode();
+              int col = model.findColumn(((ComboColumn)colProps[i]).getColumnName());
+//              if (ClientSettings.PRESET_LAST_VALUE_IN_COMBO_COLUMN &&
+//                getCurrentNumberOfNewRows()>1) {
+//                value = getValueAt(
+//                  isInsertRowsOnTop()?getCurrentNumberOfNewRows()-2:getVOListTableModel().getRowCount()-2,
+//                  col
+//                );
+//              }
+
+              model.setValueAt(
+                value,
+                rowToSel,
+                col
+              );
+            }
         }
         catch (Throwable ex) {
           Logger.error(this.getClass().getName(),"modeChanged","Error while constructing value object '"+modelAdapter.getValueObjectType().getName()+"'",ex);
@@ -1778,6 +1789,8 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
       try {
         if (startIndex<0)
           startIndex = 0;
+        if (gridDataLocator==null || modelAdapter==null)
+          return false;
         answer = gridDataLocator.loadData(
             action,
             startIndex,

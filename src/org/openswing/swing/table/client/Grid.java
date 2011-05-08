@@ -559,11 +559,15 @@ public class Grid extends JTable
                        Grid.this.model.getMode()==Consts.READONLY)
               // call grid controller method on another thread
 
-              SwingUtilities.invokeLater(new Runnable() {
+              new Thread() {
+
                 public void run() {
                   Grid.this.gridController.doubleClick(getSelectedRow(),Grid.this.model.getObjectForRow(getSelectedRow()));
                 }
-              });
+
+              }.start();
+
+
 
 //              new Thread() {
 //                public void run() {
@@ -4208,11 +4212,11 @@ public class Grid extends JTable
                e.getModifiers()+e.getModifiersEx()==ClientSettings.INSERT_BUTTON_KEY.getModifiers() &&
                Grid.this.grids.getInsertButton()!=null &&
                Grid.this.grids.getInsertButton().isEnabled())
-        SwingUtilities.invokeLater(new Runnable() {
+        new Thread() {
           public void run() {
             Grid.this.grids.insert();
           }
-        });
+        }.start();
       else if (e.getKeyCode()==ClientSettings.EDIT_BUTTON_KEY.getKeyCode() &&
                e.getModifiers()+e.getModifiersEx()==ClientSettings.EDIT_BUTTON_KEY.getModifiers() &&
                Grid.this.grids.getEditButton()!=null &&
@@ -4464,13 +4468,21 @@ public class Grid extends JTable
             // check if there exists a combo-box editable column to pre-set...
             for(int i=0;i<Grid.this.colProps.length;i++)
               if (Grid.this.colProps[i] instanceof ComboColumn &&
-                  !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue())
-                Grid.this.model.setValueAt(
-                  ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode(),
-                  Grid.this.grids.getCurrentNumberOfNewRows()-1,
-                  Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName())
-                );
+                  !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue()) {
 
+                Object value = ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode();
+                int col = Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName());
+                if (ClientSettings.PRESET_LAST_VALUE_IN_COMBO_COLUMN &&
+                   getGrids().getCurrentNumberOfNewRows()>1) {
+                  value = getValueAt(Grid.this.grids.getCurrentNumberOfNewRows()-2,col);
+                }
+
+                Grid.this.model.setValueAt(
+                  value,
+                  Grid.this.grids.getCurrentNumberOfNewRows()-1,
+                  col
+                );
+              }
           }
           catch (Throwable ex) {
             Logger.error(this.getClass().getName(),"modeChanged","Error while constructing value object '"+Grid.this.model.getValueObjectType().getName()+"'",ex);
@@ -4536,13 +4548,20 @@ public class Grid extends JTable
             // check if there exists a combo-box editable column to pre-set...
             for(int i=0;i<Grid.this.colProps.length;i++)
               if (Grid.this.colProps[i] instanceof ComboColumn &&
-                  !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue())
-                Grid.this.model.setValueAt(
-                  ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode(),
-                  Grid.this.grids.getVOListTableModel().getRowCount()-1,
-                  Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName())
-                );
+                  !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue()) {
+                Object value = ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode();
+                int col = Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName());
+                if (ClientSettings.PRESET_LAST_VALUE_IN_COMBO_COLUMN &&
+                   getGrids().getCurrentNumberOfNewRows()>1) {
+                  value = getValueAt(Grid.this.grids.getVOListTableModel().getRowCount()-2,col);
+                }
 
+                Grid.this.model.setValueAt(
+                  value,
+                  Grid.this.grids.getVOListTableModel().getRowCount()-1,
+                  col
+                );
+              }
           }
           catch (Throwable ex) {
             Logger.error(this.getClass().getName(),"modeChanged","Error while constructing value object '"+Grid.this.model.getValueObjectType().getName()+"'",ex);
@@ -4590,12 +4609,15 @@ public class Grid extends JTable
             // check if there exists a combo-box editable column to pre-set...
             for(int i=0;i<Grid.this.colProps.length;i++)
               if (Grid.this.colProps[i] instanceof ComboColumn &&
-                  !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue())
+                  !((ComboColumn)Grid.this.colProps[i]).isNullAsDefaultValue()) {
+                Object value = ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode();
+                int col = Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName());
                 Grid.this.modelAdapter.setField(
                   clonedVO,
-                  Grid.this.model.findColumn(((ComboColumn)Grid.this.colProps[i]).getColumnName()),
-                  ((ComboColumn)Grid.this.colProps[i]).getDomain().getDomainPairList()[0].getCode()
+                  col,
+                  value
                 );
+              }
 
             boolean notNullValueFound = false;
             Object value = null;

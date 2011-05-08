@@ -64,6 +64,9 @@ public class VOModel {
   /** linked Form */
   private Form form = null;
 
+  /** last value object */
+  private ValueObject oldValueObject = null;
+
 
   /**
    * Constructor.
@@ -232,7 +235,7 @@ public class VOModel {
 //          !valueObject.getClass().equals(valueObjectClass)) {
         throw new RuntimeException("The specified value object has not type '"+valueObjectClass.toString()+"'");
       }
-      Object oldValueObject = this.valueObject;
+      oldValueObject = this.valueObject;
       this.valueObject = valueObject;
       if (valueObject==null && oldValueObject!=null ||
           valueObject!=null && oldValueObject==null ||
@@ -564,5 +567,11 @@ public class VOModel {
   }
 
 
+  /**
+   * @return ValueObject old value object
+   */
+  public final ValueObject getOldValueObject() {
+    return oldValueObject;
+  }
 
 }

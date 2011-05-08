@@ -9,6 +9,8 @@ import javax.swing.table.*;
 
 import org.openswing.swing.domains.java.*;
 import org.openswing.swing.util.client.*;
+import org.openswing.swing.table.client.Grid;
+import org.openswing.swing.util.java.Consts;
 
 
 /**
@@ -238,6 +240,18 @@ public class DomainCellEditor extends AbstractCellEditor implements TableCellEdi
   public final Component getTableCellEditorComponent(JTable table, Object value,
                                                boolean isSelected, int row,
                                                int column) {
+//    if (table instanceof Grid &&
+//        ((Grid)table).getMode()==Consts.INSERT &&
+//        value==null &&
+//        ClientSettings.PRESET_LAST_VALUE_IN_COMBO_COLUMN &&
+//        ((Grid)table).getGrids().getCurrentNumberOfNewRows()>1) {
+//      if ( ((Grid)table).getGrids().isInsertRowsOnTop() )
+//        value = table.getValueAt(row+1,column);
+//      else
+//        value = table.getValueAt(row-1,column);
+//    }
+
+
     this.table = table;
     if (required) {
       field.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_REQUIRED_CELL_BORDER));

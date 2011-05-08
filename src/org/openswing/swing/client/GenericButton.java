@@ -47,7 +47,7 @@ public class GenericButton extends JButton {
   protected List dataControllerList = new ArrayList(3);
 
   /** flag used to execute the action event in a separated thread (useful for heavy server executions); default value: false */
-  private boolean executeAsThread = false;
+  private boolean executeAsThread = ClientSettings.BUTTONS_EXECUTE_AS_THREAD;
 
   /** define whether showing image/text on default buttons (insert, edit, ...); allowed values: Consts.BUTTON_IMAGE_ONLY, Consts.BUTTON_TEXT_ONLY, Consts.BUTTON_IMAGE_AND_TEXT; default value: ClientSettings.BUTTON_BEHAVIOR */
   private int buttonBehavior = ClientSettings.BUTTON_BEHAVIOR;
