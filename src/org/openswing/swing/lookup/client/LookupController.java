@@ -1436,7 +1436,7 @@ public class LookupController {
         parentAttributeName.indexOf(".")!=-1) {
       // in case of mapping <"",innervoAttribute> (i.e. the whole lookup v.o. is mapped to a single attribute of container v.o.)
       // then the container "innervoAttribute.xxx" must be mapped with "xxx"
-      lookupAttribute = parentAttributeName.substring(parentAttributeName.indexOf("."));
+      lookupAttribute = parentAttributeName.substring(parentAttributeName.indexOf(".")+1);
     }
     return lookupAttribute;
   }

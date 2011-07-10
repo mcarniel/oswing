@@ -810,12 +810,27 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
       return;
     if (mode!=Consts.READONLY && mode!=Consts.EDIT && mode!=Consts.INSERT)
       throw new UnsupportedOperationException("Mode not supported");
-    this.mode = mode;
-    maybeCreateVOModel();
-    if (mode==Consts.INSERT) {
-      try {
+
+    try {
+      if (mode == Consts.INSERT) {
         if (!this.formController.beforeInsertData(this))
           return;
+      }
+      else if (mode == Consts.EDIT) {
+        if (!this.formController.beforeEditData(this))
+          return;
+      }
+    }
+    catch (Throwable ex) {
+      ex.printStackTrace();
+      return;
+    }
+
+    this.mode = mode;
+    maybeCreateVOModel();
+
+    if (mode==Consts.INSERT) {
+      try {
 
         ValueObject vo = (ValueObject) model.getValueObjectType().newInstance();
         model.setValueObject(vo);
@@ -932,8 +947,6 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
 
       resetButtonsState();
     } else if (mode==Consts.EDIT) {
-      if (!this.formController.beforeEditData(this))
-        return;
 
       Component[] c = this.getComponents();
       setEnabled(c,true);
@@ -1241,8 +1254,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   public final void insert() {
     if (getMode()==Consts.READONLY) {
-      if (!this.formController.beforeInsertData(this))
-        return;
+//      if (!this.formController.beforeInsertData(this))
+//        return;
 
       setMode(Consts.INSERT);
 //      if (insertButton!=null)
@@ -1369,8 +1382,8 @@ public class Form extends JPanel implements DataController,ValueChangeListener,G
    */
   public final void edit() {
     if (getMode()==Consts.READONLY) {
-      if (!this.formController.beforeEditData(this))
-        return;
+//      if (!this.formController.beforeEditData(this))
+//        return;
 
       setMode(Consts.EDIT);
 //      if (insertButton!=null)

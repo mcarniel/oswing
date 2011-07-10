@@ -3,7 +3,8 @@ package org.openswing.swing.client;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import org.openswing.swing.util.client.ClientSettings;
+
+import org.openswing.swing.util.client.*;
 
 
 /**
@@ -269,6 +270,14 @@ public class TextControl extends BaseInputControl implements InputControl {
     }
     if (text.length()>maxCharacters)
       text = text.substring(0,maxCharacters);
+
+    if (!textBox.isEditable()) {
+      if ( (textBox.getHorizontalAlignment() == JTextField.LEADING) ||
+           (textBox.getHorizontalAlignment() == JTextField.LEFT)) {
+        textBox.setCaretPosition(0);
+      }
+    }
+
     textBox.setText(text);
   }
 
@@ -325,6 +334,8 @@ public class TextControl extends BaseInputControl implements InputControl {
    * @param value value to set into the input control
    */
   public final void setValue(Object value) {
+    if (value!=null)
+      value = value.toString();
     setText((String)value);
   }
 

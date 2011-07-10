@@ -112,6 +112,9 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
   /** current selected row on grid */
   private int selectedRow = -1;
 
+  /** current selected column on grid */
+  private int selectedCol = -1;
+
   /** attribute name linked to the code */
   private String codAttributeName = null;
 
@@ -380,6 +383,21 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
             codBox.setText(codBox.getText().toUpperCase().trim());
 
           stopCellEditing();
+
+          if (CodLookupCellEditor.this.lookupController!=null &&
+              CodLookupCellEditor.this.lookupController.getOnInvalidCode()==CodLookupCellEditor.this.lookupController.ON_INVALID_CODE_RESTORE_FOCUS &&
+             !CodLookupCellEditor.this.lookupController.isCodeValid()) {
+            e.consume();
+            SwingUtilities.invokeLater(new Runnable() {
+              public void run() {
+                if (!table.hasFocus())
+                  table.requestFocus();
+                table.editCellAt(selectedRow,selectedCol);
+              }
+            });
+            return;
+          }
+
           if (table!=null) {
             new Thread() {
               public void run() {
@@ -550,6 +568,7 @@ public class CodLookupCellEditor extends AbstractCellEditor implements TableCell
     JComponent c = (JComponent)_prepareEditor(value);
     this.codAttributeName = this.table.getVOListTableModel().getColumnName(table.convertColumnIndexToModel(column));
     this.selectedRow = row;
+    this.selectedCol = column;
     if (required) {
       c.setBorder(BorderFactory.createLineBorder(ClientSettings.GRID_REQUIRED_CELL_BORDER));
 //      codBox.setBorder(new CompoundBorder(new RequiredBorder(),c.getBorder()));

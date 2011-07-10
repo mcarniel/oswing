@@ -1863,6 +1863,20 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
                 lockedGrid.clearSelection();
               }
 
+
+              // 21/05/2011: fix needed to clone all inner objects in the list,
+              // otherwise a change in a value object on the client side
+              // will involve all inner objects that are the same instance
+              ValueObject vo = null;
+              for(int i=0;i<data.size();i++) {
+                vo = (ValueObject)data.get(i);
+                try {
+                  data.set(i, ((ValueObject)vo).clone());
+                } catch (Throwable e) {
+                  Logger.error(this.getClass().getName(), "loadData", e.getMessage(), e);
+                }
+              }
+
                 // fill in the table model with data fetched from the grid controller...
               try {
                 for (int i = 0; i < data.size(); i++) {
@@ -1999,102 +2013,112 @@ public class Grids extends JPanel implements VOListTableModelListener,DataContro
    * Method called when user clicks on insert button.
    */
   public final void insert() {
-    if (getMode()==Consts.READONLY) {
-      if (!gridController.beforeInsertGrid(gridControl))
-        return;
-      currentNumberOfNewRows = 1;
-      model.setMode(Consts.INSERT);
-      if (getInsertButton()!=null) {
-        getInsertButton().setEnabled(false);
-      }
-      if (getExportButton()!=null) {
-        getExportButton().setEnabled(false);
-      }
-      if (getImportButton() != null) {
-        getImportButton().setEnabled(false);
-      }
-      if (getCopyButton()!=null) {
-        getCopyButton().setEnabled(false);
-      }
-      if (getDeleteButton()!=null) {
-        getDeleteButton().setEnabled(false);
-      }
-      if (getEditButton()!=null) {
-        getEditButton().setEnabled(false);
-      }
-      if (getFilterButton()!=null) {
-        getFilterButton().setEnabled(false);
-      }
-      setGenericButtonsEnabled(false);
-      if (getReloadButton()!=null)
-        getReloadButton().setEnabled(true);
-      if (getSaveButton()!=null)
-        getSaveButton().setEnabled(true);
-
-      int rowToSel = 0;
-      if (!isInsertRowsOnTop())
-        rowToSel = model.getRowCount()-1;
-
-      grid.setRowSelectionInterval(rowToSel,rowToSel);
-      grid.setColumnSelectionInterval(0,0);
-//      if (lockedGrid!=null) {
-//        lockedGrid.setRowSelectionInterval(rowToSel,rowToSel);
-//        lockedGrid.setColumnSelectionInterval(0,0);
-//      }
-
-      resetButtonsState();
-
-      int col = 0;
-      if (lockedGrid!=null) {
-        if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
-          while (col < lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(rowToSel, col))
-            col++;
-          if (col < lockedGrid.getColumnCount())
-            lockedGrid.setColumnSelectionInterval(col, col);
-          if (lockedGrid.getSelectedColumn() != -1)
-            lockedGrid.editCellAt(rowToSel, lockedGrid.getSelectedColumn());
-          lockedGrid.requestFocus();
+    try {
+      if (getMode()==Consts.READONLY) {
+        if (!gridController.beforeInsertGrid(gridControl))
+          return;
+        currentNumberOfNewRows = 1;
+        model.setMode(Consts.INSERT);
+        if (getInsertButton()!=null) {
+          getInsertButton().setEnabled(false);
         }
-        else {
-          col = lockedGrid.getColumnCount()-1;
-          while (col>=0 && !grid.isCellEditable(grid.getSelectedRow(),col))
-            col--;
-          if (col>=0)
-            grid.setColumnSelectionInterval(col,col);
-          grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
-          grid.requestFocus();
+        if (getExportButton()!=null) {
+          getExportButton().setEnabled(false);
         }
-      }
+        if (getImportButton() != null) {
+          getImportButton().setEnabled(false);
+        }
+        if (getCopyButton()!=null) {
+          getCopyButton().setEnabled(false);
+        }
+        if (getDeleteButton()!=null) {
+          getDeleteButton().setEnabled(false);
+        }
+        if (getEditButton()!=null) {
+          getEditButton().setEnabled(false);
+        }
+        if (getFilterButton()!=null) {
+          getFilterButton().setEnabled(false);
+        }
+        setGenericButtonsEnabled(false);
+        if (getReloadButton()!=null)
+          getReloadButton().setEnabled(true);
+        if (getSaveButton()!=null)
+          getSaveButton().setEnabled(true);
 
-      if (lockedGrid==null || col==lockedGrid.getColumnCount()) {
-        if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
-          col = 0;
-          while (col<grid.getColumnCount() && !grid.isCellEditable(rowToSel,col))
-            col++;
-          if (col<grid.getColumnCount())
-            grid.setColumnSelectionInterval(col,col);
-          grid.requestFocus();
-          if (grid.getEditingRow()==rowToSel && grid.getEditingColumn()==grid.getSelectedColumn())
-            grid.stopCellEditing();
-          grid.editCellAt(rowToSel,grid.getSelectedColumn());
-          grid.requestFocus();
-        }
-        else {
-          col = grid.getColumnCount()-1;
-          while (col>=0 && !grid.isCellEditable(grid.getSelectedRow(),col))
-            col--;
-          if (col>=0)
-            grid.setColumnSelectionInterval(col,col);
-          if (grid.getEditingRow()==rowToSel && grid.getEditingColumn()==grid.getSelectedColumn())
-            grid.stopCellEditing();
-          grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
-          grid.requestFocus();
-        }
-      }
+        int rowToSel = 0;
+        if (!isInsertRowsOnTop())
+          rowToSel = model.getRowCount()-1;
 
+        grid.setRowSelectionInterval(rowToSel,rowToSel);
+        grid.setColumnSelectionInterval(0,0);
+  //      if (lockedGrid!=null) {
+  //        lockedGrid.setRowSelectionInterval(rowToSel,rowToSel);
+  //        lockedGrid.setColumnSelectionInterval(0,0);
+  //      }
+
+        resetButtonsState();
+
+        int col = 0;
+        if (lockedGrid!=null) {
+          if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
+            while (col < lockedGrid.getColumnCount() && !lockedGrid.isCellEditable(rowToSel, col))
+              col++;
+            if (col < lockedGrid.getColumnCount())
+              lockedGrid.setColumnSelectionInterval(col, col);
+            if (lockedGrid.getSelectedColumn() != -1)
+              lockedGrid.editCellAt(rowToSel, lockedGrid.getSelectedColumn());
+            lockedGrid.requestFocus();
+          }
+          else {
+            col = lockedGrid.getColumnCount()-1;
+            while (col>=0 && !grid.isCellEditable(grid.getSelectedRow(),col))
+              col--;
+            if (col>=0)
+              grid.setColumnSelectionInterval(col,col);
+            grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+            grid.requestFocus();
+          }
+        }
+
+        if (lockedGrid==null || col==lockedGrid.getColumnCount()) {
+          if (ClientSettings.FIRST_CELL_RECEIVE_FOCUS) {
+            col = 0;
+            while (col<grid.getColumnCount() && !grid.isCellEditable(rowToSel,col))
+              col++;
+            if (col<grid.getColumnCount())
+              grid.setColumnSelectionInterval(col,col);
+            if (!grid.hasFocus())
+              grid.requestFocus();
+            if (grid.getEditingRow()==rowToSel && grid.getEditingColumn()==grid.getSelectedColumn()) {
+              grid.stopCellEditing();
+            }
+            grid.editCellAt(rowToSel,grid.getSelectedColumn());
+            if (!grid.hasFocus())
+              grid.requestFocus();
+          }
+          else {
+            col = grid.getColumnCount()-1;
+            while (col>=0 && !grid.isCellEditable(grid.getSelectedRow(),col))
+              col--;
+            if (col>=0)
+              grid.setColumnSelectionInterval(col,col);
+            if (grid.getEditingRow()==rowToSel && grid.getEditingColumn()==grid.getSelectedColumn()) {
+              grid.stopCellEditing();
+            }
+            grid.editCellAt(grid.getSelectedRow(),grid.getSelectedColumn());
+            if (!grid.hasFocus())
+              grid.requestFocus();
+          }
+        }
+
+      }
+      else
+        Logger.error(this.getClass().getName(),"insert","Setting grid to insert mode is not allowed: grid must be in read only mode.",null);
     }
-    else
-      Logger.error(this.getClass().getName(),"insert","Setting grid to insert mode is not allowed: grid must be in read only mode.",null);
+    catch(Throwable t) {
+      Logger.error(this.getClass().getName(),"insert",t.getMessage(),t);
+    }
   }
 
 

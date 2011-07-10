@@ -189,14 +189,23 @@ public class StatusBar extends JPanel {
           leftToRight = false;
         else if (progressBar.getValue()==progressBar.getMinimum())
           leftToRight = true;
-        progressBar.setValue(progressBar.getValue()+(leftToRight?1:-1));
+
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            progressBar.setValue(progressBar.getValue()+(leftToRight?1:-1));
+          }
+        });
         try {
           sleep(delay);
         }
         catch (InterruptedException ex) {
         }
       }
-      progressBar.setValue(progressBar.getMinimum());
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          progressBar.setValue(progressBar.getMinimum());
+        }
+      });
     }
 
   }
