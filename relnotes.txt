@@ -1,5 +1,30 @@
 
 
+Release Notes 2.4.3
+-------------------
+
+Fixed problem on LookupController, when setting horizontal text alignment for header of a combo column.
+Fixed problem when saving a Form panel having a XXXSpinnerControler with focus in it.
+Fixed problem with PivotTable when applying multiple InputFilters to the same column.
+Fixed problem with grid profile, related to multiple filtering conditions to save.
+Changed a bit GenericButton event handling, so that now the click event is fired within the AWT event queue, instead of a simple Thread.
+Improved QueryUtil.getQuery in order to support stored functions call in select statement
+Improved translations reported in CzechOnlyResourceFactory class.
+Moved calling to ApplicationEventQueue at the MDIFrame creation.
+
+
+
+Release Notes 2.4.2
+-------------------
+
+Added PRESET_LAST_VALUE_IN_COMBO_XXX global property to ClientSettings, in order to preset the last selected item in combo column/control
+Changed Form panel: now beforeInsertRecord and beforeEditRecord are invoked one instead of twice, when pressing insert/edit button.
+Improved lookup usage in grid when using an ORM: now an object selected using a lookup is cloned when assigning it as an inner object of the object's row of the grid.
+Forced focus in lookup cell in grid, when LookupController.onInvalidCode property is to set  ON_INVALID_CODE_RESTORE_FOCUS.
+Improved TextControl: when text is longer than "columns" characters, the beginning part of text is displayed. Moreover, a non String value is accepted by setValue method.
+Fixed lookup bug when the whole value object is mapped to a grid's attribute.
+
+
 
 Release Notes 2.4.1
 -------------------

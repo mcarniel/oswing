@@ -8,6 +8,7 @@ import org.openswing.swing.form.client.*;
 import org.openswing.swing.logger.client.*;
 import org.openswing.swing.message.receive.java.*;
 import org.openswing.swing.util.client.ClientSettings;
+import java.math.BigDecimal;
 
 
 /**
@@ -480,6 +481,21 @@ public class VOModel {
             else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(Short.TYPE) &&
               value.getClass().equals(java.math.BigDecimal.class))
               value = new Short(((java.math.BigDecimal)value).shortValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(BigDecimal.class) &&
+              value.getClass().equals(Double.class))
+              value = new BigDecimal(((Double)value).doubleValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(BigDecimal.class) &&
+              value.getClass().equals(Long.class))
+              value = new BigDecimal(((Long)value).longValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(BigDecimal.class) &&
+              value.getClass().equals(Float.class))
+              value = new BigDecimal(((Float)value).floatValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(BigDecimal.class) &&
+              value.getClass().equals(Integer.class))
+              value = new BigDecimal(((Integer)value).intValue());
+            else if (writeMethods[writeMethods.length-1].getParameterTypes()[0].equals(BigDecimal.class) &&
+              value.getClass().equals(Short.class))
+              value = new BigDecimal(((Short)value).shortValue());
           }
 
           Object obj = getValueObject();
@@ -518,7 +534,7 @@ public class VOModel {
         }
       }
       catch (Exception ex) {
-        Logger.error(this.getClass().getName(),"setValue","Error while writing the value object attribute '"+attributeName+"'",ex);
+        Logger.error(this.getClass().getName(),"setValue","Error while writing the value object attribute '"+attributeName+"'.\n Maybe incompatible type?",ex);
       }
   }
 

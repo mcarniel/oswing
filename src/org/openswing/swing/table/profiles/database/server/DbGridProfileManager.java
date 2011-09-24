@@ -346,6 +346,7 @@ public class DbGridProfileManager extends GridProfileManager {
     String[] tokens = null;
     while(f.hasMoreTokens()) { // f = attribute name,operator1,typevalue1,value1a\tvalue1b\tvalue1c...[,operator2,typevalue2,value2...]
       st = new StringTokenizer(f.nextToken(),",");
+      filter = new FilterWhereClause[2];
       attributeName = st.nextToken();
       operator1 = st.nextToken();
       typevalue1 = st.nextToken();

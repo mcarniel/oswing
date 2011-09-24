@@ -1207,6 +1207,8 @@ public class LookupController {
         ((ComboColumn)colProperties[i]).setColumnFilterable(oldCol.isColumnFilterable());
         ((ComboColumn)colProperties[i]).setColumnSortable(oldCol.isColumnSortable());
         ((ComboColumn)colProperties[i]).setTextAlignment(oldCol.getTextAlignment());
+        ((ComboColumn)colProperties[i]).setHeaderTextHorizontalAlignment(oldCol.getHeaderTextHorizontalAlignment());
+
         return;
       }
     Logger.error(this.getClass().getName(),"setDomainColumn","The attribute '"+(lookupAttributeName==null?"null":"'"+lookupAttributeName+"'")+"' does not exist.",null);

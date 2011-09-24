@@ -99,7 +99,6 @@ public class DetailFrame extends JFrame {
     labelCity.setText("city");
     controlCity.setCanCopy(true);
     controlCity.setLinkLabel(labelCity);
-    controlCity.setRequired(true);
     controlZipCode.setCanCopy(true);
     controlZipCode.setRequired(false);
     controlZipCode.setEnabledOnEdit(false);

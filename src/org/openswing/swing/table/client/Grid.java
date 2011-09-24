@@ -2223,7 +2223,9 @@ public class Grid extends JTable
   public final void ensureRowIsVisible(final int selRow) {
 //    System.out.println(lockedGrid+" "+selRow);
     java.awt.Rectangle r = getCellRect(this.getSelectedRow(),this.getSelectedColumn()==-1?0:this.getSelectedColumn(), true);
-    scrollRectToVisible(r);
+    java.awt.Rectangle gr = this.getVisibleRect();
+    if (gr.getY()+gr.getHeight()<r.getY()) // if used to avoid scrolling of grid for an "internal" selected row
+      scrollRectToVisible(r);
     if (!lockedGrid && grids.getLockedGrid()!=null) {
         grids.getLockedGrid().ensureRowIsVisible(selRow);
 //        grids.getLockedGrid().revalidate();

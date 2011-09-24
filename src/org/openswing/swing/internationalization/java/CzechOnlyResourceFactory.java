@@ -29,7 +29,7 @@ import org.openswing.swing.util.java.Consts;
  *
  *       The author may be contacted at:
  *           maurocarniel@tin.it
- *           Kiwi.dela.divy@seznam.cz</p>
+ *           kiwi.dela.divy@gmail.com</p>
  *
  * @author Mauro Carniel and Lukas Voves (CzechOnlyResourceFactory)
  * @version 1.0
@@ -38,6 +38,16 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
 
     /** internationalization settings */
     private Resources resources = null;
+
+    /**
+     * Constructor.
+     * @param currencySymbol currency symbol
+     * @param additionalDictionary additional descriptions
+     * @param showResourceNotFoundWarning warn when no resource key not found
+     */
+    public CzechOnlyResourceFactory(String currencySymbol, Properties additionalDictionary, boolean showResourceNotFoundWarning) {
+        this(currencySymbol, additionalDictionary, showResourceNotFoundWarning, '.');
+    }
 
     /**
      * Constructor.
@@ -55,8 +65,8 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("of", "z");
         dictionary.setProperty("page", "Str\u00E1nka");
         dictionary.setProperty("Remove Filter", "Odstranit Filtr");
-        dictionary.setProperty("This column is not sorteable", "Tento sloupec nen\u00ED t\u0159\u00EDditeln\u00FD");
-        dictionary.setProperty("Sorting not allowed", "T\u0159\u00EDd\u011Bn\u00ED nen\u00ED povoleno");
+        dictionary.setProperty("This column is not sorteable", "Tento sloupec nelze t\u0159\u00EDdit");
+        dictionary.setProperty("Sorting not allowed", "T\u0159\u00EDd\u011Bn\u00ED je zak\u00E1z\u00E1no");
         dictionary.setProperty("Maximum number of sorted columns", "Maxim\u00E1ln\u00ED po\u010Det t\u0159\u00EDd\u011Bn\u00FDch sloupc\u016F");
         dictionary.setProperty("Sorting not applicable", "T\u0159\u00EDd\u011Bn\u00ED nelze aplikovat");
         dictionary.setProperty("Selected Row", "Vybran\u00FD \u0159\u00E1dek");
@@ -82,17 +92,17 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("download file", "St\u00E1hnout soubor");
 
         // export...
-        dictionary.setProperty("grid export", "Export m\u0159\u00ED\u017Eky");
+        dictionary.setProperty("grid export", "Export tabulky");
         dictionary.setProperty("export", "Export");
         dictionary.setProperty("exportmnemonic", "X");
         dictionary.setProperty("column", "Sloupec");
         dictionary.setProperty("sel.", "V\u00FDb\u011Br");
-        dictionary.setProperty("you must select at least one column", "Mus\u00EDte vybrat nejm\u00E9n\u011B jeden sloupec");
+        dictionary.setProperty("you must select at least one column", "Mus\u00EDte vybrat alespo\u0148 jeden sloupec");
         dictionary.setProperty("columns to export", "Sloupce pro export");
         dictionary.setProperty("export type", "Form\u00E1t exportu");
 
         // import...
-        dictionary.setProperty("grid import", "Import m\u0159\u00ED\u017Eky");
+        dictionary.setProperty("grid import", "Import tabulky");
         dictionary.setProperty("file to import", "Soubor pro import");
         dictionary.setProperty("import", "Importovat");
         dictionary.setProperty("importmnemonic", "M");
@@ -104,15 +114,15 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         // quick filter...
         dictionary.setProperty("To value", "Do hodnoty");
         dictionary.setProperty("Filter by", "Filtrovat podle");
-        dictionary.setProperty("From value", "Z hodnoty");
+        dictionary.setProperty("From value", "Od hodnoty");
         dictionary.setProperty("equals", "rovn\u00E1 se");
         dictionary.setProperty("contains", "obsahuje");
-        dictionary.setProperty("starts with", "za\u010D\u00EDn\u00E1 s");
-        dictionary.setProperty("ends with", "kon\u010D\u00ED s");
+        dictionary.setProperty("starts with", "za\u010D\u00EDn\u00E1 na");
+        dictionary.setProperty("ends with", "kon\u010D\u00ED na");
 
         // select/deselect all
         dictionary.setProperty("select all", "Vybrat v\u0161e");
-        dictionary.setProperty("deselect all", "Nevybrat nic");
+        dictionary.setProperty("deselect all", "Zru\u0161it v\u00FDb\u011Br");
 
         // copy/cut/paste
         dictionary.setProperty("copy", "Kop\u00EDrovat");
@@ -123,9 +133,11 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("pastemnemonic", "P");
 
         // lookup...
-        dictionary.setProperty("Code is not correct.", "K\u00F3d nen\u00ED spr\u00E1vn\u00FD.");
+        dictionary.setProperty("Code is not correct.", "K\u00F3d je \u0161patn\u00FD.");
         dictionary.setProperty("Code Validation", "Ov\u011B\u0159en\u00ED k\u00F3du");
         dictionary.setProperty("Code Selection", "V\u00FDb\u011Br k\u00F3du");
+
+        dictionary.setProperty("Caps lock pressed","Tla\u010D\u00EDtko Caps lock je stisknuto");
 
         // form...
         dictionary.setProperty("Confirm deliting data?", "Potvrdit smaz\u00E1n\u00ED dat?");
@@ -147,8 +159,8 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("Export record (CTRL+X)", "Exportovat z\u00E1znamy (CTRL+X)");
         dictionary.setProperty("Import records (CTRL+M)", "Importovat z\u00E1znamy (CTRL+M)");
         dictionary.setProperty("Load the first block of records", "Nahr\u00E1t prvn\u00ED blok z\u00E1znam\u016F");
-        dictionary.setProperty("Select the previous row in grid", "Vybrat p\u0159edchoz\u00ED \u0159\u00E1dek v m\u0159\u00ED\u017Ece");
-        dictionary.setProperty("Select the next row in grid", "Vybrat dal\u0161\u00ED \u0159\u00E1dek v m\u0159\u00ED\u017Ece");
+        dictionary.setProperty("Select the previous row in grid", "Vybrat p\u0159edchoz\u00ED \u0159\u00E1dek v tabulce");
+        dictionary.setProperty("Select the next row in grid", "Vybrat dal\u0161\u00ED \u0159\u00E1dek v tabulce");
         dictionary.setProperty("Load the previous block of records", "Nahr\u00E1t p\u0159edchoz\u00ED blok z\u00E1znam\u016F");
         dictionary.setProperty("Load the next block of records", "Nahr\u00E1t n\u00E1sleduj\u00EDc\u00ED blok z\u00E1znam\u016F");
         dictionary.setProperty("Load the last block of records", "Nahr\u00E1t posledn\u00ED blok z\u00E1znam\u016F");
@@ -170,7 +182,7 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("change user", "Zm\u011Bnit u\u017Eivatele");
         dictionary.setProperty("changeusermnemonic", "U");
         dictionary.setProperty("changelanguagemnemonic", "L");
-        dictionary.setProperty("help", "Pomoc");
+        dictionary.setProperty("help", "N\u00E1pov\u011Bda");
         dictionary.setProperty("about", "O programu");
         dictionary.setProperty("helpmnemonic", "H");
         dictionary.setProperty("aboutmnemonic", "A");
@@ -201,11 +213,11 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("Find Function", "Nal\u00E9zt funkci");
         dictionary.setProperty("Operation in progress...", "Operace prob\u00EDh\u00E1...");
         dictionary.setProperty("close window", "Zav\u0159\u00EDt okno");
-        dictionary.setProperty("reduce to icon", "Redukovat na ikonu");
+        dictionary.setProperty("reduce to icon", "Shodit na li\u0161tu");
         dictionary.setProperty("save changes?", "Ulo\u017Eit zm\u011Bny?");
         dictionary.setProperty("confirm window closing", "Potvrdit zav\u0159en\u00ED okna");
         dictionary.setProperty("change background", "Zm\u011Bnit pozad\u00ED");
-        dictionary.setProperty("reset background", "Resetovat pozad\u00ED");
+        dictionary.setProperty("reset background", "Obnovit pozad\u00ED");
 
         dictionary.setProperty("switch", "P\u0159epnout");
         dictionary.setProperty("switchmnemonic", "P");
@@ -221,12 +233,12 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("minimizemnemonic", "M");
         dictionary.setProperty("minimize all", "Minimalizovat v\u0161e");
         dictionary.setProperty("minimizeallmnemonic", "A");
-        dictionary.setProperty("selected frame","vybran\u00FD okno");
+        dictionary.setProperty("selected frame","vybran\u00E9 okno");
 
         // server...
         dictionary.setProperty("Client request not supported", "\u017D\u00E1dost klienta nen\u00ED podporov\u00E1na");
         dictionary.setProperty("User disconnected", "U\u017Eivatel je odpojen");
-        dictionary.setProperty("Updating not performed: the record was previously updated.", "Aktualizace neprovedena: z\u00E1znam byl d\u0159\u00EDve aktualizov\u00E1n.");
+        dictionary.setProperty("Updating not performed: the record was previously updated.", "Aktualizace neprovedena: z\u00E1znam u\u017E byl d\u0159\u00EDve aktualizov\u00E1n.");
 
         // wizard...
         dictionary.setProperty("back", "Zp\u011Bt");
@@ -259,12 +271,12 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("property value", "Hodnota");
 
         // grid profile
-        dictionary.setProperty("grid profile management", "Spr\u00E1va profilu m\u0159\u00ED\u017Eky");
-        dictionary.setProperty("restore default grid profile", "Obnovit v\u00FDchoz\u00ED profil m\u0159\u00ED\u017Eky");
-        dictionary.setProperty("create new grid profile", "Vytvo\u0159it nov\u00FD profil m\u0159\u00ED\u017Eky");
+        dictionary.setProperty("grid profile management", "Spr\u00E1va profil\u016F tabulky");
+        dictionary.setProperty("restore default grid profile", "Obnovit v\u00FDchoz\u00ED profil tabulky");
+        dictionary.setProperty("create new grid profile", "Vytvo\u0159it nov\u00FD profil tabulky");
         dictionary.setProperty("profile description", "Popis profilu");
-        dictionary.setProperty("remove current grid profile", "Odstranit sou\u010Dasn\u00FD profil m\u0159\u00ED\u017Eky");
-        dictionary.setProperty("select grid profile", "Vybrat profil m\u0159\u00ED\u017Eky");
+        dictionary.setProperty("remove current grid profile", "Odstranit sou\u010Dasn\u00FD profil tabulky");
+        dictionary.setProperty("select grid profile", "Vybrat profil tabulky");
         dictionary.setProperty("default profile", "V\u00FDchoz\u00ED profil");
 
         // search box
@@ -274,8 +286,6 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         // drag...
         dictionary.setProperty("drag", "T\u00E1hnout");
 
-        dictionary.setProperty("Caps lock pressed","Caps lock lisovan\u00E9");
-
         // pivot table...
         dictionary.setProperty("pivot table settings", "Nastaven\u00ED pivotn\u00ED tabulky");
         dictionary.setProperty("row fields", "Pole \u0159\u00E1dk\u016F");
@@ -283,26 +293,26 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
         dictionary.setProperty("data fields", "Pole dat");
         dictionary.setProperty("filtering conditions", "Podm\u00EDnky filtrov\u00E1n\u00ED");
         dictionary.setProperty("field", "Pole");
-        dictionary.setProperty("checked", "Zkontrolov\u00E1no");
+        dictionary.setProperty("checked", "Za\u0161krtnuto");
         dictionary.setProperty("at least one data field must be selected", "Mus\u00ED b\u00FDt vybr\u00E1no nejm\u00E9n\u011B jedno pole dat.");
         dictionary.setProperty("at least one row field must be selected", "Mus\u00ED b\u00FDt vybr\u00E1no nejm\u00E9n\u011B jedno pole \u0159\u00E1dk\u016F.");
         dictionary.setProperty("at least one column field must be selected", "Mus\u00ED b\u00FDt vybr\u00E1no nejm\u00E9n\u011B jedno pole sloupc\u016F.");
         dictionary.setProperty("expand all", "Rozt\u00E1hnout v\u0161e");
         dictionary.setProperty("collapse all", "Sbalit v\u0161e");
 
-        dictionary.setProperty(Consts.EQ,"Equals to");
-        dictionary.setProperty(Consts.GE,"Greater or equals to");
-        dictionary.setProperty(Consts.GT,"Greater than");
-        dictionary.setProperty(Consts.IS_NOT_NULL,"Is filled");
-        dictionary.setProperty(Consts.IS_NULL,"Is not filled");
-        dictionary.setProperty(Consts.LE,"Less or equals to");
-        dictionary.setProperty(Consts.LIKE,"Contains");
-        dictionary.setProperty(Consts.LT,"Less than");
-        dictionary.setProperty(Consts.NEQ,"Not equals to");
-        dictionary.setProperty(Consts.IN,"Contains values");
-        dictionary.setProperty(Consts.ASC_SORTED,"Ascending");
-        dictionary.setProperty(Consts.DESC_SORTED,"Descending");
-        dictionary.setProperty(Consts.NOT_IN,"Not contains values");
+        dictionary.setProperty(Consts.EQ, "rovn\u00E1 se");
+        dictionary.setProperty(Consts.GE, "je v\u011Bt\u0161\u00ED nebo rovn\u00E1 se");
+        dictionary.setProperty(Consts.GT, "je v\u011Bt\u0161\u00ED ne\u017E");
+        dictionary.setProperty(Consts.IS_NOT_NULL, "je vypln\u011Bno");
+        dictionary.setProperty(Consts.IS_NULL, "nen\u00ED vypln\u011Bno");
+        dictionary.setProperty(Consts.LE, "je men\u0161\u00ED nebo rovn\u00E1 se");
+        dictionary.setProperty(Consts.LIKE, "obsahuje");
+        dictionary.setProperty(Consts.LT, "je men\u0161\u00ED ne\u017E");
+        dictionary.setProperty(Consts.NEQ, "se nerovn\u00E1");
+        dictionary.setProperty(Consts.IN, "obsahuje hodnoty");
+        dictionary.setProperty(Consts.ASC_SORTED, "vzestupn\u011B");
+        dictionary.setProperty(Consts.DESC_SORTED, "sestupn\u011B");
+        dictionary.setProperty(Consts.NOT_IN, "neobsahuje hodnoty");
 
         resources = new Resources(
                 dictionary,
@@ -315,16 +325,6 @@ public class CzechOnlyResourceFactory extends ResourcesFactory {
                 "HH:mm",
                 "CS",
                 showResourceNotFoundWarning);
-    }
-
-    /**
-     * Constructor.
-     * @param currencySymbol currency symbol
-     * @param additionalDictionary additional descriptions
-     * @param showResourceNotFoundWarning warn when no resource key not found
-     */
-    public CzechOnlyResourceFactory(String currencySymbol, Properties additionalDictionary, boolean showResourceNotFoundWarning) {
-        this(currencySymbol, additionalDictionary, showResourceNotFoundWarning, '.');
     }
 
     /**

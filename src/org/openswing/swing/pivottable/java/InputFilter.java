@@ -228,66 +228,116 @@ public class InputFilter implements Serializable {
     if (ops==null)
       return false;
     ArrayList vals  = (ArrayList)filterValues.get(columnName);
+    boolean skip = false;
     for(int i=0;i<ops.size();i++) {
       if (ops.get(i).equals(EQ)) {
-        if (value==null && vals.get(i)==null)
-          return false;
+        if (value==null && vals.get(i)==null) {
+          //return false;
+        }
         else if (value!=null && vals.get(i)==null)
           return true;
         else if (value==null && vals.get(i)!=null)
           return true;
-        return !value.equals(vals.get(i));
+        else
+          skip = !value.equals(vals.get(i));
+        if (skip)
+          return true;
       }
       else if (ops.get(i).equals(NEQ)) {
         if (value==null && vals.get(i)==null)
           return true;
-        else if (value!=null && vals.get(i)==null)
-          return false;
-        else if (value==null && vals.get(i)!=null)
-          return false;
-        return value.equals(vals.get(i));
+        else if (value!=null && vals.get(i)==null) {
+          //return false;
+        }
+        else if (value==null && vals.get(i)!=null) {
+          //return false;
+        }
+        else
+          skip = value.equals(vals.get(i));
+        if (skip)
+          return true;
       }
       else if (ops.get(i).equals(IS_NULL)) {
-        return value!=null;
+        skip = value!=null;
+        if (skip)
+          return true;
       }
       else if (ops.get(i).equals(IS_NOT_NULL)) {
-        return value==null;
+        skip = value==null;
+        if (skip)
+          return true;
       }
       else if (ops.get(i).equals(LT)) {
         if (value==null)
           return true;
-        else if (value instanceof Number)
-          return ((Number)value).doubleValue()>=((Number)vals.get(i)).doubleValue();
-        else if (value instanceof Date)
-          return ((Date)value).compareTo((Date)vals.get(i))>=0;
-        return value.toString().compareTo(vals.get(i).toString())>=0;
+        else if (value instanceof Number) {
+          skip = ((Number)value).doubleValue()>=((Number)vals.get(i)).doubleValue();
+          if (skip)
+            return true;
+        }
+        else if (value instanceof Date) {
+          skip = ((Date)value).compareTo((Date)vals.get(i))>=0;
+          if (skip)
+            return true;
+        }
+        else
+          skip = value.toString().compareTo(vals.get(i).toString())>=0;
+        if (skip)
+          return true;
       }
       else if (ops.get(i).equals(LE)) {
         if (value==null)
           return true;
-        else if (value instanceof Number)
-          return ((Number)value).doubleValue()>((Number)vals.get(i)).doubleValue();
-        else if (value instanceof Date)
-          return ((Date)value).compareTo((Date)vals.get(i))>0;
-        return value.toString().compareTo(vals.get(i).toString())>0;
+        else if (value instanceof Number) {
+          skip = ((Number)value).doubleValue()>((Number)vals.get(i)).doubleValue();
+          if (skip)
+            return true;
+        }
+        else if (value instanceof Date) {
+          skip = ((Date)value).compareTo((Date)vals.get(i))>0;
+          if (skip)
+            return true;
+        }
+        else
+          skip = value.toString().compareTo(vals.get(i).toString())>0;
+        if (skip)
+          return true;
       }
       else if (ops.get(i).equals(GT)) {
         if (value==null)
           return true;
-        else if (value instanceof Number)
-          return ((Number)value).doubleValue()<=((Number)vals.get(i)).doubleValue();
-        else if (value instanceof Date)
-          return ((Date)value).compareTo((Date)vals.get(i))<=0;
-        return value.toString().compareTo(vals.get(i).toString())<=0;
+        else if (value instanceof Number) {
+          skip = ((Number)value).doubleValue()<=((Number)vals.get(i)).doubleValue();
+          if (skip)
+            return true;
+        }
+        else if (value instanceof Date) {
+          skip = ((Date)value).compareTo((Date)vals.get(i))<=0;
+          if (skip)
+            return true;
+        }
+        else
+          skip = value.toString().compareTo(vals.get(i).toString())<=0;
+        if (skip)
+          return true;
       }
       else if (ops.get(i).equals(GE)) {
         if (value==null)
           return true;
-        else if (value instanceof Number)
-          return ((Number)value).doubleValue()<((Number)vals.get(i)).doubleValue();
-        else if (value instanceof Date)
-          return ((Date)value).compareTo((Date)vals.get(i))<0;
-        return value.toString().compareTo(vals.get(i).toString())<0;
+        else if (value instanceof Number) {
+          skip = ((Number)value).doubleValue()<((Number)vals.get(i)).doubleValue();
+          if (skip)
+            return true;
+        }
+        else if (value instanceof Date) {
+          skip = ((Date)value).compareTo((Date)vals.get(i))<0;
+          if (skip)
+            return true;
+        }
+        else
+          skip = value.toString().compareTo(vals.get(i).toString())<0;
+        if (skip)
+          return true;
       }
     }
     return false;

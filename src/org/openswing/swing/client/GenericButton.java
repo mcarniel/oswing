@@ -67,11 +67,17 @@ public class GenericButton extends JButton {
       public void actionPerformed(ActionEvent e) {
         if (!executeAsThread)
           execute();
-        else new Thread() {
+        else
+          SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-              execute();
+              try {
+                execute();
+              }
+              catch (Throwable ex) {
+                ex.printStackTrace();
+              }
             }
-          }.start();
+          });
       }
     });
     this.setFocusable(ClientSettings.GENERIC_BUTTON_FOCUSABLE);

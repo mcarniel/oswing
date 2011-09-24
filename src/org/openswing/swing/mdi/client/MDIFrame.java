@@ -131,6 +131,7 @@ public class MDIFrame extends JFrame implements BusyListener {
   public MDIFrame(MDIController client) {
     super(client.getMDIFrameTitle());
     try {
+      ApplicationEventQueue.getInstance();
       SwingUtilities.updateComponentTreeUI(this);
       this.client = client;
       ClientUtils.addBusyListener(this);

@@ -186,6 +186,7 @@ public class FileGridProfileManager extends GridProfileManager {
       ArrayList values = null;
       String[] tokens = null;
       while((aux = br.readLine())!=null) { // aux = attribute name,operator1,typevalue1,value1a\tvalue1b\tvalue1c[,operator2,typevalue2,value2...]
+        filter = new FilterWhereClause[2];
         st = new StringTokenizer(aux,",");
         attributeName = st.nextToken();
         operator1 = st.nextToken();
@@ -621,7 +622,6 @@ public class FileGridProfileManager extends GridProfileManager {
     if (f.exists())
       f.delete();
   }
-
 
 
 }
