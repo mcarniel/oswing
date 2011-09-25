@@ -130,7 +130,8 @@ public class ApplicationEventQueue {
           super.dispatchEvent(e);
         }
         catch (Exception ex) {
-
+          if (ClientSettings.SHOW_EVENT_QUEUE_EXCEPTIONS)
+            ex.printStackTrace();
         }
 
         if (e instanceof MouseEvent) {

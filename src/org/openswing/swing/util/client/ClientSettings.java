@@ -611,6 +611,9 @@ public class ClientSettings {
   /** <code>true</code> to execute ActionEvent event fired by GenericButtons in a sepated thread; default value: <code>false</code> */
   public static boolean BUTTONS_EXECUTE_AS_THREAD = false;
 
+  /** <code>true</code> to show ApplicationEventQueue exceptions; default value: <code>false</code> */
+  public static boolean SHOW_EVENT_QUEUE_EXCEPTIONS = false;
+
 
   /**
    * Contains application settings.

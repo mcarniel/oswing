@@ -1445,63 +1445,17 @@ public class QueryUtil {
       attribute2dbField
     );
 
-    int s = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().indexOf("select ");
-    int f = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" from ");
-    int w = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" where ");
-    int g = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" group by ");
-    int h = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" having ");
-    int o = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" order by ");
-
-    String select = baseSQL.substring(s+7,f);
-    String from =
-        w!=-1?baseSQL.substring(f+6,w):(
-          g!=-1?baseSQL.substring(f+6,g):(
-            h!=-1?baseSQL.substring(f+6,h):(
-              o!=-1?baseSQL.substring(f+6,o):(
-                baseSQL.substring(f+6)
-              )
-            )
-          )
-        );
-    String where =
-        w==-1?null:(
-          g!=-1?baseSQL.substring(w+7,w):(
-            h!=-1?baseSQL.substring(w+7,h):(
-              o!=-1?baseSQL.substring(w+7,o):(
-                baseSQL.substring(w+7)
-              )
-            )
-          )
-        );
-    String group =
-        g==-1?null:(
-          h!=-1?baseSQL.substring(g+10,h):(
-            o!=-1?baseSQL.substring(g+10,o):(
-              baseSQL.substring(g+10)
-            )
-          )
-        );
-    String having =
-        h==-1?null:(
-          o!=-1?baseSQL.substring(h+8,o):(
-            baseSQL.substring(h+8)
-          )
-        );
-    String order =
-        o==-1?null:(
-          baseSQL.substring(o+10)
-        );
-
 
     return getQuery(
       conn,
       userSessionPars,
-      select,
-      from,
-      where,
-      group,
-      having,
-      order,
+      baseSQL,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
       values,
       attribute2dbField,
       valueObjectClass,
@@ -1559,62 +1513,17 @@ public class QueryUtil {
       attribute2dbField
     );
 
-    int s = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().indexOf("select ");
-    int f = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" from ");
-    int w = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" where ");
-    int g = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" group by ");
-    int h = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" having ");
-    int o = baseSQL.replace('\n',' ').replace('\r',' ').toLowerCase().lastIndexOf(" order by ");
-
-    String select = baseSQL.substring(s+7,f);
-    String from =
-        w!=-1?baseSQL.substring(f+6,w):(
-          g!=-1?baseSQL.substring(f+6,g):(
-            h!=-1?baseSQL.substring(f+6,h):(
-              o!=-1?baseSQL.substring(f+6,o):(
-                baseSQL.substring(f+6)
-              )
-            )
-          )
-        );
-    String where =
-        w==-1?null:(
-          g!=-1?baseSQL.substring(w+7,w):(
-            h!=-1?baseSQL.substring(w+7,h):(
-              o!=-1?baseSQL.substring(w+7,o):(
-                baseSQL.substring(w+7)
-              )
-            )
-          )
-        );
-    String group =
-        g==-1?null:(
-          h!=-1?baseSQL.substring(g+10,h):(
-            o!=-1?baseSQL.substring(g+10,o):(
-              baseSQL.substring(g+10)
-            )
-          )
-        );
-    String having =
-        h==-1?null:(
-          o!=-1?baseSQL.substring(h+8,o):(
-            baseSQL.substring(h+8)
-          )
-        );
-    String order =
-        o==-1?null:(
-          baseSQL.substring(o+10)
-        );
 
     return getQuery(
       conn,
       userSessionPars,
-      select,
-      from,
-      where,
-      group,
-      having,
-      order,
+      baseSQL,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
       values,
       attribute2dbField,
       valueObjectClass,
@@ -1711,6 +1620,7 @@ public class QueryUtil {
     return getQuery(
       conn,
       userSessionPars,
+      null,
       select,
       from,
       where,
@@ -1815,6 +1725,7 @@ public class QueryUtil {
     return getQuery(
       conn,
       userSessionPars,
+      null,
       select,
       from,
       where,
@@ -1854,6 +1765,7 @@ public class QueryUtil {
   private static Response getQuery(
       Connection conn,
       UserSessionParameters userSessionPars,
+      String baseSQL,
       String select,
       String from,
       String where,
@@ -1875,13 +1787,16 @@ public class QueryUtil {
   ) throws Exception {
     PreparedStatement pstmt = null;
     String params = "";
-    String baseSQL =
+    if (baseSQL==null)
+      baseSQL =
         "SELECT "+select+" "+
         "FROM "+from+" "+
         (where==null  || where.equals("") ?"":("WHERE "+where+" "))+
         (group==null  || group.equals("") ?"":("GROUP BY "+group+" "))+
         (having==null || having.equals("")?"":("HAVING "+having+" "))+
         (order==null  || order.equals("") ?"":("ORDER BY "+order));
+    else
+      select = baseSQL.substring(baseSQL.toLowerCase().indexOf("select ")+7,baseSQL.toLowerCase().indexOf(" from ")).replace('\n',' ').replace('\r',' ').trim();
     try {
 
       // prepare the collection of pairs database column (table.column), attributeName - for ALL fields is the select clause
@@ -2265,6 +2180,12 @@ public class QueryUtil {
 
      lastIndex = comma+1;
    }
+
+   token = sql.substring(lastIndex).trim();
+   if (token.indexOf(" ")!=-1)
+     token = token.substring(token.lastIndexOf(" ")+1);
+   list.add( token );
+
    return list;
  }
 
