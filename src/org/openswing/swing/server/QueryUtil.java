@@ -2166,8 +2166,8 @@ public class QueryUtil {
    int parenthesis = 0;
    while((comma=sql.indexOf(",",lastIndex))>0) {
      token = sql.substring(lastIndex,comma).trim();
-     parenthesis = parenthesis + new StringTokenizer(token,"(").countTokens();
-     parenthesis = parenthesis - new StringTokenizer(token,")").countTokens();
+     parenthesis = parenthesis + new StringTokenizer(" "+token+" ","(").countTokens();
+     parenthesis = parenthesis - new StringTokenizer(" "+token+" ",")").countTokens();
      if (parenthesis>0) {
        lastIndex = comma+1;
        continue;

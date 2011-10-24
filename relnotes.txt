@@ -1,5 +1,12 @@
 
 
+Release Notes 2.4.4
+-------------------
+
+Fixed problem with SQLUtils.
+
+
+
 Release Notes 2.4.3
 -------------------
 
